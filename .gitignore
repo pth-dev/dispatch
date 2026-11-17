@@ -1,0 +1,9 @@
+node_modules/
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# local overrides, not meant to be versioned in a boilerplate
+.claude/settings.local.json
+.claude/plans/
