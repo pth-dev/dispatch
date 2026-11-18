@@ -36,7 +36,7 @@ export function useTasks(params: TaskListParams) {
       if (params.pageSize) searchParams.set('pageSize', params.pageSize.toString())
 
       const queryStr = searchParams.toString()
-      const path = `/api/tasks${queryStr ? `?${queryStr}` : ''}`
+      const path = `/tasks${queryStr ? `?${queryStr}` : ''}`
       return http<TaskListResponse>(path)
     },
     placeholderData: keepPreviousData,
@@ -47,7 +47,7 @@ export function useTasks(params: TaskListParams) {
 export function useTask(id: string) {
   return useQuery({
     queryKey: taskKeys.detail(id),
-    queryFn: () => http<Task>(`/api/tasks/${id}`),
+    queryFn: () => http<Task>(`/tasks/${id}`),
     enabled: Boolean(id),
   })
 }
@@ -55,7 +55,7 @@ export function useTask(id: string) {
 export function useDepartments() {
   return useQuery({
     queryKey: taskKeys.departments(),
-    queryFn: () => http<Department[]>('/api/departments'),
+    queryFn: () => http<Department[]>('/departments'),
     staleTime: 5 * 60_000,
   })
 }
@@ -65,7 +65,7 @@ export function useCreateTask() {
 
   return useMutation({
     mutationFn: (data: TaskCreateFormValues) =>
-      http<Task>('/api/tasks', {
+      http<Task>('/tasks', {
         method: 'POST',
         body: JSON.stringify(data),
       }),
@@ -80,7 +80,7 @@ export function useApproveTask() {
 
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data?: TaskApproveFormValues }) =>
-      http<Task>(`/api/tasks/${id}/approve`, {
+      http<Task>(`/tasks/${id}/approve`, {
         method: 'POST',
         body: JSON.stringify(data || {}),
       }),
@@ -96,7 +96,7 @@ export function useRejectTask() {
 
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: TaskRejectFormValues }) =>
-      http<Task>(`/api/tasks/${id}/reject`, {
+      http<Task>(`/tasks/${id}/reject`, {
         method: 'POST',
         body: JSON.stringify(data),
       }),
@@ -112,7 +112,7 @@ export function useReassignTask() {
 
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: TaskReassignFormValues }) =>
-      http<Task>(`/api/tasks/${id}/reassign`, {
+      http<Task>(`/tasks/${id}/reassign`, {
         method: 'PATCH',
         body: JSON.stringify(data),
       }),
