@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
@@ -53,12 +52,14 @@ export function TaskListPage() {
   const total = data?.total || 0
   const counts = data?.counts
 
-  const emptyMessage = React.useMemo(() => {
-    if (activeFilterCount > 0) return t('tasks.empty.all')
-    if (params.scope === 'mine') return t('tasks.empty.mine')
-    if (params.scope === 'created') return t('tasks.empty.created')
-    return t('tasks.empty.all')
-  }, [activeFilterCount, params.scope, t])
+  const emptyMessage =
+    activeFilterCount > 0
+      ? t('tasks.empty.all')
+      : params.scope === 'mine'
+        ? t('tasks.empty.mine')
+        : params.scope === 'created'
+          ? t('tasks.empty.created')
+          : t('tasks.empty.all')
 
   const handleRowClick = (task: Task) => {
     navigate(APP_ROUTES.TASK_DETAIL(task.id))

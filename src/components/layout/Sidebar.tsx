@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { Link, useLocation } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/utils/cn'
@@ -23,15 +22,12 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
   const currentRole = useAppStore((state) => state.user.role)
   const isAdmin = currentRole === 'admin'
 
-  const isItemActive = React.useCallback(
-    (href: string) => {
-      if (href === '/tasks') {
-        return location.pathname.startsWith('/tasks')
-      }
-      return location.pathname === href
-    },
-    [location.pathname]
-  )
+  const isItemActive = (href: string) => {
+    if (href === '/tasks') {
+      return location.pathname.startsWith('/tasks')
+    }
+    return location.pathname === href
+  }
 
   const renderNavItem = (item: NavItemConfig) => {
     const Icon = item.icon

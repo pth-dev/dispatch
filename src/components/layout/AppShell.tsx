@@ -30,7 +30,7 @@ export function AppShell() {
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <Header onOpenMobileMenu={() => setMobileMenuOpen(true)} />
 
-        <main className="flex-1 min-h-0 overflow-y-auto p-4 lg:p-6 bg-background">
+        <main className="flex-1 min-h-0 overflow-y-auto p-4 bg-background">
           <React.Suspense
             fallback={
               <div className="flex h-32 items-center justify-center text-xs text-muted-foreground">

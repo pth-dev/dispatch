@@ -52,14 +52,11 @@ export function TaskApprovePage() {
   const [rejectReason, setRejectReason] = React.useState('')
   const [reasonError, setReasonError] = React.useState('')
 
-  const isItemChecked = React.useCallback(
-    (item: { id: string; completed: boolean }) => {
-      return checkedOverrides[item.id] !== undefined
-        ? checkedOverrides[item.id]
-        : item.completed
-    },
-    [checkedOverrides],
-  )
+  const isItemChecked = (item: { id: string; completed: boolean }) => {
+    return checkedOverrides[item.id] !== undefined
+      ? checkedOverrides[item.id]
+      : item.completed
+  }
 
   const toggleCheck = (item: { id: string; completed: boolean }) => {
     const currentVal = isItemChecked(item)

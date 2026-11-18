@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { useForm, type SubmitHandler } from 'react-hook-form'
+import { useForm, useWatch, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowLeft, Send, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -30,7 +30,7 @@ export function TaskCreatePage() {
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors, isDirty, isSubmitting },
   } = useForm<TaskCreateFormValues>({
     resolver: zodResolver(TaskCreateFormSchema),
@@ -44,7 +44,9 @@ export function TaskCreatePage() {
     },
   })
 
-  const selectedDepartmentId = watch('department')
+  const selectedDepartmentId = useWatch({ control, name: 'department' })
+  const assigneeValue = useWatch({ control, name: 'assignee' })
+  const priorityValue = useWatch({ control, name: 'priority' })
   const selectedDepartment = DEPARTMENTS.find((d) => d.id === selectedDepartmentId)
   const assignees = selectedDepartment?.members || []
 
@@ -170,7 +172,7 @@ export function TaskCreatePage() {
                   {t('common.assignee')} <span className="text-destructive">*</span>
                 </label>
                 <Select
-                  value={watch('assignee')}
+                  value={assigneeValue}
                   onValueChange={(val) => setValue('assignee', val)}
                 >
                   <SelectTrigger className="h-10 text-xs">
@@ -216,7 +218,7 @@ export function TaskCreatePage() {
                   {t('tasks.createForm.priority')}
                 </label>
                 <Select
-                  value={watch('priority')}
+                  value={priorityValue}
                   onValueChange={(val: 'normal' | 'urgent') => setValue('priority', val)}
                 >
                   <SelectTrigger className="h-10 text-xs">

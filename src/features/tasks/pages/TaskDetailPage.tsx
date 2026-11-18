@@ -47,10 +47,7 @@ export function TaskDetailPage() {
   >([])
 
   // Pure derived state combining server comments and user-added comments
-  const allComments = React.useMemo(
-    () => [...(task?.comments || []), ...addedComments],
-    [task?.comments, addedComments],
-  )
+  const allComments = [...(task?.comments || []), ...addedComments]
 
   if (isLoading) {
     return (
