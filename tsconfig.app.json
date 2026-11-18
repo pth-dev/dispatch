@@ -18,8 +18,7 @@
     "noUncheckedIndexedAccess": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "cn": ["./src/utils/cn.ts"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src"]
