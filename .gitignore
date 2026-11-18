@@ -7,3 +7,7 @@ node_modules/
 # local overrides, not meant to be versioned in a boilerplate
 .claude/settings.local.json
 .claude/plans/
+
+# build output
+dist/
+*.tsbuildinfo

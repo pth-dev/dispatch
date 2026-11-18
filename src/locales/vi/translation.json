@@ -1,0 +1,171 @@
+{
+  "app": {
+    "name": "Điều Phối",
+    "version": "V16.8.0"
+  },
+  "nav": {
+    "dashboard": "Bảng điều khiển",
+    "tasks": "Danh sách nhiệm vụ",
+    "messages": "Bảng tin nhắn",
+    "lessons": "Bài học kinh nghiệm",
+    "systemTexts": "Văn bản hệ thống",
+    "todo": "Việc cần làm hôm nay",
+    "admin": "QUẢN TRỊ",
+    "users": "Người dùng",
+    "roles": "Vai trò và phân quyền",
+    "departments": "Phòng ban",
+    "profile": "Cài đặt cá nhân",
+    "logout": "Đăng xuất"
+  },
+  "role": {
+    "employee": "Nhân viên",
+    "approver": "Người duyệt",
+    "manager": "Trưởng bộ phận",
+    "admin": "Quản trị viên"
+  },
+  "department": {
+    "all": "Tất cả phòng ban",
+    "it": "BP. IT",
+    "technical": "BP. Kỹ thuật",
+    "accounting": "BP. Kế toán",
+    "hr": "BP. Nhân sự",
+    "sales": "BP. Kinh doanh",
+    "operations": "BP. Vận hành",
+    "planning": "BP. Kế hoạch"
+  },
+  "status": {
+    "all": "Tất cả trạng thái",
+    "new": "Mới tạo",
+    "draft": "Lưu nháp",
+    "in_progress": "Đang thực hiện",
+    "pending": "Chờ phê duyệt",
+    "approved": "Đã phê duyệt",
+    "done": "Hoàn thành",
+    "overdue": "Quá hạn",
+    "rejected": "Từ chối",
+    "urgent": "Khẩn cấp"
+  },
+  "common": {
+    "search": "Tìm kiếm",
+    "filter": "Bộ lọc",
+    "apply": "Áp dụng",
+    "reset": "Xoá hết",
+    "cancel": "Huỷ",
+    "confirm": "Xác nhận",
+    "save": "Lưu",
+    "create": "Thêm nhiệm vụ",
+    "edit": "Chỉnh sửa",
+    "delete": "Xoá",
+    "retry": "Thử lại",
+    "back": "Quay lại",
+    "home": "Về trang chính",
+    "all": "Tất cả",
+    "loading": "Đang tải dữ liệu...",
+    "empty": "Không có dữ liệu",
+    "error": "Đã có lỗi xảy ra",
+    "actions": "Thao tác",
+    "status": "Trạng thái",
+    "department": "Phòng ban",
+    "assignee": "Người xử lý",
+    "dueDate": "Hạn hoàn thành",
+    "createdAt": "Ngày tạo",
+    "pagination": {
+      "display": "Hiển thị {{size}} từ {{from}} đến {{to}} của {{total}} kết quả",
+      "page": "Trang {{page}}/{{totalPages}}"
+    }
+  },
+  "tasks": {
+    "title": "Danh sách nhiệm vụ",
+    "create": "Thêm nhiệm vụ",
+    "scope": {
+      "mine": "Giao cho tôi",
+      "created": "Tôi giao",
+      "all": "Tất cả"
+    },
+    "filter": {
+      "fromDate": "Từ ngày",
+      "toDate": "Đến ngày",
+      "searchPlaceholder": "Mã / Tên nhiệm vụ (Enter)",
+      "activeCount": "{{count}} bộ lọc đang bật",
+      "clearAll": "Xoá hết"
+    },
+    "columns": {
+      "stt": "STT",
+      "code": "Mã NV",
+      "title": "Nhiệm vụ",
+      "department": "Phòng ban",
+      "assignee": "Người xử lý",
+      "dueDate": "Hạn",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    },
+    "detail": {
+      "title": "Chi tiết nhiệm vụ",
+      "backToList": "Danh sách nhiệm vụ",
+      "edit": "Chỉnh sửa",
+      "reassign": "Giao lại",
+      "approveAcceptance": "Phê duyệt nghiệm thu",
+      "tabs": {
+        "overview": "Tổng quan",
+        "timeline": "Lịch sử xử lý",
+        "comments": "Bình luận"
+      },
+      "description": "Mô tả nhiệm vụ",
+      "info": "Thông tin nhiệm vụ",
+      "progressAndSla": "Tiến độ và SLA",
+      "creator": "Người giao việc",
+      "attachments": "Tệp đính kèm",
+      "noAttachments": "Chưa có tệp đính kèm"
+    },
+    "approve": {
+      "title": "Phê duyệt nghiệm thu",
+      "requestChanges": "Yêu cầu chỉnh sửa bổ sung",
+      "reject": "Từ chối nghiệm thu",
+      "confirmApprove": "Xác nhận & Phê duyệt hoàn thành",
+      "checklistTitle": "Danh mục kiểm tra nghiệm thu",
+      "noteLabel": "Ghi chú phê duyệt",
+      "notePlaceholder": "Nhập nhận xét hoặc lưu ý nghiệm thu...",
+      "confirmDialog": {
+        "approveTitle": "Xác nhận phê duyệt hoàn thành",
+        "approveDesc": "Bạn có chắc chắn muốn phê duyệt hoàn thành cho nhiệm vụ này?",
+        "rejectTitle": "Từ chối nghiệm thu",
+        "rejectDesc": "Vui lòng nhập lý do từ chối nghiệm thu:",
+        "reasonPlaceholder": "Nhập lý do tối thiểu 5 ký tự..."
+      }
+    },
+    "reassign": {
+      "title": "Giao lại nhiệm vụ",
+      "currentAssignee": "Người xử lý hiện tại: {{name}}",
+      "targetDepartment": "Phòng ban nhận",
+      "targetAssignee": "Người nhận việc",
+      "reason": "Lý do giao lại",
+      "reasonPlaceholder": "Nhập lý do giao lại nhiệm vụ...",
+      "confirm": "Xác nhận giao lại"
+    },
+    "createForm": {
+      "title": "Thêm nhiệm vụ mới",
+      "taskName": "Tên nhiệm vụ",
+      "taskNamePlaceholder": "Nhập tên nhiệm vụ cụ thể...",
+      "description": "Mô tả chi tiết",
+      "descriptionPlaceholder": "Mô tả yêu cầu, kết quả cần đạt...",
+      "priority": "Mức độ ưu tiên",
+      "priorityNormal": "Bình thường",
+      "priorityUrgent": "Khẩn cấp",
+      "saveDraft": "Lưu nháp",
+      "submit": "Giao việc"
+    },
+    "empty": {
+      "mine": "Bạn chưa được giao nhiệm vụ nào",
+      "created": "Bạn chưa giao nhiệm vụ nào",
+      "all": "Không tìm thấy nhiệm vụ phù hợp với bộ lọc"
+    }
+  },
+  "errors": {
+    "notFoundTitle": "Không tìm thấy trang này",
+    "forbiddenTitle": "Bạn chưa có quyền xem trang này",
+    "unauthorizedTitle": "Phiên đăng nhập đã hết hạn",
+    "rateLimitTitle": "Bạn thao tác quá nhanh hoặc kết nối quá chậm",
+    "serverErrorTitle": "Hệ thống đang gặp sự cố",
+    "networkErrorTitle": "Không thể kết nối"
+  }
+}

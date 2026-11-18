@@ -1,0 +1,33 @@
+import { House } from 'lucide-react'
+import { cn } from '@/utils/cn'
+
+interface LogoProps {
+  size?: number
+  className?: string
+  showText?: boolean
+}
+
+export function Logo({ size = 36, className, showText = true }: LogoProps) {
+  return (
+    <div className={cn('flex items-center gap-3 select-none', className)}>
+      <div
+        style={{ width: size, height: size }}
+        className="flex shrink-0 items-center justify-center rounded-full bg-[#E53935] text-white shadow-xs"
+        aria-hidden="true"
+      >
+        <House className="size-5 stroke-[2.2]" />
+      </div>
+
+      {showText && (
+        <div className="flex flex-col">
+          <span className="text-base font-semibold text-foreground tracking-tight leading-tight">
+            Điều Phối
+          </span>
+          <span className="text-[11px] font-medium text-muted-foreground leading-tight">
+            V16.8.0
+          </span>
+        </div>
+      )}
+    </div>
+  )
+}

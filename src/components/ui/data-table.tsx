@@ -1,0 +1,168 @@
+import * as React from 'react'
+import { useTranslation } from 'react-i18next'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from './table'
+import { useAppStore } from '@/app/store'
+import { cn } from '@/utils'
+
+export interface ColumnDef<T> {
+  id: string
+  header: React.ReactNode
+  width?: string
+  align?: 'left' | 'center' | 'right'
+  className?: string
+  cell: (item: T, index: number) => React.ReactNode
+}
+
+export interface DataTableProps<T> {
+  data: T[]
+  columns: ColumnDef<T>[]
+  keyExtractor: (item: T) => string
+  onRowClick?: (item: T) => void
+  isLoading?: boolean
+  emptyMessage?: string
+  density?: 'compact' | 'comfortable'
+  renderMobileCard?: (item: T, index: number) => React.ReactNode
+  className?: string
+}
+
+export function DataTable<T>({
+  data,
+  columns,
+  keyExtractor,
+  onRowClick,
+  isLoading = false,
+  emptyMessage,
+  density: propDensity,
+  renderMobileCard,
+  className,
+}: DataTableProps<T>) {
+  const { t } = useTranslation()
+  const storeDensity = useAppStore((state) => state.density)
+  const density = propDensity || storeDensity
+
+  const rowHeightClass = density === 'compact' ? 'h-11 py-2' : 'h-[50px] py-3'
+
+  // Mobile rendering (cards fallback if renderMobileCard provided)
+  return (
+    <div className={cn('w-full flex flex-col min-h-0', className)}>
+      {/* ── Mobile Card View (< lg) ── */}
+      {renderMobileCard && (
+        <div className="flex lg:hidden flex-col divide-y divide-border overflow-y-auto">
+          {isLoading ? (
+            Array.from({ length: 5 }).map((_, idx) => (
+              <div key={`skel_card_${idx}`} className="p-3.5 space-y-2 animate-pulse">
+                <div className="flex justify-between items-center">
+                  <div className="h-4 bg-muted rounded w-24" />
+                  <div className="h-4 bg-muted rounded w-20" />
+                </div>
+                <div className="h-5 bg-muted rounded w-3/4" />
+                <div className="h-3 bg-muted rounded w-1/2" />
+              </div>
+            ))
+          ) : data.length === 0 ? (
+            <div className="py-12 text-center text-sm text-muted-foreground">
+              {emptyMessage || t('common.empty')}
+            </div>
+          ) : (
+            data.map((item, index) => (
+              <div
+                key={keyExtractor(item)}
+                onClick={() => onRowClick?.(item)}
+                className={cn(
+                  'p-3.5 hover:bg-muted/50 transition-colors',
+                  onRowClick && 'cursor-pointer active:bg-muted',
+                )}
+              >
+                {renderMobileCard(item, index)}
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* ── Desktop Table View (>= lg, or fallback if no mobile card renderer) ── */}
+      <div
+        className={cn(
+          'w-full overflow-auto flex-1 min-h-0 border border-border rounded-lg bg-card',
+          renderMobileCard ? 'hidden lg:block' : 'block',
+        )}
+      >
+        <Table className="w-full table-fixed border-collapse">
+          <TableHeader className="sticky top-0 z-10 bg-card border-b border-border shadow-[0_1px_0_0_#E5E7EB]">
+            <TableRow className="hover:bg-transparent">
+              {columns.map((col) => (
+                <TableHead
+                  key={col.id}
+                  style={{ width: col.width }}
+                  className={cn(
+                    'text-[13px] font-semibold text-primary px-3 py-2.5 select-none bg-card',
+                    col.align === 'center' && 'text-center',
+                    col.align === 'right' && 'text-right',
+                    col.className,
+                  )}
+                >
+                  {col.header}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody className="divide-y divide-border">
+            {isLoading ? (
+              Array.from({ length: 8 }).map((_, rIdx) => (
+                <TableRow key={`skel_row_${rIdx}`} className={rowHeightClass}>
+                  {columns.map((col, cIdx) => (
+                    <TableCell key={`skel_cell_${cIdx}`} className="px-3 py-2">
+                      <div className="h-4 bg-muted animate-pulse rounded w-3/4" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : data.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-40 text-center text-sm text-muted-foreground"
+                >
+                  {emptyMessage || t('common.empty')}
+                </TableCell>
+              </TableRow>
+            ) : (
+              data.map((item, index) => (
+                <TableRow
+                  key={keyExtractor(item)}
+                  onClick={() => onRowClick?.(item)}
+                  className={cn(
+                    'transition-colors hover:bg-muted/50 text-xs text-foreground',
+                    rowHeightClass,
+                    onRowClick && 'cursor-pointer',
+                  )}
+                >
+                  {columns.map((col) => (
+                    <TableCell
+                      key={col.id}
+                      className={cn(
+                        'px-3 py-1.5 truncate',
+                        col.align === 'center' && 'text-center',
+                        col.align === 'right' && 'text-right',
+                        col.className,
+                      )}
+                    >
+                      {col.cell(item, index)}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  )
+}

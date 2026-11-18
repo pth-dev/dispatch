@@ -1,0 +1,171 @@
+{
+  "app": {
+    "name": "调度系统",
+    "version": "V16.8.0"
+  },
+  "nav": {
+    "dashboard": "仪表盘",
+    "tasks": "任务列表",
+    "messages": "消息中心",
+    "lessons": "经验教训",
+    "systemTexts": "系统文件",
+    "todo": "今日待办",
+    "admin": "系统管理",
+    "users": "用户管理",
+    "roles": "角色与权限",
+    "departments": "部门管理",
+    "profile": "个人设置",
+    "logout": "退出登录"
+  },
+  "role": {
+    "employee": "员工",
+    "approver": "审批人",
+    "manager": "部门主管",
+    "admin": "管理员"
+  },
+  "department": {
+    "all": "所有部门",
+    "it": "IT部门",
+    "technical": "技术部门",
+    "accounting": "财务部门",
+    "hr": "人事部门",
+    "sales": "业务部门",
+    "operations": "运营部门",
+    "planning": "企划部门"
+  },
+  "status": {
+    "all": "所有状态",
+    "new": "新建",
+    "draft": "草稿",
+    "in_progress": "进行中",
+    "pending": "待审批",
+    "approved": "已批准",
+    "done": "已完成",
+    "overdue": "已逾期",
+    "rejected": "已驳回",
+    "urgent": "紧急"
+  },
+  "common": {
+    "search": "搜索",
+    "filter": "筛选",
+    "apply": "应用",
+    "reset": "重置",
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "create": "新建任务",
+    "edit": "编辑",
+    "delete": "删除",
+    "retry": "重试",
+    "back": "返回",
+    "home": "返回首页",
+    "all": "全部",
+    "loading": "数据加载中...",
+    "empty": "暂无数据",
+    "error": "发生错误",
+    "actions": "操作",
+    "status": "状态",
+    "department": "部门",
+    "assignee": "经办人",
+    "dueDate": "截止日期",
+    "createdAt": "创建日期",
+    "pagination": {
+      "display": "显示第 {{from}} 至 {{to}} 条，共 {{total}} 条结果",
+      "page": "第 {{page}}/{{totalPages}} 页"
+    }
+  },
+  "tasks": {
+    "title": "任务列表",
+    "create": "新建任务",
+    "scope": {
+      "mine": "我经办的",
+      "created": "我委派的",
+      "all": "全部任务"
+    },
+    "filter": {
+      "fromDate": "起始日期",
+      "toDate": "截止日期",
+      "searchPlaceholder": "任务编号 / 名称 (回车确认)",
+      "activeCount": "已启用 {{count}} 个筛选项",
+      "clearAll": "清空全部"
+    },
+    "columns": {
+      "stt": "序号",
+      "code": "编号",
+      "title": "任务名称",
+      "department": "部门",
+      "assignee": "经办人",
+      "dueDate": "截止",
+      "status": "状态",
+      "actions": "操作"
+    },
+    "detail": {
+      "title": "任务详情",
+      "backToList": "返回任务列表",
+      "edit": "编辑",
+      "reassign": "转交",
+      "approveAcceptance": "验收审批",
+      "tabs": {
+        "overview": "概览",
+        "timeline": "处理历史",
+        "comments": "沟通留言"
+      },
+      "description": "任务说明",
+      "info": "基本信息",
+      "progressAndSla": "进度与SLA",
+      "creator": "创建人",
+      "attachments": "附件列表",
+      "noAttachments": "暂无附件"
+    },
+    "approve": {
+      "title": "验收审批",
+      "requestChanges": "要求修改",
+      "reject": "驳回验收",
+      "confirmApprove": "确认并批准完成",
+      "checklistTitle": "验收核对清单",
+      "noteLabel": "审批意见",
+      "notePlaceholder": "请输入审批意见或备注...",
+      "confirmDialog": {
+        "approveTitle": "确认批准完成",
+        "approveDesc": "您确定要批准此任务完成吗？",
+        "rejectTitle": "驳回验收",
+        "rejectDesc": "请输入驳回原因：",
+        "reasonPlaceholder": "请输入至少5个字符..."
+      }
+    },
+    "reassign": {
+      "title": "转交任务",
+      "currentAssignee": "当前经办人：{{name}}",
+      "targetDepartment": "目标部门",
+      "targetAssignee": "目标经办人",
+      "reason": "转交原因",
+      "reasonPlaceholder": "请输入转交原因...",
+      "confirm": "确认转交"
+    },
+    "createForm": {
+      "title": "新建任务",
+      "taskName": "任务名称",
+      "taskNamePlaceholder": "请输入具体任务名称...",
+      "description": "详细说明",
+      "descriptionPlaceholder": "请说明工作要求与预期交付成果...",
+      "priority": "优先级",
+      "priorityNormal": "普通",
+      "priorityUrgent": "紧急",
+      "saveDraft": "存为草稿",
+      "submit": "指派任务"
+    },
+    "empty": {
+      "mine": "您暂无待办任务",
+      "created": "您尚未委派任何任务",
+      "all": "未找到符合筛选条件的任务"
+    }
+  },
+  "errors": {
+    "notFoundTitle": "找不到该页面",
+    "forbiddenTitle": "您没有权限查看此页面",
+    "unauthorizedTitle": "登录会话已过期",
+    "rateLimitTitle": "操作过于频繁或网络较慢",
+    "serverErrorTitle": "系统遇到故障",
+    "networkErrorTitle": "无法连接到服务器"
+  }
+}

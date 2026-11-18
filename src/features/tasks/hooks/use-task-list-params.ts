@@ -1,0 +1,177 @@
+import * as React from 'react'
+import { useSearchParams } from 'react-router'
+import type { TaskListParams, TaskStatus } from '@/schemas/task'
+
+const DEFAULT_SCOPE = 'mine'
+const DEFAULT_PAGE = 1
+const DEFAULT_PAGE_SIZE = 10
+
+export function useTaskListParams() {
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const params: TaskListParams = React.useMemo(() => {
+    const rawScope = searchParams.get('scope')
+    const scope: 'mine' | 'created' | 'all' =
+      rawScope === 'created' || rawScope === 'all' ? rawScope : 'mine'
+
+    const rawPage = parseInt(searchParams.get('page') || '1', 10)
+    const page = Number.isInteger(rawPage) && rawPage > 0 ? rawPage : DEFAULT_PAGE
+
+    const rawPageSize = parseInt(searchParams.get('size') || searchParams.get('pageSize') || '10', 10)
+    const pageSize: 10 | 20 | 30 | 50 =
+      rawPageSize === 20 || rawPageSize === 30 || rawPageSize === 50 ? rawPageSize : 10
+
+    const search = searchParams.get('search') || undefined
+    const fromDate = searchParams.get('fromDate') || undefined
+    const toDate = searchParams.get('toDate') || undefined
+    const department = searchParams.get('department') || undefined
+    const status = (searchParams.get('status') as TaskStatus) || undefined
+
+    return {
+      scope,
+      search,
+      fromDate,
+      toDate,
+      department,
+      status,
+      page,
+      pageSize,
+    }
+  }, [searchParams])
+
+  // Count active filters (excluding scope, page, pageSize)
+  const activeFilterCount = React.useMemo(() => {
+    let count = 0
+    if (params.search) count++
+    if (params.fromDate) count++
+    if (params.toDate) count++
+    if (params.department && params.department !== 'all') count++
+    if (params.status && (params.status as string) !== 'all') count++
+    return count
+  }, [params])
+
+  // Functional setter to safely write to URL params
+  const setScope = React.useCallback(
+    (newScope: 'mine' | 'created' | 'all') => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev)
+          if (newScope === DEFAULT_SCOPE) {
+            next.delete('scope')
+          } else {
+            next.set('scope', newScope)
+          }
+          next.delete('page') // Reset to page 1
+          return next
+        },
+        { replace: false },
+      )
+    },
+    [setSearchParams],
+  )
+
+  const setFilters = React.useCallback(
+    (filters: {
+      search?: string
+      fromDate?: string
+      toDate?: string
+      department?: string
+      status?: string
+    }) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev)
+          if (filters.search) next.set('search', filters.search)
+          else next.delete('search')
+
+          if (filters.fromDate) next.set('fromDate', filters.fromDate)
+          else next.delete('fromDate')
+
+          if (filters.toDate) next.set('toDate', filters.toDate)
+          else next.delete('toDate')
+
+          if (filters.department && filters.department !== 'all') {
+            next.set('department', filters.department)
+          } else {
+            next.delete('department')
+          }
+
+          if (filters.status && filters.status !== 'all') {
+            next.set('status', filters.status)
+          } else {
+            next.delete('status')
+          }
+
+          next.delete('page') // Reset to page 1
+          return next
+        },
+        { replace: false },
+      )
+    },
+    [setSearchParams],
+  )
+
+  const resetFilters = React.useCallback(() => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        next.delete('search')
+        next.delete('fromDate')
+        next.delete('toDate')
+        next.delete('department')
+        next.delete('status')
+        next.delete('page')
+        return next
+      },
+      { replace: false },
+    )
+  }, [setSearchParams])
+
+  const setPage = React.useCallback(
+    (newPage: number) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev)
+          if (newPage <= DEFAULT_PAGE) {
+            next.delete('page')
+          } else {
+            next.set('page', newPage.toString())
+          }
+          return next
+        },
+        { replace: false },
+      )
+    },
+    [setSearchParams],
+  )
+
+  const setPageSize = React.useCallback(
+    (newSize: number) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev)
+          if (newSize === DEFAULT_PAGE_SIZE) {
+            next.delete('size')
+            next.delete('pageSize')
+          } else {
+            next.set('size', newSize.toString())
+          }
+          next.delete('page') // Reset to page 1
+          return next
+        },
+        { replace: true },
+      )
+    },
+    [setSearchParams],
+  )
+
+  return {
+    params,
+    activeFilterCount,
+    setScope,
+    setFilters,
+    resetFilters,
+    setPage,
+    setPageSize,
+  }
+}

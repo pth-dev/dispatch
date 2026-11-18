@@ -1,0 +1,20 @@
+export const APP_ROUTES = {
+  HOME: '/',
+  LOGIN: '/login',
+  DASHBOARD: '/dashboard',
+  TASKS: '/tasks',
+  TASK_NEW: '/tasks/new',
+  TASK_DETAIL: (id: string = ':id') => `/tasks/${id}`,
+  TASK_APPROVE: (id: string = ':id') => `/tasks/${id}/approve`,
+  MESSAGES: '/messages',
+  LESSONS: '/lessons',
+  SYSTEM_TEXTS: '/system-texts',
+  TODO: '/todo',
+  SLA: '/sla',
+  PROFILE: '/profile',
+  ADMIN: {
+    USERS: '/admin/users',
+    ROLES: '/admin/roles',
+    DEPARTMENTS: '/admin/departments',
+  },
+} as const

@@ -1,0 +1,171 @@
+{
+  "app": {
+    "name": "Dispatch",
+    "version": "V16.8.0"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "tasks": "Task List",
+    "messages": "Messages",
+    "lessons": "Lessons Learned",
+    "systemTexts": "System Documents",
+    "todo": "Today's Tasks",
+    "admin": "ADMINISTRATION",
+    "users": "Users",
+    "roles": "Roles & Permissions",
+    "departments": "Departments",
+    "profile": "Profile Settings",
+    "logout": "Logout"
+  },
+  "role": {
+    "employee": "Employee",
+    "approver": "Approver",
+    "manager": "Department Head",
+    "admin": "Administrator"
+  },
+  "department": {
+    "all": "All Departments",
+    "it": "IT Dept",
+    "technical": "Engineering Dept",
+    "accounting": "Accounting Dept",
+    "hr": "HR Dept",
+    "sales": "Sales Dept",
+    "operations": "Operations Dept",
+    "planning": "Planning Dept"
+  },
+  "status": {
+    "all": "All Statuses",
+    "new": "New",
+    "draft": "Draft",
+    "in_progress": "In Progress",
+    "pending": "Pending Approval",
+    "approved": "Approved",
+    "done": "Done",
+    "overdue": "Overdue",
+    "rejected": "Rejected",
+    "urgent": "Urgent"
+  },
+  "common": {
+    "search": "Search",
+    "filter": "Filters",
+    "apply": "Apply",
+    "reset": "Clear All",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "create": "Create Task",
+    "edit": "Edit",
+    "delete": "Delete",
+    "retry": "Retry",
+    "back": "Back",
+    "home": "Home",
+    "all": "All",
+    "loading": "Loading data...",
+    "empty": "No data found",
+    "error": "An error occurred",
+    "actions": "Actions",
+    "status": "Status",
+    "department": "Department",
+    "assignee": "Assignee",
+    "dueDate": "Due Date",
+    "createdAt": "Created Date",
+    "pagination": {
+      "display": "Showing {{size}} from {{from}} to {{to}} of {{total}} results",
+      "page": "Page {{page}}/{{totalPages}}"
+    }
+  },
+  "tasks": {
+    "title": "Task List",
+    "create": "Create Task",
+    "scope": {
+      "mine": "Assigned to Me",
+      "created": "Assigned by Me",
+      "all": "All Tasks"
+    },
+    "filter": {
+      "fromDate": "From Date",
+      "toDate": "To Date",
+      "searchPlaceholder": "Code / Task Name (Enter)",
+      "activeCount": "{{count}} active filters",
+      "clearAll": "Clear All"
+    },
+    "columns": {
+      "stt": "#",
+      "code": "Code",
+      "title": "Task",
+      "department": "Department",
+      "assignee": "Assignee",
+      "dueDate": "Due",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "detail": {
+      "title": "Task Detail",
+      "backToList": "Task List",
+      "edit": "Edit",
+      "reassign": "Reassign",
+      "approveAcceptance": "Approve Acceptance",
+      "tabs": {
+        "overview": "Overview",
+        "timeline": "Timeline",
+        "comments": "Comments"
+      },
+      "description": "Task Description",
+      "info": "Task Information",
+      "progressAndSla": "Progress & SLA",
+      "creator": "Created By",
+      "attachments": "Attachments",
+      "noAttachments": "No attachments yet"
+    },
+    "approve": {
+      "title": "Acceptance Approval",
+      "requestChanges": "Request Changes",
+      "reject": "Reject Acceptance",
+      "confirmApprove": "Confirm & Approve Done",
+      "checklistTitle": "Acceptance Checklist",
+      "noteLabel": "Approval Notes",
+      "notePlaceholder": "Enter approval remarks or feedback...",
+      "confirmDialog": {
+        "approveTitle": "Confirm Approval",
+        "approveDesc": "Are you sure you want to approve this task as completed?",
+        "rejectTitle": "Reject Acceptance",
+        "rejectDesc": "Please provide a reason for rejection:",
+        "reasonPlaceholder": "Enter at least 5 characters..."
+      }
+    },
+    "reassign": {
+      "title": "Reassign Task",
+      "currentAssignee": "Current Assignee: {{name}}",
+      "targetDepartment": "Target Department",
+      "targetAssignee": "Target Assignee",
+      "reason": "Reassign Reason",
+      "reasonPlaceholder": "Enter reason for reassignment...",
+      "confirm": "Confirm Reassignment"
+    },
+    "createForm": {
+      "title": "Create New Task",
+      "taskName": "Task Title",
+      "taskNamePlaceholder": "Enter specific task title...",
+      "description": "Detailed Description",
+      "descriptionPlaceholder": "Describe requirements and expected deliverables...",
+      "priority": "Priority",
+      "priorityNormal": "Normal",
+      "priorityUrgent": "Urgent",
+      "saveDraft": "Save Draft",
+      "submit": "Assign Task"
+    },
+    "empty": {
+      "mine": "You have no assigned tasks",
+      "created": "You haven't assigned any tasks yet",
+      "all": "No tasks match your filter criteria"
+    }
+  },
+  "errors": {
+    "notFoundTitle": "Page not found",
+    "forbiddenTitle": "You don't have permission to view this page",
+    "unauthorizedTitle": "Session expired",
+    "rateLimitTitle": "Too many requests or connection too slow",
+    "serverErrorTitle": "System is experiencing an error",
+    "networkErrorTitle": "Unable to connect"
+  }
+}
