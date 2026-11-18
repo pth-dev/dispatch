@@ -1,9 +1,8 @@
-import * as React from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { useForm } from 'react-hook-form'
+import { useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ArrowLeft, Save, Send, AlertCircle } from 'lucide-react'
+import { ArrowLeft, Send, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -49,7 +48,7 @@ export function TaskCreatePage() {
   const selectedDepartment = DEPARTMENTS.find((d) => d.id === selectedDepartmentId)
   const assignees = selectedDepartment?.members || []
 
-  const onSubmit = (data: TaskCreateFormValues) => {
+  const onSubmit: SubmitHandler<TaskCreateFormValues> = (data) => {
     createMutation.mutate(data, {
       onSuccess: (newTask) => {
         navigate(APP_ROUTES.TASK_DETAIL(newTask.id))

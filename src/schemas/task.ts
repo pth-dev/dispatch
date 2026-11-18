@@ -78,7 +78,7 @@ export const TaskCreateFormSchema = z.object({
   department: z.string().min(1, 'task.validation.departmentRequired'),
   assignee: z.string().min(1, 'task.validation.assigneeRequired'),
   dueDate: z.string().min(1, 'task.validation.dueDateRequired'),
-  priority: z.enum(['normal', 'urgent']).default('normal'),
+  priority: z.enum(['normal', 'urgent']),
 })
 
 export type TaskCreateFormValues = z.infer<typeof TaskCreateFormSchema>

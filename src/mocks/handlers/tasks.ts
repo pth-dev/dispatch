@@ -159,7 +159,7 @@ export const taskHandlers = [
       departmentName,
       assignee: body.assignee,
       createdBy: 'Nguyễn An',
-      createdAt: new Date().toISOString().split('T')[0],
+      createdAt: new Date().toISOString().slice(0, 10),
       dueDate: body.dueDate,
       status: 'new',
       urgent: body.priority === 'urgent',
@@ -196,6 +196,10 @@ export const taskHandlers = [
     }
 
     const task = tasksState[taskIndex]
+    if (!task) {
+      return new HttpResponse(JSON.stringify({ message: 'Task not found' }), { status: 404 })
+    }
+
     task.status = 'approved'
     task.progress = 100
     task.timeline = task.timeline || []
@@ -224,6 +228,10 @@ export const taskHandlers = [
     }
 
     const task = tasksState[taskIndex]
+    if (!task) {
+      return new HttpResponse(JSON.stringify({ message: 'Task not found' }), { status: 404 })
+    }
+
     task.status = body.action === 'reject' ? 'rejected' : 'in_progress'
     task.timeline = task.timeline || []
     task.timeline.push({
@@ -255,6 +263,10 @@ export const taskHandlers = [
     }
 
     const task = tasksState[taskIndex]
+    if (!task) {
+      return new HttpResponse(JSON.stringify({ message: 'Task not found' }), { status: 404 })
+    }
+
     const oldAssignee = task.assignee
     task.department = body.department
     task.departmentName = DEPARTMENT_NAME_BY_ID[body.department] || body.department

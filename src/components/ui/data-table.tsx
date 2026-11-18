@@ -117,7 +117,7 @@ export function DataTable<T>({
             {isLoading ? (
               Array.from({ length: 8 }).map((_, rIdx) => (
                 <TableRow key={`skel_row_${rIdx}`} className={rowHeightClass}>
-                  {columns.map((col, cIdx) => (
+                  {columns.map((_, cIdx) => (
                     <TableCell key={`skel_cell_${cIdx}`} className="px-3 py-2">
                       <div className="h-4 bg-muted animate-pulse rounded w-3/4" />
                     </TableCell>
