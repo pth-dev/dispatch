@@ -10,7 +10,7 @@ import { TaskScopeTabs } from '../components/TaskScopeTabs'
 import { LegendStrip } from '../components/LegendStrip'
 import { FilterBar } from '../components/FilterBar'
 import { useTasks } from '../api/queries'
-import { useTaskListParams } from '../hooks/use-task-list-params'
+import { usePageClamp, useTaskListParams } from '../hooks/use-task-list-params'
 import { useTaskColumns } from '../hooks/use-task-columns'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { APP_ROUTES } from '@/constants/app-routes'
@@ -38,8 +38,16 @@ export function TaskListPage() {
     setPageSize,
   } = useTaskListParams()
 
-  const { data, isLoading } = useTasks(params)
+  const { data, isLoading, isPlaceholderData } = useTasks(params)
   const columns = useTaskColumns(params.page, params.pageSize)
+
+  usePageClamp({
+    page: params.page,
+    pageSize: params.pageSize,
+    total: data?.total,
+    isPlaceholderData,
+    setPage,
+  })
 
   const items = data?.items || []
   const total = data?.total || 0

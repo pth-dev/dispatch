@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useSearchParams } from 'react-router'
-import type { TaskListParams, TaskStatus } from '@/schemas/task'
+import { TaskStatusSchema, type TaskListParams } from '@/schemas/task'
 
 const DEFAULT_SCOPE = 'mine'
 const DEFAULT_PAGE = 1
@@ -25,7 +25,8 @@ export function useTaskListParams() {
     const fromDate = searchParams.get('fromDate') || undefined
     const toDate = searchParams.get('toDate') || undefined
     const department = searchParams.get('department') || undefined
-    const status = (searchParams.get('status') as TaskStatus) || undefined
+    const parsedStatus = TaskStatusSchema.safeParse(searchParams.get('status'))
+    const status = parsedStatus.success ? parsedStatus.data : undefined
 
     return {
       scope,
@@ -128,7 +129,7 @@ export function useTaskListParams() {
   }, [setSearchParams])
 
   const setPage = React.useCallback(
-    (newPage: number) => {
+    (newPage: number, options?: { replace?: boolean }) => {
       setSearchParams(
         (prev) => {
           const next = new URLSearchParams(prev)
@@ -139,7 +140,7 @@ export function useTaskListParams() {
           }
           return next
         },
-        { replace: false },
+        { replace: options?.replace ?? false },
       )
     },
     [setSearchParams],
@@ -155,6 +156,7 @@ export function useTaskListParams() {
             next.delete('pageSize')
           } else {
             next.set('size', newSize.toString())
+            next.delete('pageSize') // drop the deprecated alias so it cannot linger
           }
           next.delete('page') // Reset to page 1
           return next
@@ -174,4 +176,31 @@ export function useTaskListParams() {
     setPage,
     setPageSize,
   }
+}
+
+export interface PageClampOptions {
+  page: number
+  pageSize: number
+  total?: number
+  isPlaceholderData?: boolean
+  setPage: (page: number, options?: { replace?: boolean }) => void
+}
+
+/**
+ * Brief §5.1: a page beyond the last page is replaced (history replace) by the
+ * last page once the total is known. Placeholder data is a previous query's
+ * total, so it must never drive a clamp.
+ */
+export function usePageClamp({
+  page,
+  pageSize,
+  total,
+  isPlaceholderData = false,
+  setPage,
+}: PageClampOptions) {
+  React.useEffect(() => {
+    if (isPlaceholderData || !total || total <= 0) return
+    const lastPage = Math.max(1, Math.ceil(total / pageSize))
+    if (page > lastPage) setPage(lastPage, { replace: true })
+  }, [page, pageSize, total, isPlaceholderData, setPage])
 }
