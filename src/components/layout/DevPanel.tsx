@@ -18,28 +18,28 @@ function DevPanelContent() {
   const { user, density, mockScenario, setRole, setDensity, setMockScenario } =
     useAppStore()
 
-  const scenarios: { key: SessionState['mockScenario']; label: string }[] = [
-    { key: 'normal', label: 'Bình thường (Normal 200ms)' },
-    { key: 'slow', label: 'Chậm (Slow 1500ms)' },
-    { key: 'empty', label: 'Dữ liệu rỗng (Empty)' },
-    { key: '401', label: 'Lỗi 401 Hết hạn phiên' },
-    { key: '403', label: 'Lỗi 403 Cấm truy cập' },
-    { key: '404', label: 'Lỗi 404 Không tìm thấy' },
-    { key: '500', label: 'Lỗi 500 Máy chủ' },
-    { key: 'offline', label: 'Mất kết nối mạng' },
+  const scenarios: { key: SessionState['mockScenario']; labelKey: string }[] = [
+    { key: 'normal', labelKey: 'devPanel.scenarios.normal' },
+    { key: 'slow', labelKey: 'devPanel.scenarios.slow' },
+    { key: 'empty', labelKey: 'devPanel.scenarios.empty' },
+    { key: '401', labelKey: 'devPanel.scenarios.401' },
+    { key: '403', labelKey: 'devPanel.scenarios.403' },
+    { key: '404', labelKey: 'devPanel.scenarios.404' },
+    { key: '500', labelKey: 'devPanel.scenarios.500' },
+    { key: 'offline', labelKey: 'devPanel.scenarios.offline' },
   ]
 
   const roles: UserRole[] = ['employee', 'approver', 'manager', 'admin']
 
   return (
-    <aside aria-label="Bảng công cụ lập trình viên (DEV Panel)">
+    <aside aria-label={t('devPanel.ariaLabel')}>
       {/* Floating Collapsed Button */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
           className="fixed bottom-4 right-4 z-50 flex size-10 items-center justify-center rounded-full bg-[#1F2937] text-white shadow-lg transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-primary cursor-pointer select-none"
-          title="Bật công cụ mô phỏng DEV"
-          aria-label="Open DEV Simulation Panel"
+          title={t('devPanel.open')}
+          aria-label={t('devPanel.open')}
         >
           <Settings2 className="size-5 animate-spin-slow" />
         </button>
@@ -51,12 +51,12 @@ function DevPanelContent() {
           <div className="flex items-center justify-between border-b border-border pb-2">
             <div className="flex items-center gap-2 font-semibold text-foreground">
               <Sliders className="size-4 text-primary" />
-              <span>DEV Simulation Tools</span>
+              <span>{t('devPanel.title')}</span>
             </div>
             <button
               onClick={() => setIsOpen(false)}
               className="text-muted-foreground hover:text-foreground p-1"
-              aria-label="Close DEV Panel"
+              aria-label={t('devPanel.close')}
             >
               <X className="size-4" />
             </button>
@@ -66,7 +66,7 @@ function DevPanelContent() {
           <div className="space-y-1.5">
             <label className="flex items-center gap-1.5 text-muted-foreground font-semibold">
               <Shield className="size-3.5" />
-              <span>Vai trò người dùng:</span>
+              <span>{t('devPanel.roleLabel')}</span>
             </label>
             <div className="grid grid-cols-2 gap-1.5">
               {roles.map((r) => (
@@ -86,7 +86,7 @@ function DevPanelContent() {
           {/* Table Density */}
           <div className="space-y-1.5">
             <label className="text-muted-foreground font-semibold">
-              Mật độ hiển thị bảng (Table Density):
+              {t('devPanel.densityLabel')}
             </label>
             <div className="flex gap-2">
               <Button
@@ -95,7 +95,7 @@ function DevPanelContent() {
                 onClick={() => setDensity('compact')}
                 className="h-7 flex-1 text-[11px]"
               >
-                Compact (44px)
+                {t('devPanel.compact')}
               </Button>
               <Button
                 size="sm"
@@ -103,7 +103,7 @@ function DevPanelContent() {
                 onClick={() => setDensity('comfortable')}
                 className="h-7 flex-1 text-[11px]"
               >
-                Comfortable (50px)
+                {t('devPanel.comfortable')}
               </Button>
             </div>
           </div>
@@ -112,7 +112,7 @@ function DevPanelContent() {
           <div className="space-y-1.5">
             <label className="flex items-center gap-1.5 text-muted-foreground font-semibold">
               <RefreshCw className="size-3.5" />
-              <span>Kịch bản Mock MSW / API:</span>
+              <span>{t('devPanel.scenarioLabel')}</span>
             </label>
             <select
               value={mockScenario}
@@ -123,14 +123,14 @@ function DevPanelContent() {
             >
               {scenarios.map((s) => (
                 <option key={s.key} value={s.key}>
-                  {s.label}
+                  {t(s.labelKey)}
                 </option>
               ))}
             </select>
           </div>
 
           <div className="pt-1 text-[10px] text-muted-foreground text-center">
-            Chỉ hiển thị trong môi trường DEV (import.meta.env.DEV)
+            {t('devPanel.devOnlyNote')}
           </div>
         </div>
       )}

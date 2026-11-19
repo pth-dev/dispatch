@@ -1,41 +1,41 @@
 {
   "app": {
-    "name": "调度系统",
+    "name": "Điều Phối",
     "version": "V16.8.0"
   },
   "nav": {
     "dashboard": "仪表盘",
     "tasks": "任务列表",
-    "messages": "消息中心",
+    "messages": "消息板",
     "lessons": "经验教训",
-    "systemTexts": "系统文件",
+    "systemTexts": "系统文本",
     "todo": "今日待办",
     "sla": "SLA",
     "admin": "系统管理",
-    "users": "用户管理",
+    "users": "用户",
     "roles": "角色与权限",
-    "departments": "部门管理",
+    "departments": "部门",
     "profile": "个人设置",
     "logout": "退出登录"
   },
   "role": {
     "employee": "员工",
     "approver": "审批人",
-    "manager": "部门主管",
+    "manager": "部门负责人",
     "admin": "管理员"
   },
   "department": {
-    "all": "所有部门",
-    "it": "IT部门",
-    "technical": "技术部门",
-    "accounting": "财务部门",
-    "hr": "人事部门",
-    "sales": "业务部门",
-    "operations": "运营部门",
-    "planning": "企划部门"
+    "all": "全部部门",
+    "it": "IT 部",
+    "technical": "技术部",
+    "accounting": "会计部",
+    "hr": "人事部",
+    "sales": "业务部",
+    "operations": "运营部",
+    "planning": "计划部"
   },
   "status": {
-    "all": "所有状态",
+    "all": "全部状态",
     "new": "新建",
     "draft": "草稿",
     "in_progress": "进行中",
@@ -43,14 +43,33 @@
     "approved": "已批准",
     "done": "已完成",
     "overdue": "已逾期",
-    "rejected": "已驳回",
+    "rejected": "已拒绝",
     "urgent": "紧急"
+  },
+  "language": {
+    "vi": "Tiếng Việt (VI)",
+    "en": "English (EN)",
+    "zhCN": "中文 (ZH)"
+  },
+  "header": {
+    "currentView": "当前视图：",
+    "greeting": "你好，{{name}}",
+    "userCode": "编号：{{code}}",
+    "openMenu": "打开导航菜单",
+    "changeLanguage": "切换语言",
+    "notifications": "通知",
+    "userMenu": "账户菜单",
+    "devRoleSwitch": "切换测试角色"
+  },
+  "sidebar": {
+    "menuTitle": "Điều Phối 菜单",
+    "connected": "已连接"
   },
   "common": {
     "search": "搜索",
     "filter": "筛选",
     "apply": "应用",
-    "reset": "重置",
+    "reset": "全部清除",
     "cancel": "取消",
     "confirm": "确认",
     "save": "保存",
@@ -59,114 +78,287 @@
     "delete": "删除",
     "retry": "重试",
     "back": "返回",
-    "home": "返回首页",
+    "home": "返回主页",
     "all": "全部",
-    "loading": "数据加载中...",
+    "loading": "正在加载数据...",
+    "loadingPage": "正在加载页面...",
     "empty": "暂无数据",
     "error": "发生错误",
     "actions": "操作",
     "status": "状态",
     "department": "部门",
-    "assignee": "经办人",
+    "assignee": "处理人",
     "dueDate": "截止日期",
     "createdAt": "创建日期",
+    "close": "关闭",
+    "copy": "复制",
+    "copied": "已复制",
     "pagination": {
-      "display": "显示第 {{from}} 至 {{to}} 条，共 {{total}} 条结果",
-      "page": "第 {{page}}/{{totalPages}} 页"
+      "display": "显示第 {{from}} 至 {{to}} 条，共 {{total}} 条结果，每页 {{size}} 条",
+      "page": "第 {{page}}/{{totalPages}} 页",
+      "perPage": "/ 页",
+      "firstPage": "首页",
+      "previousPage": "上一页",
+      "nextPage": "下一页",
+      "lastPage": "末页"
     }
   },
   "tasks": {
     "title": "任务列表",
     "create": "新建任务",
     "scope": {
-      "mine": "我经办的",
-      "created": "我委派的",
-      "all": "全部任务"
+      "mine": "分配给我",
+      "created": "我分配的",
+      "all": "全部",
+      "ariaLabel": "任务范围"
     },
     "filter": {
       "fromDate": "起始日期",
-      "toDate": "截止日期",
-      "searchPlaceholder": "任务编号 / 名称 (回车确认)",
-      "activeCount": "已启用 {{count}} 个筛选项",
-      "clearAll": "清空全部"
+      "toDate": "结束日期",
+      "searchPlaceholder": "编号 / 任务名称 (Enter)",
+      "activeCount": "已启用 {{count}} 个筛选条件",
+      "clearAll": "全部清除",
+      "submitSearch": "搜索任务",
+      "dateRangeErrorTitle": "日期范围无效",
+      "dateRangeErrorDescription": "起始日期不能晚于结束日期。"
     },
     "columns": {
       "stt": "序号",
       "code": "编号",
-      "title": "任务名称",
+      "title": "任务",
       "department": "部门",
-      "assignee": "经办人",
+      "assignee": "处理人",
       "dueDate": "截止",
       "status": "状态",
       "actions": "操作"
     },
+    "actions": {
+      "view": "查看任务 {{id}}"
+    },
+    "mobile": {
+      "dueDate": "截止 {{date}}"
+    },
     "detail": {
       "title": "任务详情",
-      "backToList": "返回任务列表",
+      "backToList": "任务列表",
       "edit": "编辑",
-      "reassign": "转交",
+      "reassign": "转派",
       "approveAcceptance": "验收审批",
       "tabs": {
         "overview": "概览",
-        "timeline": "处理历史",
-        "comments": "沟通留言"
+        "timeline": "处理记录",
+        "comments": "评论"
       },
-      "description": "任务说明",
-      "info": "基本信息",
-      "progressAndSla": "进度与SLA",
+      "description": "任务描述",
+      "info": "任务信息",
+      "progressAndSla": "进度与 SLA",
       "creator": "创建人",
-      "attachments": "附件列表",
-      "noAttachments": "暂无附件"
+      "attachments": "附件",
+      "noAttachments": "暂无附件",
+      "noDescription": "该任务暂无详细描述。",
+      "checklistTitle": "待完成工作项 ({{done}}/{{total}})",
+      "progressLabel": "执行进度",
+      "timelineBy": "执行人：{{actor}}",
+      "noTimeline": "暂无处理记录。",
+      "commentPlaceholder": "输入交流内容或讨论意见...",
+      "sendComment": "发送评论"
     },
     "approve": {
       "title": "验收审批",
-      "requestChanges": "要求修改",
-      "reject": "驳回验收",
+      "requestChanges": "要求补充修改",
+      "reject": "拒绝验收",
       "confirmApprove": "确认并批准完成",
-      "checklistTitle": "验收核对清单",
-      "noteLabel": "审批意见",
-      "notePlaceholder": "请输入审批意见或备注...",
+      "checklistTitle": "验收检查清单",
+      "noteLabel": "审批备注",
+      "notePlaceholder": "输入验收意见或备注...",
       "confirmDialog": {
         "approveTitle": "确认批准完成",
-        "approveDesc": "您确定要批准此任务完成吗？",
-        "rejectTitle": "驳回验收",
-        "rejectDesc": "请输入驳回原因：",
-        "reasonPlaceholder": "请输入至少5个字符..."
-      }
+        "approveDesc": "您确定要批准该任务完成吗？",
+        "rejectTitle": "拒绝验收",
+        "rejectDesc": "请输入拒绝验收的原因：",
+        "reasonPlaceholder": "请输入至少 5 个字符的原因..."
+      },
+      "taskLabel": "任务：{{title}}",
+      "checkedCount": "已检查：{{done}}/{{total}}",
+      "checklistRequired": "验收审批前必须检查",
+      "infoTitle": "验收资料信息",
+      "dueLabel": "截止日期",
+      "submittedAt": "验收提交日期",
+      "attachmentsTitle": "验收文档",
+      "noAttachments": "暂无附带的文档",
+      "reasonError": "请输入至少 5 个字符的原因"
     },
     "reassign": {
-      "title": "转交任务",
-      "currentAssignee": "当前经办人：{{name}}",
-      "targetDepartment": "目标部门",
-      "targetAssignee": "目标经办人",
-      "reason": "转交原因",
-      "reasonPlaceholder": "请输入转交原因...",
-      "confirm": "确认转交"
+      "title": "转派任务",
+      "currentAssignee": "当前处理人：{{name}}",
+      "targetDepartment": "接收部门",
+      "targetAssignee": "接收人",
+      "reason": "转派原因",
+      "reasonPlaceholder": "请输入转派任务的原因...",
+      "confirm": "确认转派",
+      "departmentPlaceholder": "选择接收部门",
+      "assigneePlaceholder": "选择接收人员",
+      "assigneeError": "请选择接收人",
+      "reasonError": "请输入至少 5 个字符的原因"
     },
     "createForm": {
       "title": "新建任务",
       "taskName": "任务名称",
-      "taskNamePlaceholder": "请输入具体任务名称...",
-      "description": "详细说明",
-      "descriptionPlaceholder": "请说明工作要求与预期交付成果...",
+      "taskNamePlaceholder": "输入具体的任务名称...",
+      "description": "详细描述",
+      "descriptionPlaceholder": "描述要求和预期结果...",
       "priority": "优先级",
       "priorityNormal": "普通",
       "priorityUrgent": "紧急",
-      "saveDraft": "存为草稿",
-      "submit": "指派任务"
+      "saveDraft": "保存草稿",
+      "submit": "分配任务",
+      "infoSection": "任务信息",
+      "assignmentSection": "分配与期限",
+      "departmentPlaceholder": "选择部门",
+      "assigneePlaceholder": "选择处理人",
+      "unsavedTitle": "未保存的更改",
+      "unsavedDescription": "您有未保存的更改，确定要离开吗？",
+      "stay": "留在本页",
+      "discard": "离开且不保存"
     },
     "empty": {
-      "mine": "您暂无待办任务",
-      "created": "您尚未委派任何任务",
-      "all": "未找到符合筛选条件的任务"
+      "mine": "暂无分配给您的任务",
+      "created": "您还没有分配任何任务",
+      "all": "没有符合筛选条件的任务"
+    },
+    "validation": {
+      "titleRequired": "请输入任务名称",
+      "departmentRequired": "请选择部门",
+      "assigneeRequired": "请选择处理人",
+      "dueDateRequired": "请选择截止日期",
+      "reassignReasonRequired": "请输入至少 5 个字符的原因",
+      "rejectReasonRequired": "请输入至少 5 个字符的原因",
+      "checklistRequired": "请检查全部验收项"
     }
   },
   "errors": {
-    "notFoundTitle": "找不到该页面",
-    "forbiddenTitle": "您没有权限查看此页面",
-    "unauthorizedTitle": "登录会话已过期",
-    "rateLimitTitle": "操作过于频繁或网络较慢",
-    "serverErrorTitle": "系统遇到故障",
-    "networkErrorTitle": "无法连接到服务器"
+    "status": {
+      "404": {
+        "caption": "错误 404 • 未找到",
+        "title": "找不到此页面",
+        "description": "您请求的地址不存在、已被重命名或暂时不可用。"
+      },
+      "403": {
+        "caption": "错误 403 • 无权限",
+        "title": "您没有查看此页面的权限",
+        "description": "当前账户无权访问此资源。如需授权，请联系管理员。"
+      },
+      "401": {
+        "caption": "错误 401 • 会话已过期",
+        "title": "登录会话已过期",
+        "description": "为确保信息安全，您的会话已结束。请重新登录。"
+      },
+      "408": {
+        "caption": "错误 408 • 请求超时",
+        "title": "操作过快或连接过慢",
+        "description": "请求完成所需时间超出预期。请检查网络连接后重试。"
+      },
+      "429": {
+        "caption": "错误 429 • 请求过多",
+        "title": "操作过快或连接过慢",
+        "description": "系统在短时间内收到过多请求。请稍等几秒后重试。"
+      },
+      "500": {
+        "caption": "错误 500 • 系统故障",
+        "title": "系统出现问题",
+        "description": "这是系统侧的错误，并非您的操作问题。请稍后重新加载。如果问题仍然存在，请将下方参考代码发送给支持团队。"
+      },
+      "502": {
+        "caption": "错误 502 • 网关无效",
+        "title": "系统出现问题",
+        "description": "中间服务器未收到有效响应。请稍后重新加载。"
+      },
+      "503": {
+        "caption": "错误 503 • 系统维护",
+        "title": "系统正在维护",
+        "description": "系统正在进行定期升级以提升性能。我们将尽快恢复。"
+      },
+      "504": {
+        "caption": "错误 504 • 响应超时",
+        "title": "响应过慢",
+        "description": "服务器处理任务耗时过长。请重新加载页面或稍后重试。"
+      },
+      "network": {
+        "caption": "网络连接中断",
+        "title": "无法连接",
+        "description": "无法与服务器建立连接。请检查您的 Wi-Fi 或内部网络连接。"
+      },
+      "unknown": {
+        "caption": "未知错误",
+        "title": "无法加载数据",
+        "description": "加载数据时发生错误。请重试。"
+      }
+    },
+    "support": "技术支持",
+    "loginAgain": "重新登录",
+    "reloadPage": "重新加载页面",
+    "goHome": "返回主页",
+    "referenceCode": "参考代码：{{code}}",
+    "copyReference": "复制错误代码",
+    "technicalDetails": "技术详情（仅 DEV）：",
+    "suggestions": "您可能在寻找：",
+    "footer": "© 2026 Điều Phối • 版本 V16.8"
+  },
+  "login": {
+    "account": "账号",
+    "password": "密码",
+    "submit": "登录"
+  },
+  "pages": {
+    "dashboard": {
+      "description": "总览仪表盘（将在 Phase 3 中实现）。"
+    },
+    "lessons": {
+      "description": "经验教训与规定（将在 Phase 4 中实现）。"
+    },
+    "messages": {
+      "description": "内部消息板（将在 Phase 4 中实现）。"
+    },
+    "todo": {
+      "description": "今日待办事项（将在 Phase 4 中实现）。"
+    },
+    "sla": {
+      "title": "SLA 详情",
+      "description": "人员 SLA 统计报告（将在 Phase 3 中实现）。"
+    },
+    "profile": {
+      "description": "账户信息和个人偏好设置。"
+    },
+    "adminUsers": {
+      "description": "用户列表与状态（将在 Phase 5 中实现）。"
+    },
+    "adminRoles": {
+      "description": "系统权限矩阵（将在 Phase 5 中实现）。"
+    },
+    "adminDepartments": {
+      "description": "部门组织结构树（将在 Phase 5 中实现）。"
+    }
+  },
+  "devPanel": {
+    "ariaLabel": "开发者工具面板（DEV 面板）",
+    "open": "打开 DEV 模拟工具",
+    "close": "关闭 DEV 面板",
+    "title": "DEV Simulation Tools",
+    "roleLabel": "用户角色：",
+    "densityLabel": "表格密度：",
+    "compact": "Compact (44px)",
+    "comfortable": "Comfortable (50px)",
+    "scenarioLabel": "Mock MSW / API 场景：",
+    "devOnlyNote": "仅在 DEV 环境显示 (import.meta.env.DEV)",
+    "scenarios": {
+      "normal": "正常 (Normal 200ms)",
+      "slow": "缓慢 (Slow 1500ms)",
+      "empty": "空数据 (Empty)",
+      "401": "401 会话过期",
+      "403": "403 禁止访问",
+      "404": "404 未找到",
+      "500": "500 服务器错误",
+      "offline": "网络断开"
+    }
   }
 }

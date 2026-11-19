@@ -64,7 +64,7 @@ export function TaskDetailPage() {
       <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-3">
         <AlertTriangle className="size-10 text-destructive" />
         <h2 className="text-lg font-semibold text-foreground">
-          {t('errors.notFoundTitle')}
+          {t('errors.status.404.title')}
         </h2>
         <Button asChild variant="outline">
           <Link to={APP_ROUTES.TASKS}>{t('tasks.detail.backToList')}</Link>
@@ -205,7 +205,7 @@ export function TaskDetailPage() {
                   {t('tasks.detail.description')}
                 </h3>
                 <p className="text-xs text-foreground/90 whitespace-pre-line leading-relaxed">
-                  {task.description || 'Chưa có mô tả chi tiết cho nhiệm vụ này.'}
+                  {task.description || t('tasks.detail.noDescription')}
                 </p>
               </div>
 
@@ -213,8 +213,10 @@ export function TaskDetailPage() {
               {task.checklist && task.checklist.length > 0 && (
                 <div className="bg-card rounded-xl border border-border p-4 space-y-3">
                   <h3 className="text-sm font-semibold text-foreground">
-                    Danh mục công việc cần hoàn thành ({task.checklist.filter((c) => c.completed).length}/
-                    {task.checklist.length})
+                    {t('tasks.detail.checklistTitle', {
+                      done: task.checklist.filter((c) => c.completed).length,
+                      total: task.checklist.length,
+                    })}
                   </h3>
                   <div className="space-y-2">
                     {task.checklist.map((item) => (
@@ -241,7 +243,7 @@ export function TaskDetailPage() {
                 </h3>
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Tiến độ thực hiện</span>
+                    <span className="text-muted-foreground">{t('tasks.detail.progressLabel')}</span>
                     <span className="font-semibold text-primary">{task.progress}%</span>
                   </div>
                   <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
@@ -344,7 +346,9 @@ export function TaskDetailPage() {
                       <span className="font-semibold text-foreground">{event.action}</span>
                       <span className="text-muted-foreground text-[11px]">• {event.time}</span>
                     </div>
-                    <p className="text-muted-foreground">Thực hiện bởi: {event.actor}</p>
+                    <p className="text-muted-foreground">
+                      {t('tasks.detail.timelineBy', { actor: event.actor })}
+                    </p>
                     {event.note && (
                       <p className="p-2 rounded bg-muted text-foreground/90 font-mono text-[11px]">
                         {event.note}
@@ -354,7 +358,7 @@ export function TaskDetailPage() {
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-muted-foreground">Chưa có lịch sử xử lý.</p>
+              <p className="text-xs text-muted-foreground">{t('tasks.detail.noTimeline')}</p>
             )}
           </div>
         </TabsContent>
@@ -384,7 +388,7 @@ export function TaskDetailPage() {
               <Textarea
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Nhập nội dung trao đổi hoặc ý kiến thảo luận..."
+                placeholder={t('tasks.detail.commentPlaceholder')}
                 rows={3}
                 className="text-xs"
               />
@@ -395,7 +399,7 @@ export function TaskDetailPage() {
                   className="gap-1.5 text-xs bg-primary hover:bg-primary-hover text-white"
                 >
                   <Send className="size-3.5" />
-                  <span>Gửi bình luận</span>
+                  <span>{t('tasks.detail.sendComment')}</span>
                 </Button>
               </div>
             </form>

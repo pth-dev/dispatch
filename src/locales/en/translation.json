@@ -1,97 +1,129 @@
 {
   "app": {
-    "name": "Dispatch",
+    "name": "Điều Phối",
     "version": "V16.8.0"
   },
   "nav": {
     "dashboard": "Dashboard",
-    "tasks": "Task List",
-    "messages": "Messages",
-    "lessons": "Lessons Learned",
-    "systemTexts": "System Documents",
-    "todo": "Today's Tasks",
+    "tasks": "Task list",
+    "messages": "Message board",
+    "lessons": "Lessons learned",
+    "systemTexts": "System texts",
+    "todo": "Today's to-do",
     "sla": "SLA",
     "admin": "ADMINISTRATION",
     "users": "Users",
-    "roles": "Roles & Permissions",
+    "roles": "Roles & permissions",
     "departments": "Departments",
-    "profile": "Profile Settings",
-    "logout": "Logout"
+    "profile": "Personal settings",
+    "logout": "Sign out"
   },
   "role": {
     "employee": "Employee",
     "approver": "Approver",
-    "manager": "Department Head",
+    "manager": "Department manager",
     "admin": "Administrator"
   },
   "department": {
-    "all": "All Departments",
-    "it": "IT Dept",
-    "technical": "Engineering Dept",
-    "accounting": "Accounting Dept",
-    "hr": "HR Dept",
-    "sales": "Sales Dept",
-    "operations": "Operations Dept",
-    "planning": "Planning Dept"
+    "all": "All departments",
+    "it": "IT Dept.",
+    "technical": "Technical Dept.",
+    "accounting": "Accounting Dept.",
+    "hr": "HR Dept.",
+    "sales": "Sales Dept.",
+    "operations": "Operations Dept.",
+    "planning": "Planning Dept."
   },
   "status": {
-    "all": "All Statuses",
+    "all": "All statuses",
     "new": "New",
     "draft": "Draft",
-    "in_progress": "In Progress",
-    "pending": "Pending Approval",
+    "in_progress": "In progress",
+    "pending": "Pending approval",
     "approved": "Approved",
-    "done": "Done",
+    "done": "Completed",
     "overdue": "Overdue",
     "rejected": "Rejected",
     "urgent": "Urgent"
   },
+  "language": {
+    "vi": "Tiếng Việt (VI)",
+    "en": "English (EN)",
+    "zhCN": "中文 (ZH)"
+  },
+  "header": {
+    "currentView": "Current view:",
+    "greeting": "Hello, {{name}}",
+    "userCode": "ID: {{code}}",
+    "openMenu": "Open navigation menu",
+    "changeLanguage": "Change language",
+    "notifications": "Notifications",
+    "userMenu": "Account menu",
+    "devRoleSwitch": "Switch test role"
+  },
+  "sidebar": {
+    "menuTitle": "Điều Phối menu",
+    "connected": "Connected"
+  },
   "common": {
     "search": "Search",
-    "filter": "Filters",
+    "filter": "Filter",
     "apply": "Apply",
-    "reset": "Clear All",
+    "reset": "Clear all",
     "cancel": "Cancel",
     "confirm": "Confirm",
     "save": "Save",
-    "create": "Create Task",
+    "create": "New task",
     "edit": "Edit",
     "delete": "Delete",
     "retry": "Retry",
     "back": "Back",
-    "home": "Home",
+    "home": "Back to home",
     "all": "All",
     "loading": "Loading data...",
-    "empty": "No data found",
-    "error": "An error occurred",
+    "loadingPage": "Loading page...",
+    "empty": "No data",
+    "error": "Something went wrong",
     "actions": "Actions",
     "status": "Status",
     "department": "Department",
     "assignee": "Assignee",
-    "dueDate": "Due Date",
-    "createdAt": "Created Date",
+    "dueDate": "Due date",
+    "createdAt": "Created at",
+    "close": "Close",
+    "copy": "Copy",
+    "copied": "Copied",
     "pagination": {
       "display": "Showing {{size}} from {{from}} to {{to}} of {{total}} results",
-      "page": "Page {{page}}/{{totalPages}}"
+      "page": "Page {{page}}/{{totalPages}}",
+      "perPage": "/ page",
+      "firstPage": "First page",
+      "previousPage": "Previous page",
+      "nextPage": "Next page",
+      "lastPage": "Last page"
     }
   },
   "tasks": {
-    "title": "Task List",
-    "create": "Create Task",
+    "title": "Task list",
+    "create": "New task",
     "scope": {
-      "mine": "Assigned to Me",
-      "created": "Assigned by Me",
-      "all": "All Tasks"
+      "mine": "Assigned to me",
+      "created": "Created by me",
+      "all": "All",
+      "ariaLabel": "Task scope"
     },
     "filter": {
-      "fromDate": "From Date",
-      "toDate": "To Date",
-      "searchPlaceholder": "Code / Task Name (Enter)",
-      "activeCount": "{{count}} active filters",
-      "clearAll": "Clear All"
+      "fromDate": "From date",
+      "toDate": "To date",
+      "searchPlaceholder": "Code / Task name (Enter)",
+      "activeCount": "{{count}} filters active",
+      "clearAll": "Clear all",
+      "submitSearch": "Search tasks",
+      "dateRangeErrorTitle": "Invalid date range",
+      "dateRangeErrorDescription": "The from date cannot be later than the to date."
     },
     "columns": {
-      "stt": "#",
+      "stt": "No.",
       "code": "Code",
       "title": "Task",
       "department": "Department",
@@ -100,73 +132,233 @@
       "status": "Status",
       "actions": "Actions"
     },
+    "actions": {
+      "view": "View task {{id}}"
+    },
+    "mobile": {
+      "dueDate": "Due {{date}}"
+    },
     "detail": {
-      "title": "Task Detail",
-      "backToList": "Task List",
+      "title": "Task details",
+      "backToList": "Task list",
       "edit": "Edit",
       "reassign": "Reassign",
-      "approveAcceptance": "Approve Acceptance",
+      "approveAcceptance": "Approve acceptance",
       "tabs": {
         "overview": "Overview",
-        "timeline": "Timeline",
+        "timeline": "History",
         "comments": "Comments"
       },
-      "description": "Task Description",
-      "info": "Task Information",
+      "description": "Task description",
+      "info": "Task information",
       "progressAndSla": "Progress & SLA",
-      "creator": "Created By",
+      "creator": "Created by",
       "attachments": "Attachments",
-      "noAttachments": "No attachments yet"
+      "noAttachments": "No attachments yet",
+      "noDescription": "No detailed description for this task yet.",
+      "checklistTitle": "Work items to complete ({{done}}/{{total}})",
+      "progressLabel": "Progress",
+      "timelineBy": "Performed by: {{actor}}",
+      "noTimeline": "No processing history yet.",
+      "commentPlaceholder": "Write a message or discussion comment...",
+      "sendComment": "Send comment"
     },
     "approve": {
-      "title": "Acceptance Approval",
-      "requestChanges": "Request Changes",
-      "reject": "Reject Acceptance",
-      "confirmApprove": "Confirm & Approve Done",
-      "checklistTitle": "Acceptance Checklist",
-      "noteLabel": "Approval Notes",
-      "notePlaceholder": "Enter approval remarks or feedback...",
+      "title": "Approve acceptance",
+      "requestChanges": "Request changes",
+      "reject": "Reject acceptance",
+      "confirmApprove": "Confirm & approve completion",
+      "checklistTitle": "Acceptance checklist",
+      "noteLabel": "Approval note",
+      "notePlaceholder": "Enter acceptance remarks or notes...",
       "confirmDialog": {
-        "approveTitle": "Confirm Approval",
+        "approveTitle": "Confirm completion approval",
         "approveDesc": "Are you sure you want to approve this task as completed?",
-        "rejectTitle": "Reject Acceptance",
-        "rejectDesc": "Please provide a reason for rejection:",
-        "reasonPlaceholder": "Enter at least 5 characters..."
-      }
+        "rejectTitle": "Reject acceptance",
+        "rejectDesc": "Please enter the reason for rejection:",
+        "reasonPlaceholder": "Enter a reason of at least 5 characters..."
+      },
+      "taskLabel": "Task: {{title}}",
+      "checkedCount": "Checked: {{done}}/{{total}}",
+      "checklistRequired": "Required before approving acceptance",
+      "infoTitle": "Acceptance file information",
+      "dueLabel": "Due date",
+      "submittedAt": "Acceptance submitted on",
+      "attachmentsTitle": "Acceptance documents",
+      "noAttachments": "No attached documents",
+      "reasonError": "Please enter a reason of at least 5 characters"
     },
     "reassign": {
-      "title": "Reassign Task",
-      "currentAssignee": "Current Assignee: {{name}}",
-      "targetDepartment": "Target Department",
-      "targetAssignee": "Target Assignee",
-      "reason": "Reassign Reason",
-      "reasonPlaceholder": "Enter reason for reassignment...",
-      "confirm": "Confirm Reassignment"
+      "title": "Reassign task",
+      "currentAssignee": "Current assignee: {{name}}",
+      "targetDepartment": "Receiving department",
+      "targetAssignee": "Receiving assignee",
+      "reason": "Reassignment reason",
+      "reasonPlaceholder": "Enter the reason for reassigning...",
+      "confirm": "Confirm reassignment",
+      "departmentPlaceholder": "Select receiving department",
+      "assigneePlaceholder": "Select receiving assignee",
+      "assigneeError": "Please select a receiver",
+      "reasonError": "Please enter a reason of at least 5 characters"
     },
     "createForm": {
-      "title": "Create New Task",
-      "taskName": "Task Title",
-      "taskNamePlaceholder": "Enter specific task title...",
-      "description": "Detailed Description",
-      "descriptionPlaceholder": "Describe requirements and expected deliverables...",
+      "title": "Create new task",
+      "taskName": "Task name",
+      "taskNamePlaceholder": "Enter a specific task name...",
+      "description": "Detailed description",
+      "descriptionPlaceholder": "Describe the requirements and expected outcome...",
       "priority": "Priority",
       "priorityNormal": "Normal",
       "priorityUrgent": "Urgent",
-      "saveDraft": "Save Draft",
-      "submit": "Assign Task"
+      "saveDraft": "Save draft",
+      "submit": "Assign task",
+      "infoSection": "Task information",
+      "assignmentSection": "Assignment & deadline",
+      "departmentPlaceholder": "Select department",
+      "assigneePlaceholder": "Select assignee",
+      "unsavedTitle": "Unsaved changes",
+      "unsavedDescription": "You have unsaved changes. Are you sure you want to leave?",
+      "stay": "Stay on page",
+      "discard": "Leave without saving"
     },
     "empty": {
-      "mine": "You have no assigned tasks",
-      "created": "You haven't assigned any tasks yet",
-      "all": "No tasks match your filter criteria"
+      "mine": "No tasks assigned to you",
+      "created": "You have not assigned any tasks",
+      "all": "No tasks match the current filters"
+    },
+    "validation": {
+      "titleRequired": "Please enter a task name",
+      "departmentRequired": "Please select a department",
+      "assigneeRequired": "Please select an assignee",
+      "dueDateRequired": "Please select a due date",
+      "reassignReasonRequired": "Please enter a reason of at least 5 characters",
+      "rejectReasonRequired": "Please enter a reason of at least 5 characters",
+      "checklistRequired": "Please check every acceptance item"
     }
   },
   "errors": {
-    "notFoundTitle": "Page not found",
-    "forbiddenTitle": "You don't have permission to view this page",
-    "unauthorizedTitle": "Session expired",
-    "rateLimitTitle": "Too many requests or connection too slow",
-    "serverErrorTitle": "System is experiencing an error",
-    "networkErrorTitle": "Unable to connect"
+    "status": {
+      "404": {
+        "caption": "ERROR 404 • NOT FOUND",
+        "title": "This page could not be found",
+        "description": "The address you requested does not exist, has been renamed, or is temporarily unavailable."
+      },
+      "403": {
+        "caption": "ERROR 403 • FORBIDDEN",
+        "title": "You do not have permission to view this page",
+        "description": "The current account cannot access this resource. Please contact an administrator if you need access."
+      },
+      "401": {
+        "caption": "ERROR 401 • SESSION EXPIRED",
+        "title": "Your session has expired",
+        "description": "To keep your information safe, your session has ended. Please sign in again."
+      },
+      "408": {
+        "caption": "ERROR 408 • REQUEST TIMEOUT",
+        "title": "You are acting too fast or the connection is too slow",
+        "description": "The request took longer than expected to complete. Check your connection and try again."
+      },
+      "429": {
+        "caption": "ERROR 429 • TOO MANY REQUESTS",
+        "title": "You are acting too fast or the connection is too slow",
+        "description": "The system is receiving too many requests in a short time. Please wait a few seconds and try again."
+      },
+      "500": {
+        "caption": "ERROR 500 • SYSTEM FAILURE",
+        "title": "The system is having problems",
+        "description": "This is a system error, not your fault. Try reloading in a few minutes. If it persists, send the reference code below to support."
+      },
+      "502": {
+        "caption": "ERROR 502 • BAD GATEWAY",
+        "title": "The system is having problems",
+        "description": "The intermediate server did not receive a valid response. Try reloading in a few minutes."
+      },
+      "503": {
+        "caption": "ERROR 503 • MAINTENANCE",
+        "title": "The system is under maintenance",
+        "description": "The system is being upgraded to improve performance. We will be back shortly."
+      },
+      "504": {
+        "caption": "ERROR 504 • GATEWAY TIMEOUT",
+        "title": "The response is too slow",
+        "description": "The server took too long to complete the task. Reload the page or try again later."
+      },
+      "network": {
+        "caption": "NETWORK DISCONNECTED",
+        "title": "Unable to connect",
+        "description": "Could not reach the server. Please check your Wi-Fi or internal network connection."
+      },
+      "unknown": {
+        "caption": "UNKNOWN ERROR",
+        "title": "Unable to load data",
+        "description": "Something went wrong while loading data. Please try again."
+      }
+    },
+    "support": "Technical support",
+    "loginAgain": "Sign in again",
+    "reloadPage": "Reload page",
+    "goHome": "Back to home",
+    "referenceCode": "Reference code: {{code}}",
+    "copyReference": "Copy error code",
+    "technicalDetails": "Technical details (DEV only):",
+    "suggestions": "You may be looking for:",
+    "footer": "© 2026 Điều Phối • Version V16.8"
+  },
+  "login": {
+    "account": "Username",
+    "password": "Password",
+    "submit": "Sign in"
+  },
+  "pages": {
+    "dashboard": {
+      "description": "Overview dashboard (to be implemented in Phase 3)."
+    },
+    "lessons": {
+      "description": "Lessons learned and regulations (to be implemented in Phase 4)."
+    },
+    "messages": {
+      "description": "Internal message board (to be implemented in Phase 4)."
+    },
+    "todo": {
+      "description": "Today's to-do list (to be implemented in Phase 4)."
+    },
+    "sla": {
+      "title": "SLA details",
+      "description": "Personnel SLA statistics report (to be implemented in Phase 3)."
+    },
+    "profile": {
+      "description": "Account information and personal preferences."
+    },
+    "adminUsers": {
+      "description": "User list and statuses (to be implemented in Phase 5)."
+    },
+    "adminRoles": {
+      "description": "System permission matrix (to be implemented in Phase 5)."
+    },
+    "adminDepartments": {
+      "description": "Department structure tree (to be implemented in Phase 5)."
+    }
+  },
+  "devPanel": {
+    "ariaLabel": "Developer tools panel (DEV panel)",
+    "open": "Open DEV simulation tools",
+    "close": "Close DEV panel",
+    "title": "DEV Simulation Tools",
+    "roleLabel": "User role:",
+    "densityLabel": "Table density:",
+    "compact": "Compact (44px)",
+    "comfortable": "Comfortable (50px)",
+    "scenarioLabel": "Mock MSW / API scenario:",
+    "devOnlyNote": "Only visible in the DEV environment (import.meta.env.DEV)",
+    "scenarios": {
+      "normal": "Normal (200ms)",
+      "slow": "Slow (1500ms)",
+      "empty": "Empty data",
+      "401": "401 Session expired",
+      "403": "403 Forbidden",
+      "404": "404 Not found",
+      "500": "500 Server error",
+      "offline": "Network disconnected"
+    }
   }
 }

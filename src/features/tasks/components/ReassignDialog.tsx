@@ -110,7 +110,7 @@ export function ReassignDialog({
           }}
         >
           <SelectTrigger className="h-10 text-xs">
-            <SelectValue placeholder="Chọn phòng ban nhận việc" />
+            <SelectValue placeholder={t('tasks.reassign.departmentPlaceholder')} />
           </SelectTrigger>
           <SelectContent>
             {DEPARTMENTS.map((dept) => (
@@ -132,7 +132,7 @@ export function ReassignDialog({
           onValueChange={(val) => setValue('assignee', val)}
         >
           <SelectTrigger className="h-10 text-xs">
-            <SelectValue placeholder="Chọn nhân sự tiếp nhận" />
+            <SelectValue placeholder={t('tasks.reassign.assigneePlaceholder')} />
           </SelectTrigger>
           <SelectContent>
             {assignees.map((member) => (
@@ -143,7 +143,7 @@ export function ReassignDialog({
           </SelectContent>
         </Select>
         {errors.assignee && (
-          <p className="text-destructive text-[11px] font-medium">Vui lòng chọn người nhận</p>
+          <p className="text-destructive text-[11px] font-medium">{t('tasks.reassign.assigneeError')}</p>
         )}
       </div>
 
@@ -160,7 +160,7 @@ export function ReassignDialog({
         />
         {errors.reason && (
           <p className="text-destructive text-[11px] font-medium">
-            Vui lòng nhập lý do tối thiểu 5 ký tự
+            {t('tasks.reassign.reasonError')}
           </p>
         )}
       </div>

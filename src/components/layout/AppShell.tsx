@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Outlet } from 'react-router'
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
@@ -7,6 +8,7 @@ import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { useIsMobile } from '@/hooks/use-mobile'
 
 export function AppShell() {
+  const { t } = useTranslation()
   const isMobile = useIsMobile()
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
   const isDrawerOpen = isMobile && mobileMenuOpen
@@ -21,7 +23,7 @@ export function AppShell() {
       {/* Mobile Drawer (Sheet) */}
       <Sheet open={isDrawerOpen} onOpenChange={setMobileMenuOpen}>
         <SheetContent side="left" className="p-0 w-[296px] bg-card border-r border-border">
-          <SheetTitle className="sr-only">Menu Điều Phối</SheetTitle>
+          <SheetTitle className="sr-only">{t('sidebar.menuTitle')}</SheetTitle>
           <Sidebar onNavigate={() => setMobileMenuOpen(false)} />
         </SheetContent>
       </Sheet>
@@ -35,7 +37,7 @@ export function AppShell() {
           <React.Suspense
             fallback={
               <div className="flex h-32 items-center justify-center text-xs text-muted-foreground">
-                Đang tải dữ liệu trang...
+                {t('common.loadingPage')}
               </div>
             }
           >

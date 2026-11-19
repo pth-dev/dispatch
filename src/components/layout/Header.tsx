@@ -54,7 +54,7 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
           size="icon"
           onClick={onOpenMobileMenu}
           className="size-10 min-h-[44px] min-w-[44px] p-0"
-          aria-label="Open navigation menu"
+          aria-label={t('header.openMenu')}
         >
           <Menu className="size-6 text-foreground" />
         </Button>
@@ -67,7 +67,7 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
       <div className="hidden lg:flex items-center gap-3">
         <div className="flex items-center gap-2 rounded-md bg-[#F3F4F8] px-3 py-1.5 text-xs text-muted-foreground">
           <Building2 className="size-3.5 text-primary" />
-          <span>Góc nhìn hiện tại:</span>
+          <span>{t('header.currentView')}</span>
           <span className="font-semibold text-foreground">
             {user.department}
           </span>
@@ -83,7 +83,7 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
               variant="ghost"
               size="sm"
               className="flex items-center gap-1.5 h-8 px-2 text-xs text-muted-foreground hover:text-foreground"
-              aria-label="Change language"
+              aria-label={t('header.changeLanguage')}
             >
               <Globe className="size-3.5" />
               <span className="uppercase font-semibold text-[11px]">{i18n.language}</span>
@@ -92,13 +92,13 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="text-xs">
             <DropdownMenuItem onClick={() => handleLanguageChange('vi')}>
-              Tiếng Việt (VI)
+              {t('language.vi')}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => handleLanguageChange('en')}>
-              English (EN)
+              {t('language.en')}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => handleLanguageChange('zh-CN')}>
-              中文 (ZH)
+              {t('language.zhCN')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -108,7 +108,7 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
           variant="ghost"
           size="icon"
           className="relative size-9 min-h-[44px] min-w-[44px] p-0 text-muted-foreground hover:text-foreground"
-          aria-label="Notifications"
+          aria-label={t('header.notifications')}
         >
           <Bell className="size-5" />
           <span className="absolute top-2.5 right-2.5 size-2 rounded-full bg-red-600 ring-2 ring-card" />
@@ -119,7 +119,7 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
           <DropdownMenuTrigger asChild>
             <button
               className="flex items-center gap-2.5 rounded-full p-0.5 outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-primary select-none cursor-pointer"
-              aria-label="User account menu"
+              aria-label={t('header.userMenu')}
             >
               <Avatar className="size-8 border border-border">
                 <AvatarFallback className="bg-primary-soft text-primary font-semibold text-xs">
@@ -129,7 +129,7 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
 
               <div className="hidden lg:flex flex-col text-left">
                 <span className="text-xs font-semibold text-primary leading-tight">
-                  Xin chào, {user.name}
+                  {t('header.greeting', { name: user.name })}
                 </span>
                 <span className="text-[11px] text-muted-foreground leading-tight">
                   {t(`role.${user.role}`)}
@@ -145,7 +145,7 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
               <div className="flex flex-col space-y-1">
                 <p className="text-xs font-semibold text-foreground leading-none">{user.name}</p>
                 <p className="text-[11px] leading-none text-muted-foreground">
-                  Mã: {user.code} • {user.department}
+                  {t('header.userCode', { code: user.code })} • {user.department}
                 </p>
               </div>
             </DropdownMenuLabel>
@@ -153,7 +153,7 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
 
             {/* Quick Switch Role (for dev testing) */}
             <DropdownMenuLabel className="text-[10px] text-muted-foreground uppercase tracking-wider">
-              Chuyển vai trò thử nghiệm
+              {t('header.devRoleSwitch')}
             </DropdownMenuLabel>
             {(['employee', 'approver', 'manager', 'admin'] as UserRole[]).map(
               (r) => (

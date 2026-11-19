@@ -16,7 +16,7 @@ export function LoginPage() {
 
         <div className="space-y-4">
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-foreground">Tài khoản</label>
+            <label className="text-xs font-semibold text-foreground">{t('login.account')}</label>
             <input
               type="text"
               defaultValue="nguyenan"
@@ -25,7 +25,7 @@ export function LoginPage() {
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-foreground">Mật khẩu</label>
+            <label className="text-xs font-semibold text-foreground">{t('login.password')}</label>
             <input
               type="password"
               defaultValue="password"
@@ -34,7 +34,7 @@ export function LoginPage() {
           </div>
 
           <Button className="w-full h-10" variant="default">
-            Đăng nhập
+            {t('login.submit')}
           </Button>
         </div>
       </div>

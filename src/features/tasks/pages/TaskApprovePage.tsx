@@ -86,7 +86,7 @@ export function TaskApprovePage() {
       <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-3">
         <AlertTriangle className="size-10 text-destructive" />
         <h2 className="text-lg font-semibold text-foreground">
-          {t('errors.notFoundTitle')}
+          {t('errors.status.404.title')}
         </h2>
         <Button asChild variant="outline">
           <Link to={APP_ROUTES.TASKS}>{t('tasks.detail.backToList')}</Link>
@@ -116,7 +116,7 @@ export function TaskApprovePage() {
 
   const handleConfirmReject = () => {
     if (!rejectReason.trim() || rejectReason.trim().length < 5) {
-      setReasonError('Vui lòng nhập lý do tối thiểu 5 ký tự')
+      setReasonError(t('tasks.validation.rejectReasonRequired'))
       return
     }
 
@@ -173,7 +173,7 @@ export function TaskApprovePage() {
               </h1>
             </div>
             <p className="text-xs text-muted-foreground truncate max-w-2xl">
-              Nhiệm vụ: {task.title}
+              {t('tasks.approve.taskLabel', { title: task.title })}
             </p>
             <div className="pt-1">
               <StatusText status={task.status} />
@@ -226,7 +226,10 @@ export function TaskApprovePage() {
                 {t('tasks.approve.checklistTitle')}
               </h3>
               <span className="text-xs text-muted-foreground">
-                Đã kiểm tra: {checkedCount}/{task.checklist?.length || 0}
+                {t('tasks.approve.checkedCount', {
+                  done: checkedCount,
+                  total: task.checklist?.length || 0,
+                })}
               </span>
             </div>
 
@@ -247,7 +250,7 @@ export function TaskApprovePage() {
                     <div className="text-xs space-y-0.5">
                       <p className="font-medium text-foreground">{item.text}</p>
                       <span className="text-[11px] text-muted-foreground">
-                        Bắt buộc kiểm tra trước khi phê duyệt nghiệm thu
+                        {t('tasks.approve.checklistRequired')}
                       </span>
                     </div>
                   </div>
@@ -275,7 +278,7 @@ export function TaskApprovePage() {
         <div className="space-y-4">
           <div className="bg-card rounded-xl border border-border p-4 space-y-3 text-xs">
             <h3 className="text-sm font-semibold text-foreground">
-              Thông tin hồ sơ nghiệm thu
+              {t('tasks.approve.infoTitle')}
             </h3>
 
             <div className="space-y-2.5 divide-y divide-border/60">
@@ -300,7 +303,7 @@ export function TaskApprovePage() {
               <div className="flex items-center justify-between pt-2">
                 <span className="flex items-center gap-1.5 text-muted-foreground">
                   <Calendar className="size-3.5" />
-                  Hạn hoàn thành:
+                  {t('tasks.approve.dueLabel')}:
                 </span>
                 <span className="font-medium text-foreground">
                   {formatDateVN(task.dueDate)}
@@ -310,7 +313,7 @@ export function TaskApprovePage() {
               <div className="flex items-center justify-between pt-2">
                 <span className="flex items-center gap-1.5 text-muted-foreground">
                   <Calendar className="size-3.5" />
-                  Ngày nộp nghiệm thu:
+                  {t('tasks.approve.submittedAt')}:
                 </span>
                 <span className="font-medium text-primary">15/11/2026</span>
               </div>
@@ -320,7 +323,7 @@ export function TaskApprovePage() {
           {/* Attachments Card */}
           <div className="bg-card rounded-xl border border-border p-4 space-y-2 text-xs">
             <h3 className="text-sm font-semibold text-foreground">
-              Tệp tài liệu nghiệm thu
+              {t('tasks.approve.attachmentsTitle')}
             </h3>
             {task.attachments && task.attachments.length > 0 ? (
               <div className="space-y-1.5">
@@ -341,7 +344,7 @@ export function TaskApprovePage() {
               </div>
             ) : (
               <p className="text-muted-foreground text-xs italic">
-                Chưa có tài liệu đính kèm
+                {t('tasks.approve.noAttachments')}
               </p>
             )}
           </div>

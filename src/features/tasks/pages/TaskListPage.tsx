@@ -85,7 +85,7 @@ export function TaskListPage() {
         <span>•</span>
         <span>{task.assignee}</span>
         <span>•</span>
-        <span>Hạn {formatDateVN(task.dueDate)}</span>
+        <span>{t('tasks.mobile.dueDate', { date: formatDateVN(task.dueDate) })}</span>
       </div>
     </div>
   )

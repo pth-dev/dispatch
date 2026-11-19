@@ -116,7 +116,7 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
         <div className="shrink-0 border-t border-border p-3 text-xs text-muted-foreground">
           <div className="flex items-center justify-between">
             <span className="text-[11px]">{t('app.version')}</span>
-            <span className="inline-block size-2 rounded-full bg-emerald-500" title="Connected" />
+            <span className="inline-block size-2 rounded-full bg-emerald-500" title={t('sidebar.connected')} />
           </div>
         </div>
       </aside>

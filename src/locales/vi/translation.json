@@ -46,6 +46,25 @@
     "rejected": "Từ chối",
     "urgent": "Khẩn cấp"
   },
+  "language": {
+    "vi": "Tiếng Việt (VI)",
+    "en": "English (EN)",
+    "zhCN": "中文 (ZH)"
+  },
+  "header": {
+    "currentView": "Góc nhìn hiện tại:",
+    "greeting": "Xin chào, {{name}}",
+    "userCode": "Mã: {{code}}",
+    "openMenu": "Mở menu điều hướng",
+    "changeLanguage": "Đổi ngôn ngữ",
+    "notifications": "Thông báo",
+    "userMenu": "Menu tài khoản",
+    "devRoleSwitch": "Chuyển vai trò thử nghiệm"
+  },
+  "sidebar": {
+    "menuTitle": "Menu Điều Phối",
+    "connected": "Đã kết nối"
+  },
   "common": {
     "search": "Tìm kiếm",
     "filter": "Bộ lọc",
@@ -62,6 +81,7 @@
     "home": "Về trang chính",
     "all": "Tất cả",
     "loading": "Đang tải dữ liệu...",
+    "loadingPage": "Đang tải dữ liệu trang...",
     "empty": "Không có dữ liệu",
     "error": "Đã có lỗi xảy ra",
     "actions": "Thao tác",
@@ -70,9 +90,17 @@
     "assignee": "Người xử lý",
     "dueDate": "Hạn hoàn thành",
     "createdAt": "Ngày tạo",
+    "close": "Đóng",
+    "copy": "Sao chép",
+    "copied": "Đã sao chép",
     "pagination": {
       "display": "Hiển thị {{size}} từ {{from}} đến {{to}} của {{total}} kết quả",
-      "page": "Trang {{page}}/{{totalPages}}"
+      "page": "Trang {{page}}/{{totalPages}}",
+      "perPage": "/ trang",
+      "firstPage": "Trang đầu",
+      "previousPage": "Trang trước",
+      "nextPage": "Trang sau",
+      "lastPage": "Trang cuối"
     }
   },
   "tasks": {
@@ -81,14 +109,18 @@
     "scope": {
       "mine": "Giao cho tôi",
       "created": "Tôi giao",
-      "all": "Tất cả"
+      "all": "Tất cả",
+      "ariaLabel": "Phạm vi nhiệm vụ"
     },
     "filter": {
       "fromDate": "Từ ngày",
       "toDate": "Đến ngày",
       "searchPlaceholder": "Mã / Tên nhiệm vụ (Enter)",
       "activeCount": "{{count}} bộ lọc đang bật",
-      "clearAll": "Xoá hết"
+      "clearAll": "Xoá hết",
+      "submitSearch": "Tìm kiếm nhiệm vụ",
+      "dateRangeErrorTitle": "Khoảng ngày không hợp lệ",
+      "dateRangeErrorDescription": "Từ ngày không được lớn hơn Đến ngày."
     },
     "columns": {
       "stt": "STT",
@@ -99,6 +131,12 @@
       "dueDate": "Hạn",
       "status": "Trạng thái",
       "actions": "Thao tác"
+    },
+    "actions": {
+      "view": "Xem nhiệm vụ {{id}}"
+    },
+    "mobile": {
+      "dueDate": "Hạn {{date}}"
     },
     "detail": {
       "title": "Chi tiết nhiệm vụ",
@@ -116,7 +154,14 @@
       "progressAndSla": "Tiến độ và SLA",
       "creator": "Người giao việc",
       "attachments": "Tệp đính kèm",
-      "noAttachments": "Chưa có tệp đính kèm"
+      "noAttachments": "Chưa có tệp đính kèm",
+      "noDescription": "Chưa có mô tả chi tiết cho nhiệm vụ này.",
+      "checklistTitle": "Danh mục công việc cần hoàn thành ({{done}}/{{total}})",
+      "progressLabel": "Tiến độ thực hiện",
+      "timelineBy": "Thực hiện bởi: {{actor}}",
+      "noTimeline": "Chưa có lịch sử xử lý.",
+      "commentPlaceholder": "Nhập nội dung trao đổi hoặc ý kiến thảo luận...",
+      "sendComment": "Gửi bình luận"
     },
     "approve": {
       "title": "Phê duyệt nghiệm thu",
@@ -132,7 +177,16 @@
         "rejectTitle": "Từ chối nghiệm thu",
         "rejectDesc": "Vui lòng nhập lý do từ chối nghiệm thu:",
         "reasonPlaceholder": "Nhập lý do tối thiểu 5 ký tự..."
-      }
+      },
+      "taskLabel": "Nhiệm vụ: {{title}}",
+      "checkedCount": "Đã kiểm tra: {{done}}/{{total}}",
+      "checklistRequired": "Bắt buộc kiểm tra trước khi phê duyệt nghiệm thu",
+      "infoTitle": "Thông tin hồ sơ nghiệm thu",
+      "dueLabel": "Hạn hoàn thành",
+      "submittedAt": "Ngày nộp nghiệm thu",
+      "attachmentsTitle": "Tệp tài liệu nghiệm thu",
+      "noAttachments": "Chưa có tài liệu đính kèm",
+      "reasonError": "Vui lòng nhập lý do tối thiểu 5 ký tự"
     },
     "reassign": {
       "title": "Giao lại nhiệm vụ",
@@ -141,7 +195,11 @@
       "targetAssignee": "Người nhận việc",
       "reason": "Lý do giao lại",
       "reasonPlaceholder": "Nhập lý do giao lại nhiệm vụ...",
-      "confirm": "Xác nhận giao lại"
+      "confirm": "Xác nhận giao lại",
+      "departmentPlaceholder": "Chọn phòng ban nhận việc",
+      "assigneePlaceholder": "Chọn nhân sự tiếp nhận",
+      "assigneeError": "Vui lòng chọn người nhận",
+      "reasonError": "Vui lòng nhập lý do tối thiểu 5 ký tự"
     },
     "createForm": {
       "title": "Thêm nhiệm vụ mới",
@@ -153,20 +211,154 @@
       "priorityNormal": "Bình thường",
       "priorityUrgent": "Khẩn cấp",
       "saveDraft": "Lưu nháp",
-      "submit": "Giao việc"
+      "submit": "Giao việc",
+      "infoSection": "Thông tin nhiệm vụ",
+      "assignmentSection": "Phân công & Thời hạn",
+      "departmentPlaceholder": "Chọn phòng ban",
+      "assigneePlaceholder": "Chọn nhân sự thực hiện",
+      "unsavedTitle": "Thay đổi chưa lưu",
+      "unsavedDescription": "Bạn có thay đổi chưa lưu, có chắc muốn thoát?",
+      "stay": "Ở lại trang",
+      "discard": "Thoát không lưu"
     },
     "empty": {
       "mine": "Bạn chưa được giao nhiệm vụ nào",
       "created": "Bạn chưa giao nhiệm vụ nào",
       "all": "Không tìm thấy nhiệm vụ phù hợp với bộ lọc"
+    },
+    "validation": {
+      "titleRequired": "Vui lòng nhập tên nhiệm vụ",
+      "departmentRequired": "Vui lòng chọn phòng ban",
+      "assigneeRequired": "Vui lòng chọn người xử lý",
+      "dueDateRequired": "Vui lòng chọn hạn hoàn thành",
+      "reassignReasonRequired": "Vui lòng nhập lý do tối thiểu 5 ký tự",
+      "rejectReasonRequired": "Vui lòng nhập lý do tối thiểu 5 ký tự",
+      "checklistRequired": "Vui lòng kiểm tra đủ danh mục nghiệm thu"
     }
   },
   "errors": {
-    "notFoundTitle": "Không tìm thấy trang này",
-    "forbiddenTitle": "Bạn chưa có quyền xem trang này",
-    "unauthorizedTitle": "Phiên đăng nhập đã hết hạn",
-    "rateLimitTitle": "Bạn thao tác quá nhanh hoặc kết nối quá chậm",
-    "serverErrorTitle": "Hệ thống đang gặp sự cố",
-    "networkErrorTitle": "Không thể kết nối"
+    "status": {
+      "404": {
+        "caption": "LỖI 404 • KHÔNG TÌM THẤY",
+        "title": "Không tìm thấy trang này",
+        "description": "Địa chỉ bạn yêu cầu không tồn tại, đã bị đổi tên hoặc tạm thời không khả dụng."
+      },
+      "403": {
+        "caption": "LỖI 403 • KHÔNG CÓ QUYỀN",
+        "title": "Bạn chưa có quyền xem trang này",
+        "description": "Tài khoản hiện tại không có quyền truy cập vào tài nguyên này. Vui lòng liên hệ Quản trị viên nếu bạn cần cấp quyền."
+      },
+      "401": {
+        "caption": "LỖI 401 • HẾT PHIÊN ĐĂNG NHẬP",
+        "title": "Phiên đăng nhập đã hết hạn",
+        "description": "Để đảm bảo an toàn thông tin, phiên làm việc của bạn đã kết thúc. Vui lòng đăng nhập lại."
+      },
+      "408": {
+        "caption": "LỖI 408 • QUÁ THỜI GIAN CHỜ",
+        "title": "Bạn thao tác quá nhanh hoặc kết nối quá chậm",
+        "description": "Yêu cầu mất nhiều thời gian hơn dự kiến để hoàn tất. Hãy kiểm tra lại đường truyền và thử lại."
+      },
+      "429": {
+        "caption": "LỖI 429 • QUÁ NHIỀU YÊU CẦU",
+        "title": "Bạn thao tác quá nhanh hoặc kết nối quá chậm",
+        "description": "Hệ thống đang nhận được quá nhiều yêu cầu trong thời gian ngắn. Vui lòng đợi ít giây rồi thử lại."
+      },
+      "500": {
+        "caption": "LỖI 500 • SỰ CỐ HỆ THỐNG",
+        "title": "Hệ thống đang gặp sự cố",
+        "description": "Đây là lỗi từ phía hệ thống, không phải do bạn. Hãy thử tải lại sau ít phút. Nếu lỗi vẫn còn, gửi mã tham chiếu bên dưới cho bộ phận hỗ trợ."
+      },
+      "502": {
+        "caption": "LỖI 502 • CỔNG KẾT NỐI KHÔNG HỢP LỆ",
+        "title": "Hệ thống đang gặp sự cố",
+        "description": "Máy chủ trung gian không nhận được phản hồi hợp lệ. Hãy thử tải lại sau ít phút."
+      },
+      "503": {
+        "caption": "LỖI 503 • BẢO TRÌ HỆ THỐNG",
+        "title": "Hệ thống đang bảo trì",
+        "description": "Hệ thống đang được nâng cấp định kỳ nhằm cải thiện hiệu năng. Chúng tôi sẽ trở lại trong thời gian sớm nhất."
+      },
+      "504": {
+        "caption": "LỖI 504 • PHẢN HỒI QUÁ CHẬM",
+        "title": "Phản hồi quá chậm",
+        "description": "Máy chủ xử lý mất quá nhiều thời gian để hoàn thành tác vụ. Hãy tải lại trang hoặc thử lại sau."
+      },
+      "network": {
+        "caption": "MẤT KẾT NỐI MẠNG",
+        "title": "Không thể kết nối",
+        "description": "Không thể thiết lập liên lạc với máy chủ. Vui lòng kiểm tra lại đường truyền Wi-Fi hoặc mạng nội bộ của bạn."
+      },
+      "unknown": {
+        "caption": "LỖI KHÔNG XÁC ĐỊNH",
+        "title": "Không thể tải dữ liệu",
+        "description": "Đã có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại."
+      }
+    },
+    "support": "Hỗ trợ kỹ thuật",
+    "loginAgain": "Đăng nhập lại",
+    "reloadPage": "Tải lại trang",
+    "goHome": "Về trang chính",
+    "referenceCode": "Mã tham chiếu: {{code}}",
+    "copyReference": "Sao chép mã lỗi",
+    "technicalDetails": "Chi tiết kỹ thuật (DEV only):",
+    "suggestions": "Có thể bạn đang tìm:",
+    "footer": "© 2026 Điều Phối • Phiên bản V16.8"
+  },
+  "login": {
+    "account": "Tài khoản",
+    "password": "Mật khẩu",
+    "submit": "Đăng nhập"
+  },
+  "pages": {
+    "dashboard": {
+      "description": "Bảng điều khiển tổng quan (sẽ triển khai trong Phase 3)."
+    },
+    "lessons": {
+      "description": "Bài học kinh nghiệm và quy định (sẽ triển khai trong Phase 4)."
+    },
+    "messages": {
+      "description": "Bảng tin nhắn nội bộ (sẽ triển khai trong Phase 4)."
+    },
+    "todo": {
+      "description": "Việc cần làm hôm nay (sẽ triển khai trong Phase 4)."
+    },
+    "sla": {
+      "title": "Chi tiết SLA",
+      "description": "Báo cáo thống kê SLA nhân sự (sẽ triển khai trong Phase 3)."
+    },
+    "profile": {
+      "description": "Thông tin tài khoản và tùy chọn cá nhân."
+    },
+    "adminUsers": {
+      "description": "Danh sách người dùng và trạng thái (sẽ triển khai trong Phase 5)."
+    },
+    "adminRoles": {
+      "description": "Ma trận phân quyền hệ thống (sẽ triển khai trong Phase 5)."
+    },
+    "adminDepartments": {
+      "description": "Cây cơ cấu phòng ban và ban công nghệ (sẽ triển khai trong Phase 5)."
+    }
+  },
+  "devPanel": {
+    "ariaLabel": "Bảng công cụ lập trình viên (DEV Panel)",
+    "open": "Bật công cụ mô phỏng DEV",
+    "close": "Đóng bảng DEV",
+    "title": "DEV Simulation Tools",
+    "roleLabel": "Vai trò người dùng:",
+    "densityLabel": "Mật độ hiển thị bảng (Table Density):",
+    "compact": "Compact (44px)",
+    "comfortable": "Comfortable (50px)",
+    "scenarioLabel": "Kịch bản Mock MSW / API:",
+    "devOnlyNote": "Chỉ hiển thị trong môi trường DEV (import.meta.env.DEV)",
+    "scenarios": {
+      "normal": "Bình thường (Normal 200ms)",
+      "slow": "Chậm (Slow 1500ms)",
+      "empty": "Dữ liệu rỗng (Empty)",
+      "401": "Lỗi 401 Hết hạn phiên",
+      "403": "Lỗi 403 Cấm truy cập",
+      "404": "Lỗi 404 Không tìm thấy",
+      "500": "Lỗi 500 Máy chủ",
+      "offline": "Mất kết nối mạng"
+    }
   }
 }

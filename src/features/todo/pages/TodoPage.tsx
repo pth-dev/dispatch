@@ -10,7 +10,7 @@ export function TodoPage() {
       </h1>
       <div className="rounded-xl border border-border bg-card p-6">
         <p className="text-sm text-muted-foreground">
-          Việc cần làm hôm nay (sẽ triển khai trong Phase 4).
+          {t('pages.todo.description')}
         </p>
       </div>
     </div>

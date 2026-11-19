@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { House } from 'lucide-react'
 import { cn } from '@/utils/cn'
 
@@ -8,6 +9,8 @@ interface LogoProps {
 }
 
 export function Logo({ size = 36, className, showText = true }: LogoProps) {
+  const { t } = useTranslation()
+
   return (
     <div className={cn('flex items-center gap-3 select-none', className)}>
       <div
@@ -21,10 +24,10 @@ export function Logo({ size = 36, className, showText = true }: LogoProps) {
       {showText && (
         <div className="flex flex-col">
           <span className="text-base font-semibold text-foreground tracking-tight leading-tight">
-            Điều Phối
+            {t('app.name')}
           </span>
           <span className="text-[11px] font-medium text-muted-foreground leading-tight">
-            V16.8.0
+            {t('app.version')}
           </span>
         </div>
       )}

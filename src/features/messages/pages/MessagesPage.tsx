@@ -10,7 +10,7 @@ export function MessagesPage() {
       </h1>
       <div className="rounded-xl border border-border bg-card p-6">
         <p className="text-sm text-muted-foreground">
-          Bảng tin nhắn nội bộ (sẽ triển khai trong Phase 4).
+          {t('pages.messages.description')}
         </p>
       </div>
     </div>

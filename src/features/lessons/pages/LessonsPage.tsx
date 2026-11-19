@@ -10,7 +10,7 @@ export function LessonsPage() {
       </h1>
       <div className="rounded-xl border border-border bg-card p-6">
         <p className="text-sm text-muted-foreground">
-          Bài học kinh nghiệm và quy định (sẽ triển khai trong Phase 4).
+          {t('pages.lessons.description')}
         </p>
       </div>
     </div>

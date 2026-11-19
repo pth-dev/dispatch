@@ -18,6 +18,15 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { DEPARTMENTS } from '@/mocks/data/departments'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import type { TaskStatus } from '@/schemas/task'
 import { cn } from '@/utils'
 
@@ -65,11 +74,12 @@ export function FilterBar({
   const [department, setDepartment] = React.useState(initialValues.department || 'all')
   const [status, setStatus] = React.useState(initialValues.status || 'all')
   const [mobileSheetOpen, setMobileSheetOpen] = React.useState(false)
+  const [dateErrorOpen, setDateErrorOpen] = React.useState(false)
 
   const handleApply = () => {
     // Validate fromDate <= toDate if both provided
     if (fromDate && toDate && fromDate > toDate) {
-      alert('Từ ngày không được lớn hơn Đến ngày')
+      setDateErrorOpen(true)
       return
     }
 
@@ -215,7 +225,7 @@ export function FilterBar({
             type="button"
             onClick={handleApply}
             className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary"
-            aria-label="Submit search"
+            aria-label={t('tasks.filter.submitSearch')}
           >
             <Search className="size-4" />
           </button>
@@ -347,6 +357,22 @@ export function FilterBar({
           </button>
         </div>
       )}
+
+      <AlertDialog open={dateErrorOpen} onOpenChange={setDateErrorOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('tasks.filter.dateRangeErrorTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('tasks.filter.dateRangeErrorDescription')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setDateErrorOpen(false)}>
+              {t('common.close')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

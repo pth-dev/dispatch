@@ -23,15 +23,15 @@ export function NotFoundPage() {
         <div className="w-full max-w-lg space-y-6 text-left">
           <div className="flex items-center gap-2 text-xs font-semibold tracking-wider text-primary uppercase">
             <SearchX className="size-4" />
-            <span>Lỗi 404 • Không tìm thấy</span>
+            <span>{t('errors.status.404.caption')}</span>
           </div>
 
           <h1 className="text-3xl font-semibold text-foreground">
-            {t('errors.notFoundTitle')}
+            {t('errors.status.404.title')}
           </h1>
 
           <p className="text-sm text-muted-foreground">
-            Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển sang địa chỉ khác.
+            {t('errors.status.404.description')}
           </p>
 
           <div className="flex flex-wrap items-center gap-3 pt-2">

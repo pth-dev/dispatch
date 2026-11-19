@@ -26,7 +26,7 @@ export function TaskScopeTabs({
   return (
     <div
       role="tablist"
-      aria-label="Phạm vi nhiệm vụ"
+      aria-label={t('tasks.scope.ariaLabel')}
       className={cn('flex items-center gap-6 border-b border-border', className)}
     >
       {tabs.map((tab) => {

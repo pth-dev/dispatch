@@ -1,4 +1,5 @@
-import { Link, useNavigate } from 'react-router'
+import { useState } from 'react'
+import { Link, useBlocker, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useForm, useWatch, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -6,6 +7,16 @@ import { ArrowLeft, Send, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import {
   Select,
   SelectContent,
@@ -50,7 +61,14 @@ export function TaskCreatePage() {
   const selectedDepartment = DEPARTMENTS.find((d) => d.id === selectedDepartmentId)
   const assignees = selectedDepartment?.members || []
 
+  const [allowLeave, setAllowLeave] = useState(false)
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      isDirty && !allowLeave && currentLocation.pathname !== nextLocation.pathname,
+  )
+
   const onSubmit: SubmitHandler<TaskCreateFormValues> = (data) => {
+    setAllowLeave(true)
     createMutation.mutate(data, {
       onSuccess: (newTask) => {
         navigate(APP_ROUTES.TASK_DETAIL(newTask.id))
@@ -59,10 +77,6 @@ export function TaskCreatePage() {
   }
 
   const handleCancel = () => {
-    if (isDirty) {
-      const confirmLeave = window.confirm('Bạn có thay đổi chưa lưu, có chắc muốn thoát?')
-      if (!confirmLeave) return
-    }
     navigate(APP_ROUTES.TASKS)
   }
 
@@ -98,7 +112,7 @@ export function TaskCreatePage() {
           <div className="lg:col-span-2 space-y-4">
             <div className="bg-card rounded-xl border border-border p-5 space-y-4 shadow-none">
               <h2 className="text-sm font-semibold text-foreground border-b border-border pb-2.5">
-                Thông tin nhiệm vụ
+                {t('tasks.createForm.infoSection')}
               </h2>
 
               {/* Task Title */}
@@ -114,7 +128,7 @@ export function TaskCreatePage() {
                 {errors.title && (
                   <p className="flex items-center gap-1 text-[11px] text-destructive font-medium">
                     <AlertCircle className="size-3" />
-                    <span>Vui lòng nhập tên nhiệm vụ</span>
+                    <span>{t('tasks.validation.titleRequired')}</span>
                   </p>
                 )}
               </div>
@@ -138,7 +152,7 @@ export function TaskCreatePage() {
           <div className="space-y-4">
             <div className="bg-card rounded-xl border border-border p-5 space-y-4 shadow-none text-xs">
               <h2 className="text-sm font-semibold text-foreground border-b border-border pb-2.5">
-                Phân công & Thời hạn
+                {t('tasks.createForm.assignmentSection')}
               </h2>
 
               {/* Department */}
@@ -154,7 +168,7 @@ export function TaskCreatePage() {
                   }}
                 >
                   <SelectTrigger className="h-10 text-xs">
-                    <SelectValue placeholder="Chọn phòng ban" />
+                    <SelectValue placeholder={t('tasks.createForm.departmentPlaceholder')} />
                   </SelectTrigger>
                   <SelectContent>
                     {DEPARTMENTS.map((dept) => (
@@ -176,7 +190,7 @@ export function TaskCreatePage() {
                   onValueChange={(val) => setValue('assignee', val)}
                 >
                   <SelectTrigger className="h-10 text-xs">
-                    <SelectValue placeholder="Chọn nhân sự thực hiện" />
+                    <SelectValue placeholder={t('tasks.createForm.assigneePlaceholder')} />
                   </SelectTrigger>
                   <SelectContent>
                     {assignees.map((member) => (
@@ -189,7 +203,7 @@ export function TaskCreatePage() {
                 {errors.assignee && (
                   <p className="flex items-center gap-1 text-[11px] text-destructive font-medium">
                     <AlertCircle className="size-3" />
-                    <span>Vui lòng chọn người xử lý</span>
+                    <span>{t('tasks.validation.assigneeRequired')}</span>
                   </p>
                 )}
               </div>
@@ -207,7 +221,7 @@ export function TaskCreatePage() {
                 {errors.dueDate && (
                   <p className="flex items-center gap-1 text-[11px] text-destructive font-medium">
                     <AlertCircle className="size-3" />
-                    <span>Vui lòng chọn hạn hoàn thành</span>
+                    <span>{t('tasks.validation.dueDateRequired')}</span>
                   </p>
                 )}
               </div>
@@ -286,6 +300,32 @@ export function TaskCreatePage() {
           </Button>
         </div>
       </form>
+
+      <AlertDialog
+        open={blocker.state === 'blocked'}
+        onOpenChange={(open) => {
+          if (!open && blocker.state === 'blocked') blocker.reset()
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('tasks.createForm.unsavedTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('tasks.createForm.unsavedDescription')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => blocker.state === 'blocked' && blocker.reset()}>
+              {t('tasks.createForm.stay')}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => blocker.state === 'blocked' && blocker.proceed()}
+            >
+              {t('tasks.createForm.discard')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

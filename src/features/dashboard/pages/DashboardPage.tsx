@@ -10,7 +10,7 @@ export function DashboardPage() {
       </h1>
       <div className="rounded-xl border border-border bg-card p-6">
         <p className="text-sm text-muted-foreground">
-          Bảng điều khiển tổng quan (sẽ triển khai trong Phase 3).
+          {t('pages.dashboard.description')}
         </p>
       </div>
     </div>

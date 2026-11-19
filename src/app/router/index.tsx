@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useTranslation } from 'react-i18next'
 import { createBrowserRouter, Navigate } from 'react-router'
 import { APP_ROUTES } from '@/constants/app-routes'
 import { AppShell, RootRouteErrorBoundary, ErrorState } from '@/components/layout'
@@ -19,17 +20,21 @@ const AdminUsersPage = React.lazy(() => import('@/features/admin/pages/AdminUser
 const AdminRolesPage = React.lazy(() => import('@/features/admin/pages/AdminRolesPage'))
 const AdminDepartmentsPage = React.lazy(() => import('@/features/admin/pages/AdminDepartmentsPage'))
 
+function RouteFallback() {
+  const { t } = useTranslation()
+
+  return (
+    <div className="flex min-h-dvh items-center justify-center text-xs text-muted-foreground">
+      {t('common.loading')}
+    </div>
+  )
+}
+
 export const router = createBrowserRouter([
   {
     path: APP_ROUTES.LOGIN,
     element: (
-      <React.Suspense
-        fallback={
-          <div className="flex min-h-dvh items-center justify-center text-xs text-muted-foreground">
-            Đang tải...
-          </div>
-        }
-      >
+      <React.Suspense fallback={<RouteFallback />}>
         <LoginPage />
       </React.Suspense>
     ),
