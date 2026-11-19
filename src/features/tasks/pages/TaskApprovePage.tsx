@@ -161,7 +161,7 @@ export function TaskApprovePage() {
       </div>
 
       {/* ── Stacked Header ── */}
-      <div className="bg-card rounded-xl border border-border p-4 lg:p-5 space-y-3 shadow-none">
+      <div className="bg-card rounded-xl border border-border p-4 lg:p-5 space-y-3">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <div className="space-y-1">
             <div className="flex items-center gap-2.5 flex-wrap">
@@ -185,17 +185,17 @@ export function TaskApprovePage() {
             <Button
               variant="outline"
               size="sm"
-              className="h-9 gap-1.5 text-xs text-amber-700 border-amber-300 hover:bg-amber-50"
+              className="h-11 lg:h-9 gap-1.5 text-xs text-warning border-warning/40 hover:bg-warning/5"
               onClick={() => handleOpenRejectDialog('request_revision')}
             >
-              <FileEdit className="size-3.5 text-amber-600" />
+              <FileEdit className="size-3.5 text-warning" />
               <span>{t('tasks.approve.requestChanges')}</span>
             </Button>
 
             <Button
               variant="outline"
               size="sm"
-              className="h-9 gap-1.5 text-xs text-destructive border-destructive/30 hover:bg-destructive/10"
+              className="h-11 lg:h-9 gap-1.5 text-xs text-destructive border-destructive/30 hover:bg-destructive/10"
               onClick={() => handleOpenRejectDialog('reject')}
             >
               <XCircle className="size-3.5 text-destructive" />
@@ -205,7 +205,7 @@ export function TaskApprovePage() {
             <Button
               size="sm"
               disabled={!allChecked}
-              className="h-9 gap-1.5 text-xs bg-primary hover:bg-primary-hover text-white disabled:opacity-50"
+              className="h-11 lg:h-9 gap-1.5 text-xs bg-primary hover:bg-primary-hover text-primary-foreground disabled:opacity-50"
               onClick={() => setConfirmApproveOpen(true)}
             >
               <CheckCircle2 className="size-3.5" />
@@ -352,10 +352,10 @@ export function TaskApprovePage() {
       </div>
 
       {/* ── Mobile Sticky Bottom Action Bar (< lg) ── */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border p-3 shadow-lg space-y-2">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border p-3 space-y-2">
         <Button
           disabled={!allChecked}
-          className="w-full h-11 text-xs bg-primary hover:bg-primary-hover text-white disabled:opacity-50"
+          className="w-full h-11 text-xs bg-primary hover:bg-primary-hover text-primary-foreground disabled:opacity-50"
           onClick={() => setConfirmApproveOpen(true)}
         >
           <CheckCircle2 className="size-4 mr-1.5" />
@@ -364,14 +364,14 @@ export function TaskApprovePage() {
         <div className="grid grid-cols-2 gap-2">
           <Button
             variant="outline"
-            className="h-10 text-xs text-amber-700 border-amber-300"
+            className="h-11 lg:h-10 text-xs text-warning border-warning/40"
             onClick={() => handleOpenRejectDialog('request_revision')}
           >
             {t('tasks.approve.requestChanges')}
           </Button>
           <Button
             variant="outline"
-            className="h-10 text-xs text-destructive border-destructive/30"
+            className="h-11 lg:h-10 text-xs text-destructive border-destructive/30"
             onClick={() => handleOpenRejectDialog('reject')}
           >
             {t('tasks.approve.reject')}
@@ -400,7 +400,7 @@ export function TaskApprovePage() {
             </Button>
             <Button
               size="sm"
-              className="bg-primary hover:bg-primary-hover text-white"
+              className="bg-primary hover:bg-primary-hover text-primary-foreground"
               onClick={handleConfirmApprove}
               disabled={approveMutation.isPending}
             >

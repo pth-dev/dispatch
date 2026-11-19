@@ -88,5 +88,20 @@ Brief §8 item 17 states:
 - Status colors use the `--color-status-*` tokens through utilities (`text-status-*`, `bg-status-*`); the previous hex values and inline `style` attributes are gone.
 - Added semantic tokens `--color-brand` (#E53935, logo mark), `--color-success` (#15803D, positive confirmation) and `--color-warning` (#B45309, warning error tone) per the approved Stage 2 decisions. `ErrorState`/`InlineError` tones map to `text-primary`, `text-warning` and `text-destructive`.
 
+---
+
+## 8. Style Compliance (Stage 2)
+
+Brief §3: "flat and calm. Light gray page, white cards with 1px border, NO box-shadows, NO gradients, NO tinted card backgrounds, one blue accent"; §3.3: "Control height 40px desktop, 44px mobile"; §3.4: compact table density uses a 40px header.
+
+- **Dark variants:** all `dark:` utilities were removed from `src/components/ui/*` (dark mode is deferred, brief §10).
+- **Shadows:** no `shadow-*` utility remains except the sidebar active indicator (an inset token shadow: `shadow-[inset_3px_0_0_var(--color-primary)]`). Floating button, dev panel, logo, mobile action bars, dialogs, sheets, popovers, dropdowns, selects and inputs no longer use elevation.
+- **Raw colors:** `bg-[#F3F4F8]` → `bg-secondary`, `bg-[#E8F0FE]` → `bg-primary-soft`, `bg-[#1F2937]` → `bg-foreground`, `bg-red-600` → `bg-destructive` (notification) / `bg-brand` (brand mark), `bg-emerald-500` → `bg-success`, `amber-*` → `warning` tokens, `bg-black/50` → `bg-overlay`, `text-white` on primary/destructive/brand → `text-primary-foreground` / `text-destructive-foreground` / `text-brand-foreground`. `--color-brand-foreground` (#FFFFFF) was added as the pair for the brand token.
+- **Inline styles:** only the four layout-computed cases remain — `Logo` size (`Logo.tsx`), table column width (`data-table.tsx`), progress bar width (`TaskDetailPage.tsx`) and `scrollbarGutter` (`Sidebar.tsx`). The sidebar's `style={{ fontWeight: 500 }}` became the `font-medium` class.
+- **Controls:** form controls and primary buttons use `h-11 lg:h-10` (44px mobile / 40px desktop); dense table row actions, pagination, tabs and dev-panel chrome keep their compact sizes. `Button` defaults are now `h-11 lg:h-10` (`sm`: `h-11 lg:h-8`), and `Input`/`Select` defaults follow the same pair.
+- **Table header:** already 40px — `table.tsx` sets `h-10` on `TableHead`, matched by the compact density spec, so no change was needed.
+- **Padding (verified, not redone):** the shell owns page padding — `AppShell.tsx` renders `<main className="... px-4 py-4 lg:px-6 short:py-3">`; no route page repeats outer padding, only internal card padding (`p-4`/`p-5`). Skeleton placeholders in the detail/approve pages still use `p-6` internally; left unchanged because it is card-level spacing.
+
+
 
 

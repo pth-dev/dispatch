@@ -6,9 +6,9 @@ export function LoginPage() {
 
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center bg-background p-4">
-      <div className="w-full max-w-sm rounded-xl border border-border bg-card p-6 space-y-6 shadow-none">
+      <div className="w-full max-w-sm rounded-xl border border-border bg-card p-6 space-y-6">
         <div className="flex items-center gap-3 justify-center">
-          <div className="flex size-9 items-center justify-center rounded-full bg-red-600 text-white font-bold text-xs">
+          <div className="flex size-9 items-center justify-center rounded-full bg-brand text-brand-foreground font-bold text-xs">
             ST
           </div>
           <h1 className="text-xl font-semibold text-foreground">{t('app.name')}</h1>
@@ -20,7 +20,7 @@ export function LoginPage() {
             <input
               type="text"
               defaultValue="nguyenan"
-              className="w-full h-10 rounded-md border border-border bg-card px-3 text-sm text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              className="w-full h-11 lg:h-10 rounded-md border border-border bg-card px-3 text-sm text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </div>
 
@@ -29,11 +29,11 @@ export function LoginPage() {
             <input
               type="password"
               defaultValue="password"
-              className="w-full h-10 rounded-md border border-border bg-card px-3 text-sm text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              className="w-full h-11 lg:h-10 rounded-md border border-border bg-card px-3 text-sm text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </div>
 
-          <Button className="w-full h-10" variant="default">
+          <Button className="w-full h-11 lg:h-10" variant="default">
             {t('login.submit')}
           </Button>
         </div>

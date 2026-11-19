@@ -49,6 +49,7 @@
 
   /* ── Semantic accents (Stage 2, approved Q4) ── */
   --color-brand: #E53935;
+  --color-brand-foreground: #FFFFFF;
   --color-success: #15803D;
   --color-warning: #B45309;
 

@@ -121,7 +121,7 @@ export function FilterBar({
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="h-10 text-xs px-2.5"
+            className="h-11 lg:h-10 text-xs px-2.5"
           />
         </div>
 
@@ -134,7 +134,7 @@ export function FilterBar({
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="h-10 text-xs px-2.5"
+            className="h-11 lg:h-10 text-xs px-2.5"
           />
         </div>
 
@@ -150,7 +150,7 @@ export function FilterBar({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="h-10 text-xs pl-3 pr-8"
+              className="h-11 lg:h-10 text-xs pl-3 pr-8"
             />
           </div>
         </div>
@@ -161,7 +161,7 @@ export function FilterBar({
             {t('common.department')}
           </label>
           <Select value={department} onValueChange={setDepartment}>
-            <SelectTrigger className="h-10 text-xs">
+            <SelectTrigger className="h-11 lg:h-10 text-xs">
               <SelectValue placeholder={t('department.all')} />
             </SelectTrigger>
             <SelectContent>
@@ -183,7 +183,7 @@ export function FilterBar({
             {t('common.status')}
           </label>
           <Select value={status} onValueChange={setStatus}>
-            <SelectTrigger className="h-10 text-xs">
+            <SelectTrigger className="h-11 lg:h-10 text-xs">
               <SelectValue placeholder={t('status.all')} />
             </SelectTrigger>
             <SelectContent>
@@ -200,7 +200,7 @@ export function FilterBar({
         <Button
           type="button"
           onClick={handleApply}
-          className="size-10 p-0 bg-primary hover:bg-primary-hover text-white shrink-0 rounded-lg cursor-pointer"
+          className="size-11 lg:size-10 p-0 bg-primary hover:bg-primary-hover text-primary-foreground shrink-0 rounded-lg cursor-pointer"
           title={t('common.apply')}
           aria-label={t('common.apply')}
         >
@@ -217,7 +217,7 @@ export function FilterBar({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="h-10 text-xs pl-3 pr-9"
+            className="h-11 lg:h-10 text-xs pl-3 pr-9"
           />
           <button
             type="button"
@@ -235,14 +235,14 @@ export function FilterBar({
             <Button
               variant="outline"
               className={cn(
-                'h-10 px-3 text-xs gap-1.5 shrink-0',
+                'h-11 lg:h-10 px-3 text-xs gap-1.5 shrink-0',
                 activeFilterCount > 0 && 'border-primary text-primary font-semibold',
               )}
             >
               <Filter className="size-3.5" />
               <span>{t('common.filter')}</span>
               {activeFilterCount > 0 && (
-                <span className="size-4 rounded-full bg-primary text-white text-[10px] flex items-center justify-center font-bold">
+                <span className="size-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center font-bold">
                   {activeFilterCount}
                 </span>
               )}
@@ -265,7 +265,7 @@ export function FilterBar({
                     type="date"
                     value={fromDate}
                     onChange={(e) => setFromDate(e.target.value)}
-                    className="h-10 text-xs"
+                    className="h-11 lg:h-10 text-xs"
                   />
                 </div>
                 <div className="space-y-1">
@@ -276,7 +276,7 @@ export function FilterBar({
                     type="date"
                     value={toDate}
                     onChange={(e) => setToDate(e.target.value)}
-                    className="h-10 text-xs"
+                    className="h-11 lg:h-10 text-xs"
                   />
                 </div>
               </div>
@@ -286,7 +286,7 @@ export function FilterBar({
                   {t('common.department')}
                 </label>
                 <Select value={department} onValueChange={setDepartment}>
-                  <SelectTrigger className="h-10 text-xs">
+                  <SelectTrigger className="h-11 lg:h-10 text-xs">
                     <SelectValue placeholder={t('department.all')} />
                   </SelectTrigger>
                   <SelectContent>
@@ -307,7 +307,7 @@ export function FilterBar({
                   {t('common.status')}
                 </label>
                 <Select value={status} onValueChange={setStatus}>
-                  <SelectTrigger className="h-10 text-xs">
+                  <SelectTrigger className="h-11 lg:h-10 text-xs">
                     <SelectValue placeholder={t('status.all')} />
                   </SelectTrigger>
                   <SelectContent>
@@ -325,14 +325,14 @@ export function FilterBar({
               <Button
                 variant="outline"
                 onClick={handleReset}
-                className="flex-1 h-11 text-xs gap-1.5"
+                className="flex-1 h-11 lg:h-10 text-xs gap-1.5"
               >
                 <RotateCcw className="size-3.5" />
                 <span>{t('common.reset')}</span>
               </Button>
               <Button
                 onClick={handleApply}
-                className="flex-1 h-11 text-xs bg-primary hover:bg-primary-hover text-white"
+                className="flex-1 h-11 lg:h-10 text-xs bg-primary hover:bg-primary-hover text-primary-foreground"
               >
                 {t('common.apply')}
               </Button>

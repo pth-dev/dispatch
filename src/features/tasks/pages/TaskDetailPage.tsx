@@ -119,7 +119,7 @@ export function TaskDetailPage() {
       </div>
 
       {/* ── Header Card ── */}
-      <div className="bg-card rounded-xl border border-border p-4 lg:p-5 space-y-3 shadow-none">
+      <div className="bg-card rounded-xl border border-border p-4 lg:p-5 space-y-3">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <div className="space-y-1">
             <div className="flex items-center gap-2.5 flex-wrap">
@@ -148,7 +148,7 @@ export function TaskDetailPage() {
             <Button
               variant="outline"
               size="sm"
-              className="h-9 gap-1.5 text-xs"
+              className="h-11 lg:h-9 gap-1.5 text-xs"
               onClick={() => navigate(APP_ROUTES.TASK_NEW)}
             >
               <Edit className="size-3.5" />
@@ -158,7 +158,7 @@ export function TaskDetailPage() {
             <Button
               variant="outline"
               size="sm"
-              className="h-9 gap-1.5 text-xs"
+              className="h-11 lg:h-9 gap-1.5 text-xs"
               onClick={() => setReassignOpen(true)}
             >
               <Share2 className="size-3.5" />
@@ -169,7 +169,7 @@ export function TaskDetailPage() {
               <Button
                 asChild
                 size="sm"
-                className="h-9 gap-1.5 text-xs bg-primary hover:bg-primary-hover text-white"
+                className="h-11 lg:h-9 gap-1.5 text-xs bg-primary hover:bg-primary-hover text-primary-foreground"
               >
                 <Link to={APP_ROUTES.TASK_APPROVE(task.id)}>
                   <CheckCircle2 className="size-3.5" />
@@ -396,7 +396,7 @@ export function TaskDetailPage() {
                 <Button
                   type="submit"
                   size="sm"
-                  className="gap-1.5 text-xs bg-primary hover:bg-primary-hover text-white"
+                  className="gap-1.5 text-xs bg-primary hover:bg-primary-hover text-primary-foreground"
                 >
                   <Send className="size-3.5" />
                   <span>{t('tasks.detail.sendComment')}</span>

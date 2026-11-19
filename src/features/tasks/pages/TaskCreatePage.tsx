@@ -110,7 +110,7 @@ export function TaskCreatePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Left Column (2 cols): Main Task Details */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="bg-card rounded-xl border border-border p-5 space-y-4 shadow-none">
+            <div className="bg-card rounded-xl border border-border p-5 space-y-4">
               <h2 className="text-sm font-semibold text-foreground border-b border-border pb-2.5">
                 {t('tasks.createForm.infoSection')}
               </h2>
@@ -123,7 +123,7 @@ export function TaskCreatePage() {
                 <Input
                   {...register('title')}
                   placeholder={t('tasks.createForm.taskNamePlaceholder')}
-                  className="h-10 text-xs"
+                  className="h-11 lg:h-10 text-xs"
                 />
                 {errors.title && (
                   <p className="flex items-center gap-1 text-[11px] text-destructive font-medium">
@@ -150,7 +150,7 @@ export function TaskCreatePage() {
 
           {/* Right Column (1 col): Assignment, Timeline & Priority */}
           <div className="space-y-4">
-            <div className="bg-card rounded-xl border border-border p-5 space-y-4 shadow-none text-xs">
+            <div className="bg-card rounded-xl border border-border p-5 space-y-4 text-xs">
               <h2 className="text-sm font-semibold text-foreground border-b border-border pb-2.5">
                 {t('tasks.createForm.assignmentSection')}
               </h2>
@@ -167,7 +167,7 @@ export function TaskCreatePage() {
                     setValue('assignee', '')
                   }}
                 >
-                  <SelectTrigger className="h-10 text-xs">
+                  <SelectTrigger className="h-11 lg:h-10 text-xs">
                     <SelectValue placeholder={t('tasks.createForm.departmentPlaceholder')} />
                   </SelectTrigger>
                   <SelectContent>
@@ -189,7 +189,7 @@ export function TaskCreatePage() {
                   value={assigneeValue}
                   onValueChange={(val) => setValue('assignee', val)}
                 >
-                  <SelectTrigger className="h-10 text-xs">
+                  <SelectTrigger className="h-11 lg:h-10 text-xs">
                     <SelectValue placeholder={t('tasks.createForm.assigneePlaceholder')} />
                   </SelectTrigger>
                   <SelectContent>
@@ -216,7 +216,7 @@ export function TaskCreatePage() {
                 <Input
                   type="date"
                   {...register('dueDate')}
-                  className="h-10 text-xs"
+                  className="h-11 lg:h-10 text-xs"
                 />
                 {errors.dueDate && (
                   <p className="flex items-center gap-1 text-[11px] text-destructive font-medium">
@@ -235,7 +235,7 @@ export function TaskCreatePage() {
                   value={priorityValue}
                   onValueChange={(val: 'normal' | 'urgent') => setValue('priority', val)}
                 >
-                  <SelectTrigger className="h-10 text-xs">
+                  <SelectTrigger className="h-11 lg:h-10 text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -258,14 +258,14 @@ export function TaskCreatePage() {
             type="button"
             variant="outline"
             onClick={handleCancel}
-            className="h-10 px-5 text-xs"
+            className="h-11 lg:h-10 px-5 text-xs"
           >
             {t('common.cancel')}
           </Button>
           <Button
             type="submit"
             disabled={isSubmitting || createMutation.isPending}
-            className="h-10 px-5 text-xs bg-primary hover:bg-primary-hover text-white gap-2"
+            className="h-11 lg:h-10 px-5 text-xs bg-primary hover:bg-primary-hover text-primary-foreground gap-2"
           >
             <Send className="size-3.5" />
             <span>
@@ -277,19 +277,19 @@ export function TaskCreatePage() {
         </div>
 
         {/* ── Mobile Sticky Action Bar (< lg) ── */}
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border p-3 shadow-lg flex items-center gap-2">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border p-3 flex items-center gap-2">
           <Button
             type="button"
             variant="outline"
             onClick={handleCancel}
-            className="flex-1 h-11 text-xs"
+            className="flex-1 h-11 lg:h-10 text-xs"
           >
             {t('common.cancel')}
           </Button>
           <Button
             type="submit"
             disabled={isSubmitting || createMutation.isPending}
-            className="flex-1 h-11 text-xs bg-primary hover:bg-primary-hover text-white gap-2"
+            className="flex-1 h-11 lg:h-10 text-xs bg-primary hover:bg-primary-hover text-primary-foreground gap-2"
           >
             <Send className="size-4" />
             <span>

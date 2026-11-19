@@ -11,7 +11,7 @@ export function NotFoundPage() {
     <div className="flex min-h-dvh flex-col bg-background">
       <header className="flex h-16 items-center justify-between border-b border-border bg-card px-6">
         <div className="flex items-center gap-3">
-          <div className="flex size-9 items-center justify-center rounded-full bg-red-600 text-white font-bold text-xs">
+          <div className="flex size-9 items-center justify-center rounded-full bg-brand text-brand-foreground font-bold text-xs">
             ST
           </div>
           <span className="font-semibold text-foreground">{t('app.name')}</span>

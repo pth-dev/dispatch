@@ -43,13 +43,12 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
             data-active={active}
             className={cn(
               'group relative flex min-h-[44px] items-center gap-3 px-3 py-1.5 rounded-none text-sm font-medium transition-colors select-none outline-none',
-              'hover:bg-[#F3F4F8] hover:text-foreground',
+              'hover:bg-secondary hover:text-foreground',
               'focus-visible:ring-1 focus-visible:ring-primary',
               active
-                ? 'bg-[#E8F0FE] text-primary shadow-[inset_3px_0_0_#1F6FEB]'
+                ? 'bg-primary-soft text-primary shadow-[inset_3px_0_0_var(--color-primary)]'
                 : 'text-foreground'
             )}
-            style={{ fontWeight: 500 }}
           >
             <Icon
               className={cn(
@@ -116,7 +115,7 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
         <div className="shrink-0 border-t border-border p-3 text-xs text-muted-foreground">
           <div className="flex items-center justify-between">
             <span className="text-[11px]">{t('app.version')}</span>
-            <span className="inline-block size-2 rounded-full bg-emerald-500" title={t('sidebar.connected')} />
+            <span className="inline-block size-2 rounded-full bg-success" title={t('sidebar.connected')} />
           </div>
         </div>
       </aside>

@@ -57,7 +57,7 @@ export function InlineError({ status, onRetry, className }: InlineErrorProps) {
           variant="outline"
           size="sm"
           onClick={onRetry}
-          className="h-9 shrink-0 gap-1.5 text-xs"
+          className="h-11 lg:h-9 shrink-0 gap-1.5 text-xs"
         >
           <RotateCcw className="size-3.5" aria-hidden="true" />
           {t('common.retry')}

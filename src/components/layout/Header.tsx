@@ -65,7 +65,7 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
 
       {/* Desktop Left: Department / Scope View */}
       <div className="hidden lg:flex items-center gap-3">
-        <div className="flex items-center gap-2 rounded-md bg-[#F3F4F8] px-3 py-1.5 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2 rounded-md bg-secondary px-3 py-1.5 text-xs text-muted-foreground">
           <Building2 className="size-3.5 text-primary" />
           <span>{t('header.currentView')}</span>
           <span className="font-semibold text-foreground">
@@ -111,7 +111,7 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
           aria-label={t('header.notifications')}
         >
           <Bell className="size-5" />
-          <span className="absolute top-2.5 right-2.5 size-2 rounded-full bg-red-600 ring-2 ring-card" />
+          <span className="absolute top-2.5 right-2.5 size-2 rounded-full bg-destructive ring-2 ring-card" />
         </Button>
 
         {/* User Profile Menu */}

@@ -109,7 +109,7 @@ export function TaskListPage() {
         {!isMobile && (
           <Button
             asChild
-            className="h-10 px-4 gap-2 bg-primary hover:bg-primary-hover text-white rounded-lg cursor-pointer"
+            className="h-11 lg:h-10 px-4 gap-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-lg cursor-pointer"
           >
             <Link to={APP_ROUTES.TASK_NEW}>
               <Plus className="size-4" />
@@ -120,7 +120,7 @@ export function TaskListPage() {
       </div>
 
       {/* ── Main White Card (Row A + Row B + Row C) ── */}
-      <div className="flex-1 flex flex-col min-h-0 bg-card rounded-xl border border-border p-4 gap-3 shadow-none lg:overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-0 bg-card rounded-xl border border-border p-4 gap-3 lg:overflow-hidden">
         {/* Row A: Underline Tabs (left) + Inline Legend (right) */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
           <TaskScopeTabs
@@ -183,7 +183,7 @@ export function TaskListPage() {
       {isMobile && (
         <Button
           asChild
-          className="fixed bottom-6 right-6 z-40 size-14 rounded-full bg-primary hover:bg-primary-hover text-white shadow-lg p-0 flex items-center justify-center cursor-pointer"
+          className="fixed bottom-6 right-6 z-40 size-14 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground p-0 flex items-center justify-center cursor-pointer"
           aria-label={t('tasks.create')}
         >
           <Link to={APP_ROUTES.TASK_NEW}>

@@ -110,7 +110,7 @@ export function ReassignDialog({
             setValue('assignee', '')
           }}
         >
-          <SelectTrigger className="h-10 text-xs">
+          <SelectTrigger className="h-11 lg:h-10 text-xs">
             <SelectValue placeholder={t('tasks.reassign.departmentPlaceholder')} />
           </SelectTrigger>
           <SelectContent>
@@ -132,7 +132,7 @@ export function ReassignDialog({
           value={selectedAssignee}
           onValueChange={(val) => setValue('assignee', val)}
         >
-          <SelectTrigger className="h-10 text-xs">
+          <SelectTrigger className="h-11 lg:h-10 text-xs">
             <SelectValue placeholder={t('tasks.reassign.assigneePlaceholder')} />
           </SelectTrigger>
           <SelectContent>
@@ -171,14 +171,14 @@ export function ReassignDialog({
           type="button"
           variant="outline"
           onClick={() => onOpenChange(false)}
-          className="h-9 px-4 text-xs"
+          className="h-11 lg:h-10 px-4 text-xs"
         >
           {t('common.cancel')}
         </Button>
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="h-9 px-4 text-xs bg-primary hover:bg-primary-hover text-white"
+          className="h-11 lg:h-10 px-4 text-xs bg-primary hover:bg-primary-hover text-primary-foreground"
         >
           {isSubmitting ? t('common.loading') : t('tasks.reassign.confirm')}
         </Button>

@@ -15,7 +15,7 @@ export function Logo({ size = 36, className, showText = true }: LogoProps) {
     <div className={cn('flex items-center gap-3 select-none', className)}>
       <div
         style={{ width: size, height: size }}
-        className="flex shrink-0 items-center justify-center rounded-full bg-brand text-white shadow-xs"
+        className="flex shrink-0 items-center justify-center rounded-full bg-brand text-brand-foreground"
         aria-hidden="true"
       >
         <House className="size-5 stroke-[2.2]" />

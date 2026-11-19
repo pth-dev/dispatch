@@ -37,7 +37,7 @@ function DevPanelContent() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-4 right-4 z-50 flex size-10 items-center justify-center rounded-full bg-[#1F2937] text-white shadow-lg transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-primary cursor-pointer select-none"
+          className="fixed bottom-4 right-4 z-50 flex size-10 items-center justify-center rounded-full bg-foreground text-background transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-primary cursor-pointer select-none"
           title={t('devPanel.open')}
           aria-label={t('devPanel.open')}
         >
@@ -47,7 +47,7 @@ function DevPanelContent() {
 
       {/* Expanded Dev Panel */}
       {isOpen && (
-        <div className="fixed bottom-4 right-4 z-50 w-80 rounded-xl border border-border bg-card p-4 shadow-xl select-none text-xs space-y-4">
+        <div className="fixed bottom-4 right-4 z-50 w-80 rounded-xl border border-border bg-card p-4 select-none text-xs space-y-4">
           <div className="flex items-center justify-between border-b border-border pb-2">
             <div className="flex items-center gap-2 font-semibold text-foreground">
               <Sliders className="size-4 text-primary" />
