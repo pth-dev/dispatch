@@ -12,6 +12,7 @@ import { useTasks } from '../api/queries'
 import { usePageClamp, useTaskListParams } from '../hooks/use-task-list-params'
 import { useTaskColumns } from '../hooks/use-task-columns'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { InlineError, isFullPageError, throwFullPageError, toErrorStatus } from '@/components/layout'
 import { APP_ROUTES } from '@/constants/app-routes'
 import type { Task } from '@/schemas/task'
 
@@ -37,7 +38,7 @@ export function TaskListPage() {
     setPageSize,
   } = useTaskListParams()
 
-  const { data, isLoading, isPlaceholderData } = useTasks(params)
+  const { data, isLoading, isPlaceholderData, isError, error, refetch } = useTasks(params)
   const columns = useTaskColumns(params.page, params.pageSize)
 
   usePageClamp({
@@ -47,6 +48,12 @@ export function TaskListPage() {
     isPlaceholderData,
     setPage,
   })
+
+  const errorStatus = toErrorStatus(error)
+
+  if (isError && isFullPageError(errorStatus)) {
+    throwFullPageError(errorStatus)
+  }
 
   const items = data?.items || []
   const total = data?.total || 0
@@ -149,6 +156,11 @@ export function TaskListPage() {
             keyExtractor={(item) => item.id}
             onRowClick={handleRowClick}
             isLoading={isLoading}
+            error={
+              isError ? (
+                <InlineError status={errorStatus} onRetry={() => void refetch()} />
+              ) : undefined
+            }
             emptyMessage={emptyMessage}
             renderMobileCard={renderMobileCard}
             className="flex-1 min-h-0"

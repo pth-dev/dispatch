@@ -10,7 +10,6 @@ import {
   Building,
   Calendar,
   Paperclip,
-  AlertTriangle,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -24,6 +23,7 @@ import {
 } from '@/components/ui/dialog'
 import { StatusText } from '@/components/ui/status-text'
 import { useTask, useApproveTask, useRejectTask } from '../api/queries'
+import { InlineError, isFullPageError, throwFullPageError, toErrorStatus } from '@/components/layout'
 import { APP_ROUTES } from '@/constants/app-routes'
 
 function formatDateVN(dateStr?: string): string {
@@ -38,7 +38,7 @@ export function TaskApprovePage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
 
-  const { data: task, isLoading, error } = useTask(id)
+  const { data: task, isLoading, isError, error, refetch } = useTask(id)
   const approveMutation = useApproveTask()
   const rejectMutation = useRejectTask()
 
@@ -81,18 +81,18 @@ export function TaskApprovePage() {
     )
   }
 
-  if (error || !task) {
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-3">
-        <AlertTriangle className="size-10 text-destructive" />
-        <h2 className="text-lg font-semibold text-foreground">
-          {t('errors.status.404.title')}
-        </h2>
-        <Button asChild variant="outline">
-          <Link to={APP_ROUTES.TASKS}>{t('tasks.detail.backToList')}</Link>
-        </Button>
-      </div>
-    )
+  if (isError) {
+    const errorStatus = toErrorStatus(error)
+
+    if (isFullPageError(errorStatus)) {
+      throwFullPageError(errorStatus)
+    }
+
+    return <InlineError status={errorStatus} onRetry={() => void refetch()} />
+  }
+
+  if (!task) {
+    throwFullPageError('404')
   }
 
 

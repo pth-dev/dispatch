@@ -29,6 +29,8 @@ export interface DataTableProps<T> {
   emptyMessage?: string
   density?: 'compact' | 'comfortable'
   renderMobileCard?: (item: T, index: number) => React.ReactNode
+  /** Replaces the table body with an inline error block (5xx/network/timeout). */
+  error?: React.ReactNode
   className?: string
 }
 
@@ -41,6 +43,7 @@ export function DataTable<T>({
   emptyMessage,
   density: propDensity,
   renderMobileCard,
+  error,
   className,
 }: DataTableProps<T>) {
   const { t } = useTranslation()
@@ -48,6 +51,12 @@ export function DataTable<T>({
   const density = propDensity || storeDensity
 
   const rowHeightClass = density === 'compact' ? 'h-11 py-2' : 'h-[50px] py-3'
+
+  if (error) {
+    return (
+      <div className={cn('w-full flex flex-col min-h-0', className)}>{error}</div>
+    )
+  }
 
   // Mobile rendering (cards fallback if renderMobileCard provided)
   return (

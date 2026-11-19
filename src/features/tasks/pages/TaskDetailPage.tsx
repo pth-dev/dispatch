@@ -12,7 +12,6 @@ import {
   Share2,
   Edit,
   Send,
-  AlertTriangle,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { StatusText } from '@/components/ui/status-text'
@@ -20,6 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 import { ReassignDialog } from '../components/ReassignDialog'
 import { useTask, useReassignTask } from '../api/queries'
+import { InlineError, isFullPageError, throwFullPageError, toErrorStatus } from '@/components/layout'
 import { APP_ROUTES } from '@/constants/app-routes'
 import { useAppStore } from '@/app/store'
 import type { TaskReassignFormValues } from '@/schemas/task'
@@ -37,7 +37,7 @@ export function TaskDetailPage() {
   const navigate = useNavigate()
   const currentRole = useAppStore((state) => state.user.role)
 
-  const { data: task, isLoading, error } = useTask(id)
+  const { data: task, isLoading, isError, error, refetch } = useTask(id)
   const reassignMutation = useReassignTask()
 
   const [reassignOpen, setReassignOpen] = React.useState(false)
@@ -59,18 +59,18 @@ export function TaskDetailPage() {
     )
   }
 
-  if (error || !task) {
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-3">
-        <AlertTriangle className="size-10 text-destructive" />
-        <h2 className="text-lg font-semibold text-foreground">
-          {t('errors.status.404.title')}
-        </h2>
-        <Button asChild variant="outline">
-          <Link to={APP_ROUTES.TASKS}>{t('tasks.detail.backToList')}</Link>
-        </Button>
-      </div>
-    )
+  if (isError) {
+    const errorStatus = toErrorStatus(error)
+
+    if (isFullPageError(errorStatus)) {
+      throwFullPageError(errorStatus)
+    }
+
+    return <InlineError status={errorStatus} onRetry={() => void refetch()} />
+  }
+
+  if (!task) {
+    throwFullPageError('404')
   }
 
   const handleReassignConfirm = (values: TaskReassignFormValues) => {

@@ -2,105 +2,24 @@ import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useRouteError } from 'react-router'
 import {
-  SearchX,
-  Lock,
-  Clock,
-  CircleAlert,
-  WifiOff,
   House,
   ArrowLeft,
   RotateCcw,
   Copy,
   Check,
-  type LucideIcon,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Logo } from './Logo'
 import { APP_ROUTES } from '@/constants/app-routes'
+import {
+  ERROR_TONE_CLASS,
+  getErrorStatusMeta,
+  getReferenceCode,
+  toErrorStatus,
+  type ErrorStatusCode,
+} from './error-status'
 
-export type ErrorStatusCode =
-  | '404'
-  | '403'
-  | '401'
-  | '408'
-  | '429'
-  | '500'
-  | '502'
-  | '503'
-  | '504'
-  | 'network'
-
-interface StatusConfig {
-  code: ErrorStatusCode
-  icon: LucideIcon
-  toneColor: string
-  showLinks?: boolean
-  showReferenceCode?: boolean
-}
-
-const STATUS_CONFIGS: Record<ErrorStatusCode, StatusConfig> = {
-  '404': {
-    code: '404',
-    icon: SearchX,
-    toneColor: '#1F6FEB',
-    showLinks: true,
-  },
-  '403': {
-    code: '403',
-    icon: Lock,
-    toneColor: '#B45309',
-    showLinks: true,
-  },
-  '401': {
-    code: '401',
-    icon: Lock,
-    toneColor: '#B45309',
-  },
-  '408': {
-    code: '408',
-    icon: Clock,
-    toneColor: '#B45309',
-  },
-  '429': {
-    code: '429',
-    icon: Clock,
-    toneColor: '#B45309',
-  },
-  '500': {
-    code: '500',
-    icon: CircleAlert,
-    toneColor: '#D32F2F',
-    showReferenceCode: true,
-  },
-  '502': {
-    code: '502',
-    icon: CircleAlert,
-    toneColor: '#D32F2F',
-    showReferenceCode: true,
-  },
-  '503': {
-    code: '503',
-    icon: CircleAlert,
-    toneColor: '#D32F2F',
-    showReferenceCode: true,
-  },
-  '504': {
-    code: '504',
-    icon: CircleAlert,
-    toneColor: '#D32F2F',
-    showReferenceCode: true,
-  },
-  network: {
-    code: 'network',
-    icon: WifiOff,
-    toneColor: '#D32F2F',
-    showReferenceCode: true,
-  },
-}
-
-function getStaticReferenceCode(): string {
-  return 'ERR-7F3A21 • 18/11/2026 09:30'
-}
+export type { ErrorStatusCode }
 
 const SUGGESTED_LINKS = [
   { labelKey: 'nav.tasks', href: APP_ROUTES.TASKS },
@@ -116,6 +35,10 @@ interface ErrorStateProps {
   onRetry?: () => void
 }
 
+/**
+ * Full-page error state (brief §5.12). Rendered outside the app shell through
+ * the root route `errorElement`, the catch-all route, and permission guards.
+ */
 export function ErrorState({
   status = '500',
   technicalDetails,
@@ -123,11 +46,11 @@ export function ErrorState({
   onRetry,
 }: ErrorStateProps) {
   const { t } = useTranslation()
-  const config = STATUS_CONFIGS[status] || STATUS_CONFIGS['500']
+  const config = getErrorStatusMeta(status)
   const Icon = config.icon
   const [copied, setCopied] = React.useState(false)
 
-  const activeRefCode = referenceCode || getStaticReferenceCode()
+  const activeRefCode = referenceCode || getReferenceCode()
   const caption = t(`errors.status.${status}.caption`)
   const title = t(`errors.status.${status}.title`)
   const description = t(`errors.status.${status}.description`)
@@ -158,8 +81,7 @@ export function ErrorState({
         <div className="w-full max-w-[560px] space-y-6 text-left">
           {/* Caption row */}
           <div
-            className="flex items-center gap-2 text-xs font-semibold tracking-wider uppercase"
-            style={{ color: config.toneColor }}
+            className={`flex items-center gap-2 text-xs font-semibold tracking-wider uppercase ${ERROR_TONE_CLASS[config.tone]}`}
           >
             <Icon className="size-4.5 shrink-0" />
             <span>{caption}</span>
@@ -241,8 +163,8 @@ export function ErrorState({
                 >
                   {copied ? (
                     <>
-                      <Check className="size-3.5 text-emerald-600" />
-                      <span className="text-emerald-600">{t('common.copied')}</span>
+                      <Check className="size-3.5 text-status-done" />
+                      <span className="text-status-done">{t('common.copied')}</span>
                     </>
                   ) : (
                     <>
@@ -293,29 +215,27 @@ export function ErrorState({
   )
 }
 
+const CHUNK_LOAD_ERROR = /failed to fetch dynamically imported module|loading chunk|importing a module script failed/i
+
 /**
- * Root Error Boundary component used by React Router errorElement
+ * Root Error Boundary component used by React Router errorElement.
  */
 export function RootRouteErrorBoundary() {
   const error = useRouteError()
 
-  let status: ErrorStatusCode = '500'
   let technical = ''
 
-  if (typeof error === 'object' && error !== null) {
-    if ('status' in error) {
-      const s = String((error as { status: unknown }).status)
-      if (['404', '403', '401', '408', '429', '500', '502', '503', '504'].includes(s)) {
-        status = s as ErrorStatusCode
-      }
-    }
-    if ('message' in error) {
-      technical = String((error as { message: unknown }).message)
-    }
-    if ('stack' in error) {
-      technical += `\n${String((error as { stack: unknown }).stack)}`
-    }
+  if (typeof error === 'object' && error !== null && 'message' in error) {
+    technical = String((error as { message: unknown }).message)
   }
+  if (typeof error === 'object' && error !== null && 'stack' in error) {
+    technical += `\n${String((error as { stack: unknown }).stack)}`
+  }
+
+  // Lazy-chunk load failures are network failures (brief §5.12).
+  const status: ErrorStatusCode = CHUNK_LOAD_ERROR.test(technical)
+    ? 'network'
+    : toErrorStatus(error)
 
   return <ErrorState status={status} technicalDetails={technical} />
 }

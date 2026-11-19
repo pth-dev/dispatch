@@ -49,3 +49,23 @@ As mandated by the boilerplate and project rules, all deviations are documented 
 - Locales supported: `vi` (Vietnamese, default), `en` (English), `zh-CN` (Simplified Chinese).
 - **Path deviation:** `src/locales/<lang>/translation.json` (Vite enforces that files in `public/` are served as raw static URLs and cannot be directly imported into JavaScript bundles via `import ... from '../../public/...'`. Moving translation JSON files into `src/locales/` enables Vite to bundle them efficiently at build time, eliminates runtime HTTP fetch latency, and complies with Vite's asset handling rules).
 - Keys follow grouped dot-notation (`nav.*`, `status.*`, `common.*`, `tasks.*`, `errors.*`).
+
+---
+
+## 5. Error Handling (Stage 2)
+
+Brief §5.12 ("Error pages (full page, outside the app shell)") states:
+
+> "Router: root `errorElement` renders the full-page ErrorState; `*` catch-all and permission guard also render full-page 404/403; a small class ErrorBoundary around the app; lazy-chunk load failures map to the network variant with "Tải lại trang". An error must never leave the sidebar visible with an empty content area."
+
+Brief §8 item 17 states:
+
+> "`ErrorState` in-layout variant showed an empty gray content area with a visible sidebar -> errors are full page outside the shell."
+
+**Decision (hybrid error UI, approved with the Stage 2 plan):**
+
+- `401`, `403`, `404` and route-level failures render the full-page `ErrorState` outside the app shell. Data-fetch failures with these codes are thrown as router responses so the root `errorElement` replaces the whole shell.
+- `5xx`, `408`/`429` timeouts and `network` failures render an `InlineError` block with a retry action inside the current page content area instead of replacing the whole page.
+- **Deviation:** §5.12's table lists `408/429`, `500/502/503/504` and `network` as full-page variants. Stage 2 renders those inline by explicit user decision, so a transient failure can be retried without losing the page context. Full-page `ErrorState` remains the single component for route-level and permission errors.
+- `src/components/layout/error-status.ts` is the single status config (icon, tone, `fullPage`, copy keys, reference code). Both `ErrorState` and `InlineError` consume it; copy lives in `errors.status.*` for all three locales.
+
