@@ -24,8 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useCreateTask } from '../api/queries'
-import { DEPARTMENTS } from '@/mocks/data/departments'
+import { useCreateTask, useDepartments } from '../api/queries'
 import {
   TaskCreateFormSchema,
   type TaskCreateFormValues,
@@ -36,6 +35,7 @@ export function TaskCreatePage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const createMutation = useCreateTask()
+  const { data: departments = [] } = useDepartments()
 
   const {
     register,
@@ -58,7 +58,7 @@ export function TaskCreatePage() {
   const selectedDepartmentId = useWatch({ control, name: 'department' })
   const assigneeValue = useWatch({ control, name: 'assignee' })
   const priorityValue = useWatch({ control, name: 'priority' })
-  const selectedDepartment = DEPARTMENTS.find((d) => d.id === selectedDepartmentId)
+  const selectedDepartment = departments.find((d) => d.id === selectedDepartmentId)
   const assignees = selectedDepartment?.members || []
 
   const [allowLeave, setAllowLeave] = useState(false)
@@ -171,7 +171,7 @@ export function TaskCreatePage() {
                     <SelectValue placeholder={t('tasks.createForm.departmentPlaceholder')} />
                   </SelectTrigger>
                   <SelectContent>
-                    {DEPARTMENTS.map((dept) => (
+                    {departments.map((dept) => (
                       <SelectItem key={dept.id} value={dept.id} className="text-xs">
                         {dept.name}
                       </SelectItem>

@@ -5,6 +5,7 @@ import {
   keepPreviousData,
 } from '@tanstack/react-query'
 import { http } from '@/services/http'
+import { fetchDepartments } from './departments'
 import { taskKeys } from './keys'
 import type {
   Task,
@@ -15,7 +16,6 @@ import type {
   TaskApproveFormValues,
   TaskRejectFormValues,
 } from '@/schemas/task'
-import type { Department } from '@/mocks/data/departments'
 
 export function useTasks(params: TaskListParams) {
   return useQuery({
@@ -55,7 +55,7 @@ export function useTask(id: string) {
 export function useDepartments() {
   return useQuery({
     queryKey: taskKeys.departments(),
-    queryFn: () => http<Department[]>('/departments'),
+    queryFn: fetchDepartments,
     staleTime: 5 * 60_000,
   })
 }

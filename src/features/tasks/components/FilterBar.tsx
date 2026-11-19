@@ -17,7 +17,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import { DEPARTMENTS } from '@/mocks/data/departments'
+import { useDepartments } from '../api/queries'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -66,6 +66,7 @@ export function FilterBar({
   className,
 }: FilterBarProps) {
   const { t } = useTranslation()
+  const { data: departments = [] } = useDepartments()
 
   // Local draft state initialized from URL props
   const [search, setSearch] = React.useState(initialValues.search || '')
@@ -170,7 +171,7 @@ export function FilterBar({
               <SelectItem value="all" className="text-xs">
                 {t('department.all')}
               </SelectItem>
-              {DEPARTMENTS.map((dept) => (
+              {departments.map((dept) => (
                 <SelectItem key={dept.id} value={dept.id} className="text-xs">
                   {dept.name}
                 </SelectItem>
@@ -295,7 +296,7 @@ export function FilterBar({
                     <SelectItem value="all" className="text-xs">
                       {t('department.all')}
                     </SelectItem>
-                    {DEPARTMENTS.map((dept) => (
+                    {departments.map((dept) => (
                       <SelectItem key={dept.id} value={dept.id} className="text-xs">
                         {dept.name}
                       </SelectItem>

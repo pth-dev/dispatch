@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useIsMobile } from '@/hooks/use-mobile'
-import { DEPARTMENTS } from '@/mocks/data/departments'
+import { useDepartments } from '../api/queries'
 import {
   TaskReassignFormSchema,
   type TaskReassignFormValues,
@@ -48,6 +48,7 @@ export function ReassignDialog({
 }: ReassignDialogProps) {
   const { t } = useTranslation()
   const isMobile = useIsMobile()
+  const { data: departments = [] } = useDepartments()
 
   const {
     register,
@@ -67,7 +68,7 @@ export function ReassignDialog({
 
   const selectedDepartmentId = useWatch({ control, name: 'department' })
   const selectedAssignee = useWatch({ control, name: 'assignee' })
-  const selectedDepartment = DEPARTMENTS.find((d) => d.id === selectedDepartmentId)
+  const selectedDepartment = departments.find((d) => d.id === selectedDepartmentId)
   const assignees = selectedDepartment?.members || []
 
   React.useEffect(() => {
@@ -113,7 +114,7 @@ export function ReassignDialog({
             <SelectValue placeholder={t('tasks.reassign.departmentPlaceholder')} />
           </SelectTrigger>
           <SelectContent>
-            {DEPARTMENTS.map((dept) => (
+            {departments.map((dept) => (
               <SelectItem key={dept.id} value={dept.id} className="text-xs">
                 {dept.name}
               </SelectItem>

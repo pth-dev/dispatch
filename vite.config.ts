@@ -10,4 +10,10 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  build: {
+    // `public/` only holds the MSW service worker, which must never ship to
+    // production. It stays served by the dev server because Vite reads
+    // `publicDir` regardless of this flag.
+    copyPublicDir: false,
+  },
 })

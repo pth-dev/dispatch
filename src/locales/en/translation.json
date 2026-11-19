@@ -341,14 +341,14 @@
   },
   "devPanel": {
     "ariaLabel": "Developer tools panel (DEV panel)",
-    "open": "Open DEV simulation tools",
+    "open": "Open simulation tools",
     "close": "Close DEV panel",
-    "title": "DEV Simulation Tools",
+    "title": "Simulation tools",
     "roleLabel": "User role:",
     "densityLabel": "Table density:",
     "compact": "Compact (44px)",
     "comfortable": "Comfortable (50px)",
-    "scenarioLabel": "Mock MSW / API scenario:",
+    "scenarioLabel": "Mock API scenario:",
     "devOnlyNote": "Only visible in the DEV environment (import.meta.env.DEV)",
     "scenarios": {
       "normal": "Normal (200ms)",
