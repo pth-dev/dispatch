@@ -163,8 +163,8 @@ export function ErrorState({
                 >
                   {copied ? (
                     <>
-                      <Check className="size-3.5 text-status-done" />
-                      <span className="text-status-done">{t('common.copied')}</span>
+                      <Check className="size-3.5 text-success" />
+                      <span className="text-success">{t('common.copied')}</span>
                     </>
                   ) : (
                     <>

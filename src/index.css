@@ -47,6 +47,11 @@
   --color-placeholder: #9CA3AF;
   --color-overlay: rgba(17, 24, 39, 0.45);
 
+  /* ── Semantic accents (Stage 2, approved Q4) ── */
+  --color-brand: #E53935;
+  --color-success: #15803D;
+  --color-warning: #B45309;
+
   /* ── Status text colors (brief §3.2) ── */
   --color-status-new: #6B7280;
   --color-status-draft: #6B7280;

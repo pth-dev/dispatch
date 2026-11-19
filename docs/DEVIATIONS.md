@@ -79,4 +79,14 @@ Brief §8 item 17 states:
 - **DevPanel:** `AppShell` lazy-loads `DevPanel` behind `import.meta.env.DEV`, so the panel and its copy do not reach a production bundle.
 - **Production audit:** after `npm run build`, no file under `dist/` matches `msw`, `faker`, `mockServiceWorker` or `DEV Simulation`, and no `DevPanel`/mock chunk is emitted.
 
+---
+
+## 7. Status Presentation (Stage 2)
+
+- `STATUS_META` in `src/components/ui/status-text.tsx` is the single source of truth for task/urgent status: label key, token-based text/dot classes, `order`, `filterable` and `inLegend`.
+- `FILTER_STATUSES` and `LEGEND_STATUSES` are derived from that record; `FilterBar` and `LegendStrip` no longer keep their own status lists.
+- Status colors use the `--color-status-*` tokens through utilities (`text-status-*`, `bg-status-*`); the previous hex values and inline `style` attributes are gone.
+- Added semantic tokens `--color-brand` (#E53935, logo mark), `--color-success` (#15803D, positive confirmation) and `--color-warning` (#B45309, warning error tone) per the approved Stage 2 decisions. `ErrorState`/`InlineError` tones map to `text-primary`, `text-warning` and `text-destructive`.
+
+
 

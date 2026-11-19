@@ -118,7 +118,7 @@ export const ERROR_STATUS_META: Record<ErrorStatusCode, ErrorStatusMeta> = {
 
 export const ERROR_TONE_CLASS: Record<ErrorTone, string> = {
   primary: 'text-primary',
-  warning: 'text-status-pending',
+  warning: 'text-warning',
   destructive: 'text-destructive',
 }
 

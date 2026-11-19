@@ -28,6 +28,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import type { TaskStatus } from '@/schemas/task'
+import { FILTER_STATUSES, STATUS_META } from '@/components/ui/status-text'
 import { cn } from '@/utils'
 
 export interface FilterValues {
@@ -48,14 +49,10 @@ interface FilterBarProps {
 
 const ALL_STATUSES: { key: TaskStatus | 'all'; labelKey: string }[] = [
   { key: 'all', labelKey: 'status.all' },
-  { key: 'new', labelKey: 'status.new' },
-  { key: 'draft', labelKey: 'status.draft' },
-  { key: 'in_progress', labelKey: 'status.in_progress' },
-  { key: 'pending', labelKey: 'status.pending' },
-  { key: 'approved', labelKey: 'status.approved' },
-  { key: 'done', labelKey: 'status.done' },
-  { key: 'overdue', labelKey: 'status.overdue' },
-  { key: 'rejected', labelKey: 'status.rejected' },
+  ...FILTER_STATUSES.map((status) => ({
+    key: status,
+    labelKey: STATUS_META[status].labelKey,
+  })),
 ]
 
 export function FilterBar({

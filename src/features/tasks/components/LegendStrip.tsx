@@ -1,15 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { StatusText } from '@/components/ui/status-text'
-import type { TaskStatus } from '@/schemas/task'
+import { LEGEND_STATUSES, StatusText } from '@/components/ui/status-text'
 import { cn } from '@/utils'
-
-const LEGEND_STATUSES: TaskStatus[] = [
-  'in_progress',
-  'pending',
-  'done',
-  'overdue',
-  'new',
-]
 
 interface LegendStripProps {
   className?: string
