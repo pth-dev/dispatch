@@ -91,7 +91,7 @@ export function TaskListPage() {
   )
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 space-y-3 p-4 lg:p-6">
+    <div className="flex min-h-0 flex-1 flex-col space-y-3 short:space-y-2 lg:min-h-[546px]">
       {/* ── Page Header Row ── */}
       <div className="flex items-center justify-between shrink-0">
         <h1 className="text-xl lg:text-2xl font-semibold text-foreground tracking-tight">
@@ -113,7 +113,7 @@ export function TaskListPage() {
       </div>
 
       {/* ── Main White Card (Row A + Row B + Row C) ── */}
-      <div className="flex-1 flex flex-col min-h-0 bg-card rounded-xl border border-border p-4 gap-3 shadow-none overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-0 bg-card rounded-xl border border-border p-4 gap-3 shadow-none lg:overflow-hidden">
         {/* Row A: Underline Tabs (left) + Inline Legend (right) */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
           <TaskScopeTabs

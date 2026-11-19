@@ -54,7 +54,7 @@ export function DataTable<T>({
     <div className={cn('w-full flex flex-col min-h-0', className)}>
       {/* ── Mobile Card View (< lg) ── */}
       {renderMobileCard && (
-        <div className="flex lg:hidden flex-col divide-y divide-border overflow-y-auto">
+        <div className="flex lg:hidden flex-col divide-y divide-border">
           {isLoading ? (
             Array.from({ length: 5 }).map((_, idx) => (
               <div key={`skel_card_${idx}`} className="p-3.5 space-y-2 animate-pulse">
@@ -90,12 +90,12 @@ export function DataTable<T>({
       {/* ── Desktop Table View (>= lg, or fallback if no mobile card renderer) ── */}
       <div
         className={cn(
-          'w-full overflow-auto flex-1 min-h-0 border border-border rounded-lg bg-card',
+          'w-full overflow-visible lg:overflow-auto flex-1 min-h-0 border border-border rounded-lg bg-card',
           renderMobileCard ? 'hidden lg:block' : 'block',
         )}
       >
         <Table className="w-full table-fixed border-collapse">
-          <TableHeader className="sticky top-0 z-10 bg-card border-b border-border shadow-[0_1px_0_0_#E5E7EB]">
+          <TableHeader className="sticky top-0 z-10 bg-card border-b border-border">
             <TableRow className="hover:bg-transparent">
               {columns.map((col) => (
                 <TableHead

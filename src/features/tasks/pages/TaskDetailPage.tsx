@@ -104,7 +104,7 @@ export function TaskDetailPage() {
     task.status === 'pending' && (currentRole === 'approver' || currentRole === 'manager' || currentRole === 'admin')
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 overflow-y-auto p-4 lg:p-6 space-y-4">
+    <div className="flex-1 flex flex-col min-h-0 overflow-y-auto space-y-4">
       {/* ── Breadcrumbs ── */}
       <div className="flex items-center gap-2 text-xs text-muted-foreground select-none">
         <Link
