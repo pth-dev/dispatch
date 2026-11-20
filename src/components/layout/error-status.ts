@@ -141,6 +141,10 @@ export function toErrorStatus(error: unknown): ErrorStatusCode {
 
   if (typeof error === 'object' && error !== null && 'status' in error) {
     const status = (error as { status: unknown }).status
+    const kind = 'kind' in error ? (error as { kind: unknown }).kind : undefined
+    if (status === 0) {
+      return kind === 'timeout' ? '408' : 'network'
+    }
     if (typeof status === 'number' || typeof status === 'string') {
       return statusFromCode(status) ?? 'unknown'
     }

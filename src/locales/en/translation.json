@@ -294,6 +294,9 @@
         "description": "Something went wrong while loading data. Please try again."
       }
     },
+    "codes": {
+      "DUP_TITLE_DUE": "A task with the same title and due date already exists. Please change the title or due date."
+    },
     "support": "Technical support",
     "loginAgain": "Sign in again",
     "reloadPage": "Reload page",

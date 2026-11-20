@@ -294,6 +294,9 @@
         "description": "Đã có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại."
       }
     },
+    "codes": {
+      "DUP_TITLE_DUE": "Đã tồn tại nhiệm vụ trùng tiêu đề và cùng ngày hạn hoàn thành. Vui lòng đổi tiêu đề hoặc ngày hạn."
+    },
     "support": "Hỗ trợ kỹ thuật",
     "loginAgain": "Đăng nhập lại",
     "reloadPage": "Tải lại trang",

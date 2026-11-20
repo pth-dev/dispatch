@@ -294,6 +294,9 @@
         "description": "加载数据时发生错误。请重试。"
       }
     },
+    "codes": {
+      "DUP_TITLE_DUE": "已存在相同标题且同截止日期的任务，请修改标题或截止日期。"
+    },
     "support": "技术支持",
     "loginAgain": "重新登录",
     "reloadPage": "重新加载页面",
