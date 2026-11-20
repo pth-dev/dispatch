@@ -76,8 +76,8 @@ describe('useTaskListParams', () => {
     act(() =>
       result.current.setFilters({
         search: 'module',
-        department: 'it',
-        status: 'pending',
+        department: '資訊部',
+        status: 'delayed_pending',
         fromDate: '2026-11-01',
         toDate: '2026-11-30',
       }),
@@ -85,8 +85,8 @@ describe('useTaskListParams', () => {
 
     expect(result.current.params).toMatchObject({
       search: 'module',
-      department: 'it',
-      status: 'pending',
+      department: '資訊部',
+      status: 'delayed_pending',
       fromDate: '2026-11-01',
       toDate: '2026-11-30',
       page: 1,

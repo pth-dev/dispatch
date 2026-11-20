@@ -8,25 +8,23 @@ import { StatusText } from '@/components/ui/status-text'
 import { TaskScopeTabs } from '../components/TaskScopeTabs'
 import { LegendStrip } from '../components/LegendStrip'
 import { FilterBar } from '../components/FilterBar'
-import { useTasks } from '../api/queries'
+import { useTaskList } from '../api/queries'
 import { usePageClamp, useTaskListParams } from '../hooks/use-task-list-params'
-import { useTaskColumns } from '../hooks/use-task-columns'
+import { formatTaskDueDate, useTaskColumns } from '../hooks/use-task-columns'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { InlineError, isFullPageError, throwFullPageError, toErrorStatus } from '@/components/layout'
 import { APP_ROUTES } from '@/constants/app-routes'
-import type { Task } from '@/schemas/task'
-
-function formatDateVN(dateStr?: string): string {
-  if (!dateStr) return '-'
-  const [year, month, day] = dateStr.split('-')
-  if (!year || !month || !day) return dateStr
-  return `${day}/${month}/${year}`
-}
+import { useAppStore } from '@/app/store'
+import { canWriteMenu } from '@/utils/permissions'
+import { deriveTaskStatus, isTaskPaused } from '@/utils/task-domain'
+import type { RawTask } from '@/schemas/task'
 
 export function TaskListPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const isMobile = useIsMobile()
+  const user = useAppStore((s) => s.user)
+  const canCreate = canWriteMenu(user, 'dashboard')
 
   const {
     params,
@@ -38,14 +36,14 @@ export function TaskListPage() {
     setPageSize,
   } = useTaskListParams()
 
-  const { data, isLoading, isPlaceholderData, isError, error, refetch } = useTasks(params)
+  const { data, isLoading, isError, error, refetch } = useTaskList(params)
   const columns = useTaskColumns(params.page, params.pageSize)
 
   usePageClamp({
     page: params.page,
     pageSize: params.pageSize,
     total: data?.total,
-    isPlaceholderData,
+    isPlaceholderData: false,
     setPage,
   })
 
@@ -55,8 +53,8 @@ export function TaskListPage() {
     throwFullPageError(errorStatus)
   }
 
-  const items = data?.items || []
-  const total = data?.total || 0
+  const items = data?.items ?? []
+  const total = data?.total ?? 0
   const counts = data?.counts
 
   const emptyMessage =
@@ -68,45 +66,45 @@ export function TaskListPage() {
           ? t('tasks.empty.created')
           : t('tasks.empty.all')
 
-  const handleRowClick = (task: Task) => {
+  const handleRowClick = (task: RawTask) => {
     navigate(APP_ROUTES.TASK_DETAIL(task.id))
   }
 
-  // Mobile card renderer for DataTable fallback (< lg)
-  const renderMobileCard = (task: Task) => (
-    <div className="space-y-1.5 text-xs">
-      {/* Line 1: Code (blue) + Status (right) */}
-      <div className="flex items-center justify-between">
-        <span className="font-semibold text-primary">{task.id}</span>
-        <StatusText status={task.status} />
-      </div>
+  const renderMobileCard = (task: RawTask) => {
+    const derived = deriveTaskStatus(task)
+    const paused = isTaskPaused(task)
+    return (
+      <div className="space-y-1.5 text-xs">
+        <div className="flex items-center justify-between gap-2">
+          <span className="font-semibold text-primary">#{task.id}</span>
+          <div className="flex items-center gap-1.5">
+            <StatusText status={paused ? 'paused' : derived} />
+            <span className="text-[11px] text-muted-foreground">{task.progress}%</span>
+          </div>
+        </div>
 
-      {/* Line 2: Title (up to 2 lines) */}
-      <p className="font-medium text-foreground line-clamp-2 leading-snug">
-        {task.title}
-      </p>
+        <p className="font-medium text-foreground line-clamp-2 leading-snug">{task.title}</p>
 
-      {/* Line 3: Department • Assignee • Due Date */}
-      <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground truncate">
-        <span>{task.departmentName || task.department}</span>
-        <span>•</span>
-        <span>{task.assignee}</span>
-        <span>•</span>
-        <span>{t('tasks.mobile.dueDate', { date: formatDateVN(task.dueDate) })}</span>
+        <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground truncate">
+          <span>{task.assigned_unit || '-'}</span>
+          <span>•</span>
+          <span>{task.assign_person || '-'}</span>
+          <span>•</span>
+          <span>{t('tasks.mobile.dueDate', { date: formatTaskDueDate(task.due_date) })}</span>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   return (
     <div className="flex min-h-0 flex-1 flex-col space-y-3 short:space-y-2 lg:min-h-[546px]">
-      {/* ── Page Header Row ── */}
+      {/* Page Header Row */}
       <div className="flex items-center justify-between shrink-0">
         <h1 className="text-xl lg:text-2xl font-semibold text-foreground tracking-tight">
           {t('tasks.title')}
         </h1>
 
-        {/* Primary Create Button (Desktop only; on mobile rendered as single FAB below) */}
-        {!isMobile && (
+        {!isMobile && canCreate && (
           <Button
             asChild
             className="h-11 lg:h-10 px-4 gap-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-lg cursor-pointer"
@@ -119,22 +117,21 @@ export function TaskListPage() {
         )}
       </div>
 
-      {/* ── Main White Card (Row A + Row B + Row C) ── */}
-      <div className="flex-1 flex flex-col min-h-0 bg-card rounded-xl border border-border p-4 gap-3 lg:overflow-hidden">
-        {/* Row A: Underline Tabs (left) + Inline Legend (right) */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
-          <TaskScopeTabs
-            activeScope={params.scope}
-            counts={counts}
-            onScopeChange={setScope}
-          />
-          <LegendStrip className="hidden lg:flex" />
-        </div>
+      {/* Main Content Card */}
+      <div className="flex min-h-0 flex-1 flex-col rounded-xl border border-border bg-card overflow-hidden">
+        <div className="shrink-0 flex flex-col gap-3 short:gap-2 p-4 short:p-3 pb-3 border-b border-border bg-card">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2">
+            <TaskScopeTabs
+              activeScope={params.scope}
+              counts={counts}
+              onScopeChange={setScope}
+              className="border-b-0 -mb-2 lg:mb-0"
+            />
+            <LegendStrip className="hidden xl:flex" />
+          </div>
 
-        {/* Row B: Filter Bar */}
-        <div className="shrink-0">
           <FilterBar
-            key={`${params.scope}-${params.search || ''}-${params.fromDate || ''}-${params.toDate || ''}-${params.department || ''}-${params.status || ''}`}
+            key={`${params.search ?? ''}|${params.fromDate ?? ''}|${params.toDate ?? ''}|${params.department ?? ''}|${params.status ?? ''}`}
             initialValues={{
               search: params.search,
               fromDate: params.fromDate,
@@ -148,42 +145,44 @@ export function TaskListPage() {
           />
         </div>
 
-        {/* Row C: DataTable with fixed layout & sticky header */}
-        <div className="flex-1 min-h-0 flex flex-col">
-          <DataTable<Task>
-            data={items}
-            columns={columns}
-            keyExtractor={(item) => item.id}
-            onRowClick={handleRowClick}
-            isLoading={isLoading}
-            error={
-              isError ? (
-                <InlineError status={errorStatus} onRetry={() => void refetch()} />
-              ) : undefined
-            }
-            emptyMessage={emptyMessage}
-            renderMobileCard={renderMobileCard}
-            className="flex-1 min-h-0"
-          />
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          {isError ? (
+            <InlineError
+              status={errorStatus}
+              onRetry={() => void refetch()}
+              className="m-4"
+            />
+          ) : (
+            <DataTable
+              columns={columns}
+              data={items}
+              keyExtractor={(row) => String(row.id)}
+              isLoading={isLoading}
+              emptyMessage={emptyMessage}
+              onRowClick={handleRowClick}
+              renderMobileCard={renderMobileCard}
+              className="flex-1 min-h-0"
+            />
+          )}
         </div>
 
-        {/* Card Footer: Pagination */}
-        <div className="shrink-0 pt-2 border-t border-border">
-          <PaginationControl
-            page={params.page}
-            pageSize={params.pageSize}
-            total={total}
-            onPageChange={setPage}
-            onPageSizeChange={setPageSize}
-          />
-        </div>
+        {!isError && total > 0 && (
+          <div className="shrink-0 border-t border-border bg-card px-4 py-2.5">
+            <PaginationControl
+              page={params.page}
+              pageSize={params.pageSize}
+              total={total}
+              onPageChange={(newPage) => setPage(newPage)}
+              onPageSizeChange={(newSize) => setPageSize(newSize)}
+            />
+          </div>
+        )}
       </div>
 
-      {/* ── Mobile FAB (Floating Action Button) ── */}
-      {isMobile && (
+      {isMobile && canCreate && (
         <Button
           asChild
-          className="fixed bottom-6 right-6 z-40 size-14 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground p-0 flex items-center justify-center cursor-pointer"
+          className="fixed bottom-5 right-5 z-40 size-14 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground p-0 flex items-center justify-center"
           aria-label={t('tasks.create')}
         >
           <Link to={APP_ROUTES.TASK_NEW}>
@@ -194,4 +193,5 @@ export function TaskListPage() {
     </div>
   )
 }
+
 export default TaskListPage

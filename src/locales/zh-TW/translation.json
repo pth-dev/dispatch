@@ -171,7 +171,57 @@
       "timelineBy": "執行人：{{actor}}",
       "noTimeline": "尚無處理紀錄。",
       "commentPlaceholder": "輸入交流內容或討論意見...",
-      "sendComment": "傳送留言"
+      "sendComment": "傳送留言",
+      "clone": "複製派案",
+      "deleteConfirmTitle": "確認刪除任務？",
+      "deleteConfirmDesc": "您確定要刪除任務 #{{id}} 嗎？此操作無法復原。",
+      "splitGroupTitle": "拆分群組",
+      "splitGroupSummary": "已完成 {{done}}/{{total}} • 平均 {{avg}}%",
+      "workItemsTitle": "工作項目 ({{count}})",
+      "workItemsReadOnlyHint": "v1 版本僅唯讀",
+      "workItemTopic": "項目",
+      "workItemOwner": "負責人",
+      "workItemDates": "週期",
+      "workItemProgress": "進度"
+    },
+    "confidential": {
+      "label": "密級",
+      "lv0": "一般性",
+      "lv1": "機密性",
+      "lv2": "私有（僅建立人）",
+      "lv3": "最高機密（高層）"
+    },
+    "fields": {
+      "reqDepts": "需求部門",
+      "reqContact": "需求聯絡人",
+      "site": "廠區",
+      "taskType": "任務類型",
+      "taskTypePlaceholder": "選擇或輸入任務類型...",
+      "precautions": "注意事項 / 風險",
+      "riskStatus": "風險等級",
+      "recurType": "固定週期",
+      "recurOnce": "單次",
+      "recurWeekly": "每週",
+      "recurMonthly": "每月",
+      "recurTime": "週期截止時間",
+      "autoSplitHint": "選擇 2 人以上將自動按人拆分任務",
+      "readers": "唯讀人員",
+      "crossDept": "允許跨部門檢視與回報"
+    },
+    "report": {
+      "composerTitle": "動態回報 / 暫停",
+      "feedTitle": "進度回報紀錄 ({{count}})",
+      "progressLabel": "進度",
+      "stateLabel": "執行狀態",
+      "stateRunning": "進行中",
+      "statePaused": "已暫停",
+      "pauseReason": "暫停原因",
+      "pauseReasonPlaceholder": "請輸入暫停原因...",
+      "targetMember": "回報對象",
+      "contentLabel": "回報內容",
+      "contentPlaceholder": "輸入進度說明、問題或結果...",
+      "kmLink": "知識庫連結 (KM)",
+      "submit": "送出回報"
     },
     "approve": {
       "title": "驗收審批",
@@ -213,6 +263,8 @@
     },
     "createForm": {
       "title": "新增任務",
+      "editTitle": "編輯任務 #{{id}}",
+      "cloneTitle": "複製自任務 #{{id}}",
       "taskName": "任務名稱",
       "taskNamePlaceholder": "輸入具體的任務名稱...",
       "description": "詳細描述",
@@ -243,7 +295,14 @@
       "dueDateRequired": "請選擇截止日期",
       "reassignReasonRequired": "請輸入至少 5 個字元的原因",
       "rejectReasonRequired": "請輸入至少 5 個字元的原因",
-      "checklistRequired": "請檢查全部驗收項"
+      "checklistRequired": "請檢查全部驗收項",
+      "taskTypeRequired": "請選擇或輸入任務類型",
+      "reqDeptRequired": "請至少選擇 1 個需求部門",
+      "reqContactRequired": "請輸入需求聯絡人",
+      "siteRequired": "請至少選擇 1 個廠區",
+      "maxAssignees": "最多選擇 20 名處理人",
+      "pausedCannotBe100": "進度為 100% 時不能設為暫停",
+      "cloneDueDateMustChange": "複製派案時，請選擇不同於原任務的新截止日期。"
     }
   },
   "errors": {

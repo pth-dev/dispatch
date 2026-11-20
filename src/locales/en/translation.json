@@ -171,7 +171,57 @@
       "timelineBy": "Performed by: {{actor}}",
       "noTimeline": "No processing history yet.",
       "commentPlaceholder": "Write a message or discussion comment...",
-      "sendComment": "Send comment"
+      "sendComment": "Send comment",
+      "clone": "Clone",
+      "deleteConfirmTitle": "Delete this task?",
+      "deleteConfirmDesc": "Are you sure you want to delete task #{{id}}? This action cannot be undone.",
+      "splitGroupTitle": "Split group",
+      "splitGroupSummary": "Completed {{done}}/{{total}} • Average {{avg}}%",
+      "workItemsTitle": "Work items ({{count}})",
+      "workItemsReadOnlyHint": "Read-only in v1",
+      "workItemTopic": "Topic",
+      "workItemOwner": "Owner",
+      "workItemDates": "Schedule",
+      "workItemProgress": "Progress"
+    },
+    "confidential": {
+      "label": "Confidentiality",
+      "lv0": "General",
+      "lv1": "Confidential",
+      "lv2": "Private (creator only)",
+      "lv3": "Top secret (executives)"
+    },
+    "fields": {
+      "reqDepts": "Requesting departments",
+      "reqContact": "Contact person",
+      "site": "Site",
+      "taskType": "Task type",
+      "taskTypePlaceholder": "Select or enter task type...",
+      "precautions": "Precautions / Notes",
+      "riskStatus": "Risk level",
+      "recurType": "Recurrence",
+      "recurOnce": "One-time",
+      "recurWeekly": "Weekly",
+      "recurMonthly": "Monthly",
+      "recurTime": "Cycle cutoff time",
+      "autoSplitHint": "Selecting 2+ assignees automatically splits into per-person tasks",
+      "readers": "Read-only viewers",
+      "crossDept": "Allow cross-department viewing & reporting"
+    },
+    "report": {
+      "composerTitle": "Progress update / Pause",
+      "feedTitle": "Progress report history ({{count}})",
+      "progressLabel": "Progress",
+      "stateLabel": "Execution state",
+      "stateRunning": "Running",
+      "statePaused": "Paused",
+      "pauseReason": "Pause reason",
+      "pauseReasonPlaceholder": "Enter reason for pausing...",
+      "targetMember": "Report for member",
+      "contentLabel": "Report content",
+      "contentPlaceholder": "Enter progress update, blockers, or results...",
+      "kmLink": "Reference link (KM)",
+      "submit": "Submit report"
     },
     "approve": {
       "title": "Approve acceptance",
@@ -213,6 +263,8 @@
     },
     "createForm": {
       "title": "Create new task",
+      "editTitle": "Edit task #{{id}}",
+      "cloneTitle": "Clone from task #{{id}}",
       "taskName": "Task name",
       "taskNamePlaceholder": "Enter a specific task name...",
       "description": "Detailed description",
@@ -243,7 +295,14 @@
       "dueDateRequired": "Please select a due date",
       "reassignReasonRequired": "Please enter a reason of at least 5 characters",
       "rejectReasonRequired": "Please enter a reason of at least 5 characters",
-      "checklistRequired": "Please check every acceptance item"
+      "checklistRequired": "Please check every acceptance item",
+      "taskTypeRequired": "Please select or enter a task type",
+      "reqDeptRequired": "Please select at least 1 requesting department",
+      "reqContactRequired": "Please enter a contact person",
+      "siteRequired": "Please select at least 1 site",
+      "maxAssignees": "Maximum 20 assignees allowed",
+      "pausedCannotBe100": "Cannot pause a task when progress is 100%",
+      "cloneDueDateMustChange": "When cloning a task, please choose a new due date different from the source task."
     }
   },
   "errors": {

@@ -1,29 +1,21 @@
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/utils'
-import type { DerivedTaskStatus, TaskStatus } from '@/schemas/task'
+import type { DerivedTaskStatus, TaskStatusFilter } from '@/schemas/task'
 
 export type DerivedStatusKey = DerivedTaskStatus | 'paused' | 'urgent'
-export type StatusKey = DerivedStatusKey | TaskStatus
+export type StatusKey = DerivedStatusKey
 
 /** Status colors are tokens only (brief §3.2): never a raw hex/palette value. */
 export interface StatusMeta {
-  /** Text color utility, e.g. `text-status-in-progress`. */
   textClass: string
-  /** Dot background utility matching `textClass`. */
   dotClass: string
   labelKey: string
-  /** Display order in filters and legends. */
   order: number
-  /** Included in the task-list status filter. */
   filterable?: boolean
-  /** Included in the compact status legend. */
   inLegend?: boolean
 }
 
-/**
- * Single source of truth for real-API derived task status presentation.
- */
 export const DERIVED_STATUS_META: Record<DerivedStatusKey, StatusMeta> = {
   not_started: {
     textClass: 'text-status-not-started',
@@ -81,65 +73,7 @@ export const DERIVED_STATUS_META: Record<DerivedStatusKey, StatusMeta> = {
   },
 }
 
-/**
- * Combined map keeping transitional Stage-2 keys until Step 5 removes legacy task screens.
- */
-export const STATUS_META: Record<StatusKey, StatusMeta> = {
-  ...DERIVED_STATUS_META,
-  new: {
-    textClass: 'text-status-new',
-    dotClass: 'bg-status-new',
-    labelKey: 'status.new',
-    order: 10,
-    filterable: true,
-    inLegend: true,
-  },
-  draft: {
-    textClass: 'text-status-draft',
-    dotClass: 'bg-status-draft',
-    labelKey: 'status.draft',
-    order: 20,
-    filterable: true,
-  },
-  pending: {
-    textClass: 'text-status-pending',
-    dotClass: 'bg-status-pending',
-    labelKey: 'status.pending',
-    order: 40,
-    filterable: true,
-    inLegend: true,
-  },
-  approved: {
-    textClass: 'text-status-approved',
-    dotClass: 'bg-status-approved',
-    labelKey: 'status.approved',
-    order: 50,
-    filterable: true,
-  },
-  done: {
-    textClass: 'text-status-done',
-    dotClass: 'bg-status-done',
-    labelKey: 'status.done',
-    order: 60,
-    filterable: true,
-    inLegend: true,
-  },
-  overdue: {
-    textClass: 'text-status-overdue',
-    dotClass: 'bg-status-overdue',
-    labelKey: 'status.overdue',
-    order: 70,
-    filterable: true,
-    inLegend: true,
-  },
-  rejected: {
-    textClass: 'text-status-rejected',
-    dotClass: 'bg-status-rejected',
-    labelKey: 'status.rejected',
-    order: 80,
-    filterable: true,
-  },
-}
+export const STATUS_META = DERIVED_STATUS_META
 
 function sortedDerivedStatuses(
   predicate: (meta: StatusMeta) => boolean,
@@ -149,30 +83,16 @@ function sortedDerivedStatuses(
     .sort((a, b) => DERIVED_STATUS_META[a].order - DERIVED_STATUS_META[b].order)
 }
 
-/** Real-API filter options, ordered. `urgent` is a row flag, not a status filter. */
 export const DERIVED_FILTER_STATUSES = sortedDerivedStatuses(
   (meta) => meta.filterable === true,
-) as Array<DerivedTaskStatus | 'paused'>
+) as TaskStatusFilter[]
 
-/** Real-API legend entries, ordered. */
 export const DERIVED_LEGEND_STATUSES = sortedDerivedStatuses(
   (meta) => meta.inLegend === true,
 )
 
-/** @deprecated Transitional Stage-2 lists, replaced by DERIVED_* in Step 5. */
-export const FILTER_STATUSES: TaskStatus[] = [
-  'new',
-  'draft',
-  'in_progress',
-  'pending',
-  'approved',
-  'done',
-  'overdue',
-  'rejected',
-]
-
-/** @deprecated Transitional Stage-2 legend, replaced by DERIVED_LEGEND_STATUSES in Step 5. */
-export const LEGEND_STATUSES: StatusKey[] = ['new', 'in_progress', 'pending', 'done', 'overdue']
+export const FILTER_STATUSES = DERIVED_FILTER_STATUSES
+export const LEGEND_STATUSES = DERIVED_LEGEND_STATUSES
 
 export interface StatusTextProps extends React.HTMLAttributes<HTMLSpanElement> {
   status: StatusKey

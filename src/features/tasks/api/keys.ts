@@ -1,10 +1,9 @@
-import type { TaskListParams } from '@/schemas/task'
-
 export const taskKeys = {
   all: ['tasks'] as const,
-  lists: () => [...taskKeys.all, 'list'] as const,
-  list: (params: TaskListParams) => [...taskKeys.lists(), params] as const,
-  details: () => [...taskKeys.all, 'detail'] as const,
-  detail: (id: string) => [...taskKeys.details(), id] as const,
-  departments: () => ['departments'] as const,
+  list: () => [...taskKeys.all, 'all'] as const,
+  reports: (taskId: number) => [...taskKeys.all, 'reports', taskId] as const,
+  metaDepts: () => ['meta', 'depts'] as const,
+  metaSites: () => ['meta', 'sites'] as const,
+  directory: () => ['users', 'directory'] as const,
+  pocketTaskTypes: () => ['pocket', 'task-types'] as const,
 }

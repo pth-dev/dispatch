@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useSearchParams } from 'react-router'
-import { TaskStatusSchema, type TaskListParams } from '@/schemas/task'
+import { TaskStatusFilterSchema, type TaskListParams } from '@/schemas/task'
 
 const DEFAULT_SCOPE = 'mine'
 const DEFAULT_PAGE = 1
@@ -24,7 +24,7 @@ export function useTaskListParams() {
   const fromDate = searchParams.get('fromDate') || undefined
   const toDate = searchParams.get('toDate') || undefined
   const department = searchParams.get('department') || undefined
-  const parsedStatus = TaskStatusSchema.safeParse(searchParams.get('status'))
+  const parsedStatus = TaskStatusFilterSchema.safeParse(searchParams.get('status'))
   const status = parsedStatus.success ? parsedStatus.data : undefined
 
   const params: TaskListParams = {

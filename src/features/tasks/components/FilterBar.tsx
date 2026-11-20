@@ -17,7 +17,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import { useDepartments } from '../api/queries'
+import { useMetaDepts } from '../api/queries'
+import { getDeptDisplayName } from '../api/meta'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,8 +28,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import type { TaskStatus } from '@/schemas/task'
-import { FILTER_STATUSES, STATUS_META } from '@/components/ui/status-text'
+import type { TaskStatusFilter } from '@/schemas/task'
+import { DERIVED_FILTER_STATUSES, STATUS_META } from '@/components/ui/status-text'
 import { cn } from '@/utils'
 
 export interface FilterValues {
@@ -47,9 +48,9 @@ interface FilterBarProps {
   className?: string
 }
 
-const ALL_STATUSES: { key: TaskStatus | 'all'; labelKey: string }[] = [
+const ALL_STATUSES: { key: TaskStatusFilter | 'all'; labelKey: string }[] = [
   { key: 'all', labelKey: 'status.all' },
-  ...FILTER_STATUSES.map((status) => ({
+  ...DERIVED_FILTER_STATUSES.map((status) => ({
     key: status,
     labelKey: STATUS_META[status].labelKey,
   })),
@@ -62,8 +63,9 @@ export function FilterBar({
   onReset,
   className,
 }: FilterBarProps) {
-  const { t } = useTranslation()
-  const { data: departments = [] } = useDepartments()
+  const { t, i18n } = useTranslation()
+  const { data: metaDepts } = useMetaDepts()
+  const departments = metaDepts?.depts ?? []
 
   // Local draft state initialized from URL props
   const [search, setSearch] = React.useState(initialValues.search || '')
@@ -169,8 +171,8 @@ export function FilterBar({
                 {t('department.all')}
               </SelectItem>
               {departments.map((dept) => (
-                <SelectItem key={dept.id} value={dept.id} className="text-xs">
-                  {dept.name}
+                <SelectItem key={dept.value} value={dept.value} className="text-xs">
+                  {getDeptDisplayName(dept, i18n.language)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -294,8 +296,8 @@ export function FilterBar({
                       {t('department.all')}
                     </SelectItem>
                     {departments.map((dept) => (
-                      <SelectItem key={dept.id} value={dept.id} className="text-xs">
-                        {dept.name}
+                      <SelectItem key={dept.value} value={dept.value} className="text-xs">
+                        {getDeptDisplayName(dept, i18n.language)}
                       </SelectItem>
                     ))}
                   </SelectContent>

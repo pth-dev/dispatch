@@ -171,7 +171,57 @@
       "timelineBy": "Thực hiện bởi: {{actor}}",
       "noTimeline": "Chưa có lịch sử xử lý.",
       "commentPlaceholder": "Nhập nội dung trao đổi hoặc ý kiến thảo luận...",
-      "sendComment": "Gửi bình luận"
+      "sendComment": "Gửi bình luận",
+      "clone": "Nhân bản",
+      "deleteConfirmTitle": "Xác nhận xoá nhiệm vụ?",
+      "deleteConfirmDesc": "Bạn có chắc chắn muốn xoá nhiệm vụ #{{id}}? Thao tác này không thể hoàn tác.",
+      "splitGroupTitle": "Nhóm tách (Split group)",
+      "splitGroupSummary": "Hoàn thành {{done}}/{{total}} • Trung bình {{avg}}%",
+      "workItemsTitle": "Hạng mục công việc ({{count}})",
+      "workItemsReadOnlyHint": "Chỉ đọc ở phiên bản v1",
+      "workItemTopic": "Hạng mục",
+      "workItemOwner": "Phụ trách",
+      "workItemDates": "Thời gian",
+      "workItemProgress": "Tiến độ"
+    },
+    "confidential": {
+      "label": "Độ mật",
+      "lv0": "Thông thường",
+      "lv1": "Bảo mật",
+      "lv2": "Riêng tư (chỉ người giao)",
+      "lv3": "Tối mật (lãnh đạo cấp cao)"
+    },
+    "fields": {
+      "reqDepts": "Phòng ban yêu cầu",
+      "reqContact": "Người liên hệ",
+      "site": "Cơ sở / Nhà máy",
+      "taskType": "Loại nhiệm vụ",
+      "taskTypePlaceholder": "Chọn hoặc nhập loại nhiệm vụ...",
+      "precautions": "Lưu ý / Rủi ro",
+      "riskStatus": "Mức độ rủi ro",
+      "recurType": "Chu kỳ thực hiện",
+      "recurOnce": "Một lần",
+      "recurWeekly": "Hàng tuần",
+      "recurMonthly": "Hàng tháng",
+      "recurTime": "Giờ chốt chu kỳ",
+      "autoSplitHint": "Chọn từ 2 người trở lên sẽ tự động tách nhiệm vụ theo từng người",
+      "readers": "Người chỉ đọc",
+      "crossDept": "Cho phép xem & báo cáo liên phòng ban"
+    },
+    "report": {
+      "composerTitle": "Cập nhật tiến độ / Tạm dừng",
+      "feedTitle": "Lịch sử báo cáo tiến độ ({{count}})",
+      "progressLabel": "Tiến độ",
+      "stateLabel": "Trạng thái thực hiện",
+      "stateRunning": "Đang hoạt động",
+      "statePaused": "Tạm dừng",
+      "pauseReason": "Lý do tạm dừng",
+      "pauseReasonPlaceholder": "Nhập lý do tạm dừng...",
+      "targetMember": "Báo cáo cho thành viên",
+      "contentLabel": "Nội dung báo cáo",
+      "contentPlaceholder": "Nhập tiến độ công việc, vướng mắc hoặc kết quả...",
+      "kmLink": "Liên kết tài liệu (KM)",
+      "submit": "Gửi báo cáo"
     },
     "approve": {
       "title": "Phê duyệt nghiệm thu",
@@ -213,6 +263,8 @@
     },
     "createForm": {
       "title": "Thêm nhiệm vụ mới",
+      "editTitle": "Chỉnh sửa nhiệm vụ #{{id}}",
+      "cloneTitle": "Nhân bản từ nhiệm vụ #{{id}}",
       "taskName": "Tên nhiệm vụ",
       "taskNamePlaceholder": "Nhập tên nhiệm vụ cụ thể...",
       "description": "Mô tả chi tiết",
@@ -243,7 +295,14 @@
       "dueDateRequired": "Vui lòng chọn hạn hoàn thành",
       "reassignReasonRequired": "Vui lòng nhập lý do tối thiểu 5 ký tự",
       "rejectReasonRequired": "Vui lòng nhập lý do tối thiểu 5 ký tự",
-      "checklistRequired": "Vui lòng kiểm tra đủ danh mục nghiệm thu"
+      "checklistRequired": "Vui lòng kiểm tra đủ danh mục nghiệm thu",
+      "taskTypeRequired": "Vui lòng chọn hoặc nhập loại nhiệm vụ",
+      "reqDeptRequired": "Vui lòng chọn ít nhất 1 phòng ban yêu cầu",
+      "reqContactRequired": "Vui lòng nhập người liên hệ",
+      "siteRequired": "Vui lòng chọn ít nhất 1 cơ sở",
+      "maxAssignees": "Tối đa 20 người xử lý",
+      "pausedCannotBe100": "Không thể tạm dừng khi tiến độ là 100%",
+      "cloneDueDateMustChange": "Khi nhân bản nhiệm vụ, vui lòng chọn ngày hạn hoàn thành mới khác nhiệm vụ gốc."
     }
   },
   "errors": {
