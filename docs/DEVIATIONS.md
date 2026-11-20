@@ -36,17 +36,17 @@ As mandated by the boilerplate and project rules, all deviations are documented 
 - **D3 (Scope Tabs):** Labels are "Giao cho tôi / Tôi giao / Tất cả". Default scope is `mine` for staff ("Nhân viên"), `all` for department heads ("Trưởng bộ phận") and approvers ("Người duyệt").
 - **D4 (Action Button):** Label is "Thêm nhiệm vụ" (matching mockup).
 - **D5 (Navigation Names):** "Bảng điều khiển" (Dashboard) and "Văn bản hệ thống" (System texts).
-- **D6 (Roles & Permissions):**
-  - Roles: `Nhân viên` (assignee, primary persona), `Người duyệt` (approver), `Trưởng bộ phận` (department head / dispatcher), `Quản trị viên` (admin).
-  - Permission keys: `task.view`, `task.create`, `task.update`, `task.assign`, `task.reassign`, `task.approve`, `lesson.view`, `lesson.manage`, `system.manage`.
+- **D6 (Roles & Permissions — Updated post-legacy analysis):**
+  - Replaced the brief's 4 synthetic roles (`Người duyệt` removed) and 9 synthetic permission keys with the real backend model: **5 fixed roles** (`user`, `admin`, `superadmin`, `exec_assistant`, `exec_vp`) + **14 per-account `menu_perms` keys** (`dashboard`, `list`, `messages`, `learnknow`, `language`, `todo`, `worklog`, `report_pdf`, `kpi_report`, `excel_report`, `kpi_people`, `kpi_brief`, `account`, `ad` with `s`/`r`/`w` levels, `null` = full access) + legacy task-level ownership/department/confidentiality helpers. The brief's editable Role-Permission matrix screen is out of scope.
 - **D7 (Zustand Scope):** Restricted to client session, role, active locale, UI preferences (density, collapsed states), and dev mock toggles. URL search params remain the single source of truth for list/filter/pagination state.
-- **D8 (First-Release Scope):** App shell, error pages, task lifecycle (list, detail, approve, create, reassign), minimal login, and personal settings.
+- **D8 (First-Release Scope — Updated post-legacy analysis):** Core v1 = App shell, error pages, Login / Session / Remember-Me / Personal Settings, and the real-API Task lifecycle (list with client-side filtering/pagination, detail + dynamic progress reports + pause/resume + split-group view + read-only `work_items`, create/edit/clone/delete with confidentiality 0–3, readers, cross-viewers, multi-assignee, recurring). Acceptance/approval flow (§5.3, `pending`/`approved`/`rejected`, `task.approve`) is permanently out of scope. Dashboard, Todo, Messages, Lessons, KPI/Reports, Project `work_items` editor/Gantt, and Admin screens are deferred to later phases.
 
 ---
 
 ## 4. Internationalization (i18n)
 
-- Locales supported: `vi` (Vietnamese, default), `en` (English), `zh-CN` (Simplified Chinese).
+- Locales supported: `vi` (Vietnamese, default), `en` (English), `zh-CN` (Simplified Chinese), `zh-TW` (Traditional Chinese).
+- **Server i18n overrides dropped:** The new SPA uses static bundled `i18next` JSON files only; legacy `GET /api/i18n/overrides` and the "Văn bản hệ thống" (`Dispatch-language.html`) screen/nav item are omitted.
 - **Path deviation:** `src/locales/<lang>/translation.json` (Vite enforces that files in `public/` are served as raw static URLs and cannot be directly imported into JavaScript bundles via `import ... from '../../public/...'`. Moving translation JSON files into `src/locales/` enables Vite to bundle them efficiently at build time, eliminates runtime HTTP fetch latency, and complies with Vite's asset handling rules).
 - Keys follow grouped dot-notation (`nav.*`, `status.*`, `common.*`, `tasks.*`, `errors.*`).
 
@@ -101,6 +101,24 @@ Brief §3: "flat and calm. Light gray page, white cards with 1px border, NO box-
 - **Controls:** form controls and primary buttons use `h-11 lg:h-10` (44px mobile / 40px desktop); dense table row actions, pagination, tabs and dev-panel chrome keep their compact sizes. `Button` defaults are now `h-11 lg:h-10` (`sm`: `h-11 lg:h-8`), and `Input`/`Select` defaults follow the same pair.
 - **Table header:** already 40px — `table.tsx` sets `h-10` on `TableHead`, matched by the compact density spec, so no change was needed.
 - **Padding (verified, not redone):** the shell owns page padding — `AppShell.tsx` renders `<main className="... px-4 py-4 lg:px-6 short:py-3">`; no route page repeats outer padding, only internal card padding (`p-4`/`p-5`). Skeleton placeholders in the detail/approve pages still use `p-6` internally; left unchanged because it is card-level spacing.
+
+---
+
+## 9. Legacy Backend Alignment Decisions (Post-Analysis, Approved)
+
+The rebuild replaces the UI only; the existing Node backend (`Dispatch.js`) and SQLite database (`dispatch_database_v10.db`) do not change. See `docs/legacy-analysis/` for full evidence.
+
+1. **Deployment & Proxy (Reverse Proxy on Frontend Host):** Backend runs on internal HTTPS without frontend-host access. Vite `server.proxy` (dev, `secure: false`) and a frontend-side reverse proxy such as Nginx/IIS/Caddy (prod) forward `/api/*` and `/uploads/*` to the backend, avoiding CORS and self-signed SSL issues on user browsers.
+2. **Client-Side Pagination on `GET /api/tasks`:** `GET /api/tasks` returns the full visible `Task[]` bare array (< 1,000 rows in production). Filtering, scope counts (`mine` / `created` / `all`), sorting, and `10|20|30|50` pagination run client-side over the TanStack Query cache while keeping URL search params as the single source of truth.
+3. **Hybrid Backend Error Message Handling (Deviation from Brief §6):** HTTP/infrastructure errors (`401`, `403`, `404`, `408/429`, `5xx`, network) and `DUP_TITLE_DUE` map strictly to `i18next` keys (never exposing 5xx internals). For `400`/`409`/`422` business rejections where the backend returns a bilingual `data.message` without a machine code, the client extracts the active-language segment (`vi` or `zh-CN`/`zh-TW`) for toast/form feedback.
+4. **Auth Token Storage (Deviation from `.claude/rules/security.md`):** Because the backend authenticates via custom headers (`username: encodeURIComponent(u)` and `x-session-token`) rather than `httpOnly` cookies, the SPA stores the active tab session in `sessionStorage` (`dispatch_session_v15`) and the opt-in "Remember me" 64-hex device token in `localStorage` (`dispatch.remember.v16`) for `POST /api/session/resume`. XSS risk is mitigated by React escaping and zero `dangerouslySetInnerHTML`.
+5. **Project `work_items` & Mobile:** In v1, tasks with `work_items` display their sub-work items read-only on the detail page and preserve the original `work_items` JSON verbatim on `PUT /api/tasks/:id` to prevent data loss (full project editor & Gantt deferred). The responsive SPA (`lg: 1024px`) replaces legacy `Dispatch-cell.html` directly with no phone redirect.
+6. **Live-Probe Verified Shapes (2026-11-20):**
+   - `GET /api/session/verify` → `{ success, user: { id, username, fullname, dept, site, role, status, auth_source, email, title, dept_source, dept_ou_dn, ad_dn, menu_perms, is_computer_room } }`.
+   - `GET /api/tasks` → bare `Task[]` (`id` numeric, `due_date` `YYYY-MM-DDTHH:mm`, `createdAt`/`updatedAt`/`dispatch_date` `YYYY-MM-DD HH:mm:ss`, `attachments` JSON string, `all_reports` formatted summary string, `last_report`, `last_report_meta`).
+   - `GET /api/tasks/:id/reports` → bare `Report[]` newest-first (`id`, `task_id`, `username`, `fullname`, `content`, `attachments` JSON string, `km_link`, `createdAt`, `progress`, `updatedAt`, `pause_action`, `work_topics`, `split_assignee`, `split_seq`).
+   - `GET /api/meta/depts` & `GET /api/meta/sites` → return `depts`/`allDepts`, `sites`/`allSites`, plus `roles`, `secrecy`, `secrecy_order`, `dispatch_nature`, `levels`, `legacy`, `otherValue`.
+
 
 
 
