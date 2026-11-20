@@ -19,10 +19,14 @@
     "logout": "Đăng xuất"
   },
   "role": {
+    "user": "Thành viên",
+    "admin": "Quản trị viên",
+    "superadmin": "Siêu quản trị viên",
+    "exec_assistant": "Trợ lý đặc biệt",
+    "exec_vp": "Phó Tổng giám đốc",
     "employee": "Nhân viên",
     "approver": "Người duyệt",
-    "manager": "Trưởng bộ phận",
-    "admin": "Quản trị viên"
+    "manager": "Trưởng bộ phận"
   },
   "department": {
     "all": "Tất cả phòng ban",
@@ -314,9 +318,51 @@
     "footer": "© 2026 Điều Phối • Phiên bản V16.8"
   },
   "login": {
+    "title": "Đăng nhập hệ thống",
+    "subtitle": "Sử dụng tài khoản nội bộ hoặc AD của bạn để tiếp tục.",
     "account": "Tài khoản",
+    "accountPlaceholder": "Nhập tên đăng nhập...",
     "password": "Mật khẩu",
-    "submit": "Đăng nhập"
+    "passwordPlaceholder": "Nhập mật khẩu...",
+    "rememberMe": "Ghi nhớ đăng nhập trên thiết bị này",
+    "submit": "Đăng nhập",
+    "submitting": "Đang đăng nhập...",
+    "validation": {
+      "usernameRequired": "Vui lòng nhập tài khoản",
+      "passwordRequired": "Vui lòng nhập mật khẩu"
+    }
+  },
+  "profile": {
+    "accountInfo": "Thông tin tài khoản",
+    "fullname": "Họ và tên",
+    "username": "Tên đăng nhập",
+    "department": "Phòng ban",
+    "site": "Cơ sở / Nhà máy",
+    "role": "Vai trò",
+    "authSource": "Nguồn xác thực",
+    "authLocal": "Tài khoản nội bộ (Local)",
+    "authAd": "Active Directory (AD)",
+    "email": "Email",
+    "jobTitle": "Chức danh",
+    "passwordTitle": "Đổi mật khẩu",
+    "adPasswordNotice": "Tài khoản này xác thực qua Active Directory (AD). Vui lòng đổi mật khẩu trên hệ thống miền của công ty.",
+    "oldPassword": "Mật khẩu hiện tại",
+    "newPassword": "Mật khẩu mới",
+    "confirmPassword": "Xác nhận mật khẩu mới",
+    "updatePassword": "Cập nhật mật khẩu",
+    "updatingPassword": "Đang cập nhật...",
+    "passwordSuccess": "Đổi mật khẩu thành công. Hệ thống sẽ đăng xuất để bạn đăng nhập lại.",
+    "sessionsTitle": "Bảo mật phiên đăng nhập",
+    "sessionsDescription": "Đăng xuất khỏi tất cả trình duyệt và thiết bị đã ghi nhớ đăng nhập.",
+    "logoutAll": "Đăng xuất khỏi mọi thiết bị",
+    "logoutAllConfirmTitle": "Đăng xuất khỏi mọi thiết bị?",
+    "logoutAllConfirmDesc": "Toàn bộ phiên đăng nhập và mã ghi nhớ trên các thiết bị khác sẽ bị thu hồi ngay lập tức.",
+    "validation": {
+      "oldPasswordRequired": "Vui lòng nhập mật khẩu hiện tại",
+      "newPasswordMin": "Mật khẩu mới tối thiểu 6 ký tự",
+      "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu mới",
+      "passwordMismatch": "Mật khẩu xác nhận không khớp"
+    }
   },
   "pages": {
     "dashboard": {

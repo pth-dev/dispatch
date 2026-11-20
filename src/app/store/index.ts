@@ -1,45 +1,35 @@
 import { create } from 'zustand'
 import { getInitialLocale, saveLocale, type SupportedLocale } from '@/i18n'
+import type { BackendUserRole, SessionUser } from '@/schemas/auth'
 
-export type UserRole = 'employee' | 'approver' | 'manager' | 'admin'
-
+export type AuthStatus = 'checking' | 'authenticated' | 'unauthenticated'
 export type TableDensity = 'compact' | 'comfortable'
 
 export interface SessionState {
-  user: {
-    id: string
-    name: string
-    code: string
-    department: string
-    role: UserRole
-  }
+  user: SessionUser | null
+  authStatus: AuthStatus
   locale: SupportedLocale
   density: TableDensity
   sidebarCollapsed: boolean
 
-  // Actions
-  setRole: (role: UserRole) => void
+  setSession: (user: SessionUser) => void
+  clearSession: () => void
+  setAuthStatus: (status: AuthStatus) => void
   setLocale: (locale: SupportedLocale) => void
   setDensity: (density: TableDensity) => void
   setSidebarCollapsed: (collapsed: boolean) => void
 }
 
 export const useAppStore = create<SessionState>((set) => ({
-  user: {
-    id: 'user-01',
-    name: 'Nguyễn An',
-    code: 'IT-00102',
-    department: 'it',
-    role: 'employee',
-  },
+  user: null,
+  authStatus: 'checking',
   locale: getInitialLocale(),
   density: 'compact',
   sidebarCollapsed: false,
 
-  setRole: (role) =>
-    set((state) => ({
-      user: { ...state.user, role },
-    })),
+  setSession: (user) => set({ user, authStatus: 'authenticated' }),
+  clearSession: () => set({ user: null, authStatus: 'unauthenticated' }),
+  setAuthStatus: (authStatus) => set({ authStatus }),
   setLocale: (locale) => {
     saveLocale(locale)
     set({ locale })
@@ -48,4 +38,4 @@ export const useAppStore = create<SessionState>((set) => ({
   setSidebarCollapsed: (collapsed) => set({ sidebarCollapsed: collapsed }),
 }))
 
-export type { SupportedLocale }
+export type { BackendUserRole, SessionUser, SupportedLocale }

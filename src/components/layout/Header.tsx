@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
 import {
-  Bell,
   Menu,
   ChevronDown,
   User,
@@ -20,29 +19,41 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Logo } from './Logo'
-import { useAppStore, type UserRole, type SupportedLocale } from '@/app/store'
+import { useAppStore, type SupportedLocale } from '@/app/store'
 import { APP_ROUTES } from '@/constants/app-routes'
+import { logoutSession } from '@/services'
 
 interface HeaderProps {
   onOpenMobileMenu?: () => void
 }
 
+const LANGUAGE_OPTIONS: ReadonlyArray<{ code: SupportedLocale; labelKey: string }> = [
+  { code: 'vi', labelKey: 'language.vi' },
+  { code: 'en', labelKey: 'language.en' },
+  { code: 'zh-CN', labelKey: 'language.zhCN' },
+  { code: 'zh-TW', labelKey: 'language.zhTW' },
+]
+
 export function Header({ onOpenMobileMenu }: HeaderProps) {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
-  const { user, setRole, setLocale } = useAppStore()
+  const user = useAppStore((s) => s.user)
+  const setLocale = useAppStore((s) => s.setLocale)
+  const clearSession = useAppStore((s) => s.clearSession)
+
+  const displayName = user?.fullname || user?.username || ''
+  const initial = displayName.charAt(0).toUpperCase() || 'U'
+  const roleKey = user ? `role.${user.role}` : 'role.user'
 
   const handleLanguageChange = (lang: SupportedLocale) => {
-    i18n.changeLanguage(lang)
+    void i18n.changeLanguage(lang)
     setLocale(lang)
   }
 
-  const handleRoleChange = (role: UserRole) => {
-    setRole(role)
-  }
-
-  const handleLogout = () => {
-    navigate(APP_ROUTES.LOGIN)
+  const handleLogout = async () => {
+    await logoutSession(false)
+    clearSession()
+    navigate(APP_ROUTES.LOGIN, { replace: true })
   }
 
   return (
@@ -65,18 +76,18 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
 
       {/* Desktop Left: Department / Scope View */}
       <div className="hidden lg:flex items-center gap-3">
-        <div className="flex items-center gap-2 rounded-md bg-secondary px-3 py-1.5 text-xs text-muted-foreground">
-          <Building2 className="size-3.5 text-primary" />
-          <span>{t('header.currentView')}</span>
-          <span className="font-semibold text-foreground">
-            {user.department}
-          </span>
-        </div>
+        {user?.dept && (
+          <div className="flex items-center gap-2 rounded-md bg-secondary px-3 py-1.5 text-xs text-muted-foreground">
+            <Building2 className="size-3.5 text-primary" />
+            <span>{t('header.currentView')}</span>
+            <span className="font-semibold text-foreground">{user.dept}</span>
+          </div>
+        )}
       </div>
 
       {/* Header Right Actions */}
       <div className="flex items-center gap-2 lg:gap-4">
-        {/* Language Switcher */}
+        {/* Language Switcher (4 locales) */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -91,28 +102,17 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="text-xs">
-            <DropdownMenuItem onClick={() => handleLanguageChange('vi')}>
-              {t('language.vi')}
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleLanguageChange('en')}>
-              {t('language.en')}
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleLanguageChange('zh-CN')}>
-              {t('language.zhCN')}
-            </DropdownMenuItem>
+            {LANGUAGE_OPTIONS.map((opt) => (
+              <DropdownMenuItem
+                key={opt.code}
+                onClick={() => handleLanguageChange(opt.code)}
+                className={i18n.language === opt.code ? 'bg-primary-soft text-primary font-medium' : ''}
+              >
+                {t(opt.labelKey)}
+              </DropdownMenuItem>
+            ))}
           </DropdownMenuContent>
         </DropdownMenu>
-
-        {/* Notification Bell */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative size-9 min-h-[44px] min-w-[44px] p-0 text-muted-foreground hover:text-foreground"
-          aria-label={t('header.notifications')}
-        >
-          <Bell className="size-5" />
-          <span className="absolute top-2.5 right-2.5 size-2 rounded-full bg-destructive ring-2 ring-card" />
-        </Button>
 
         {/* User Profile Menu */}
         <DropdownMenu>
@@ -123,16 +123,16 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
             >
               <Avatar className="size-8 border border-border">
                 <AvatarFallback className="bg-primary-soft text-primary font-semibold text-xs">
-                  {user.name.charAt(0)}
+                  {initial}
                 </AvatarFallback>
               </Avatar>
 
               <div className="hidden lg:flex flex-col text-left">
                 <span className="text-xs font-semibold text-primary leading-tight">
-                  {t('header.greeting', { name: user.name })}
+                  {t('header.greeting', { name: displayName })}
                 </span>
                 <span className="text-[11px] text-muted-foreground leading-tight">
-                  {t(`role.${user.role}`)}
+                  {t(roleKey)}
                 </span>
               </div>
 
@@ -143,31 +143,15 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
           <DropdownMenuContent align="end" className="w-56 text-xs">
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-xs font-semibold text-foreground leading-none">{user.name}</p>
+                <p className="text-xs font-semibold text-foreground leading-none">{displayName}</p>
                 <p className="text-[11px] leading-none text-muted-foreground">
-                  {t('header.userCode', { code: user.code })} • {user.department}
+                  {t('header.userCode', { code: user?.username ?? '-' })}
+                  {user?.dept ? ` • ${user.dept}` : ''}
                 </p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
 
-            {/* Quick Switch Role (for dev testing) */}
-            <DropdownMenuLabel className="text-[10px] text-muted-foreground uppercase tracking-wider">
-              {t('header.devRoleSwitch')}
-            </DropdownMenuLabel>
-            {(['employee', 'approver', 'manager', 'admin'] as UserRole[]).map(
-              (r) => (
-                <DropdownMenuItem
-                  key={r}
-                  onClick={() => handleRoleChange(r)}
-                  className={r === user.role ? 'bg-primary-soft text-primary font-semibold' : ''}
-                >
-                  {t(`role.${r}`)}
-                </DropdownMenuItem>
-              )
-            )}
-
-            <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link to={APP_ROUTES.PROFILE} className="flex items-center gap-2">
                 <User className="size-3.5 text-muted-foreground" />
@@ -176,7 +160,10 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
             </DropdownMenuItem>
 
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} className="text-destructive flex items-center gap-2">
+            <DropdownMenuItem
+              onClick={() => void handleLogout()}
+              className="text-destructive flex items-center gap-2"
+            >
               <LogOut className="size-3.5" />
               <span>{t('nav.logout')}</span>
             </DropdownMenuItem>

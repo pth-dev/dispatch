@@ -5,12 +5,29 @@ import { Sidebar } from './Sidebar'
 import { Header } from './Header'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { useSessionLifecycle } from '@/hooks/use-session-lifecycle'
+import { useAppStore } from '@/app/store'
 
 export function AppShell() {
   const { t } = useTranslation()
   const isMobile = useIsMobile()
+  const authStatus = useAppStore((s) => s.authStatus)
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
   const isDrawerOpen = isMobile && mobileMenuOpen
+
+  useSessionLifecycle()
+
+  if (authStatus === 'checking') {
+    return (
+      <div className="flex min-h-dvh items-center justify-center bg-background text-xs text-muted-foreground">
+        {t('common.loading')}
+      </div>
+    )
+  }
+
+  if (authStatus !== 'authenticated') {
+    return null
+  }
 
   return (
     <div className="flex h-dvh w-full overflow-hidden bg-background">

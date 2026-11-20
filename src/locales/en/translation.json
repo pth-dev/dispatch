@@ -19,10 +19,14 @@
     "logout": "Sign out"
   },
   "role": {
+    "user": "Member",
+    "admin": "Department Admin",
+    "superadmin": "Super Admin",
+    "exec_assistant": "Executive Assistant",
+    "exec_vp": "Vice President",
     "employee": "Employee",
     "approver": "Approver",
-    "manager": "Department manager",
-    "admin": "Administrator"
+    "manager": "Department manager"
   },
   "department": {
     "all": "All departments",
@@ -314,9 +318,51 @@
     "footer": "© 2026 Điều Phối • Version V16.8"
   },
   "login": {
+    "title": "Sign in",
+    "subtitle": "Use your local or Active Directory account to continue.",
     "account": "Username",
+    "accountPlaceholder": "Enter username...",
     "password": "Password",
-    "submit": "Sign in"
+    "passwordPlaceholder": "Enter password...",
+    "rememberMe": "Remember me on this device",
+    "submit": "Sign in",
+    "submitting": "Signing in...",
+    "validation": {
+      "usernameRequired": "Please enter your username",
+      "passwordRequired": "Please enter your password"
+    }
+  },
+  "profile": {
+    "accountInfo": "Account information",
+    "fullname": "Full name",
+    "username": "Username",
+    "department": "Department",
+    "site": "Site",
+    "role": "Role",
+    "authSource": "Authentication source",
+    "authLocal": "Local account",
+    "authAd": "Active Directory (AD)",
+    "email": "Email",
+    "jobTitle": "Job title",
+    "passwordTitle": "Change password",
+    "adPasswordNotice": "This account authenticates via Active Directory (AD). Please change your password through your company domain.",
+    "oldPassword": "Current password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "updatePassword": "Update password",
+    "updatingPassword": "Updating...",
+    "passwordSuccess": "Password updated. You will be signed out to log in again.",
+    "sessionsTitle": "Session security",
+    "sessionsDescription": "Sign out of all browsers and remembered devices.",
+    "logoutAll": "Sign out of all devices",
+    "logoutAllConfirmTitle": "Sign out of all devices?",
+    "logoutAllConfirmDesc": "All active sessions and remember-me tokens on other devices will be revoked immediately.",
+    "validation": {
+      "oldPasswordRequired": "Please enter your current password",
+      "newPasswordMin": "New password must be at least 6 characters",
+      "confirmPasswordRequired": "Please confirm your new password",
+      "passwordMismatch": "Passwords do not match"
+    }
   },
   "pages": {
     "dashboard": {
