@@ -4,8 +4,9 @@ import { initReactI18next } from 'react-i18next'
 import viTranslation from '@/locales/vi/translation.json'
 import enTranslation from '@/locales/en/translation.json'
 import zhCNTranslation from '@/locales/zh-CN/translation.json'
+import zhTWTranslation from '@/locales/zh-TW/translation.json'
 
-export const SUPPORTED_LOCALES = ['vi', 'en', 'zh-CN'] as const
+export const SUPPORTED_LOCALES = ['vi', 'en', 'zh-CN', 'zh-TW'] as const
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number]
 
 export const LOCALE_STORAGE_KEY = 'dieu_phoi_locale'
@@ -30,6 +31,7 @@ const resources = {
   vi: { translation: viTranslation },
   en: { translation: enTranslation },
   'zh-CN': { translation: zhCNTranslation },
+  'zh-TW': { translation: zhTWTranslation },
 }
 
 const initialLocale = getInitialLocale()

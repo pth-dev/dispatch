@@ -16,15 +16,12 @@ export interface SessionState {
   locale: SupportedLocale
   density: TableDensity
   sidebarCollapsed: boolean
-  mockDelayMs: number
-  mockScenario: 'normal' | 'slow' | 'empty' | '401' | '403' | '404' | '500' | 'offline'
 
   // Actions
   setRole: (role: UserRole) => void
   setLocale: (locale: SupportedLocale) => void
   setDensity: (density: TableDensity) => void
   setSidebarCollapsed: (collapsed: boolean) => void
-  setMockScenario: (scenario: SessionState['mockScenario']) => void
 }
 
 export const useAppStore = create<SessionState>((set) => ({
@@ -38,8 +35,6 @@ export const useAppStore = create<SessionState>((set) => ({
   locale: getInitialLocale(),
   density: 'compact',
   sidebarCollapsed: false,
-  mockDelayMs: 200,
-  mockScenario: 'normal',
 
   setRole: (role) =>
     set((state) => ({
@@ -51,7 +46,6 @@ export const useAppStore = create<SessionState>((set) => ({
   },
   setDensity: (density) => set({ density }),
   setSidebarCollapsed: (collapsed) => set({ sidebarCollapsed: collapsed }),
-  setMockScenario: (mockScenario) => set({ mockScenario }),
 }))
 
 export type { SupportedLocale }

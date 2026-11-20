@@ -36,9 +36,14 @@
   },
   "status": {
     "all": "All statuses",
+    "not_started": "Not started",
     "new": "New",
     "draft": "Draft",
     "in_progress": "In progress",
+    "delayed_pending": "Overdue (incomplete)",
+    "completed_ontime": "Completed on time",
+    "late_completed": "Completed late",
+    "paused": "Paused",
     "pending": "Pending approval",
     "approved": "Approved",
     "done": "Completed",
@@ -49,7 +54,8 @@
   "language": {
     "vi": "Tiếng Việt (VI)",
     "en": "English (EN)",
-    "zhCN": "中文 (ZH)"
+    "zhCN": "简体中文 (ZH-CN)",
+    "zhTW": "繁體中文 (ZH-TW)"
   },
   "header": {
     "currentView": "Current view:",

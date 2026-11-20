@@ -21,7 +21,6 @@ import { ReassignDialog } from '../components/ReassignDialog'
 import { useTask, useReassignTask } from '../api/queries'
 import { InlineError, isFullPageError, throwFullPageError, toErrorStatus } from '@/components/layout'
 import { APP_ROUTES } from '@/constants/app-routes'
-import { useAppStore } from '@/app/store'
 import type { TaskReassignFormValues } from '@/schemas/task'
 
 function formatDateVN(dateStr?: string): string {
@@ -35,7 +34,6 @@ export function TaskDetailPage() {
   const { id = '' } = useParams<{ id: string }>()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const currentRole = useAppStore((state) => state.user.role)
 
   const { data: task, isLoading, isError, error, refetch } = useTask(id)
   const reassignMutation = useReassignTask()
@@ -100,9 +98,6 @@ export function TaskDetailPage() {
     setNewComment('')
   }
 
-  const canApprove =
-    task.status === 'pending' && (currentRole === 'approver' || currentRole === 'manager' || currentRole === 'admin')
-
   return (
     <div className="flex-1 flex flex-col min-h-0 overflow-y-auto space-y-4">
       {/* ── Breadcrumbs ── */}
@@ -164,19 +159,6 @@ export function TaskDetailPage() {
               <Share2 className="size-3.5" />
               <span>{t('tasks.detail.reassign')}</span>
             </Button>
-
-            {canApprove && (
-              <Button
-                asChild
-                size="sm"
-                className="h-11 lg:h-9 gap-1.5 text-xs bg-primary hover:bg-primary-hover text-primary-foreground"
-              >
-                <Link to={APP_ROUTES.TASK_APPROVE(task.id)}>
-                  <CheckCircle2 className="size-3.5" />
-                  <span>{t('tasks.detail.approveAcceptance')}</span>
-                </Link>
-              </Button>
-            )}
           </div>
         </div>
       </div>

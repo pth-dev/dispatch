@@ -23,9 +23,8 @@ export type { ErrorStatusCode }
 
 const SUGGESTED_LINKS = [
   { labelKey: 'nav.tasks', href: APP_ROUTES.TASKS },
-  { labelKey: 'nav.dashboard', href: APP_ROUTES.DASHBOARD },
-  { labelKey: 'nav.lessons', href: APP_ROUTES.LESSONS },
-  { labelKey: 'nav.todo', href: APP_ROUTES.TODO },
+  { labelKey: 'tasks.create', href: APP_ROUTES.TASK_NEW },
+  { labelKey: 'nav.profile', href: APP_ROUTES.PROFILE },
 ]
 
 interface ErrorStateProps {

@@ -2,12 +2,14 @@ import { describe, expect, it } from 'vitest'
 import en from '@/locales/en/translation.json'
 import vi from '@/locales/vi/translation.json'
 import zhCN from '@/locales/zh-CN/translation.json'
+import zhTW from '@/locales/zh-TW/translation.json'
 import { ADMIN_NAV_ITEMS, MAIN_NAV_ITEMS, type NavItemConfig } from './nav-config'
 
 const LOCALES = {
   vi,
   en,
   'zh-CN': zhCN,
+  'zh-TW': zhTW,
 } as const
 
 function hasKey(source: unknown, key: string): boolean {

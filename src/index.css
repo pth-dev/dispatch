@@ -53,13 +53,18 @@
   --color-success: #15803D;
   --color-warning: #B45309;
 
-  /* ── Status text colors (brief §3.2) ── */
+  /* ── Status text colors (brief §3.2 + derived backend statuses) ── */
+  --color-status-not-started: #6B7280;
   --color-status-new: #6B7280;
   --color-status-draft: #6B7280;
   --color-status-in-progress: #1F6FEB;
   --color-status-approved: #1F6FEB;
   --color-status-pending: #B45309;
+  --color-status-paused: #B45309;
+  --color-status-late-completed: #B45309;
+  --color-status-completed-ontime: #15803D;
   --color-status-done: #15803D;
+  --color-status-delayed-pending: #D32F2F;
   --color-status-overdue: #D32F2F;
   --color-status-rejected: #D32F2F;
   --color-status-urgent: #D32F2F;

@@ -1,0 +1,373 @@
+{
+  "app": {
+    "name": "Điều Phối",
+    "version": "V16.8.0"
+  },
+  "nav": {
+    "dashboard": "儀表板",
+    "tasks": "任務列表",
+    "messages": "訊息板",
+    "lessons": "經驗教訓",
+    "systemTexts": "系統文字",
+    "todo": "今日待辦",
+    "sla": "SLA",
+    "admin": "系統管理",
+    "users": "使用者",
+    "roles": "角色與權限",
+    "departments": "部門",
+    "profile": "個人設定",
+    "logout": "登出"
+  },
+  "role": {
+    "employee": "員工",
+    "approver": "審批人",
+    "manager": "部門主管",
+    "admin": "管理員"
+  },
+  "department": {
+    "all": "全部部門",
+    "it": "資訊部",
+    "technical": "技術部",
+    "accounting": "會計部",
+    "hr": "人事部",
+    "sales": "業務部",
+    "operations": "營運部",
+    "planning": "計畫部"
+  },
+  "status": {
+    "all": "全部狀態",
+    "not_started": "未開始",
+    "new": "新建",
+    "draft": "草稿",
+    "in_progress": "進行中",
+    "delayed_pending": "逾期未完",
+    "completed_ontime": "準時完成",
+    "late_completed": "逾期完成",
+    "paused": "已暫停",
+    "pending": "待審批",
+    "approved": "已核准",
+    "done": "已完成",
+    "overdue": "已逾期",
+    "rejected": "已退回",
+    "urgent": "緊急"
+  },
+  "language": {
+    "vi": "Tiếng Việt (VI)",
+    "en": "English (EN)",
+    "zhCN": "简体中文 (ZH-CN)",
+    "zhTW": "繁體中文 (ZH-TW)"
+  },
+  "header": {
+    "currentView": "目前視角：",
+    "greeting": "你好，{{name}}",
+    "userCode": "編號：{{code}}",
+    "openMenu": "開啟導覽選單",
+    "changeLanguage": "切換語言",
+    "notifications": "通知",
+    "userMenu": "帳號選單",
+    "devRoleSwitch": "切換測試角色"
+  },
+  "sidebar": {
+    "menuTitle": "Điều Phối 選單",
+    "connected": "已連線"
+  },
+  "common": {
+    "search": "搜尋",
+    "filter": "篩選",
+    "apply": "套用",
+    "reset": "全部清除",
+    "cancel": "取消",
+    "confirm": "確認",
+    "save": "儲存",
+    "create": "新增任務",
+    "edit": "編輯",
+    "delete": "刪除",
+    "retry": "重試",
+    "back": "返回",
+    "home": "返回首頁",
+    "all": "全部",
+    "loading": "正在載入資料...",
+    "loadingPage": "正在載入頁面...",
+    "empty": "尚無資料",
+    "error": "發生錯誤",
+    "actions": "操作",
+    "status": "狀態",
+    "department": "部門",
+    "assignee": "處理人",
+    "dueDate": "截止日期",
+    "createdAt": "建立日期",
+    "close": "關閉",
+    "copy": "複製",
+    "copied": "已複製",
+    "pagination": {
+      "display": "顯示第 {{from}} 至 {{to}} 筆，共 {{total}} 筆結果，每頁 {{size}} 筆",
+      "page": "第 {{page}}/{{totalPages}} 頁",
+      "perPage": "/ 頁",
+      "firstPage": "首頁",
+      "previousPage": "上一頁",
+      "nextPage": "下一頁",
+      "lastPage": "末頁"
+    }
+  },
+  "tasks": {
+    "title": "任務列表",
+    "create": "新增任務",
+    "scope": {
+      "mine": "指派給我",
+      "created": "我指派的",
+      "all": "全部",
+      "ariaLabel": "任務範圍"
+    },
+    "filter": {
+      "fromDate": "起始日期",
+      "toDate": "結束日期",
+      "searchPlaceholder": "編號 / 任務名稱 (Enter)",
+      "activeCount": "已啟用 {{count}} 個篩選條件",
+      "clearAll": "全部清除",
+      "submitSearch": "搜尋任務",
+      "dateRangeErrorTitle": "日期範圍無效",
+      "dateRangeErrorDescription": "起始日期不能晚於結束日期。"
+    },
+    "columns": {
+      "stt": "序號",
+      "code": "編號",
+      "title": "任務",
+      "department": "部門",
+      "assignee": "處理人",
+      "dueDate": "截止",
+      "status": "狀態",
+      "actions": "操作"
+    },
+    "actions": {
+      "view": "檢視任務 {{id}}"
+    },
+    "mobile": {
+      "dueDate": "截止 {{date}}"
+    },
+    "detail": {
+      "title": "任務詳情",
+      "backToList": "任務列表",
+      "edit": "編輯",
+      "reassign": "轉派",
+      "approveAcceptance": "驗收審批",
+      "tabs": {
+        "overview": "概覽",
+        "timeline": "處理紀錄",
+        "comments": "留言"
+      },
+      "description": "任務描述",
+      "info": "任務資訊",
+      "progressAndSla": "進度與 SLA",
+      "creator": "建立人",
+      "attachments": "附件",
+      "noAttachments": "尚無附件",
+      "noDescription": "此任務尚無詳細描述。",
+      "checklistTitle": "待完成工作項 ({{done}}/{{total}})",
+      "progressLabel": "執行進度",
+      "timelineBy": "執行人：{{actor}}",
+      "noTimeline": "尚無處理紀錄。",
+      "commentPlaceholder": "輸入交流內容或討論意見...",
+      "sendComment": "傳送留言"
+    },
+    "approve": {
+      "title": "驗收審批",
+      "requestChanges": "要求補充修改",
+      "reject": "拒絕驗收",
+      "confirmApprove": "確認並核准完成",
+      "checklistTitle": "驗收檢查清單",
+      "noteLabel": "審批備註",
+      "notePlaceholder": "輸入驗收意見或備註...",
+      "confirmDialog": {
+        "approveTitle": "確認核准完成",
+        "approveDesc": "您確定要核准此任務完成嗎？",
+        "rejectTitle": "拒絕驗收",
+        "rejectDesc": "請輸入拒絕驗收的原因：",
+        "reasonPlaceholder": "請輸入至少 5 個字元的原因..."
+      },
+      "taskLabel": "任務：{{title}}",
+      "checkedCount": "已檢查：{{done}}/{{total}}",
+      "checklistRequired": "驗收審批前必須檢查",
+      "infoTitle": "驗收資料資訊",
+      "dueLabel": "截止日期",
+      "submittedAt": "驗收提交日期",
+      "attachmentsTitle": "驗收文件",
+      "noAttachments": "尚無附加文件",
+      "reasonError": "請輸入至少 5 個字元的原因"
+    },
+    "reassign": {
+      "title": "轉派任務",
+      "currentAssignee": "目前處理人：{{name}}",
+      "targetDepartment": "接收部門",
+      "targetAssignee": "接收人",
+      "reason": "轉派原因",
+      "reasonPlaceholder": "請輸入轉派任務的原因...",
+      "confirm": "確認轉派",
+      "departmentPlaceholder": "選擇接收部門",
+      "assigneePlaceholder": "選擇接收人員",
+      "assigneeError": "請選擇接收人",
+      "reasonError": "請輸入至少 5 個字元的原因"
+    },
+    "createForm": {
+      "title": "新增任務",
+      "taskName": "任務名稱",
+      "taskNamePlaceholder": "輸入具體的任務名稱...",
+      "description": "詳細描述",
+      "descriptionPlaceholder": "描述需求與預期結果...",
+      "priority": "優先級",
+      "priorityNormal": "一般",
+      "priorityUrgent": "緊急",
+      "saveDraft": "儲存草稿",
+      "submit": "派發任務",
+      "infoSection": "任務資訊",
+      "assignmentSection": "指派與期限",
+      "departmentPlaceholder": "選擇部門",
+      "assigneePlaceholder": "選擇處理人",
+      "unsavedTitle": "未儲存的變更",
+      "unsavedDescription": "您有未儲存的變更，確定要離開嗎？",
+      "stay": "留在此頁",
+      "discard": "離開且不儲存"
+    },
+    "empty": {
+      "mine": "尚無指派給您的任務",
+      "created": "您尚未指派任何任務",
+      "all": "沒有符合篩選條件的任務"
+    },
+    "validation": {
+      "titleRequired": "請輸入任務名稱",
+      "departmentRequired": "請選擇部門",
+      "assigneeRequired": "請選擇處理人",
+      "dueDateRequired": "請選擇截止日期",
+      "reassignReasonRequired": "請輸入至少 5 個字元的原因",
+      "rejectReasonRequired": "請輸入至少 5 個字元的原因",
+      "checklistRequired": "請檢查全部驗收項"
+    }
+  },
+  "errors": {
+    "status": {
+      "404": {
+        "caption": "錯誤 404 • 找不到頁面",
+        "title": "找不到此頁面",
+        "description": "您請求的位址不存在、已被重新命名或暫時無法使用。"
+      },
+      "403": {
+        "caption": "錯誤 403 • 無權限",
+        "title": "您沒有檢視此頁面的權限",
+        "description": "目前帳號無權存取此資源。如需授權，請聯繫管理員。"
+      },
+      "401": {
+        "caption": "錯誤 401 • 登入已逾時",
+        "title": "登入工作階段已逾時",
+        "description": "為確保資訊安全，您的工作階段已結束。請重新登入。"
+      },
+      "408": {
+        "caption": "錯誤 408 • 請求逾時",
+        "title": "操作過快或連線過慢",
+        "description": "請求完成所需時間超出預期。請檢查網路連線後重試。"
+      },
+      "429": {
+        "caption": "錯誤 429 • 請求過多",
+        "title": "操作過快或連線過慢",
+        "description": "系統在短時間內收到過多請求。請稍候幾秒後重試。"
+      },
+      "500": {
+        "caption": "錯誤 500 • 系統異常",
+        "title": "系統發生問題",
+        "description": "這是系統端的錯誤，並非您的操作問題。請稍後重新整理。若問題持續，請將下方參考代碼提供給支援團隊。"
+      },
+      "502": {
+        "caption": "錯誤 502 • 閘道無效",
+        "title": "系統發生問題",
+        "description": "中繼伺服器未收到有效回應。請稍後重新整理。"
+      },
+      "503": {
+        "caption": "錯誤 503 • 系統維護",
+        "title": "系統正在維護",
+        "description": "系統正在進行定期升級以提升效能。我們將儘快恢復。"
+      },
+      "504": {
+        "caption": "錯誤 504 • 回應逾時",
+        "title": "回應過慢",
+        "description": "伺服器處理任務耗時過長。請重新整理頁面或稍後重試。"
+      },
+      "network": {
+        "caption": "網路連線中斷",
+        "title": "無法連線",
+        "description": "無法與伺服器建立連線。請檢查您的 Wi-Fi 或內部網路連線。"
+      },
+      "unknown": {
+        "caption": "未知錯誤",
+        "title": "無法載入資料",
+        "description": "載入資料時發生錯誤。請重試。"
+      }
+    },
+    "codes": {
+      "DUP_TITLE_DUE": "已存在相同標題且同截止日期的任務，請修改標題或截止日期。"
+    },
+    "support": "技術支援",
+    "loginAgain": "重新登入",
+    "reloadPage": "重新整理頁面",
+    "goHome": "返回首頁",
+    "referenceCode": "參考代碼：{{code}}",
+    "copyReference": "複製錯誤代碼",
+    "technicalDetails": "技術詳情（僅 DEV）：",
+    "suggestions": "您可能在尋找：",
+    "footer": "© 2026 Điều Phối • 版本 V16.8"
+  },
+  "login": {
+    "account": "帳號",
+    "password": "密碼",
+    "submit": "登入"
+  },
+  "pages": {
+    "dashboard": {
+      "description": "總覽儀表板（將於 Phase 3 實作）。"
+    },
+    "lessons": {
+      "description": "經驗教訓與規定（將於 Phase 4 實作）。"
+    },
+    "messages": {
+      "description": "內部訊息板（將於 Phase 4 實作）。"
+    },
+    "todo": {
+      "description": "今日待辦事項（將於 Phase 4 實作）。"
+    },
+    "sla": {
+      "title": "SLA 詳情",
+      "description": "人員 SLA 統計報表（將於 Phase 3 實作）。"
+    },
+    "profile": {
+      "description": "帳號資訊與個人偏好設定。"
+    },
+    "adminUsers": {
+      "description": "使用者列表與狀態（將於 Phase 5 實作）。"
+    },
+    "adminRoles": {
+      "description": "系統權限矩陣（將於 Phase 5 實作）。"
+    },
+    "adminDepartments": {
+      "description": "部門組織架構樹（將於 Phase 5 實作）。"
+    }
+  },
+  "devPanel": {
+    "ariaLabel": "開發者工具面板（DEV 面板）",
+    "open": "開啟 DEV 模擬工具",
+    "close": "關閉 DEV 面板",
+    "title": "Simulation tools",
+    "roleLabel": "使用者角色：",
+    "densityLabel": "表格密度：",
+    "compact": "Compact (44px)",
+    "comfortable": "Comfortable (50px)",
+    "scenarioLabel": "Mock API 情境：",
+    "devOnlyNote": "僅於 DEV 環境顯示 (import.meta.env.DEV)",
+    "scenarios": {
+      "normal": "正常 (Normal 200ms)",
+      "slow": "緩慢 (Slow 1500ms)",
+      "empty": "空資料 (Empty)",
+      "401": "401 工作階段逾時",
+      "403": "403 禁止存取",
+      "404": "404 找不到",
+      "500": "500 伺服器錯誤",
+      "offline": "網路中斷"
+    }
+  }
+}

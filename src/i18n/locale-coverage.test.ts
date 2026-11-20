@@ -4,6 +4,7 @@ import { join } from 'node:path'
 import en from '@/locales/en/translation.json'
 import vi from '@/locales/vi/translation.json'
 import zhCN from '@/locales/zh-CN/translation.json'
+import zhTW from '@/locales/zh-TW/translation.json'
 import { ADMIN_NAV_ITEMS, MAIN_NAV_ITEMS, type NavItemConfig } from '@/app/nav-config'
 
 type Translations = Record<string, unknown>
@@ -12,6 +13,7 @@ const LOCALES: Record<string, Translations> = {
   vi: vi as Translations,
   en: en as Translations,
   'zh-CN': zhCN as Translations,
+  'zh-TW': zhTW as Translations,
 }
 
 function flattenKeys(source: unknown, prefix = ''): string[] {

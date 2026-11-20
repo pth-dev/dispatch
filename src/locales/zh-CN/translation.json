@@ -36,9 +36,14 @@
   },
   "status": {
     "all": "全部状态",
+    "not_started": "未开始",
     "new": "新建",
     "draft": "草稿",
     "in_progress": "进行中",
+    "delayed_pending": "逾期未完",
+    "completed_ontime": "准时完成",
+    "late_completed": "逾期完成",
+    "paused": "已暂停",
     "pending": "待审批",
     "approved": "已批准",
     "done": "已完成",
@@ -49,7 +54,8 @@
   "language": {
     "vi": "Tiếng Việt (VI)",
     "en": "English (EN)",
-    "zhCN": "中文 (ZH)"
+    "zhCN": "简体中文 (ZH-CN)",
+    "zhTW": "繁體中文 (ZH-TW)"
   },
   "header": {
     "currentView": "当前视图：",

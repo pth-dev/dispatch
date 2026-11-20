@@ -36,9 +36,14 @@
   },
   "status": {
     "all": "Tất cả trạng thái",
+    "not_started": "Chưa bắt đầu",
     "new": "Mới tạo",
     "draft": "Lưu nháp",
     "in_progress": "Đang thực hiện",
+    "delayed_pending": "Quá hạn chưa xong",
+    "completed_ontime": "Hoàn thành đúng hạn",
+    "late_completed": "Hoàn thành trễ",
+    "paused": "Tạm dừng",
     "pending": "Chờ phê duyệt",
     "approved": "Đã phê duyệt",
     "done": "Hoàn thành",
@@ -49,7 +54,8 @@
   "language": {
     "vi": "Tiếng Việt (VI)",
     "en": "English (EN)",
-    "zhCN": "中文 (ZH)"
+    "zhCN": "简体中文 (ZH-CN)",
+    "zhTW": "繁體中文 (ZH-TW)"
   },
   "header": {
     "currentView": "Góc nhìn hiện tại:",

@@ -6,16 +6,6 @@ import { Header } from './Header'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { useIsMobile } from '@/hooks/use-mobile'
 
-/**
- * Dev-only tooling. `import.meta.env.DEV` is a static `false` in production, so
- * Rollup drops the lazy import and the panel never reaches a production bundle.
- */
-const DevPanel = import.meta.env.DEV
-  ? React.lazy(() =>
-      import('./DevPanel').then((module) => ({ default: module.DevPanel })),
-    )
-  : null
-
 export function AppShell() {
   const { t } = useTranslation()
   const isMobile = useIsMobile()
@@ -54,13 +44,6 @@ export function AppShell() {
           </React.Suspense>
         </main>
       </div>
-
-      {/* DEV Mock & Role Simulation Panel */}
-      {DevPanel && (
-        <React.Suspense fallback={null}>
-          <DevPanel />
-        </React.Suspense>
-      )}
     </div>
   )
 }

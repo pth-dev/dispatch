@@ -71,13 +71,10 @@ Brief §8 item 17 states:
 
 ---
 
-## 6. Mocks & Dev Tooling (Stage 2)
+## 6. Mocks & Dev Tooling (Updated: Direct Real-API Integration)
 
-- **Departments data:** `src/mocks/data/departments.ts` is no longer imported by app code. `src/features/tasks/api/departments.ts` fetches `/api/departments` and validates the payload with `src/schemas/department.ts` (Zod). `useDepartments()` in `src/features/tasks/api/queries.ts` is the only consumer path for `FilterBar`, `TaskCreatePage` and `ReassignDialog`.
-- **Mock bootstrap:** `src/main.tsx` imports `./mocks` through a dynamic `import()` inside `if (import.meta.env.DEV)`. Because `import.meta.env.DEV` is statically `false` in a production build, Rollup drops the branch and no MSW chunk is emitted.
-- **Service worker:** `public/mockServiceWorker.js` is DEV-only. `vite.config.ts` sets `build.copyPublicDir: false` (documented in the config) so Vite still serves `public/` in dev but the worker is never copied into `dist/`. Revisit this flag if real static assets are ever added to `public/`.
-- **DevPanel:** `AppShell` lazy-loads `DevPanel` behind `import.meta.env.DEV`, so the panel and its copy do not reach a production bundle.
-- **Production audit:** after `npm run build`, no file under `dist/` matches `msw`, `faker`, `mockServiceWorker` or `DEV Simulation`, and no `DevPanel`/mock chunk is emitted.
+- **MSW mocks & DevPanel removed (user decision):** To integrate directly against the real backend via Vite `server.proxy` (`VITE_PROXY_TARGET`), the runtime MSW browser worker (`src/mocks/`, `public/mockServiceWorker.js`) and `DevPanel` simulation tool were removed. Unit tests stub `fetch` at the transport boundary as needed.
+- **Service worker / `public/`:** `vite.config.ts` keeps `build.copyPublicDir: false` (revisit if real static assets are added to `public/`).
 
 ---
 
