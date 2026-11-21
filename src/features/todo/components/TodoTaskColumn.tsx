@@ -63,7 +63,7 @@ export function TodoTaskColumn({
     <section
       aria-label={title}
       className={cn(
-        'flex min-h-[360px] max-h-[520px] flex-col rounded-xl border bg-card',
+        'flex flex-col rounded-xl border bg-card lg:min-h-[360px] lg:max-h-[520px]',
         accent === 'primary' ? 'border-primary/30' : 'border-border',
       )}
     >
@@ -123,7 +123,7 @@ export function TodoTaskColumn({
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={cn(
-          'flex-1 space-y-2.5 overflow-y-auto p-3 transition-colors',
+          'flex-1 space-y-2.5 p-3 transition-colors lg:overflow-y-auto',
           isDragOver && 'bg-primary-soft/50 ring-2 ring-inset ring-primary/40',
           !isDragOver && isDragActive && 'bg-secondary/40',
         )}
