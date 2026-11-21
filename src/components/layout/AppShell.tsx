@@ -56,8 +56,8 @@ export function AppShell() {
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <Header onOpenMobileMenu={() => setMobileMenuOpen(true)} />
 
-        {/* Fixed-height scroll area on desktop (inner PageContainer scrolls); mobile scrolls naturally. */}
-        <main className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto bg-background px-4 py-4 lg:overflow-hidden lg:px-6 short:py-3">
+        {/* Fixed-height scroll area on desktop (inner PageContainer scrolls); short desktop & mobile scroll on <main> when needed. */}
+        <main className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto bg-background px-4 py-4 lg:overflow-hidden lg:short:overflow-y-auto lg:px-6 short:py-3">
           <React.Suspense
             fallback={
               <div

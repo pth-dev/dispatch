@@ -56,6 +56,13 @@ export function DataTable<T>({
   const rowHeightClass = density === 'compact' ? 'h-11 py-2' : 'h-[50px] py-3'
   const hasMinWidth = columns.some((col) => Boolean(col.minWidth))
 
+  // PROJECT_BRIEF §3.4 & §4: Keep at least 5 full data rows visible on desktop before
+  // letting <main> scroll on short viewports (<700px high).
+  // Measured heights: sticky thead = 40px, compact single-line row = 44px,
+  // wrapped status/comfortable row = 51px (max standard row height), top+bottom border = 2px.
+  // Minimum table scroll viewport height = 40 + (5 * 51) + 2 = 297px.
+  const desktopMinRowsHeightClass = 'lg:min-h-[297px]'
+
   if (error) {
     return (
       <div className={cn('w-full flex flex-col min-h-0', className)}>{error}</div>
@@ -64,7 +71,7 @@ export function DataTable<T>({
 
   // Mobile rendering (cards fallback if renderMobileCard provided)
   return (
-    <div className={cn('w-full flex flex-col min-h-0', className)}>
+    <div className={cn('w-full flex flex-col min-h-0', className, desktopMinRowsHeightClass)}>
       {/* ── Mobile Card View (< lg) ── */}
       {renderMobileCard && (
         <div className="flex lg:hidden flex-col divide-y divide-border">
@@ -107,7 +114,8 @@ export function DataTable<T>({
       {/* ── Desktop Table View (>= lg, or fallback if no mobile card renderer) ── */}
       <div
         className={cn(
-          'w-full overflow-auto flex-1 min-h-0 border border-border rounded-lg bg-card',
+          'w-full overflow-auto flex-1 min-h-0 lg:short:[contain:size] border border-border rounded-lg bg-card',
+          desktopMinRowsHeightClass,
           renderMobileCard ? 'hidden lg:block' : 'block',
         )}
       >

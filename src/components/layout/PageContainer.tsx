@@ -30,7 +30,7 @@ export function PageContainer({
   return (
     <div
       className={cn(
-        'mx-auto flex w-full min-w-0 flex-col gap-3 short:gap-2 lg:min-h-0 lg:flex-1 lg:overflow-hidden',
+        'relative mx-auto flex w-full min-w-0 flex-col gap-3 short:gap-2 lg:min-h-0 lg:flex-1 lg:overflow-hidden lg:short:min-h-fit',
         WIDTH_CLASSES[width],
         className,
       )}
@@ -63,11 +63,11 @@ export function PageContainerBody({
   return (
     <div
       className={cn(
-        'min-w-0 lg:min-h-0 lg:flex-1',
+        'relative min-w-0 lg:min-h-0 lg:flex-1',
         surface === 'card' && 'overflow-hidden rounded-xl border border-border bg-card',
         scrollable
-          ? 'block lg:overflow-y-auto lg:scrollbar-gutter-stable'
-          : 'flex flex-col lg:overflow-hidden',
+          ? 'block w-full lg:overflow-y-auto lg:scrollbar-gutter-stable lg:short:[contain:size]'
+          : 'flex flex-col lg:overflow-hidden lg:short:min-h-fit lg:short:[&>*]:min-h-fit lg:short:[&>.grid]:min-h-[360px] lg:short:[&>.grid]:[contain:size]',
         scrollable && surface === 'transparent' && 'lg:pr-1',
         className,
       )}
