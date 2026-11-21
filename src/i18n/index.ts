@@ -67,4 +67,27 @@ i18n.on('languageChanged', (lng) => {
   }
 })
 
+function handleLocaleHotUpdate(modules: ReadonlyArray<Record<string, unknown> | undefined>): void {
+  SUPPORTED_LOCALES.forEach((locale, index) => {
+    const nextBundle = modules[index]?.default
+    if (nextBundle && typeof nextBundle === 'object') {
+      i18n.addResourceBundle(locale, 'translation', nextBundle, false, true)
+    }
+  })
+  i18n.emit('languageChanged', i18n.language)
+}
+
+// Hot-reload translation JSON files in Vite dev mode without requiring a full page refresh
+if (import.meta.hot) {
+  import.meta.hot.accept(
+    [
+      '@/locales/vi/translation.json',
+      '@/locales/en/translation.json',
+      '@/locales/zh-CN/translation.json',
+      '@/locales/zh-TW/translation.json',
+    ],
+    handleLocaleHotUpdate,
+  )
+}
+
 export default i18n
