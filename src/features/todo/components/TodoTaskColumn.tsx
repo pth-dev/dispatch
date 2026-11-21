@@ -63,7 +63,7 @@ export function TodoTaskColumn({
     <section
       aria-label={title}
       className={cn(
-        'flex min-h-[360px] max-h-[520px] flex-col rounded-xl border bg-background/40',
+        'flex min-h-[360px] max-h-[520px] flex-col rounded-xl border bg-card',
         accent === 'primary' ? 'border-primary/30' : 'border-border',
       )}
     >

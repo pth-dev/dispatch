@@ -68,7 +68,7 @@ export function TaskCreatePage() {
   if (sourceId > 0 && loadingSource) {
     return (
       <PageContainer width="narrow">
-        <PageContainerBody surface="card" className="p-5">
+        <PageContainerBody>
           <div role="status" className="space-y-4 animate-pulse">
             <span className="sr-only">{t('common.loading')}</span>
             <div className="h-4 w-48 rounded bg-muted" />
@@ -89,7 +89,7 @@ export function TaskCreatePage() {
     }
     return (
       <PageContainer width="narrow">
-        <PageContainerBody surface="card" className="p-4">
+        <PageContainerBody>
           <InlineError
             status={errorStatus}
             onRetry={() => {
@@ -123,7 +123,7 @@ export function TaskCreatePage() {
 
   return (
     <PageContainer width="narrow">
-      <PageContainerBody surface="card" scrollable className="p-4 lg:p-5">
+      <PageContainerBody>
         <TaskEditorForm
           key={`${mode}-${sourceTask?.id ?? initialVariant}`}
           mode={mode}

@@ -66,56 +66,54 @@ export function MessagesPage() {
         </Button>
       </div>
 
-      <PageContainerBody surface="card" scrollable className="p-4">
-        <div className="space-y-4">
-          {canWrite && (
-            <MessageComposerCard
-              isSubmitting={isPosting}
-              submitError={postError}
-              onSubmitMessage={submitMessage}
-            />
-          )}
-
-          <MessageToolbar
-            scope={scope}
-            search={search}
-            allCount={messages.length}
-            mineCount={mineCount}
-            onScopeChange={setScope}
-            onSearchChange={setSearch}
+      <PageContainerBody className="space-y-3">
+        {canWrite && (
+          <MessageComposerCard
+            isSubmitting={isPosting}
+            submitError={postError}
+            onSubmitMessage={submitMessage}
           />
+        )}
 
-          {isLoading ? (
-            <MessageListSkeleton />
-          ) : isError ? (
-            <InlineError status={errorStatus} onRetry={() => void refetch()} />
-          ) : visibleMessages.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-border bg-secondary/30 px-6 py-10 text-center space-y-3">
-              <MessagesSquare className="mx-auto size-8 text-muted-foreground" aria-hidden="true" />
-              <p className="text-sm font-medium text-foreground">
-                {hasActiveFilters ? t('messages.empty.filtered') : t('messages.empty.all')}
-              </p>
-              {hasActiveFilters && (
-                <Button type="button" variant="outline" onClick={resetFilters}>
-                  {t('messages.empty.clearFilters')}
-                </Button>
-              )}
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {visibleMessages.map((msg) => (
-                <MessageCard
-                  key={msg.id}
-                  message={msg}
-                  canWrite={canWrite}
-                  isReplying={Boolean(replyingMap[msg.id])}
-                  replyError={replyErrors[msg.id]}
-                  onSubmitReply={submitReply}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        <MessageToolbar
+          scope={scope}
+          search={search}
+          allCount={messages.length}
+          mineCount={mineCount}
+          onScopeChange={setScope}
+          onSearchChange={setSearch}
+        />
+
+        {isLoading ? (
+          <MessageListSkeleton />
+        ) : isError ? (
+          <InlineError status={errorStatus} onRetry={() => void refetch()} />
+        ) : visibleMessages.length === 0 ? (
+          <div className="rounded-xl border border-border bg-card px-6 py-10 text-center space-y-3">
+            <MessagesSquare className="mx-auto size-8 text-muted-foreground" aria-hidden="true" />
+            <p className="text-sm font-medium text-foreground">
+              {hasActiveFilters ? t('messages.empty.filtered') : t('messages.empty.all')}
+            </p>
+            {hasActiveFilters && (
+              <Button type="button" variant="outline" onClick={resetFilters}>
+                {t('messages.empty.clearFilters')}
+              </Button>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {visibleMessages.map((msg) => (
+              <MessageCard
+                key={msg.id}
+                message={msg}
+                canWrite={canWrite}
+                isReplying={Boolean(replyingMap[msg.id])}
+                replyError={replyErrors[msg.id]}
+                onSubmitReply={submitReply}
+              />
+            ))}
+          </div>
+        )}
       </PageContainerBody>
     </PageContainer>
   )

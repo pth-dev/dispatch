@@ -58,7 +58,7 @@ export function TaskDetailPage() {
   if (isLoading) {
     return (
       <PageContainer>
-        <PageContainerBody surface="card" className="p-6">
+        <PageContainerBody>
           <div role="status" className="space-y-4 animate-pulse">
             <span className="sr-only">{t('common.loading')}</span>
             <div className="h-4 bg-muted rounded w-48" />
@@ -77,7 +77,7 @@ export function TaskDetailPage() {
     }
     return (
       <PageContainer>
-        <PageContainerBody surface="card" className="p-4">
+        <PageContainerBody>
           <InlineError status={errorStatus} onRetry={() => void refetch()} />
         </PageContainerBody>
       </PageContainer>
@@ -121,49 +121,47 @@ export function TaskDetailPage() {
         />
       </div>
 
-      <PageContainerBody surface="card" scrollable className="p-4">
-        <div className="space-y-4">
-          <SplitGroupPanel currentTaskId={task.id} members={splitMembers} />
-          <WorkItemsReadOnly envelope={workItems} />
+      <PageContainerBody className="space-y-4">
+        <SplitGroupPanel currentTaskId={task.id} members={splitMembers} />
+        <WorkItemsReadOnly envelope={workItems} />
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
-            <div className="lg:col-span-2 space-y-4">
-              <LessonMarqueeBanner hits={lessonHits} interactive />
-              <section className="rounded-xl border border-border bg-card p-4 space-y-3 text-xs">
-                <h2 className="text-sm font-semibold text-foreground">
-                  {t('tasks.detail.description')}
-                </h2>
-                <p className="whitespace-pre-wrap text-foreground leading-relaxed">
-                  {task.content || t('tasks.detail.noDescription')}
-                </p>
-                {task.precautions && (
-                  <div className="pt-2 border-t border-border space-y-1">
-                    <h3 className="font-semibold text-muted-foreground">
-                      {t('tasks.fields.precautions')}
-                    </h3>
-                    <p className="whitespace-pre-wrap text-foreground">{task.precautions}</p>
-                  </div>
-                )}
-              </section>
-
-              {allowReport && user && (
-                <ReportComposer key={task.id} task={task} user={user} splitMembers={splitMembers} />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+          <div className="lg:col-span-2 space-y-4">
+            <LessonMarqueeBanner hits={lessonHits} interactive />
+            <section className="rounded-xl border border-border bg-card p-4 space-y-3 text-xs">
+              <h2 className="text-sm font-semibold text-foreground">
+                {t('tasks.detail.description')}
+              </h2>
+              <p className="whitespace-pre-wrap text-foreground leading-relaxed">
+                {task.content || t('tasks.detail.noDescription')}
+              </p>
+              {task.precautions && (
+                <div className="pt-2 border-t border-border space-y-1">
+                  <h3 className="font-semibold text-muted-foreground">
+                    {t('tasks.fields.precautions')}
+                  </h3>
+                  <p className="whitespace-pre-wrap text-foreground">{task.precautions}</p>
+                </div>
               )}
+            </section>
 
-              <ReportFeed
-                key={`feed-${task.id}`}
-                task={task}
-                user={user}
-                reports={reports}
-                isLoading={reportsLoading}
-                isError={reportsError}
-                error={reportsErrorObj}
-                onRetry={() => void refetchReports()}
-              />
-            </div>
+            {allowReport && user && (
+              <ReportComposer key={task.id} task={task} user={user} splitMembers={splitMembers} />
+            )}
 
-            <TaskDetailSidebar task={task} />
+            <ReportFeed
+              key={`feed-${task.id}`}
+              task={task}
+              user={user}
+              reports={reports}
+              isLoading={reportsLoading}
+              isError={reportsError}
+              error={reportsErrorObj}
+              onRetry={() => void refetchReports()}
+            />
           </div>
+
+          <TaskDetailSidebar task={task} />
         </div>
       </PageContainerBody>
     </PageContainer>

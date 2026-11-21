@@ -158,7 +158,7 @@ export function TaskListPage() {
       </div>
 
       {/* Main Content Card */}
-      <PageContainerBody surface="card">
+      <PageContainerBody surface="card" scrollable={false}>
         <div className="shrink-0 flex flex-col gap-3 short:gap-2 p-4 short:p-3 pb-3 border-b border-border bg-card">
           <div className="flex items-center justify-between gap-4">
             <TaskScopeTabs

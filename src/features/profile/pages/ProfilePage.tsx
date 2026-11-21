@@ -78,48 +78,46 @@ export function ProfilePage() {
     <PageContainer width="narrow">
       <h1 className="shrink-0 text-2xl font-semibold text-foreground">{t('nav.profile')}</h1>
 
-      <PageContainerBody surface="card" scrollable className="p-5">
-        <div className="space-y-5">
-          <section className="rounded-xl border border-border bg-card p-5 space-y-4">
-            <h2 className="text-base font-semibold text-foreground">{t('profile.accountInfo')}</h2>
-            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
-              {infoRows.map((row) => (
-                <div key={row.label} className="space-y-0.5">
-                  <dt className="text-xs font-semibold text-muted-foreground">{row.label}</dt>
-                  <dd className="text-sm text-foreground">{row.value}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
+      <PageContainerBody className="space-y-4">
+        <section className="rounded-xl border border-border bg-card p-5 space-y-4">
+          <h2 className="text-base font-semibold text-foreground">{t('profile.accountInfo')}</h2>
+          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
+            {infoRows.map((row) => (
+              <div key={row.label} className="space-y-0.5">
+                <dt className="text-xs font-semibold text-muted-foreground">{row.label}</dt>
+                <dd className="text-sm text-foreground">{row.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
 
-          <PasswordChangeCard user={user} onPasswordChanged={handlePasswordChanged} />
+        <PasswordChangeCard user={user} onPasswordChanged={handlePasswordChanged} />
 
-          <section className="rounded-xl border border-border bg-card p-5 space-y-3">
-            <h2 className="text-base font-semibold text-foreground">{t('profile.sessionsTitle')}</h2>
-            <p className="text-xs text-muted-foreground">{t('profile.sessionsDescription')}</p>
+        <section className="rounded-xl border border-border bg-card p-5 space-y-3">
+          <h2 className="text-base font-semibold text-foreground">{t('profile.sessionsTitle')}</h2>
+          <p className="text-xs text-muted-foreground">{t('profile.sessionsDescription')}</p>
 
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive" disabled={loggingOutAll}>
-                  <LogOut className="size-4" aria-hidden="true" />
-                  <span>{t('profile.logoutAll')}</span>
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>{t('profile.logoutAllConfirmTitle')}</AlertDialogTitle>
-                  <AlertDialogDescription>{t('profile.logoutAllConfirmDesc')}</AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => void handleLogoutAll()}>
-                    {t('common.confirm')}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </section>
-        </div>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" disabled={loggingOutAll}>
+                <LogOut className="size-4" aria-hidden="true" />
+                <span>{t('profile.logoutAll')}</span>
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t('profile.logoutAllConfirmTitle')}</AlertDialogTitle>
+                <AlertDialogDescription>{t('profile.logoutAllConfirmDesc')}</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+                <AlertDialogAction onClick={() => void handleLogoutAll()}>
+                  {t('common.confirm')}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </section>
       </PageContainerBody>
     </PageContainer>
   )

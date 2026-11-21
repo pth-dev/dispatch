@@ -17,8 +17,9 @@ interface PageContainerProps {
 }
 
 /**
- * Shared page shell inside AppShell <main>.
- * On desktop (lg+), locks to the fixed viewport height so headers stay pinned
+ * Shared SaaS page shell inside AppShell <main> (inspired by next-shadcn-dashboard-starter
+ * & shadcn-admin fixed-main pattern).
+ * On desktop (lg+), locks to the fixed viewport height so page headers stay pinned
  * and only the inner PageContainerBody scrolls. On mobile (< lg), flows naturally.
  */
 export function PageContainer({
@@ -47,26 +48,27 @@ interface PageContainerBodyProps {
 }
 
 /**
- * Primary content container of a page.
- * - `surface="card"` renders a flat white card (bg-card + 1px border-border) that
- *   visually separates the page container from the light-gray AppShell canvas.
- * - `surface="transparent"` is for multi-pane pages where child panels own their own cards.
- * - `scrollable` enables vertical scrolling inside this container on desktop (lg+).
+ * Primary content container of a page below the pinned header.
+ * - `scrollable` defaults to `true` (safe-by-default for Dashboard, Detail, Form, Profile, etc.).
+ *   Pass `scrollable={false}` only when inner panes/tables manage their own scroll (`/tasks`, `/lessons`).
+ * - `surface` defaults to `'transparent'` so child cards sit cleanly on `bg-background` without
+ *   card-in-card nesting. Pass `surface="card"` for single-surface pages like `/tasks`.
  */
 export function PageContainerBody({
-  surface = 'card',
-  scrollable = false,
+  surface = 'transparent',
+  scrollable = true,
   className,
   children,
 }: PageContainerBodyProps) {
   return (
     <div
       className={cn(
-        'flex min-w-0 flex-col lg:min-h-0 lg:flex-1',
-        surface === 'card' && 'rounded-xl border border-border bg-card',
+        'min-w-0 lg:min-h-0 lg:flex-1',
+        surface === 'card' && 'overflow-hidden rounded-xl border border-border bg-card',
         scrollable
-          ? 'lg:overflow-y-auto lg:scrollbar-gutter-stable'
-          : 'lg:overflow-hidden',
+          ? 'block lg:overflow-y-auto lg:scrollbar-gutter-stable'
+          : 'flex flex-col lg:overflow-hidden',
+        scrollable && surface === 'transparent' && 'lg:pr-1',
         className,
       )}
     >

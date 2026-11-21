@@ -199,7 +199,7 @@ export function LessonsPage() {
       {isError ? (
         <InlineError status={errorStatus} onRetry={() => void refetch()} />
       ) : (
-        <PageContainerBody surface="transparent">
+        <PageContainerBody scrollable={false}>
           <div className="grid grid-cols-1 gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-12 lg:grid-rows-1">
             <div
               className={
