@@ -192,7 +192,7 @@ export function FilterBar({
       value={params.status ?? 'all'}
       onValueChange={(v) => onPatch({ status: v === 'all' ? undefined : v })}
     >
-      <SelectTrigger id={id} aria-label={t('common.status')} className="h-11 lg:h-10 text-xs">
+      <SelectTrigger id={id} aria-label={t('common.status')} className="w-full h-11 lg:h-10 text-xs">
         <SelectValue placeholder={t('status.all')} />
       </SelectTrigger>
       <SelectContent>
@@ -220,7 +220,7 @@ export function FilterBar({
       value={params.department ?? 'all'}
       onValueChange={(v) => onPatch({ department: v === 'all' ? undefined : v })}
     >
-      <SelectTrigger id={id} aria-label={t('common.department')} className="h-11 lg:h-10 text-xs">
+      <SelectTrigger id={id} aria-label={t('common.department')} className="w-full h-11 lg:h-10 text-xs">
         <SelectValue placeholder={t('department.all')} />
       </SelectTrigger>
       <SelectContent>
@@ -238,10 +238,12 @@ export function FilterBar({
 
   const renderSortSelect = (id: string) => (
     <Select value={params.sort ?? 'default'} onValueChange={(v) => onSortChange(v as TaskSortMode)}>
-      <SelectTrigger id={id} aria-label={t('tasks.sort.label')} className="h-11 lg:h-10 text-xs">
-        <span className="flex items-center gap-1.5 truncate">
+      <SelectTrigger id={id} aria-label={t('tasks.sort.label')} className="w-full h-11 lg:h-10 text-xs">
+        <span className="flex min-w-0 flex-1 items-center gap-1.5 overflow-hidden">
           <ArrowUpDown className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
-          <SelectValue />
+          <span className="min-w-0 truncate">
+            <SelectValue />
+          </span>
         </span>
       </SelectTrigger>
       <SelectContent>
@@ -257,7 +259,7 @@ export function FilterBar({
   return (
     <div className={cn('w-full flex flex-col gap-2 select-none', className)}>
       {/* ── Tier 1 Desktop Bar (>= lg): 1 compact row, instant apply ── */}
-      <div className="hidden lg:grid lg:grid-cols-[1fr_175px_170px_175px_auto] items-center gap-2.5">
+      <div className="hidden lg:grid lg:grid-cols-[minmax(0,1fr)_175px_170px_175px_auto] items-center gap-2.5">
         <SearchField
           id="filter-search"
           value={searchDraft}
@@ -291,7 +293,7 @@ export function FilterBar({
               )}
             </Button>
           </PopoverTrigger>
-          <PopoverContent align="end" className="w-[380px] p-4 space-y-3">
+          <PopoverContent align="end" className="w-[420px] max-w-[calc(100vw-2rem)] p-4 space-y-3">
             <div className="flex items-center justify-between border-b border-border pb-2">
               <span className="text-xs font-semibold text-foreground">
                 {t('tasks.filter.advanced')}
@@ -359,13 +361,13 @@ export function FilterBar({
 
             <div className="space-y-3.5 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <div className="space-y-1">
+                <div className="min-w-0 space-y-1">
                   <label htmlFor="adv-mobile-status" className="font-semibold text-muted-foreground">
                     {t('common.status')}
                   </label>
                   {renderStatusSelect('adv-mobile-status')}
                 </div>
-                <div className="space-y-1">
+                <div className="min-w-0 space-y-1">
                   <label htmlFor="adv-mobile-dept" className="font-semibold text-muted-foreground">
                     {t('common.department')}
                   </label>
