@@ -49,8 +49,8 @@ export function LessonListPanel({
   const { t } = useTranslation()
 
   return (
-    <section className="flex flex-col overflow-hidden rounded-xl border border-border bg-card">
-      <div className="space-y-2.5 border-b border-border p-3.5">
+    <section className="flex flex-col overflow-hidden rounded-xl border border-border bg-card lg:min-h-0 lg:flex-1">
+      <div className="shrink-0 space-y-2.5 border-b border-border p-3.5">
         <div className="relative">
           <Search
             className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
@@ -101,7 +101,7 @@ export function LessonListPanel({
         </div>
       </div>
 
-      <div className="max-h-[calc(100vh-16rem)] flex-1 overflow-y-auto bg-secondary/20">
+      <div className="bg-secondary/20 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:scrollbar-gutter-stable">
         {isLoading ? (
           <LessonListSkeleton />
         ) : lessons.length === 0 ? (

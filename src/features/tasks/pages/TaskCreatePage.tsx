@@ -1,6 +1,9 @@
 import { useParams, useSearchParams } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import {
   InlineError,
+  PageContainer,
+  PageContainerBody,
   isFullPageError,
   throwFullPageError,
   toErrorStatus,
@@ -22,6 +25,7 @@ function parsePositiveInt(raw: string | null | undefined): number | undefined {
 }
 
 export function TaskCreatePage() {
+  const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const [searchParams] = useSearchParams()
   const user = useAppStore((s) => s.user)
@@ -63,13 +67,18 @@ export function TaskCreatePage() {
 
   if (sourceId > 0 && loadingSource) {
     return (
-      <div className="flex-1 w-full max-w-[1440px] space-y-4 animate-pulse">
-        <div className="h-4 w-48 rounded bg-muted" />
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <div className="lg:col-span-8 h-80 rounded-xl bg-muted" />
-          <div className="lg:col-span-4 h-80 rounded-xl bg-muted" />
-        </div>
-      </div>
+      <PageContainer width="narrow">
+        <PageContainerBody surface="card" className="p-5">
+          <div role="status" className="space-y-4 animate-pulse">
+            <span className="sr-only">{t('common.loading')}</span>
+            <div className="h-4 w-48 rounded bg-muted" />
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+              <div className="lg:col-span-8 h-80 rounded-xl bg-muted" />
+              <div className="lg:col-span-4 h-80 rounded-xl bg-muted" />
+            </div>
+          </div>
+        </PageContainerBody>
+      </PageContainer>
     )
   }
 
@@ -79,13 +88,17 @@ export function TaskCreatePage() {
       throwFullPageError(errorStatus)
     }
     return (
-      <InlineError
-        status={errorStatus}
-        onRetry={() => {
-          void refetch()
-          if (cloneId) void refetchHistory()
-        }}
-      />
+      <PageContainer width="narrow">
+        <PageContainerBody surface="card" className="p-4">
+          <InlineError
+            status={errorStatus}
+            onRetry={() => {
+              void refetch()
+              if (cloneId) void refetchHistory()
+            }}
+          />
+        </PageContainerBody>
+      </PageContainer>
     )
   }
 
@@ -109,13 +122,17 @@ export function TaskCreatePage() {
         : 'full'
 
   return (
-    <TaskEditorForm
-      key={`${mode}-${sourceTask?.id ?? initialVariant}`}
-      mode={mode}
-      sourceTask={sourceTask}
-      initialVariant={initialVariant}
-      openHistoryOnMount={mode === 'create' && rawModeParam === 'clone'}
-    />
+    <PageContainer width="narrow">
+      <PageContainerBody surface="card" scrollable className="p-4 lg:p-5">
+        <TaskEditorForm
+          key={`${mode}-${sourceTask?.id ?? initialVariant}`}
+          mode={mode}
+          sourceTask={sourceTask}
+          initialVariant={initialVariant}
+          openHistoryOnMount={mode === 'create' && rawModeParam === 'clone'}
+        />
+      </PageContainerBody>
+    </PageContainer>
   )
 }
 

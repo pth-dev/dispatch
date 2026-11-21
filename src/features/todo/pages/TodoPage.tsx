@@ -10,6 +10,8 @@ import {
 import { useTranslation } from 'react-i18next'
 import {
   InlineError,
+  PageContainer,
+  PageContainerBody,
   isFullPageError,
   throwFullPageError,
   toErrorStatus,
@@ -169,12 +171,14 @@ export function TodoPage() {
       throwFullPageError(errorStatus)
     }
     return (
-      <div className="space-y-4">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+      <PageContainer>
+        <h1 className="shrink-0 text-2xl font-semibold tracking-tight text-foreground">
           {t('todo.title')}
         </h1>
-        <InlineError status={errorStatus} onRetry={schedule.refetchAll} />
-      </div>
+        <PageContainerBody surface="card" className="p-4">
+          <InlineError status={errorStatus} onRetry={schedule.refetchAll} />
+        </PageContainerBody>
+      </PageContainer>
     )
   }
 
@@ -183,114 +187,120 @@ export function TodoPage() {
     : String(schedule.selected.length)
 
   return (
-    <div className="space-y-4">
-      <TodoHeaderBar
-        selectedDate={schedule.selectedDate}
-        today={schedule.today}
-        isDirty={schedule.isDirty}
-        canWrite={schedule.canWrite}
-        isSaving={schedule.isSaving}
-        hasSelectedItems={schedule.selected.length > 0}
-        onDateChange={schedule.requestDateChange}
-        onSave={schedule.requestSave}
-        onExportCsv={schedule.handleExportCsv}
-      />
+    <PageContainer>
+      <div className="shrink-0">
+        <TodoHeaderBar
+          selectedDate={schedule.selectedDate}
+          today={schedule.today}
+          isDirty={schedule.isDirty}
+          canWrite={schedule.canWrite}
+          isSaving={schedule.isSaving}
+          hasSelectedItems={schedule.selected.length > 0}
+          onDateChange={schedule.requestDateChange}
+          onSave={schedule.requestSave}
+          onExportCsv={schedule.handleExportCsv}
+        />
+      </div>
 
-      <TodoNoticeBanner />
+      <PageContainerBody surface="card" scrollable className="p-4">
+        <div className="space-y-4">
+          <TodoNoticeBanner />
 
-      {schedule.feedback && (
-        <div
-          role={schedule.feedback.tone === 'error' ? 'alert' : 'status'}
-          className={cn(
-            'flex items-center justify-between gap-3 rounded-xl border px-4 py-2.5 text-sm',
-            schedule.feedback.tone === 'success'
-              ? 'border-success/30 bg-success/5 text-success'
-              : 'border-destructive/30 bg-destructive/5 text-destructive',
+          {schedule.feedback && (
+            <div
+              role={schedule.feedback.tone === 'error' ? 'alert' : 'status'}
+              className={cn(
+                'flex items-center justify-between gap-3 rounded-xl border px-4 py-2.5 text-sm',
+                schedule.feedback.tone === 'success'
+                  ? 'border-success/30 bg-success/5 text-success'
+                  : 'border-destructive/30 bg-destructive/5 text-destructive',
+              )}
+            >
+              <span>{schedule.feedback.message}</span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-xs"
+                onClick={schedule.dismissFeedback}
+                aria-label={t('common.close')}
+              >
+                <X className="size-3.5" aria-hidden="true" />
+              </Button>
+            </div>
           )}
-        >
-          <span>{schedule.feedback.message}</span>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-xs"
-            onClick={schedule.dismissFeedback}
-            aria-label={t('common.close')}
-          >
-            <X className="size-3.5" />
-          </Button>
+
+          {schedule.isLoading ? (
+            <TodoLoadingSkeleton />
+          ) : (
+            <>
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <TodoTaskColumn
+                  title={t('todo.available.title')}
+                  subtitle={t('todo.available.subtitle')}
+                  countLabel={String(schedule.filteredAvailable.length)}
+                  searchValue={schedule.availableSearch}
+                  searchPlaceholder={t('todo.available.searchPlaceholder')}
+                  onSearchChange={schedule.setAvailableSearch}
+                  icon={<Inbox className="size-4" />}
+                  accent="neutral"
+                  canDrop={schedule.canWrite}
+                  isDragActive={draggingTaskId !== null}
+                  onDropTask={(taskId) => {
+                    setDraggingTaskId(null)
+                    schedule.moveByDrop(taskId, 'left')
+                  }}
+                >
+                  <TodoAvailableList
+                    tasks={schedule.filteredAvailable}
+                    hasSearch={schedule.availableSearch.trim().length > 0}
+                    canWrite={schedule.canWrite}
+                    lessonHitsByTaskId={schedule.lessonHitsByTaskId}
+                    onAdd={schedule.addTask}
+                    onDragStartTask={setDraggingTaskId}
+                    onDragEndTask={() => setDraggingTaskId(null)}
+                  />
+                </TodoTaskColumn>
+
+                <TodoTaskColumn
+                  title={t('todo.selected.title')}
+                  subtitle={t('todo.selected.subtitle')}
+                  countLabel={selectedCountLabel}
+                  searchValue={schedule.selectedSearch}
+                  searchPlaceholder={t('todo.selected.searchPlaceholder')}
+                  onSearchChange={schedule.setSelectedSearch}
+                  icon={<ListChecks className="size-4" />}
+                  accent="primary"
+                  canDrop={schedule.canWrite}
+                  isDragActive={draggingTaskId !== null}
+                  onDropTask={(taskId) => {
+                    setDraggingTaskId(null)
+                    schedule.moveByDrop(taskId, 'right')
+                  }}
+                >
+                  <TodoSelectedList
+                    entries={schedule.filteredSelected}
+                    totalCount={schedule.selected.length}
+                    selectedIndexById={schedule.selectedIndexById}
+                    hasSearch={schedule.selectedSearch.trim().length > 0}
+                    canWrite={schedule.canWrite}
+                    lessonHitsByTaskId={schedule.lessonHitsByTaskId}
+                    onRemove={schedule.removeTask}
+                    onReorder={schedule.reorderTask}
+                    onStartTimeChange={schedule.updateStartTime}
+                    onDragStartTask={setDraggingTaskId}
+                    onDragEndTask={() => setDraggingTaskId(null)}
+                  />
+                </TodoTaskColumn>
+              </div>
+
+              <TodoTimelineSection
+                tasks={schedule.timelineTasks}
+                lessonHitsByTaskId={schedule.lessonHitsByTaskId}
+              />
+            </>
+          )}
         </div>
-      )}
-
-      {schedule.isLoading ? (
-        <TodoLoadingSkeleton />
-      ) : (
-        <>
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <TodoTaskColumn
-              title={t('todo.available.title')}
-              subtitle={t('todo.available.subtitle')}
-              countLabel={String(schedule.filteredAvailable.length)}
-              searchValue={schedule.availableSearch}
-              searchPlaceholder={t('todo.available.searchPlaceholder')}
-              onSearchChange={schedule.setAvailableSearch}
-              icon={<Inbox className="size-4" />}
-              accent="neutral"
-              canDrop={schedule.canWrite}
-              isDragActive={draggingTaskId !== null}
-              onDropTask={(taskId) => {
-                setDraggingTaskId(null)
-                schedule.moveByDrop(taskId, 'left')
-              }}
-            >
-              <TodoAvailableList
-                tasks={schedule.filteredAvailable}
-                hasSearch={schedule.availableSearch.trim().length > 0}
-                canWrite={schedule.canWrite}
-                lessonHitsByTaskId={schedule.lessonHitsByTaskId}
-                onAdd={schedule.addTask}
-                onDragStartTask={setDraggingTaskId}
-                onDragEndTask={() => setDraggingTaskId(null)}
-              />
-            </TodoTaskColumn>
-
-            <TodoTaskColumn
-              title={t('todo.selected.title')}
-              subtitle={t('todo.selected.subtitle')}
-              countLabel={selectedCountLabel}
-              searchValue={schedule.selectedSearch}
-              searchPlaceholder={t('todo.selected.searchPlaceholder')}
-              onSearchChange={schedule.setSelectedSearch}
-              icon={<ListChecks className="size-4" />}
-              accent="primary"
-              canDrop={schedule.canWrite}
-              isDragActive={draggingTaskId !== null}
-              onDropTask={(taskId) => {
-                setDraggingTaskId(null)
-                schedule.moveByDrop(taskId, 'right')
-              }}
-            >
-              <TodoSelectedList
-                entries={schedule.filteredSelected}
-                totalCount={schedule.selected.length}
-                selectedIndexById={schedule.selectedIndexById}
-                hasSearch={schedule.selectedSearch.trim().length > 0}
-                canWrite={schedule.canWrite}
-                lessonHitsByTaskId={schedule.lessonHitsByTaskId}
-                onRemove={schedule.removeTask}
-                onReorder={schedule.reorderTask}
-                onStartTimeChange={schedule.updateStartTime}
-                onDragStartTask={setDraggingTaskId}
-                onDragEndTask={() => setDraggingTaskId(null)}
-              />
-            </TodoTaskColumn>
-          </div>
-
-          <TodoTimelineSection
-            tasks={schedule.timelineTasks}
-            lessonHitsByTaskId={schedule.lessonHitsByTaskId}
-          />
-        </>
-      )}
+      </PageContainerBody>
 
       <TodoConfirmDialogs
         pendingDateChange={schedule.pendingDateChange}
@@ -302,7 +312,7 @@ export function TodoPage() {
         onConfirmSaveWithMissingTime={schedule.confirmSaveWithMissingTime}
         onCancelSaveWithMissingTime={schedule.cancelSaveWithMissingTime}
       />
-    </div>
+    </PageContainer>
   )
 }
 

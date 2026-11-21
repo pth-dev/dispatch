@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { useAppStore } from '@/app/store'
 import {
   InlineError,
+  PageContainer,
+  PageContainerBody,
   isFullPageError,
   throwFullPageError,
   toErrorStatus,
@@ -37,10 +39,10 @@ export function MessagesPage() {
   const visibleMessages = filterMessages(messages, scope, search, user?.username)
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex flex-wrap items-center justify-between gap-2">
+    <PageContainer>
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2.5">
-          <h1 className="text-[22px] lg:text-2xl font-semibold text-foreground">
+          <h1 className="text-xl lg:text-2xl font-semibold text-foreground">
             {t('nav.messages')}
           </h1>
           {!isLoading && !isError && (
@@ -64,54 +66,58 @@ export function MessagesPage() {
         </Button>
       </div>
 
-      {canWrite && (
-        <MessageComposerCard
-          isSubmitting={isPosting}
-          submitError={postError}
-          onSubmitMessage={submitMessage}
-        />
-      )}
+      <PageContainerBody surface="card" scrollable className="p-4">
+        <div className="space-y-4">
+          {canWrite && (
+            <MessageComposerCard
+              isSubmitting={isPosting}
+              submitError={postError}
+              onSubmitMessage={submitMessage}
+            />
+          )}
 
-      <MessageToolbar
-        scope={scope}
-        search={search}
-        allCount={messages.length}
-        mineCount={mineCount}
-        onScopeChange={setScope}
-        onSearchChange={setSearch}
-      />
+          <MessageToolbar
+            scope={scope}
+            search={search}
+            allCount={messages.length}
+            mineCount={mineCount}
+            onScopeChange={setScope}
+            onSearchChange={setSearch}
+          />
 
-      {isLoading ? (
-        <MessageListSkeleton />
-      ) : isError ? (
-        <InlineError status={errorStatus} onRetry={() => void refetch()} />
-      ) : visibleMessages.length === 0 ? (
-        <div className="rounded-xl border border-border bg-card px-6 py-10 text-center space-y-3">
-          <MessagesSquare className="mx-auto size-8 text-muted-foreground" aria-hidden="true" />
-          <p className="text-sm font-medium text-foreground">
-            {hasActiveFilters ? t('messages.empty.filtered') : t('messages.empty.all')}
-          </p>
-          {hasActiveFilters && (
-            <Button type="button" variant="outline" onClick={resetFilters}>
-              {t('messages.empty.clearFilters')}
-            </Button>
+          {isLoading ? (
+            <MessageListSkeleton />
+          ) : isError ? (
+            <InlineError status={errorStatus} onRetry={() => void refetch()} />
+          ) : visibleMessages.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-border bg-secondary/30 px-6 py-10 text-center space-y-3">
+              <MessagesSquare className="mx-auto size-8 text-muted-foreground" aria-hidden="true" />
+              <p className="text-sm font-medium text-foreground">
+                {hasActiveFilters ? t('messages.empty.filtered') : t('messages.empty.all')}
+              </p>
+              {hasActiveFilters && (
+                <Button type="button" variant="outline" onClick={resetFilters}>
+                  {t('messages.empty.clearFilters')}
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {visibleMessages.map((msg) => (
+                <MessageCard
+                  key={msg.id}
+                  message={msg}
+                  canWrite={canWrite}
+                  isReplying={Boolean(replyingMap[msg.id])}
+                  replyError={replyErrors[msg.id]}
+                  onSubmitReply={submitReply}
+                />
+              ))}
+            </div>
           )}
         </div>
-      ) : (
-        <div className="space-y-3">
-          {visibleMessages.map((msg) => (
-            <MessageCard
-              key={msg.id}
-              message={msg}
-              canWrite={canWrite}
-              isReplying={Boolean(replyingMap[msg.id])}
-              replyError={replyErrors[msg.id]}
-              onSubmitReply={submitReply}
-            />
-          ))}
-        </div>
-      )}
-    </div>
+      </PageContainerBody>
+    </PageContainer>
   )
 }
 

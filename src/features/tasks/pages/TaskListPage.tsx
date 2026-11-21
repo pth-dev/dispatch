@@ -14,7 +14,14 @@ import { usePageClamp, useTaskListParams } from '../hooks/use-task-list-params'
 import { useTaskColumns } from '../hooks/use-task-columns'
 import { useTaskViewPrefs } from '../hooks/use-task-view-prefs'
 import { useIsMobile } from '@/hooks/use-mobile'
-import { InlineError, isFullPageError, throwFullPageError, toErrorStatus } from '@/components/layout'
+import {
+  InlineError,
+  PageContainer,
+  PageContainerBody,
+  isFullPageError,
+  throwFullPageError,
+  toErrorStatus,
+} from '@/components/layout'
 import { APP_ROUTES } from '@/constants/app-routes'
 import { useAppStore } from '@/app/store'
 import { useLessons } from '@/hooks/use-lessons'
@@ -117,12 +124,7 @@ export function TaskListPage() {
   }
 
   return (
-    <div
-      className={cn(
-        'flex min-h-0 flex-1 flex-col space-y-3 short:space-y-2 lg:min-h-[546px]',
-        isMobile && canCreate && 'pb-20 lg:pb-0',
-      )}
-    >
+    <PageContainer className={cn(isMobile && canCreate && 'pb-20 lg:pb-0')}>
       {/* Page Header Row */}
       <div className="flex items-center justify-between gap-3 shrink-0">
         <h1 className="text-xl lg:text-2xl font-semibold text-foreground tracking-tight">
@@ -156,7 +158,7 @@ export function TaskListPage() {
       </div>
 
       {/* Main Content Card */}
-      <div className="flex min-h-0 flex-1 flex-col rounded-xl border border-border bg-card overflow-hidden">
+      <PageContainerBody surface="card">
         <div className="shrink-0 flex flex-col gap-3 short:gap-2 p-4 short:p-3 pb-3 border-b border-border bg-card">
           <div className="flex items-center justify-between gap-4">
             <TaskScopeTabs
@@ -179,7 +181,7 @@ export function TaskListPage() {
           />
         </div>
 
-        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <div className="flex flex-col lg:min-h-0 lg:flex-1 lg:overflow-hidden">
           {isError ? (
             <InlineError
               status={errorStatus}
@@ -218,7 +220,7 @@ export function TaskListPage() {
             />
           </div>
         )}
-      </div>
+      </PageContainerBody>
 
       {isMobile && canCreate && (
         <Button
@@ -231,7 +233,7 @@ export function TaskListPage() {
           </Link>
         </Button>
       )}
-    </div>
+    </PageContainer>
   )
 }
 

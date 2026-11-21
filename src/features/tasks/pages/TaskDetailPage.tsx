@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import {
   InlineError,
+  PageContainer,
+  PageContainerBody,
   isFullPageError,
   throwFullPageError,
   toErrorStatus,
@@ -55,11 +57,16 @@ export function TaskDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="flex-1 p-6 space-y-4 animate-pulse">
-        <div className="h-4 bg-muted rounded w-48" />
-        <div className="h-28 bg-muted rounded-xl" />
-        <div className="h-64 bg-muted rounded-xl" />
-      </div>
+      <PageContainer>
+        <PageContainerBody surface="card" className="p-6">
+          <div role="status" className="space-y-4 animate-pulse">
+            <span className="sr-only">{t('common.loading')}</span>
+            <div className="h-4 bg-muted rounded w-48" />
+            <div className="h-28 bg-muted rounded-xl" />
+            <div className="h-64 bg-muted rounded-xl" />
+          </div>
+        </PageContainerBody>
+      </PageContainer>
     )
   }
 
@@ -68,7 +75,13 @@ export function TaskDetailPage() {
     if (isFullPageError(errorStatus)) {
       throwFullPageError(errorStatus)
     }
-    return <InlineError status={errorStatus} onRetry={() => void refetch()} />
+    return (
+      <PageContainer>
+        <PageContainerBody surface="card" className="p-4">
+          <InlineError status={errorStatus} onRetry={() => void refetch()} />
+        </PageContainerBody>
+      </PageContainer>
+    )
   }
 
   if (!task) {
@@ -95,59 +108,65 @@ export function TaskDetailPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 space-y-4">
-      <TaskDetailHeader
-        task={task}
-        allowEdit={allowEdit}
-        allowClone={allowClone}
-        allowDelete={allowDelete}
-        isDeleting={deleteTask.isPending}
-        deleteError={deleteError}
-        onConfirmDelete={() => void handleDelete()}
-      />
-
-      <SplitGroupPanel currentTaskId={task.id} members={splitMembers} />
-      <WorkItemsReadOnly envelope={workItems} />
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
-        <div className="lg:col-span-2 space-y-4">
-          <LessonMarqueeBanner hits={lessonHits} interactive />
-          <section className="rounded-xl border border-border bg-card p-4 space-y-3 text-xs">
-            <h2 className="text-sm font-semibold text-foreground">
-              {t('tasks.detail.description')}
-            </h2>
-            <p className="whitespace-pre-wrap text-foreground leading-relaxed">
-              {task.content || t('tasks.detail.noDescription')}
-            </p>
-            {task.precautions && (
-              <div className="pt-2 border-t border-border space-y-1">
-                <h3 className="font-semibold text-muted-foreground">
-                  {t('tasks.fields.precautions')}
-                </h3>
-                <p className="whitespace-pre-wrap text-foreground">{task.precautions}</p>
-              </div>
-            )}
-          </section>
-
-          {allowReport && user && (
-            <ReportComposer key={task.id} task={task} user={user} splitMembers={splitMembers} />
-          )}
-
-          <ReportFeed
-            key={`feed-${task.id}`}
-            task={task}
-            user={user}
-            reports={reports}
-            isLoading={reportsLoading}
-            isError={reportsError}
-            error={reportsErrorObj}
-            onRetry={() => void refetchReports()}
-          />
-        </div>
-
-        <TaskDetailSidebar task={task} />
+    <PageContainer>
+      <div className="shrink-0">
+        <TaskDetailHeader
+          task={task}
+          allowEdit={allowEdit}
+          allowClone={allowClone}
+          allowDelete={allowDelete}
+          isDeleting={deleteTask.isPending}
+          deleteError={deleteError}
+          onConfirmDelete={() => void handleDelete()}
+        />
       </div>
-    </div>
+
+      <PageContainerBody surface="card" scrollable className="p-4">
+        <div className="space-y-4">
+          <SplitGroupPanel currentTaskId={task.id} members={splitMembers} />
+          <WorkItemsReadOnly envelope={workItems} />
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+            <div className="lg:col-span-2 space-y-4">
+              <LessonMarqueeBanner hits={lessonHits} interactive />
+              <section className="rounded-xl border border-border bg-card p-4 space-y-3 text-xs">
+                <h2 className="text-sm font-semibold text-foreground">
+                  {t('tasks.detail.description')}
+                </h2>
+                <p className="whitespace-pre-wrap text-foreground leading-relaxed">
+                  {task.content || t('tasks.detail.noDescription')}
+                </p>
+                {task.precautions && (
+                  <div className="pt-2 border-t border-border space-y-1">
+                    <h3 className="font-semibold text-muted-foreground">
+                      {t('tasks.fields.precautions')}
+                    </h3>
+                    <p className="whitespace-pre-wrap text-foreground">{task.precautions}</p>
+                  </div>
+                )}
+              </section>
+
+              {allowReport && user && (
+                <ReportComposer key={task.id} task={task} user={user} splitMembers={splitMembers} />
+              )}
+
+              <ReportFeed
+                key={`feed-${task.id}`}
+                task={task}
+                user={user}
+                reports={reports}
+                isLoading={reportsLoading}
+                isError={reportsError}
+                error={reportsErrorObj}
+                onRetry={() => void refetchReports()}
+              />
+            </div>
+
+            <TaskDetailSidebar task={task} />
+          </div>
+        </div>
+      </PageContainerBody>
+    </PageContainer>
   )
 }
 

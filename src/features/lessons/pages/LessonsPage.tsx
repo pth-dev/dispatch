@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { useAppStore } from '@/app/store'
 import {
   InlineError,
+  PageContainer,
+  PageContainerBody,
   isFullPageError,
   throwFullPageError,
   toErrorStatus,
@@ -149,8 +151,8 @@ export function LessonsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex flex-wrap items-start justify-between gap-3">
+    <PageContainer>
+      <div className="flex shrink-0 flex-wrap items-start justify-between gap-3">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
             <h1 className="text-xl font-semibold text-foreground lg:text-2xl">
@@ -197,85 +199,89 @@ export function LessonsPage() {
       {isError ? (
         <InlineError status={errorStatus} onRetry={() => void refetch()} />
       ) : (
-        <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-12">
-          <div
-            className={
-              isRightPanelActiveOnMobile
-                ? 'hidden lg:sticky lg:top-4 lg:col-span-5 lg:block'
-                : 'lg:sticky lg:top-4 lg:col-span-5'
-            }
-          >
-            <LessonListPanel
-              lessons={visibleLessons}
-              totalCount={lessons.length}
-              isLoading={isLoading}
-              selectedId={selectedId}
-              isCreating={effectiveMode === 'create'}
-              filter={filter}
-              search={search}
-              hasActiveFilters={hasActiveFilters}
-              canWrite={canWrite}
-              hitCountById={hitCountById}
-              openHitCountById={openHitCountById}
-              onSelect={(id) => {
-                clearActionError()
-                selectLesson(id)
-              }}
-              onFilterChange={setFilter}
-              onSearchChange={setSearch}
-              onResetFilters={resetFilters}
-              onCreate={() => {
-                clearActionError()
-                openCreate()
-              }}
-            />
-          </div>
+        <PageContainerBody surface="transparent">
+          <div className="grid grid-cols-1 gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-12 lg:grid-rows-1">
+            <div
+              className={
+                isRightPanelActiveOnMobile
+                  ? 'hidden lg:col-span-5 lg:flex lg:min-h-0 lg:flex-col'
+                  : 'lg:col-span-5 lg:flex lg:min-h-0 lg:flex-col'
+              }
+            >
+              <LessonListPanel
+                lessons={visibleLessons}
+                totalCount={lessons.length}
+                isLoading={isLoading}
+                selectedId={selectedId}
+                isCreating={effectiveMode === 'create'}
+                filter={filter}
+                search={search}
+                hasActiveFilters={hasActiveFilters}
+                canWrite={canWrite}
+                hitCountById={hitCountById}
+                openHitCountById={openHitCountById}
+                onSelect={(id) => {
+                  clearActionError()
+                  selectLesson(id)
+                }}
+                onFilterChange={setFilter}
+                onSearchChange={setSearch}
+                onResetFilters={resetFilters}
+                onCreate={() => {
+                  clearActionError()
+                  openCreate()
+                }}
+              />
+            </div>
 
-          <div
-            className={
-              isRightPanelActiveOnMobile ? 'lg:col-span-7' : 'hidden lg:col-span-7 lg:block'
-            }
-          >
-            {effectiveMode === 'create' || effectiveMode === 'edit' ? (
-              <LessonEditorPanel
-                key={`${effectiveMode}-${selectedLesson?.id ?? 'new'}`}
-                mode={effectiveMode}
-                lesson={effectiveMode === 'edit' ? selectedLesson : null}
-                allTasks={allTasks}
-                isSaving={isSaving}
-                actionError={actionError}
-                onSubmit={handleEditorSubmit}
-                onCancel={() => {
-                  clearActionError()
-                  closeEditor()
-                }}
-                onOpenImage={setLightboxImage}
-              />
-            ) : (
-              <LessonDetailPanel
-                lesson={selectedLesson}
-                matchedTasks={selectedMatchedTasks}
-                canEdit={canEditSelected}
-                isDeleting={isDeleting}
-                actionError={actionError}
-                onEdit={(id) => {
-                  clearActionError()
-                  openEdit(id)
-                }}
-                onDelete={handleDeleteSelected}
-                onOpenImage={setLightboxImage}
-                onBackToList={clearSelection}
-              />
-            )}
+            <div
+              className={
+                isRightPanelActiveOnMobile
+                  ? 'lg:col-span-7 lg:min-h-0 lg:overflow-y-auto lg:scrollbar-gutter-stable'
+                  : 'hidden lg:col-span-7 lg:block lg:min-h-0 lg:overflow-y-auto lg:scrollbar-gutter-stable'
+              }
+            >
+              {effectiveMode === 'create' || effectiveMode === 'edit' ? (
+                <LessonEditorPanel
+                  key={`${effectiveMode}-${selectedLesson?.id ?? 'new'}`}
+                  mode={effectiveMode}
+                  lesson={effectiveMode === 'edit' ? selectedLesson : null}
+                  allTasks={allTasks}
+                  isSaving={isSaving}
+                  actionError={actionError}
+                  onSubmit={handleEditorSubmit}
+                  onCancel={() => {
+                    clearActionError()
+                    closeEditor()
+                  }}
+                  onOpenImage={setLightboxImage}
+                />
+              ) : (
+                <LessonDetailPanel
+                  lesson={selectedLesson}
+                  matchedTasks={selectedMatchedTasks}
+                  canEdit={canEditSelected}
+                  isDeleting={isDeleting}
+                  actionError={actionError}
+                  onEdit={(id) => {
+                    clearActionError()
+                    openEdit(id)
+                  }}
+                  onDelete={handleDeleteSelected}
+                  onOpenImage={setLightboxImage}
+                  onBackToList={clearSelection}
+                />
+              )}
+            </div>
           </div>
-        </div>
+        </PageContainerBody>
       )}
 
       <LessonImageLightbox
         image={lightboxImage}
         onClose={() => setLightboxImage(null)}
       />
-    </div>
+    </PageContainer>
   )
 }
 

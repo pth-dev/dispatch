@@ -155,6 +155,10 @@ body {
   overflow-wrap: anywhere;
 }
 
+@utility scrollbar-gutter-stable {
+  scrollbar-gutter: stable;
+}
+
 /* ── Lesson policy reminder marquee (strict single-line horizontal scroll) ── */
 @keyframes lesson-marquee-scroll {
   0% {
