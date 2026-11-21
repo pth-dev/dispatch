@@ -89,6 +89,7 @@
     "create": "新增任務",
     "edit": "編輯",
     "delete": "刪除",
+    "refresh": "重新整理",
     "retry": "重試",
     "back": "返回",
     "home": "返回首頁",
@@ -579,6 +580,43 @@
     },
     "adminDepartments": {
       "description": "部門組織架構樹（將於 Phase 5 實作）。"
+    }
+  },
+  "messages": {
+    "composer": {
+      "title": "發表留言",
+      "placeholder": "在這裡輸入您的留言內容...",
+      "shortcutHint": "按 Ctrl + Enter 快速發送",
+      "submit": "發送留言",
+      "sending": "發送中..."
+    },
+    "reply": {
+      "placeholder": "回覆此留言...",
+      "inputAria": "回覆內容",
+      "submit": "回覆",
+      "count": "{{count}} 則回覆"
+    },
+    "card": {
+      "ipLabel": "IP: {{ip}}",
+      "unknownIp": "未知"
+    },
+    "scope": {
+      "ariaLabel": "留言範圍",
+      "all": "全部",
+      "mine": "我的"
+    },
+    "search": {
+      "placeholder": "依內容或發送人搜尋...",
+      "clear": "清除搜尋"
+    },
+    "empty": {
+      "all": "目前沒有留言，發表第一則吧！",
+      "filtered": "沒有符合目前篩選條件的留言。",
+      "clearFilters": "清除篩選"
+    },
+    "validation": {
+      "contentRequired": "請輸入留言內容。",
+      "replyRequired": "請輸入回覆內容。"
     }
   },
   "devPanel": {

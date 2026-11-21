@@ -89,6 +89,7 @@
     "create": "Thêm nhiệm vụ",
     "edit": "Chỉnh sửa",
     "delete": "Xoá",
+    "refresh": "Làm mới",
     "retry": "Thử lại",
     "back": "Quay lại",
     "home": "Về trang chính",
@@ -579,6 +580,43 @@
     },
     "adminDepartments": {
       "description": "Cây cơ cấu phòng ban và ban công nghệ (sẽ triển khai trong Phase 5)."
+    }
+  },
+  "messages": {
+    "composer": {
+      "title": "Đăng tin nhắn",
+      "placeholder": "Nhập nội dung tin nhắn của bạn...",
+      "shortcutHint": "Nhấn Ctrl + Enter để gửi nhanh",
+      "submit": "Gửi tin nhắn",
+      "sending": "Đang gửi..."
+    },
+    "reply": {
+      "placeholder": "Trả lời tin nhắn này...",
+      "inputAria": "Nội dung trả lời",
+      "submit": "Gửi",
+      "count": "{{count}} phản hồi"
+    },
+    "card": {
+      "ipLabel": "IP: {{ip}}",
+      "unknownIp": "Không rõ"
+    },
+    "scope": {
+      "ariaLabel": "Phạm vi tin nhắn",
+      "all": "Tất cả",
+      "mine": "Của tôi"
+    },
+    "search": {
+      "placeholder": "Tìm theo nội dung, người gửi...",
+      "clear": "Xoá từ khoá tìm kiếm"
+    },
+    "empty": {
+      "all": "Chưa có tin nhắn nào. Hãy đăng tin nhắn đầu tiên!",
+      "filtered": "Không tìm thấy tin nhắn nào khớp bộ lọc.",
+      "clearFilters": "Xoá bộ lọc"
+    },
+    "validation": {
+      "contentRequired": "Vui lòng nhập nội dung tin nhắn.",
+      "replyRequired": "Vui lòng nhập nội dung trả lời."
     }
   },
   "devPanel": {

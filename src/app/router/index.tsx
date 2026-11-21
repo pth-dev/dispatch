@@ -10,6 +10,7 @@ const LoginPage = React.lazy(() => import('@/pages/login/LoginPage'))
 const TaskListPage = React.lazy(() => import('@/features/tasks/pages/TaskListPage'))
 const TaskDetailPage = React.lazy(() => import('@/features/tasks/pages/TaskDetailPage'))
 const TaskCreatePage = React.lazy(() => import('@/features/tasks/pages/TaskCreatePage'))
+const MessagesPage = React.lazy(() => import('@/features/messages/pages/MessagesPage'))
 const ProfilePage = React.lazy(() => import('@/features/profile/pages/ProfilePage'))
 const TaskCardFixturePreviewPage = import.meta.env.DEV
   ? React.lazy(() => import('@/features/tasks/pages/TaskCardFixturePreviewPage'))
@@ -86,6 +87,14 @@ export const router = createBrowserRouter([
         element: (
           <RequireMenuPerm perm="list" level="r">
             <TaskDetailPage />
+          </RequireMenuPerm>
+        ),
+      },
+      {
+        path: 'messages',
+        element: (
+          <RequireMenuPerm perm="messages" level="r">
+            <MessagesPage />
           </RequireMenuPerm>
         ),
       },

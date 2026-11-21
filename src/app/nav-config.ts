@@ -1,4 +1,4 @@
-import { ListChecks, type LucideIcon } from 'lucide-react'
+import { ListChecks, MessagesSquare, type LucideIcon } from 'lucide-react'
 import { APP_ROUTES } from '@/constants/app-routes'
 import type { MenuPermKey } from '@/schemas/auth'
 
@@ -18,9 +18,9 @@ export interface NavItemConfig {
 }
 
 /**
- * v1 navigation scope (docs/DEVIATIONS.md §3 D8):
- * Task lifecycle only; "Văn bản hệ thống" permanently removed;
- * Dashboard, Messages, Lessons, Todo, SLA, Admin deferred to later phases.
+ * Active navigation items (docs/DEVIATIONS.md §3 D8):
+ * "Văn bản hệ thống" permanently removed;
+ * Dashboard, Lessons, Todo, SLA, Admin enabled incrementally per phase.
  */
 export const MAIN_NAV_ITEMS: NavItemConfig[] = [
   {
@@ -29,6 +29,13 @@ export const MAIN_NAV_ITEMS: NavItemConfig[] = [
     href: APP_ROUTES.TASKS,
     icon: ListChecks,
     menuPermKey: 'list',
+  },
+  {
+    id: 'messages',
+    titleKey: 'nav.messages',
+    href: APP_ROUTES.MESSAGES,
+    icon: MessagesSquare,
+    menuPermKey: 'messages',
   },
 ]
 

@@ -89,6 +89,7 @@
     "create": "新建任务",
     "edit": "编辑",
     "delete": "删除",
+    "refresh": "刷新",
     "retry": "重试",
     "back": "返回",
     "home": "返回主页",
@@ -579,6 +580,43 @@
     },
     "adminDepartments": {
       "description": "部门组织结构树（将在 Phase 5 中实现）。"
+    }
+  },
+  "messages": {
+    "composer": {
+      "title": "发表留言",
+      "placeholder": "在这里输入您的留言内容...",
+      "shortcutHint": "按 Ctrl + Enter 快速发送",
+      "submit": "发送留言",
+      "sending": "发送中..."
+    },
+    "reply": {
+      "placeholder": "回复此留言...",
+      "inputAria": "回复内容",
+      "submit": "回复",
+      "count": "{{count}} 条回复"
+    },
+    "card": {
+      "ipLabel": "IP: {{ip}}",
+      "unknownIp": "未知"
+    },
+    "scope": {
+      "ariaLabel": "留言范围",
+      "all": "全部",
+      "mine": "我的"
+    },
+    "search": {
+      "placeholder": "按内容或发送人搜索...",
+      "clear": "清除搜索"
+    },
+    "empty": {
+      "all": "目前没有留言，发表第一则吧！",
+      "filtered": "没有符合当前筛选条件的留言。",
+      "clearFilters": "清除筛选"
+    },
+    "validation": {
+      "contentRequired": "请输入留言内容。",
+      "replyRequired": "请输入回复内容。"
     }
   },
   "devPanel": {

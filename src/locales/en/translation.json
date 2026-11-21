@@ -89,6 +89,7 @@
     "create": "New task",
     "edit": "Edit",
     "delete": "Delete",
+    "refresh": "Refresh",
     "retry": "Retry",
     "back": "Back",
     "home": "Back to home",
@@ -579,6 +580,43 @@
     },
     "adminDepartments": {
       "description": "Department structure tree (to be implemented in Phase 5)."
+    }
+  },
+  "messages": {
+    "composer": {
+      "title": "Post a message",
+      "placeholder": "Type your message here...",
+      "shortcutHint": "Press Ctrl + Enter to send",
+      "submit": "Send message",
+      "sending": "Sending..."
+    },
+    "reply": {
+      "placeholder": "Reply to this message...",
+      "inputAria": "Reply content",
+      "submit": "Reply",
+      "count": "Replies: {{count}}"
+    },
+    "card": {
+      "ipLabel": "IP: {{ip}}",
+      "unknownIp": "Unknown"
+    },
+    "scope": {
+      "ariaLabel": "Message scope",
+      "all": "All",
+      "mine": "Mine"
+    },
+    "search": {
+      "placeholder": "Search by content or sender...",
+      "clear": "Clear search"
+    },
+    "empty": {
+      "all": "No messages yet. Post the first one!",
+      "filtered": "No messages match your current filter.",
+      "clearFilters": "Clear filters"
+    },
+    "validation": {
+      "contentRequired": "Please enter a message.",
+      "replyRequired": "Please enter a reply."
     }
   },
   "devPanel": {
