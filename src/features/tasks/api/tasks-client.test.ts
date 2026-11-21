@@ -51,7 +51,7 @@ describe('filterAndPaginateTasks', () => {
   it('computes scope counts independently of active filters and filters by status/dept', () => {
     const res = filterAndPaginateTasks(
       tasks,
-      { scope: 'all', status: 'paused', page: 1, pageSize: 10 },
+      { scope: 'all', status: 'paused', sort: 'default', page: 1, pageSize: 10 },
       USER,
       now,
     )
@@ -60,7 +60,7 @@ describe('filterAndPaginateTasks', () => {
 
     const byDept = filterAndPaginateTasks(
       tasks,
-      { scope: 'all', department: '制造部', page: 1, pageSize: 10 },
+      { scope: 'all', department: '制造部', sort: 'default', page: 1, pageSize: 10 },
       USER,
       now,
     )
@@ -71,7 +71,7 @@ describe('filterAndPaginateTasks', () => {
     const many = Array.from({ length: 15 }, (_, idx) => makeTask({ id: idx + 1 }))
     const page2 = filterAndPaginateTasks(
       many,
-      { scope: 'all', page: 2, pageSize: 10 },
+      { scope: 'all', sort: 'default', page: 2, pageSize: 10 },
       USER,
       now,
     )
@@ -86,11 +86,87 @@ describe('filterAndPaginateTasks', () => {
     ]
     const res = filterAndPaginateTasks(
       withEmptyDate,
-      { scope: 'all', fromDate: '2026-11-01', page: 1, pageSize: 10 },
+      { scope: 'all', fromDate: '2026-11-01', sort: 'default', page: 1, pageSize: 10 },
       USER,
       now,
     )
     expect(res.items.map((t) => t.id)).not.toContain(99)
+  })
+
+  it('supports composite statuses (incomplete/completed), site/level/type/flags filters, and sorting', () => {
+    const rich: RawTask[] = [
+      makeTask({
+        id: 10,
+        title: 'Normal YS',
+        site: 'YS',
+        level: '一般件 / Bình thường',
+        task_type: '網路類 / Mạng lưới',
+        due_date: '2026-11-28T17:00',
+        progress: 20,
+        recur_type: 'weekly',
+      }),
+      makeTask({
+        id: 11,
+        title: 'Critical YA',
+        site: 'YA',
+        level: '特急件 / Rất gấp',
+        task_type: '系統類 / Hệ thống',
+        due_date: '2026-11-21T17:00',
+        progress: 100,
+        finish_date: '2026-11-20 10:00:00',
+        confidential: 1,
+      }),
+      makeTask({
+        id: 12,
+        title: 'Urgent due today',
+        site: '',
+        level: '急件 / Khẩn cấp',
+        content: 'Cần thay switch tầng 2',
+        due_date: '2026-11-20T17:00',
+        progress: 0,
+        recur_type: 'weekly',
+      }),
+    ]
+
+    expect(
+      filterAndPaginateTasks(rich, { scope: 'all', status: 'incomplete', sort: 'default', page: 1, pageSize: 10 }, USER, now)
+        .items.map((t) => t.id),
+    ).toEqual([12, 10])
+
+    expect(
+      filterAndPaginateTasks(rich, { scope: 'all', status: 'completed', sort: 'default', page: 1, pageSize: 10 }, USER, now)
+        .items.map((t) => t.id),
+    ).toEqual([11])
+
+    expect(
+      filterAndPaginateTasks(rich, { scope: 'all', site: '__EMPTY__', sort: 'default', page: 1, pageSize: 10 }, USER, now)
+        .items.map((t) => t.id),
+    ).toEqual([12])
+
+    expect(
+      filterAndPaginateTasks(rich, { scope: 'all', level: 'critical', sort: 'default', page: 1, pageSize: 10 }, USER, now)
+        .items.map((t) => t.id),
+    ).toEqual([11])
+
+    expect(
+      filterAndPaginateTasks(rich, { scope: 'all', flags: ['recurring', 'recur_today'], sort: 'default', page: 1, pageSize: 10 }, USER, now)
+        .items.map((t) => t.id),
+    ).toEqual([12])
+
+    expect(
+      filterAndPaginateTasks(rich, { scope: 'all', search: 'switch tầng 2', sort: 'default', page: 1, pageSize: 10 }, USER, now)
+        .items.map((t) => t.id),
+    ).toEqual([12])
+
+    expect(
+      filterAndPaginateTasks(rich, { scope: 'all', sort: 'level', page: 1, pageSize: 10 }, USER, now)
+        .items.map((t) => t.id),
+    ).toEqual([11, 12, 10])
+
+    expect(
+      filterAndPaginateTasks(rich, { scope: 'all', sort: 'due_asc', page: 1, pageSize: 10 }, USER, now)
+        .items.map((t) => t.id),
+    ).toEqual([12, 11, 10])
   })
 })
 

@@ -53,7 +53,9 @@
     "done": "Completed",
     "overdue": "Overdue",
     "rejected": "Rejected",
-    "urgent": "Urgent"
+    "urgent": "Urgent",
+    "incomplete": "Incomplete (<100%)",
+    "completed": "Completed"
   },
   "language": {
     "vi": "Tiếng Việt (VI)",
@@ -136,7 +138,27 @@
       "clearAll": "Clear all",
       "submitSearch": "Search tasks",
       "dateRangeErrorTitle": "Invalid date range",
-      "dateRangeErrorDescription": "The from date cannot be later than the to date."
+      "dateRangeErrorDescription": "The from date cannot be later than the to date.",
+      "advanced": "Filters",
+      "site": "Site / Plant",
+      "siteAll": "All sites",
+      "siteEmpty": "Unassigned site",
+      "level": "Priority",
+      "levelAll": "All priorities",
+      "levelCritical": "Critical",
+      "levelUrgent": "Urgent",
+      "levelNormal": "Normal",
+      "taskType": "Task type",
+      "taskTypeAll": "All types",
+      "confidentialAll": "All confidentiality",
+      "properties": "Special attributes",
+      "flagRecurring": "Recurring",
+      "flagRecurToday": "Due today (recurring)",
+      "flagCross": "Cross-dept viewer",
+      "flagReader": "Read-only",
+      "clearSearch": "Clear search keyword",
+      "removeChip": "Remove filter {{label}}",
+      "dateRangeInvalid": "From date cannot be later than To date"
     },
     "columns": {
       "stt": "No.",
@@ -338,6 +360,16 @@
       "cloneRecurEndMustChange": "When cloning a recurring task, please choose a new recurrence end date different from the original task.",
       "maxUsers": "Up to 100 users allowed",
       "fileTooLarge": "Some files exceed the 50 MB limit and were skipped."
+    },
+    "sort": {
+      "label": "Sort by",
+      "default": "Newest first",
+      "oldest": "Oldest first",
+      "due_asc": "Due date (Soonest)",
+      "due_desc": "Due date (Latest)",
+      "progress_asc": "Progress (Low → High)",
+      "progress_desc": "Progress (High → Low)",
+      "level": "Priority (Urgent first)"
     }
   },
   "errors": {

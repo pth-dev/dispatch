@@ -29,8 +29,10 @@ export function TaskListPage() {
   const {
     params,
     activeFilterCount,
+    advancedFilterCount,
     setScope,
-    setFilters,
+    setSort,
+    patchFilters,
     resetFilters,
     setPage,
     setPageSize,
@@ -56,6 +58,7 @@ export function TaskListPage() {
   const items = data?.items ?? []
   const total = data?.total ?? 0
   const counts = data?.counts
+  const availableTaskTypes = data?.availableTaskTypes ?? []
 
   const emptyMessage =
     activeFilterCount > 0
@@ -112,16 +115,12 @@ export function TaskListPage() {
           </div>
 
           <FilterBar
-            key={`${params.search ?? ''}|${params.fromDate ?? ''}|${params.toDate ?? ''}|${params.department ?? ''}|${params.status ?? ''}`}
-            initialValues={{
-              search: params.search,
-              fromDate: params.fromDate,
-              toDate: params.toDate,
-              department: params.department,
-              status: params.status,
-            }}
+            params={params}
             activeFilterCount={activeFilterCount}
-            onApply={setFilters}
+            advancedFilterCount={advancedFilterCount}
+            availableTaskTypes={availableTaskTypes}
+            onPatch={patchFilters}
+            onSortChange={setSort}
             onReset={resetFilters}
           />
         </div>

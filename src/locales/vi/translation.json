@@ -53,7 +53,9 @@
     "done": "Hoàn thành",
     "overdue": "Quá hạn",
     "rejected": "Từ chối",
-    "urgent": "Khẩn cấp"
+    "urgent": "Khẩn cấp",
+    "incomplete": "Chưa hoàn thành (<100%)",
+    "completed": "Đã hoàn thành"
   },
   "language": {
     "vi": "Tiếng Việt (VI)",
@@ -136,7 +138,27 @@
       "clearAll": "Xoá hết",
       "submitSearch": "Tìm kiếm nhiệm vụ",
       "dateRangeErrorTitle": "Khoảng ngày không hợp lệ",
-      "dateRangeErrorDescription": "Từ ngày không được lớn hơn Đến ngày."
+      "dateRangeErrorDescription": "Từ ngày không được lớn hơn Đến ngày.",
+      "advanced": "Bộ lọc",
+      "site": "Cơ sở / Nhà máy",
+      "siteAll": "Tất cả cơ sở",
+      "siteEmpty": "Chưa định cơ sở",
+      "level": "Cấp độ",
+      "levelAll": "Tất cả cấp độ",
+      "levelCritical": "Rất gấp",
+      "levelUrgent": "Khẩn cấp",
+      "levelNormal": "Bình thường",
+      "taskType": "Loại nhiệm vụ",
+      "taskTypeAll": "Tất cả loại",
+      "confidentialAll": "Tất cả độ mật",
+      "properties": "Tính chất đặc thù",
+      "flagRecurring": "Định kỳ",
+      "flagRecurToday": "Cần BC hôm nay",
+      "flagCross": "Xem liên BP",
+      "flagReader": "Chỉ đọc",
+      "clearSearch": "Xoá từ khoá tìm kiếm",
+      "removeChip": "Bỏ lọc {{label}}",
+      "dateRangeInvalid": "Ngày bắt đầu không được lớn hơn ngày kết thúc"
     },
     "columns": {
       "stt": "STT",
@@ -338,6 +360,16 @@
       "fileTooLarge": "Một số tệp vượt quá giới hạn 50 MB và đã bị bỏ qua.",
       "recurWeekdaysRequired": "Vui lòng chọn ít nhất 1 thứ trong tuần",
       "recurMonthdaysRequired": "Vui lòng chọn ít nhất 1 ngày trong tháng"
+    },
+    "sort": {
+      "label": "Sắp xếp",
+      "default": "Mới nhất",
+      "oldest": "Cũ nhất",
+      "due_asc": "Hạn chót (Gần → Xa)",
+      "due_desc": "Hạn chót (Xa → Gần)",
+      "progress_asc": "Tiến độ (Thấp → Cao)",
+      "progress_desc": "Tiến độ (Cao → Thấp)",
+      "level": "Cấp độ (Khẩn trước)"
     }
   },
   "errors": {

@@ -11,8 +11,39 @@ export const DERIVED_TASK_STATUSES = [
 export const DerivedTaskStatusSchema = z.enum(DERIVED_TASK_STATUSES)
 export type DerivedTaskStatus = z.infer<typeof DerivedTaskStatusSchema>
 
-export const TaskStatusFilterSchema = z.enum([...DERIVED_TASK_STATUSES, 'paused'])
+export const TaskStatusFilterSchema = z.enum([
+  'incomplete',
+  'completed',
+  ...DERIVED_TASK_STATUSES,
+  'paused',
+])
 export type TaskStatusFilter = z.infer<typeof TaskStatusFilterSchema>
+
+export const TASK_SORT_MODES = [
+  'default',
+  'oldest',
+  'due_asc',
+  'due_desc',
+  'progress_asc',
+  'progress_desc',
+  'level',
+] as const
+export const TaskSortSchema = z.enum(TASK_SORT_MODES)
+export type TaskSortMode = z.infer<typeof TaskSortSchema>
+
+export const TASK_LEVEL_FILTERS = ['critical', 'urgent', 'normal'] as const
+export const TaskLevelFilterSchema = z.enum(TASK_LEVEL_FILTERS)
+export type TaskLevelFilter = z.infer<typeof TaskLevelFilterSchema>
+
+export const TASK_CONFIDENTIAL_FILTERS = ['1', '2', '3'] as const
+export const TaskConfidentialFilterSchema = z.enum(TASK_CONFIDENTIAL_FILTERS)
+export type TaskConfidentialFilter = z.infer<typeof TaskConfidentialFilterSchema>
+
+export const TASK_FLAG_FILTERS = ['recurring', 'recur_today', 'cross', 'reader'] as const
+export const TaskFlagFilterSchema = z.enum(TASK_FLAG_FILTERS)
+export type TaskFlagFilter = z.infer<typeof TaskFlagFilterSchema>
+
+export const EMPTY_SITE_FILTER = '__EMPTY__'
 
 export const ConfidentialLevelSchema = z.union([
   z.literal(0),
@@ -225,6 +256,12 @@ export const TaskListParamsSchema = z.object({
   toDate: z.string().regex(ISO_DATE_RE).optional(),
   department: z.string().optional(),
   status: TaskStatusFilterSchema.optional(),
+  site: z.string().optional(),
+  level: TaskLevelFilterSchema.optional(),
+  taskType: z.string().optional(),
+  confidential: TaskConfidentialFilterSchema.optional(),
+  flags: z.array(TaskFlagFilterSchema).optional(),
+  sort: TaskSortSchema.default('default'),
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.union([z.literal(10), z.literal(20), z.literal(30), z.literal(50)]).default(10),
 })

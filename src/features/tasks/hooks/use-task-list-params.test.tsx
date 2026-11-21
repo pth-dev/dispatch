@@ -170,4 +170,30 @@ describe('useTaskListParams', () => {
     expect(result.current.params.fromDate).toBeUndefined()
     expect(result.current.params.toDate).toBe('2026-11-30')
   })
+
+  it('supports patchFilters, setSort, and multi-flag URL serialization', () => {
+    const { result } = renderHook(() => useListHarness(), {
+      wrapper: createWrapper('/tasks'),
+    })
+
+    act(() => result.current.setSort('due_asc'))
+    expect(result.current.params.sort).toBe('due_asc')
+    expect(result.current.location.search).toContain('sort=due_asc')
+
+    act(() =>
+      result.current.patchFilters({
+        site: 'YS',
+        level: 'urgent',
+        flags: ['recurring', 'cross'],
+      }),
+    )
+    expect(result.current.params.site).toBe('YS')
+    expect(result.current.params.level).toBe('urgent')
+    expect(result.current.params.flags).toEqual(['recurring', 'cross'])
+    expect(result.current.advancedFilterCount).toBe(4)
+
+    act(() => result.current.resetFilters())
+    expect(result.current.activeFilterCount).toBe(0)
+    expect(result.current.params.sort).toBe('due_asc')
+  })
 })

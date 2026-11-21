@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/utils'
-import type { DerivedTaskStatus, TaskStatusFilter } from '@/schemas/task'
+import type { DerivedTaskStatus } from '@/schemas/task'
 
 export type DerivedStatusKey = DerivedTaskStatus | 'paused' | 'urgent'
 export type StatusKey = DerivedStatusKey
@@ -85,7 +85,7 @@ function sortedDerivedStatuses(
 
 export const DERIVED_FILTER_STATUSES = sortedDerivedStatuses(
   (meta) => meta.filterable === true,
-) as TaskStatusFilter[]
+)
 
 export const DERIVED_LEGEND_STATUSES = sortedDerivedStatuses(
   (meta) => meta.inLegend === true,

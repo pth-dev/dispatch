@@ -53,7 +53,9 @@
     "done": "已完成",
     "overdue": "已逾期",
     "rejected": "已退回",
-    "urgent": "緊急"
+    "urgent": "緊急",
+    "incomplete": "未完成 (<100%)",
+    "completed": "已結案"
   },
   "language": {
     "vi": "Tiếng Việt (VI)",
@@ -136,7 +138,27 @@
       "clearAll": "全部清除",
       "submitSearch": "搜尋任務",
       "dateRangeErrorTitle": "日期範圍無效",
-      "dateRangeErrorDescription": "起始日期不能晚於結束日期。"
+      "dateRangeErrorDescription": "起始日期不能晚於結束日期。",
+      "advanced": "進階篩選",
+      "site": "廠區",
+      "siteAll": "全部廠區",
+      "siteEmpty": "未指定廠區",
+      "level": "等級",
+      "levelAll": "全部等級",
+      "levelCritical": "特急件",
+      "levelUrgent": "急件",
+      "levelNormal": "一般件",
+      "taskType": "任務類型",
+      "taskTypeAll": "全部類型",
+      "confidentialAll": "全部密級",
+      "properties": "特殊屬性",
+      "flagRecurring": "固定週期",
+      "flagRecurToday": "今日待回報",
+      "flagCross": "跨部門觀看",
+      "flagReader": "僅可讀取",
+      "clearSearch": "清除搜尋關鍵字",
+      "removeChip": "移除篩選 {{label}}",
+      "dateRangeInvalid": "開始日期不能晚於結束日期"
     },
     "columns": {
       "stt": "序號",
@@ -338,6 +360,16 @@
       "cloneRecurEndMustChange": "複製週期任務時，請選擇與原任務不同的新結束日期。",
       "maxUsers": "最多 100 人",
       "fileTooLarge": "部分檔案超過 50 MB 限制已被略過。"
+    },
+    "sort": {
+      "label": "排序",
+      "default": "最新優先",
+      "oldest": "最早優先",
+      "due_asc": "期限 (近 → 遠)",
+      "due_desc": "期限 (遠 → 近)",
+      "progress_asc": "進度 (低 → 高)",
+      "progress_desc": "進度 (高 → 低)",
+      "level": "等級 (特急優先)"
     }
   },
   "errors": {

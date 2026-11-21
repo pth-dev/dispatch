@@ -431,14 +431,39 @@ export function isSystemReporter(username: string | null | undefined): boolean {
   return SYSTEM_REPORTERS.has(username.trim().toLowerCase())
 }
 
-export function isUrgentLevel(level: string | null | undefined): boolean {
-  if (!level) return false
+export function getTaskLevelCode(level: string | null | undefined): 'critical' | 'urgent' | 'normal' {
+  if (!level) return 'normal'
   const lower = normalizeT2S(level).toLowerCase()
-  return (
+  if (
+    lower.includes('特急') ||
+    lower.includes('critical') ||
+    lower.includes('rất gấp') ||
+    lower.includes('hỏa tốc')
+  ) {
+    return 'critical'
+  }
+  if (
     lower.includes('急') ||
     lower.includes('urgent') ||
-    lower.includes('critical') ||
     lower.includes('khẩn') ||
     lower.includes('gấp')
-  )
+  ) {
+    return 'urgent'
+  }
+  return 'normal'
+}
+
+export function isUrgentLevel(level: string | null | undefined): boolean {
+  return getTaskLevelCode(level) !== 'normal'
+}
+
+export function isRecurNeedsReportToday(
+  task: Pick<RawTask, 'recur_type' | 'progress' | 'paused' | 'due_date' | 'recur_cycle_date'>,
+  now: Date = new Date(),
+): boolean {
+  if (!isRecurringTask(task)) return false
+  if (isTaskPaused(task) || task.progress > 0) return false
+  const today = toLocalDateString(now)
+  const targetDay = (task.due_date || task.recur_cycle_date || '').trim().slice(0, 10)
+  return targetDay === today
 }
