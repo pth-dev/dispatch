@@ -18,6 +18,7 @@ import {
   InlineError,
   PageContainer,
   PageContainerBody,
+  PageHeader,
   isFullPageError,
   throwFullPageError,
   toErrorStatus,
@@ -126,36 +127,35 @@ export function TaskListPage() {
   return (
     <PageContainer className={cn(isMobile && canCreate && 'pb-20 lg:pb-0')}>
       {/* Page Header Row */}
-      <div className="flex items-center justify-between gap-3 shrink-0">
-        <h1 className="text-xl lg:text-2xl font-semibold text-foreground tracking-tight">
-          {t('tasks.title')}
-        </h1>
+      <PageHeader
+        title={t('tasks.title')}
+        actions={
+          <div className="flex items-center gap-2.5 shrink-0">
+            <TaskViewControls
+              viewMode={viewMode}
+              columnOrder={columnOrder}
+              hiddenSet={hiddenSet}
+              isDefaultColumns={isDefaultColumns}
+              onViewModeChange={setViewMode}
+              onToggleColumn={toggleColumn}
+              onMoveColumn={moveColumn}
+              onResetColumns={resetColumns}
+            />
 
-        <div className="flex items-center gap-2.5 shrink-0">
-          <TaskViewControls
-            viewMode={viewMode}
-            columnOrder={columnOrder}
-            hiddenSet={hiddenSet}
-            isDefaultColumns={isDefaultColumns}
-            onViewModeChange={setViewMode}
-            onToggleColumn={toggleColumn}
-            onMoveColumn={moveColumn}
-            onResetColumns={resetColumns}
-          />
-
-          {!isMobile && canCreate && (
-            <Button
-              asChild
-              className="h-11 lg:h-10 px-4 gap-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-lg cursor-pointer"
-            >
-              <Link to={APP_ROUTES.TASK_NEW}>
-                <Plus className="size-4" aria-hidden="true" />
-                <span>{t('tasks.create')}</span>
-              </Link>
-            </Button>
-          )}
-        </div>
-      </div>
+            {!isMobile && canCreate && (
+              <Button
+                asChild
+                className="h-11 lg:h-10 px-4 gap-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-lg cursor-pointer"
+              >
+                <Link to={APP_ROUTES.TASK_NEW}>
+                  <Plus className="size-4" aria-hidden="true" />
+                  <span>{t('tasks.create')}</span>
+                </Link>
+              </Button>
+            )}
+          </div>
+        }
+      />
 
       {/* Main Content Card */}
       <PageContainerBody surface="card" scrollable={false}>

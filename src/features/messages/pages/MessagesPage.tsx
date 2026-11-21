@@ -5,6 +5,7 @@ import {
   InlineError,
   PageContainer,
   PageContainerBody,
+  PageHeader,
   isFullPageError,
   throwFullPageError,
   toErrorStatus,
@@ -40,31 +41,30 @@ export function MessagesPage() {
 
   return (
     <PageContainer>
-      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2.5">
-          <h1 className="text-xl lg:text-2xl font-semibold text-foreground">
-            {t('nav.messages')}
-          </h1>
-          {!isLoading && !isError && (
+      <PageHeader
+        title={t('nav.messages')}
+        badge={
+          !isLoading && !isError ? (
             <span className="inline-flex items-center rounded-full border border-border bg-card px-2.5 py-0.5 text-xs font-medium text-primary">
               {messages.length}
             </span>
-          )}
-        </div>
-
-        <Button
-          type="button"
-          variant="outline"
-          disabled={isFetching}
-          onClick={() => void refetch()}
-        >
-          <RefreshCw
-            className={isFetching ? 'size-4 motion-safe:animate-spin' : 'size-4'}
-            aria-hidden="true"
-          />
-          <span>{t('common.refresh')}</span>
-        </Button>
-      </div>
+          ) : undefined
+        }
+        actions={
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isFetching}
+            onClick={() => void refetch()}
+          >
+            <RefreshCw
+              className={isFetching ? 'size-4 motion-safe:animate-spin' : 'size-4'}
+              aria-hidden="true"
+            />
+            <span>{t('common.refresh')}</span>
+          </Button>
+        }
+      />
 
       <PageContainerBody className="space-y-3">
         {canWrite && (

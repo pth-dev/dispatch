@@ -6,6 +6,7 @@ import {
   InlineError,
   PageContainer,
   PageContainerBody,
+  PageHeader,
   isFullPageError,
   throwFullPageError,
   toErrorStatus,
@@ -152,49 +153,47 @@ export function LessonsPage() {
 
   return (
     <PageContainer>
-      <div className="flex shrink-0 flex-wrap items-start justify-between gap-3">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-xl font-semibold text-foreground lg:text-2xl">
-              {t('nav.lessons')}
-            </h1>
-            {!isLoading && !isError && (
-              <span className="inline-flex items-center rounded-full border border-border bg-card px-2.5 py-0.5 text-xs font-medium text-primary">
-                {lessons.length}
-              </span>
-            )}
-          </div>
-          <p className="text-xs text-muted-foreground">{t('lessons.subtitle')}</p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            disabled={isFetching}
-            onClick={handleRefresh}
-          >
-            <RefreshCw
-              className={isFetching ? 'size-4 motion-safe:animate-spin' : 'size-4'}
-              aria-hidden="true"
-            />
-            <span>{t('common.refresh')}</span>
-          </Button>
-
-          {canWrite && (
+      <PageHeader
+        className="items-start"
+        title={t('nav.lessons')}
+        badge={
+          !isLoading && !isError ? (
+            <span className="inline-flex items-center rounded-full border border-border bg-card px-2.5 py-0.5 text-xs font-medium text-primary">
+              {lessons.length}
+            </span>
+          ) : undefined
+        }
+        subtitle={t('lessons.subtitle')}
+        actions={
+          <div className="flex flex-wrap items-center gap-2">
             <Button
               type="button"
-              onClick={() => {
-                clearActionError()
-                openCreate()
-              }}
+              variant="outline"
+              disabled={isFetching}
+              onClick={handleRefresh}
             >
-              <Plus className="size-4" aria-hidden="true" />
-              <span>{t('lessons.actions.create')}</span>
+              <RefreshCw
+                className={isFetching ? 'size-4 motion-safe:animate-spin' : 'size-4'}
+                aria-hidden="true"
+              />
+              <span>{t('common.refresh')}</span>
             </Button>
-          )}
-        </div>
-      </div>
+
+            {canWrite && (
+              <Button
+                type="button"
+                onClick={() => {
+                  clearActionError()
+                  openCreate()
+                }}
+              >
+                <Plus className="size-4" aria-hidden="true" />
+                <span>{t('lessons.actions.create')}</span>
+              </Button>
+            )}
+          </div>
+        }
+      />
 
       {isError ? (
         <InlineError status={errorStatus} onRetry={() => void refetch()} />

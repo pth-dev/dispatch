@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { useForm, useWatch, type FieldErrors } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { ArrowLeft, ChevronsDown, CircleAlert, TriangleAlert, Wrench, Zap } from 'lucide-react'
+import { ChevronsDown, CircleAlert, TriangleAlert, Wrench, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
@@ -22,7 +22,7 @@ import {
   type RawTask,
   type TaskEditorFormValues,
 } from '@/schemas/task'
-import { canSetCross, canSetReaders, isComputerRoomUser } from '@/utils/permissions'
+import { canSetCross, canSetReaders } from '@/utils/permissions'
 import {
   useMetaDepts,
   useMetaSites,
@@ -39,8 +39,6 @@ import { useSiteNameResolver } from '../../hooks/use-site-name-resolver'
 import { useDuplicateTaskCheck } from '../../hooks/use-duplicate-task-check'
 import { useTaskEditorSubmit } from '../../hooks/use-task-editor-submit'
 import { TaskBasicInfoSection } from './TaskBasicInfoSection'
-import { TaskCreateModeBar, type TaskCreateVariant } from './TaskCreateModeBar'
-import { TaskHistoryCloneDialog } from './TaskHistoryCloneDialog'
 import { TaskPeopleSection } from './TaskPeopleSection'
 import { TaskScheduleSection } from './TaskScheduleSection'
 import { TaskRequesterSection } from './TaskRequesterSection'
@@ -49,14 +47,18 @@ type TaskEditorFormProps = {
   mode: 'create' | 'edit' | 'clone'
   sourceTask?: RawTask
   initialVariant?: 'full' | 'quick' | 'daily'
-  openHistoryOnMount?: boolean
+  variant?: 'full' | 'quick' | 'daily'
+  onVariantChange?: (next: 'full' | 'quick' | 'daily') => void
+  enterQuickModeRef?: React.MutableRefObject<(() => void) | null>
 }
 
 export function TaskEditorForm({
   mode,
   sourceTask,
   initialVariant = 'full',
-  openHistoryOnMount = false,
+  variant: controlledVariant,
+  onVariantChange,
+  enterQuickModeRef,
 }: TaskEditorFormProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -73,12 +75,16 @@ export function TaskEditorForm({
   const sites = metaSites?.sites ?? []
   const allowReaders = canSetReaders(user)
   const allowCross = canSetCross(user)
-  const showDailyRepair = isComputerRoomUser(user)
 
-  const [variant, setVariant] = React.useState<'full' | 'quick' | 'daily'>(
+  const [internalVariant, setInternalVariant] = React.useState<'full' | 'quick' | 'daily'>(
     mode === 'create' ? initialVariant : 'full',
   )
-  const [historyOpen, setHistoryOpen] = React.useState(openHistoryOnMount && mode === 'create')
+  const variant = controlledVariant ?? internalVariant
+  const setVariant = (next: 'full' | 'quick' | 'daily') => {
+    setInternalVariant(next)
+    onVariantChange?.(next)
+  }
+
   const [leaveDialogOpen, setLeaveDialogOpen] = React.useState(false)
 
   const defaultValues = (() => {
@@ -103,6 +109,24 @@ export function TaskEditorForm({
     resolver: zodResolver(TaskEditorFormSchema),
     defaultValues,
   })
+
+  React.useEffect(() => {
+    if (!enterQuickModeRef) return
+    enterQuickModeRef.current = () => {
+      if (getValues('recur_type') !== 'once') {
+        setValue('recur_type', 'once', { shouldDirty: false })
+      }
+      if (!getValues('due_date')) {
+        setValue('due_date', getDefaultDueDateTime(), { shouldDirty: false })
+      }
+      if (getValues('assign_person').length === 0 && user?.username) {
+        setValue('assign_person', [user.username], { shouldDirty: false })
+      }
+    }
+    return () => {
+      enterQuickModeRef.current = null
+    }
+  }, [enterQuickModeRef, getValues, setValue, user?.username])
 
   const {
     newFiles,
@@ -130,36 +154,6 @@ export function TaskEditorForm({
 
   const isQuickMode = mode === 'create' && variant === 'quick'
   const isDailyMode = mode === 'create' && variant === 'daily'
-  const activeModeVariant: TaskCreateVariant = mode === 'clone' ? 'clone' : variant
-
-  const handleSelectFull = () => {
-    if (mode === 'clone') {
-      navigate(APP_ROUTES.TASK_NEW, { replace: true })
-      return
-    }
-    setVariant('full')
-  }
-
-  const handleSelectQuick = () => {
-    if (mode === 'clone') {
-      navigate(`${APP_ROUTES.TASK_NEW}?mode=quick`, { replace: true })
-      return
-    }
-    if (getValues('recur_type') !== 'once') {
-      setValue('recur_type', 'once', { shouldDirty: false })
-    }
-    if (!getValues('due_date')) {
-      setValue('due_date', getDefaultDueDateTime(), { shouldDirty: false })
-    }
-    if (getValues('assign_person').length === 0 && user?.username) {
-      setValue('assign_person', [user.username], { shouldDirty: false })
-    }
-    setVariant('quick')
-  }
-
-  const handleSelectDailyRepair = () => {
-    navigate(`${APP_ROUTES.TASK_NEW}?mode=daily`, { replace: true })
-  }
 
   const handleInvalidSubmit = (fieldErrors: FieldErrors<TaskEditorFormValues>) => {
     if (!isQuickMode) return
@@ -173,10 +167,6 @@ export function TaskEditorForm({
     if (hiddenFieldHasError) {
       setVariant('full')
     }
-  }
-
-  const handlePickHistoricalTask = (picked: RawTask) => {
-    navigate(`${APP_ROUTES.TASK_NEW}?clone=${picked.id}`, { replace: true })
   }
 
   const navigateAway = () => {
@@ -198,45 +188,8 @@ export function TaskEditorForm({
     }
   }
 
-  const pageTitle =
-    mode === 'edit'
-      ? t('tasks.createForm.editTitle', { id: String(sourceTask?.id ?? '') })
-      : mode === 'clone'
-        ? t('tasks.createForm.cloneTitle', { id: String(sourceTask?.id ?? '') })
-        : isQuickMode
-          ? t('tasks.createModes.quick')
-          : isDailyMode
-            ? t('tasks.createModes.dailyRepair')
-            : t('tasks.createForm.title')
-
   return (
     <div className="flex-1 flex flex-col min-h-0 w-full max-w-[1440px] space-y-4">
-      <div className="flex items-center gap-2 text-xs text-muted-foreground select-none">
-        <Link to={APP_ROUTES.TASKS} className="flex items-center gap-1 hover:text-foreground font-medium">
-          <ArrowLeft className="size-3.5" aria-hidden="true" />
-          <span>{t('tasks.detail.backToList')}</span>
-        </Link>
-        <span>›</span>
-        <span className="font-semibold text-foreground">{pageTitle}</span>
-      </div>
-
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-xl lg:text-2xl font-semibold text-foreground tracking-tight">
-          {pageTitle}
-        </h1>
-
-        {mode !== 'edit' && (
-          <TaskCreateModeBar
-            activeVariant={activeModeVariant}
-            showDailyRepair={showDailyRepair}
-            onSelectFull={handleSelectFull}
-            onSelectQuick={handleSelectQuick}
-            onOpenHistoryPicker={() => setHistoryOpen(true)}
-            onSelectDailyRepair={handleSelectDailyRepair}
-          />
-        )}
-      </div>
-
       {isQuickMode && (
         <div
           role="status"
@@ -351,14 +304,6 @@ export function TaskEditorForm({
           </Button>
         </div>
       </form>
-
-      {mode !== 'edit' && (
-        <TaskHistoryCloneDialog
-          open={historyOpen}
-          onOpenChange={setHistoryOpen}
-          onPickTask={handlePickHistoricalTask}
-        />
-      )}
 
       <AlertDialog open={leaveDialogOpen} onOpenChange={setLeaveDialogOpen}>
         <AlertDialogContent>

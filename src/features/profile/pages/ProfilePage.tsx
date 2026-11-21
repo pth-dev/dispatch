@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { LogOut } from 'lucide-react'
-import { PageContainer, PageContainerBody } from '@/components/layout'
+import { PageContainer, PageContainerBody, PageHeader } from '@/components/layout'
 import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
@@ -76,7 +76,7 @@ export function ProfilePage() {
 
   return (
     <PageContainer width="narrow">
-      <h1 className="shrink-0 text-2xl font-semibold text-foreground">{t('nav.profile')}</h1>
+      <PageHeader title={t('nav.profile')} />
 
       <PageContainerBody className="space-y-4">
         <section className="rounded-xl border border-border bg-card p-5 space-y-4">

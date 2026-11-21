@@ -1,14 +1,19 @@
-import { useParams, useSearchParams } from 'react-router'
+import * as React from 'react'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
+import { ArrowLeft } from 'lucide-react'
 import {
   InlineError,
   PageContainer,
   PageContainerBody,
+  PageHeader,
   isFullPageError,
   throwFullPageError,
   toErrorStatus,
 } from '@/components/layout'
+import { APP_ROUTES } from '@/constants/app-routes'
 import { useAppStore } from '@/app/store'
+import type { RawTask } from '@/schemas/task'
 import {
   canCloneTask,
   canCreateTask,
@@ -16,7 +21,9 @@ import {
   isComputerRoomUser,
 } from '@/utils/permissions'
 import { useMyTaskHistory, useTaskById } from '../api/queries'
+import { TaskCreateModeBar, type TaskCreateVariant } from '../components/editor/TaskCreateModeBar'
 import { TaskEditorForm } from '../components/editor/TaskEditorForm'
+import { TaskHistoryCloneDialog } from '../components/editor/TaskHistoryCloneDialog'
 
 function parsePositiveInt(raw: string | null | undefined): number | undefined {
   if (!raw) return undefined
@@ -26,6 +33,7 @@ function parsePositiveInt(raw: string | null | undefined): number | undefined {
 
 export function TaskCreatePage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
   const [searchParams] = useSearchParams()
   const user = useAppStore((s) => s.user)
@@ -34,6 +42,35 @@ export function TaskCreatePage() {
   const rawModeParam = (searchParams.get('mode') ?? '').toLowerCase()
   const hasInvalidEditId = Boolean(id) && !editId
   const mode: 'create' | 'edit' | 'clone' = editId ? 'edit' : cloneId ? 'clone' : 'create'
+
+  const showDailyRepair = isComputerRoomUser(user)
+  const initialVariant: 'full' | 'quick' | 'daily' =
+    mode === 'create' && rawModeParam === 'quick'
+      ? 'quick'
+      : mode === 'create' && rawModeParam === 'daily' && showDailyRepair
+        ? 'daily'
+        : 'full'
+
+  const [variantState, setVariantState] = React.useState<{
+    base: 'full' | 'quick' | 'daily'
+    current: 'full' | 'quick' | 'daily'
+  }>({ base: initialVariant, current: initialVariant })
+
+  const variant: 'full' | 'quick' | 'daily' =
+    mode !== 'create'
+      ? 'full'
+      : variantState.base === initialVariant
+        ? variantState.current
+        : initialVariant
+
+  const setVariant = (next: 'full' | 'quick' | 'daily') => {
+    setVariantState({ base: initialVariant, current: next })
+  }
+
+  const [historyOpen, setHistoryOpen] = React.useState(
+    mode === 'create' && rawModeParam === 'clone',
+  )
+  const enterQuickModeRef = React.useRef<(() => void) | null>(null)
 
   const sourceId = editId ?? cloneId ?? 0
   const {
@@ -65,9 +102,88 @@ export function TaskCreatePage() {
     throwFullPageError('403')
   }
 
+  const isQuickMode = mode === 'create' && variant === 'quick'
+  const isDailyMode = mode === 'create' && variant === 'daily'
+  const activeModeVariant: TaskCreateVariant = mode === 'clone' ? 'clone' : variant
+
+  const staticFallbackTitle =
+    mode === 'edit' ? t('tasks.detail.edit') : t('tasks.createForm.title')
+
+  const pageTitle =
+    sourceId > 0 && (loadingSource || hasSourceError || !sourceTask)
+      ? staticFallbackTitle
+      : mode === 'edit'
+        ? t('tasks.createForm.editTitle', { id: String(sourceTask?.id ?? '') })
+        : mode === 'clone'
+          ? t('tasks.createForm.cloneTitle', { id: String(sourceTask?.id ?? '') })
+          : isQuickMode
+            ? t('tasks.createModes.quick')
+            : isDailyMode
+              ? t('tasks.createModes.dailyRepair')
+              : t('tasks.createForm.title')
+
+  const handleSelectFull = () => {
+    if (mode === 'clone') {
+      navigate(APP_ROUTES.TASK_NEW, { replace: true })
+      return
+    }
+    setVariant('full')
+  }
+
+  const handleSelectQuick = () => {
+    if (mode === 'clone') {
+      navigate(`${APP_ROUTES.TASK_NEW}?mode=quick`, { replace: true })
+      return
+    }
+    enterQuickModeRef.current?.()
+    setVariant('quick')
+  }
+
+  const handleSelectDailyRepair = () => {
+    setVariant('daily')
+    navigate(`${APP_ROUTES.TASK_NEW}?mode=daily`, { replace: true })
+  }
+
+  const handlePickHistoricalTask = (picked: RawTask) => {
+    navigate(`${APP_ROUTES.TASK_NEW}?clone=${picked.id}`, { replace: true })
+  }
+
+  const headerSection = (
+    <div className="shrink-0 space-y-3">
+      <div className="flex items-center gap-2 text-xs text-muted-foreground select-none">
+        <Link
+          to={APP_ROUTES.TASKS}
+          className="flex items-center gap-1 hover:text-foreground font-medium"
+        >
+          <ArrowLeft className="size-3.5" aria-hidden="true" />
+          <span>{t('tasks.detail.backToList')}</span>
+        </Link>
+        <span>›</span>
+        <span className="font-semibold text-foreground">{pageTitle}</span>
+      </div>
+
+      <PageHeader
+        title={pageTitle}
+        actions={
+          mode !== 'edit' ? (
+            <TaskCreateModeBar
+              activeVariant={activeModeVariant}
+              showDailyRepair={showDailyRepair}
+              onSelectFull={handleSelectFull}
+              onSelectQuick={handleSelectQuick}
+              onOpenHistoryPicker={() => setHistoryOpen(true)}
+              onSelectDailyRepair={handleSelectDailyRepair}
+            />
+          ) : undefined
+        }
+      />
+    </div>
+  )
+
   if (sourceId > 0 && loadingSource) {
     return (
       <PageContainer width="narrow">
+        {headerSection}
         <PageContainerBody>
           <div role="status" className="space-y-4 animate-pulse">
             <span className="sr-only">{t('common.loading')}</span>
@@ -89,6 +205,7 @@ export function TaskCreatePage() {
     }
     return (
       <PageContainer width="narrow">
+        {headerSection}
         <PageContainerBody>
           <InlineError
             status={errorStatus}
@@ -114,24 +231,29 @@ export function TaskCreatePage() {
     throwFullPageError('403')
   }
 
-  const initialVariant: 'full' | 'quick' | 'daily' =
-    mode === 'create' && rawModeParam === 'quick'
-      ? 'quick'
-      : mode === 'create' && rawModeParam === 'daily' && isComputerRoomUser(user)
-        ? 'daily'
-        : 'full'
-
   return (
     <PageContainer width="narrow">
+      {headerSection}
+
       <PageContainerBody>
         <TaskEditorForm
           key={`${mode}-${sourceTask?.id ?? initialVariant}`}
           mode={mode}
           sourceTask={sourceTask}
           initialVariant={initialVariant}
-          openHistoryOnMount={mode === 'create' && rawModeParam === 'clone'}
+          variant={variant}
+          onVariantChange={setVariant}
+          enterQuickModeRef={enterQuickModeRef}
         />
       </PageContainerBody>
+
+      {mode !== 'edit' && (
+        <TaskHistoryCloneDialog
+          open={historyOpen}
+          onOpenChange={setHistoryOpen}
+          onPickTask={handlePickHistoricalTask}
+        />
+      )}
     </PageContainer>
   )
 }
