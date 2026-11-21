@@ -65,6 +65,36 @@ export function useTaskById(taskId: number) {
   }
 }
 
+export function useMyTaskHistory(enabled = true) {
+  const user = useAppStore((s) => s.user)
+
+  return useQuery({
+    queryKey: taskKeys.myHistory(user?.username),
+    enabled: enabled && Boolean(user),
+    queryFn: async ({ signal }): Promise<RawTask[]> => {
+      try {
+        const raw = await http<unknown>('/tasks/history/mine?limit=500', { signal })
+        if (raw && typeof raw === 'object' && 'items' in raw) {
+          return RawTaskListSchema.parse((raw as { items: unknown }).items)
+        }
+        if (Array.isArray(raw)) {
+          return RawTaskListSchema.parse(raw)
+        }
+      } catch (err) {
+        if (signal?.aborted) throw err
+        // Fallback to active tasks filtered by reporter (matches legacy DU_cloneLoad)
+      }
+      const fallbackRaw = await http<unknown>('/tasks', { signal })
+      const all = RawTaskListSchema.parse(fallbackRaw)
+      const me = (user?.username ?? '').trim().toLowerCase()
+      return all
+        .filter((t) => t.reporter.trim().toLowerCase() === me)
+        .sort((a, b) => b.id - a.id)
+    },
+    staleTime: 60_000,
+  })
+}
+
 export function useTaskReports(taskId: number) {
   return useQuery({
     queryKey: taskKeys.reports(taskId),

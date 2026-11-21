@@ -377,6 +377,24 @@
       "stay": "Ở lại trang",
       "discard": "Thoát không lưu"
     },
+    "createModes": {
+      "label": "Chế độ tạo nhiệm vụ",
+      "full": "Đầy đủ",
+      "quick": "Tạo nhanh",
+      "fromHistory": "Giao lại từ lịch sử",
+      "dailyRepair": "Sửa chữa hằng ngày",
+      "quickHint": "Chế độ tạo nhanh tự điền mặc định: phòng ban yêu cầu ({{dept}}), người liên hệ là bạn, cơ sở ({{site}}), độ mật thông thường và thực hiện một lần.",
+      "expandFull": "Mở đầy đủ các trường",
+      "dailyHint": "Đã điền sẵn mẫu Sửa chữa hằng ngày (tiêu đề, lưu ý, hạn hôm nay 19:00, bộ phận IT, người nhận là bạn). Bạn có thể sửa lại và chọn loại nhiệm vụ trước khi gửi."
+    },
+    "clonePicker": {
+      "title": "Chọn nhiệm vụ từ lịch sử để giao lại",
+      "description": "Chỉ hiển thị các nhiệm vụ do bạn từng tạo. Khi gửi sẽ tạo mã nhiệm vụ mới và cần chọn lại hạn hoàn thành.",
+      "searchPlaceholder": "Tìm theo mã #ID, tiêu đề, loại việc hoặc phòng ban...",
+      "empty": "Bạn chưa từng giao nhiệm vụ nào.",
+      "noMatch": "Không tìm thấy nhiệm vụ phù hợp.",
+      "dueLabel": "Hạn"
+    },
     "empty": {
       "mine": "Bạn chưa được giao nhiệm vụ nào",
       "created": "Bạn chưa giao nhiệm vụ nào",

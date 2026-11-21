@@ -22,6 +22,7 @@ interface TaskScheduleSectionProps {
   setValue: UseFormSetValue<TaskEditorFormValues>
   errors: FieldErrors<TaskEditorFormValues>
   depts: DeptItem[]
+  compact?: boolean
 }
 
 export function TaskScheduleSection({
@@ -30,6 +31,7 @@ export function TaskScheduleSection({
   setValue,
   errors,
   depts,
+  compact = false,
 }: TaskScheduleSectionProps) {
   const { t, i18n } = useTranslation()
 
@@ -78,18 +80,20 @@ export function TaskScheduleSection({
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3.5">
-        <div className="space-y-1.5">
-          <label htmlFor="task-level" className="block text-xs font-semibold text-foreground">
-            {t('tasks.createForm.priority')}
-          </label>
-          <select id="task-level" {...register('level')} className={SELECT_FIELD_CLASS}>
-            {LEVEL_OPTIONS.map((lv) => (
-              <option key={lv} value={lv}>
-                {formatBilingualOption(lv, i18n.language)}
-              </option>
-            ))}
-          </select>
-        </div>
+        {!compact && (
+          <div className="space-y-1.5">
+            <label htmlFor="task-level" className="block text-xs font-semibold text-foreground">
+              {t('tasks.createForm.priority')}
+            </label>
+            <select id="task-level" {...register('level')} className={SELECT_FIELD_CLASS}>
+              {LEVEL_OPTIONS.map((lv) => (
+                <option key={lv} value={lv}>
+                  {formatBilingualOption(lv, i18n.language)}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div className="space-y-1.5">
           <label htmlFor="task-risk" className="block text-xs font-semibold text-foreground">
@@ -104,41 +108,45 @@ export function TaskScheduleSection({
           </select>
         </div>
 
-        <div className="space-y-1.5">
-          <label htmlFor="task-confidential" className="block text-xs font-semibold text-foreground">
-            {t('tasks.confidential.label')}
-          </label>
-          <select
-            id="task-confidential"
-            value={confidential}
-            onChange={(e) =>
-              setValue('confidential', Number(e.target.value) as ConfidentialLevel, {
-                shouldDirty: true,
-              })
-            }
-            className={SELECT_FIELD_CLASS}
-          >
-            {SECRECY_ORDER.map((lv) => (
-              <option key={lv} value={lv}>
-                {t(`tasks.confidential.lv${lv}`)}
-              </option>
-            ))}
-          </select>
-        </div>
+        {!compact && (
+          <>
+            <div className="space-y-1.5">
+              <label htmlFor="task-confidential" className="block text-xs font-semibold text-foreground">
+                {t('tasks.confidential.label')}
+              </label>
+              <select
+                id="task-confidential"
+                value={confidential}
+                onChange={(e) =>
+                  setValue('confidential', Number(e.target.value) as ConfidentialLevel, {
+                    shouldDirty: true,
+                  })
+                }
+                className={SELECT_FIELD_CLASS}
+              >
+                {SECRECY_ORDER.map((lv) => (
+                  <option key={lv} value={lv}>
+                    {t(`tasks.confidential.lv${lv}`)}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        <div className="space-y-1.5">
-          <label htmlFor="task-recur-type" className="block text-xs font-semibold text-foreground">
-            {t('tasks.fields.recurType')}
-          </label>
-          <select id="task-recur-type" {...register('recur_type')} className={SELECT_FIELD_CLASS}>
-            <option value="once">{t('tasks.fields.recurOnce')}</option>
-            <option value="weekly">{t('tasks.fields.recurWeekly')}</option>
-            <option value="monthly">{t('tasks.fields.recurMonthly')}</option>
-          </select>
-        </div>
+            <div className="space-y-1.5">
+              <label htmlFor="task-recur-type" className="block text-xs font-semibold text-foreground">
+                {t('tasks.fields.recurType')}
+              </label>
+              <select id="task-recur-type" {...register('recur_type')} className={SELECT_FIELD_CLASS}>
+                <option value="once">{t('tasks.fields.recurOnce')}</option>
+                <option value="weekly">{t('tasks.fields.recurWeekly')}</option>
+                <option value="monthly">{t('tasks.fields.recurMonthly')}</option>
+              </select>
+            </div>
+          </>
+        )}
       </div>
 
-      {recurType === 'once' ? (
+      {compact || recurType === 'once' ? (
         <div className="space-y-1.5">
           <label htmlFor="task-due-date" className="block text-xs font-semibold text-foreground">
             {t('common.dueDate')} *

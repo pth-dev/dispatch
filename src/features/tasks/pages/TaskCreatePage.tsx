@@ -6,8 +6,13 @@ import {
   toErrorStatus,
 } from '@/components/layout'
 import { useAppStore } from '@/app/store'
-import { canCloneTask, canCreateTask, canEditTask } from '@/utils/permissions'
-import { useTaskById } from '../api/queries'
+import {
+  canCloneTask,
+  canCreateTask,
+  canEditTask,
+  isComputerRoomUser,
+} from '@/utils/permissions'
+import { useMyTaskHistory, useTaskById } from '../api/queries'
 import { TaskEditorForm } from '../components/editor/TaskEditorForm'
 
 function parsePositiveInt(raw: string | null | undefined): number | undefined {
@@ -22,17 +27,31 @@ export function TaskCreatePage() {
   const user = useAppStore((s) => s.user)
   const editId = parsePositiveInt(id)
   const cloneId = parsePositiveInt(searchParams.get('clone'))
+  const rawModeParam = (searchParams.get('mode') ?? '').toLowerCase()
   const hasInvalidEditId = Boolean(id) && !editId
   const mode: 'create' | 'edit' | 'clone' = editId ? 'edit' : cloneId ? 'clone' : 'create'
 
   const sourceId = editId ?? cloneId ?? 0
   const {
-    data: sourceTask,
-    isLoading: loadingSource,
+    data: activeSourceTask,
+    isLoading: loadingActive,
     isError,
     error,
     refetch,
   } = useTaskById(sourceId)
+  const {
+    data: historyTasks = [],
+    isLoading: loadingHistory,
+    isError: isHistoryError,
+    error: historyError,
+    refetch: refetchHistory,
+  } = useMyTaskHistory(Boolean(cloneId) && !activeSourceTask && !loadingActive)
+
+  const sourceTask =
+    activeSourceTask ?? (cloneId ? historyTasks.find((t) => t.id === cloneId) : undefined)
+  const loadingSource = loadingActive || (Boolean(cloneId) && !activeSourceTask && loadingHistory)
+  const hasSourceError = isError || (Boolean(cloneId) && !activeSourceTask && isHistoryError)
+  const activeError = isError ? error : historyError
 
   if (hasInvalidEditId) {
     throwFullPageError('404')
@@ -54,12 +73,20 @@ export function TaskCreatePage() {
     )
   }
 
-  if (sourceId > 0 && isError) {
-    const errorStatus = toErrorStatus(error)
+  if (sourceId > 0 && hasSourceError) {
+    const errorStatus = toErrorStatus(activeError)
     if (isFullPageError(errorStatus)) {
       throwFullPageError(errorStatus)
     }
-    return <InlineError status={errorStatus} onRetry={() => void refetch()} />
+    return (
+      <InlineError
+        status={errorStatus}
+        onRetry={() => {
+          void refetch()
+          if (cloneId) void refetchHistory()
+        }}
+      />
+    )
   }
 
   if (sourceId > 0 && !sourceTask) {
@@ -74,11 +101,20 @@ export function TaskCreatePage() {
     throwFullPageError('403')
   }
 
+  const initialVariant: 'full' | 'quick' | 'daily' =
+    mode === 'create' && rawModeParam === 'quick'
+      ? 'quick'
+      : mode === 'create' && rawModeParam === 'daily' && isComputerRoomUser(user)
+        ? 'daily'
+        : 'full'
+
   return (
     <TaskEditorForm
-      key={`${mode}-${sourceTask?.id ?? 'new'}`}
+      key={`${mode}-${sourceTask?.id ?? initialVariant}`}
       mode={mode}
       sourceTask={sourceTask}
+      initialVariant={initialVariant}
+      openHistoryOnMount={mode === 'create' && rawModeParam === 'clone'}
     />
   )
 }

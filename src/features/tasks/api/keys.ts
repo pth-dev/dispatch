@@ -1,6 +1,7 @@
 export const taskKeys = {
   all: ['tasks'] as const,
   list: () => [...taskKeys.all, 'all'] as const,
+  myHistory: (username?: string) => [...taskKeys.all, 'history', 'mine', username ?? ''] as const,
   reports: (taskId: number) => [...taskKeys.all, 'reports', taskId] as const,
   dupCheck: (title: string, due: string, excludeId?: number) =>
     [...taskKeys.all, 'dup-check', title, due, excludeId ?? 0] as const,

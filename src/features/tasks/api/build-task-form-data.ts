@@ -16,9 +16,25 @@ import {
 
 export const DEFAULT_DUE_TIME = '19:00'
 export const DEFAULT_RECUR_TIME = '17:00'
+export const DAILY_REPAIR_TITLE = '日常维修'
+export const DAILY_REPAIR_PRECAUTIONS = '服务user，满足user需求，遵从公司规定'
+export const DAILY_REPAIR_UNIT = '資訊部'
 
 export function getDefaultDueDateTime(now: Date = new Date()): string {
   return `${toLocalDateString(now)}T${DEFAULT_DUE_TIME}`
+}
+
+export function buildDailyRepairTaskValues(user: SessionUser | null): TaskEditorFormValues {
+  const base = buildDefaultTaskEditorValues(user)
+  return {
+    ...base,
+    title: DAILY_REPAIR_TITLE,
+    precautions: DAILY_REPAIR_PRECAUTIONS,
+    assigned_unit: DAILY_REPAIR_UNIT,
+    assign_person: user?.username ? [user.username] : [],
+    due_date: getDefaultDueDateTime(),
+    recur_type: 'once',
+  }
 }
 
 function toDateTimeLocalValue(raw: string | null | undefined): string {

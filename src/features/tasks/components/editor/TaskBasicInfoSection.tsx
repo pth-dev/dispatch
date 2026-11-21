@@ -24,6 +24,7 @@ type TaskBasicInfoSectionProps = {
   newFiles: File[]
   retainedFiles: RawAttachment[]
   disabled?: boolean
+  compact?: boolean
   onNewFilesChange: (files: File[]) => void
   onRemoveRetainedFile: (path: string) => void
 }
@@ -37,6 +38,7 @@ export function TaskBasicInfoSection({
   newFiles,
   retainedFiles,
   disabled = false,
+  compact = false,
   onNewFilesChange,
   onRemoveRetainedFile,
 }: TaskBasicInfoSectionProps) {
@@ -150,45 +152,49 @@ export function TaskBasicInfoSection({
           <Textarea id="task-precautions" rows={2} {...register('precautions')} />
         </div>
 
-        <div className="space-y-1.5">
-          <label htmlFor="task-kmlink" className="block text-xs font-semibold text-foreground">
-            {t('tasks.report.kmLink')}
-          </label>
-          <Input id="task-kmlink" placeholder="https://..." {...register('km_link')} />
-        </div>
-
-        <div className="md:col-span-2 space-y-1.5">
-          <label htmlFor="task-files" className="block text-xs font-semibold text-foreground">
-            {t('tasks.detail.attachments')}
-          </label>
-          <FileDropzone
-            id="task-files"
-            files={newFiles}
-            onFilesChange={onNewFilesChange}
-            disabled={disabled}
-          />
-          {retainedFiles.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 pt-1">
-              {retainedFiles.map((att) => (
-                <span
-                  key={att.path}
-                  className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-0.5 text-xs"
-                >
-                  <Paperclip className="size-3 text-muted-foreground" aria-hidden="true" />
-                  <span className="truncate max-w-[160px]">{att.name}</span>
-                  <button
-                    type="button"
-                    onClick={() => onRemoveRetainedFile(att.path)}
-                    className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:text-destructive cursor-pointer"
-                    aria-label={t('common.delete')}
-                  >
-                    <X className="size-3.5" aria-hidden="true" />
-                  </button>
-                </span>
-              ))}
+        {!compact && (
+          <>
+            <div className="space-y-1.5">
+              <label htmlFor="task-kmlink" className="block text-xs font-semibold text-foreground">
+                {t('tasks.report.kmLink')}
+              </label>
+              <Input id="task-kmlink" placeholder="https://..." {...register('km_link')} />
             </div>
-          )}
-        </div>
+
+            <div className="md:col-span-2 space-y-1.5">
+              <label htmlFor="task-files" className="block text-xs font-semibold text-foreground">
+                {t('tasks.detail.attachments')}
+              </label>
+              <FileDropzone
+                id="task-files"
+                files={newFiles}
+                onFilesChange={onNewFilesChange}
+                disabled={disabled}
+              />
+              {retainedFiles.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {retainedFiles.map((att) => (
+                    <span
+                      key={att.path}
+                      className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-0.5 text-xs"
+                    >
+                      <Paperclip className="size-3 text-muted-foreground" aria-hidden="true" />
+                      <span className="truncate max-w-[160px]">{att.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => onRemoveRetainedFile(att.path)}
+                        className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:text-destructive cursor-pointer"
+                        aria-label={t('common.delete')}
+                      >
+                        <X className="size-3.5" aria-hidden="true" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </section>
   )

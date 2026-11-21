@@ -18,6 +18,7 @@ interface TaskPeopleSectionProps {
   directory: DirectoryUser[]
   allowReaders: boolean
   allowCross: boolean
+  hideViewers?: boolean
 }
 
 export function TaskPeopleSection({
@@ -27,6 +28,7 @@ export function TaskPeopleSection({
   directory,
   allowReaders,
   allowCross,
+  hideViewers = false,
 }: TaskPeopleSectionProps) {
   const { t } = useTranslation()
   const [assigneeQuery, setAssigneeQuery] = React.useState('')
@@ -161,7 +163,7 @@ export function TaskPeopleSection({
         </div>
       </div>
 
-      {(allowReaders || allowCross) && (
+      {!hideViewers && (allowReaders || allowCross) && (
         <TaskViewersSubsection
           control={control}
           setValue={setValue}

@@ -377,6 +377,24 @@
       "stay": "Stay on page",
       "discard": "Leave without saving"
     },
+    "createModes": {
+      "label": "Task creation mode",
+      "full": "Full form",
+      "quick": "Quick create",
+      "fromHistory": "Clone from history",
+      "dailyRepair": "Daily repair",
+      "quickHint": "Quick create uses defaults for hidden fields: requesting department ({{dept}}), contact person (you), site ({{site}}), general confidentiality, and one-time schedule.",
+      "expandFull": "Expand all fields",
+      "dailyHint": "Prefilled with Daily Repair defaults (title, notes, due today 19:00, IT department, assigned to you). All fields remain editable — select a task type before submitting."
+    },
+    "clonePicker": {
+      "title": "Pick a historical task to re-dispatch",
+      "description": "Only tasks you created are listed. Submitting creates a new task ID and requires a new due date.",
+      "searchPlaceholder": "Search by #ID, title, task type, or department...",
+      "empty": "You have not created any tasks yet.",
+      "noMatch": "No matching historical tasks found.",
+      "dueLabel": "Due"
+    },
     "empty": {
       "mine": "No tasks assigned to you",
       "created": "You have not assigned any tasks",

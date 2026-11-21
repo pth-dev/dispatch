@@ -245,3 +245,19 @@ export function canSubmitReport(
   if (!user) return false
   return canWriteMenu(user, 'list') && !isReaderOnly(user, task)
 }
+
+const COMPUTER_ROOM_PATTERN = /电脑|電腦/
+
+/**
+ * Matches legacy `DU_isComputerRoom`: checks backend `is_computer_room` flag
+ * or whether `dept` / `dept_ou_dn` / `ad_dn` contains "电脑" / "電腦".
+ */
+export function isComputerRoomUser(
+  user: Pick<SessionUser, 'is_computer_room' | 'dept' | 'dept_ou_dn' | 'ad_dn'> | null | undefined,
+): boolean {
+  if (!user) return false
+  if (user.is_computer_room === true) return true
+  return [user.dept, user.dept_ou_dn, user.ad_dn].some(
+    (value) => typeof value === 'string' && COMPUTER_ROOM_PATTERN.test(value),
+  )
+}
