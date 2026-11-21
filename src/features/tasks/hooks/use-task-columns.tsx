@@ -22,6 +22,7 @@ import {
   parseLastReportSummary,
 } from '../utils/task-display'
 import { useDeptNameResolver } from './use-dept-name-resolver'
+import { useUserDisplayResolver } from './use-user-display-resolver'
 import type { TaskColumnId } from './use-task-view-prefs'
 
 export { formatTaskDueDate }
@@ -79,6 +80,7 @@ export function useTaskColumns(
 ): ColumnDef<RawTask>[] {
   const { t, i18n } = useTranslation()
   const resolveDeptName = useDeptNameResolver()
+  const { resolveUser, resolveAssignees } = useUserDisplayResolver()
   const { data: metaSites } = useMetaSites()
 
   const siteCatalog = metaSites?.allSites ?? metaSites?.sites ?? []
@@ -178,11 +180,14 @@ export function useTaskColumns(
       id: 'assignee',
       header: t('tasks.columns.assignee'),
       ...sizingFor('assignee'),
-      cell: (task) => (
-        <span className="truncate text-foreground" title={task.assign_person || '-'}>
-          {task.assign_person || '-'}
-        </span>
-      ),
+      cell: (task) => {
+        const label = resolveAssignees(task.assign_person) || '-'
+        return (
+          <span className="truncate text-foreground" title={label}>
+            {label}
+          </span>
+        )
+      },
     },
     dueDate: {
       id: 'dueDate',
@@ -311,7 +316,7 @@ export function useTaskColumns(
       header: t('tasks.columns.reporter'),
       ...sizingFor('reporter'),
       cell: (task) => {
-        const label = task.reporter_name?.trim() || task.reporter || '-'
+        const label = resolveUser(task.reporter, task.reporter_name) || '-'
         return (
           <span className="block truncate text-muted-foreground" title={label}>
             {label}

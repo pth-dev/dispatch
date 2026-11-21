@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card'
 
-const INFO_ROW_INDICES = [0, 1, 2, 3] as const
+const INFO_ROW_INDICES = [0, 1, 2, 3, 4] as const
 
 export function TaskCardSkeleton() {
   return (
@@ -24,7 +24,7 @@ export function TaskCardSkeleton() {
           <div className="h-3.5 w-14 rounded bg-muted" />
         </div>
 
-        {/* 4. Info block (4 fixed rows) */}
+        {/* 4. Info block (5 fixed rows) */}
         <div className="border-t border-border pt-3 space-y-2.5">
           {INFO_ROW_INDICES.map((idx) => (
             <div key={idx} className="flex h-card-row items-center justify-between gap-2">

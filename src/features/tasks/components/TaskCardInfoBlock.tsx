@@ -1,7 +1,11 @@
 import { useTranslation } from 'react-i18next'
-import { CalendarDays, Clock, Send, User } from 'lucide-react'
+import { Building2, CalendarDays, Clock, Send, UserCheck } from 'lucide-react'
 import { cn } from '@/utils'
-import type { TaskCardDueTone, TaskCardViewModel } from '../utils/task-card-mapper'
+import {
+  EMPTY_DISPLAY_VALUE,
+  type TaskCardDueTone,
+  type TaskCardViewModel,
+} from '../utils/task-card-mapper'
 
 type TaskCardInfoBlockProps = {
   vm: TaskCardViewModel
@@ -27,7 +31,10 @@ function InfoRow({ icon, label, value, valueClassName }: InfoRowProps) {
         {icon}
         <span>{label}</span>
       </span>
-      <span className={cn('min-w-0 truncate text-right text-foreground', valueClassName)}>
+      <span
+        title={value !== EMPTY_DISPLAY_VALUE ? value : undefined}
+        className={cn('min-w-0 truncate text-right text-foreground', valueClassName)}
+      >
         {value}
       </span>
     </div>
@@ -51,12 +58,17 @@ export function TaskCardInfoBlock({ vm }: TaskCardInfoBlockProps) {
         value={vm.lastReportAt}
       />
       <InfoRow
-        icon={<User className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />}
+        icon={<UserCheck className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />}
         label={t('tasks.card.assignee')}
         value={vm.assigneeDisplay}
       />
       <InfoRow
         icon={<Send className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />}
+        label={t('tasks.card.dispatcher')}
+        value={vm.dispatcherDisplay}
+      />
+      <InfoRow
+        icon={<Building2 className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />}
         label={t('tasks.card.requester')}
         value={vm.requesterDisplay}
       />

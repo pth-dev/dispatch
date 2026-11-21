@@ -6,6 +6,7 @@ import type { RawTask } from '@/schemas/task'
 import { cn } from '@/utils'
 import { useDeptNameResolver } from '../hooks/use-dept-name-resolver'
 import { useSiteNameResolver } from '../hooks/use-site-name-resolver'
+import { useUserDisplayResolver } from '../hooks/use-user-display-resolver'
 import { mapTaskToCardViewModel, type TaskCardResolvers } from '../utils/task-card-mapper'
 import { groupTasksByType, type TaskGroup } from '../utils/task-display'
 import { TaskCard } from './TaskCard'
@@ -75,6 +76,7 @@ export function TaskCardSection({
   const { t } = useTranslation()
   const resolveDeptName = useDeptNameResolver()
   const resolveSiteName = useSiteNameResolver()
+  const { resolveUser, resolveAssignees } = useUserDisplayResolver()
   const [expanded, setExpanded] = React.useState(true)
 
   const isIncomplete = variant === 'incomplete'
@@ -84,7 +86,7 @@ export function TaskCardSection({
 
   const visibleTasks = tasks.slice(0, limit)
   const groups = groupTasksByType(visibleTasks, tasks, t('tasks.card.uncategorized'))
-  const resolvers = { resolveDeptName, resolveSiteName }
+  const resolvers = { resolveDeptName, resolveSiteName, resolveUser, resolveAssignees }
 
   return (
     <section className="space-y-3" aria-label={title}>

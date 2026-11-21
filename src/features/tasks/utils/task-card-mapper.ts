@@ -10,6 +10,10 @@ import {
   parseSites,
   toLocalDateString,
 } from '@/utils/task-domain'
+import {
+  formatAssigneeListWithNames,
+  formatUserWithCode,
+} from '../hooks/use-user-display-resolver'
 import { formatTaskDueDate, parseLastReportSummary } from './task-display'
 
 export const EMPTY_DISPLAY_VALUE = '—'
@@ -30,6 +34,7 @@ export type TaskCardViewModel = {
   dueTone: TaskCardDueTone
   lastReportAt: string
   assigneeDisplay: string
+  dispatcherDisplay: string
   requesterDisplay: string
   progressPercent: number
   needsReportToday: boolean
@@ -38,6 +43,8 @@ export type TaskCardViewModel = {
 export type TaskCardResolvers = {
   resolveDeptName: (rawDept: string | null | undefined) => string
   resolveSiteName: (code: string) => string
+  resolveUser?: (codeOrName: string | null | undefined, explicitFullname?: string | null) => string
+  resolveAssignees?: (rawAssignees: string | null | undefined) => string
 }
 
 function joinPresent(parts: Array<string | null | undefined>): string {
@@ -91,12 +98,26 @@ export function mapTaskToCardViewModel(
   const lastReport = parseLastReportSummary(task)
   const lastReportAt = lastReport?.at || EMPTY_DISPLAY_VALUE
 
-  const assigneeDept = task.assigned_unit ? resolvers.resolveDeptName(task.assigned_unit) : ''
-  const assigneeDisplay = joinPresent([task.assign_person, assigneeDept])
+  const resolveUser =
+    resolvers.resolveUser ?? ((code, name) => formatUserWithCode(code, name))
+  const resolveAssignees =
+    resolvers.resolveAssignees ?? ((raw) => formatAssigneeListWithNames(raw))
 
+  // 1. Người nhận: Tên người nhận (Mã) • BP Nhận
+  const assigneeNames = resolveAssignees(task.assign_person)
+  const assigneeDept = task.assigned_unit ? resolvers.resolveDeptName(task.assigned_unit) : ''
+  const assigneeDisplay = joinPresent([assigneeNames, assigneeDept])
+
+  // 2. Người giao: Tên người giao (Mã) • BP Người giao
+  const dispatcherName = resolveUser(task.reporter, task.reporter_name)
+  const dispatcherDept = task.reporter_dept ? resolvers.resolveDeptName(task.reporter_dept) : ''
+  const dispatcherDisplay = joinPresent([dispatcherName, dispatcherDept])
+
+  // 3. Đơn vị yêu cầu: BP Yêu cầu • Người liên hệ yêu cầu (không gộp nhầm reporter vào đây)
   const reqDepts = parseReqDepts(task.req_depts, task.req_dept).map(resolvers.resolveDeptName)
-  const requesterName = (task.req_contact ?? '').trim() || (task.reporter_name ?? '').trim() || task.reporter
-  const requesterDisplay = joinPresent([reqDepts[0], requesterName])
+  const reqDeptText = reqDepts.join(', ')
+  const reqContactName = task.req_contact ? resolveUser(task.req_contact) : ''
+  const requesterDisplay = joinPresent([reqDeptText, reqContactName])
 
   return {
     id: task.id,
@@ -112,6 +133,7 @@ export function mapTaskToCardViewModel(
     dueTone,
     lastReportAt,
     assigneeDisplay,
+    dispatcherDisplay,
     requesterDisplay,
     progressPercent,
     needsReportToday,
