@@ -25,6 +25,13 @@ export function useSessionLifecycle(): void {
   const navigate = useNavigate()
   const location = useLocation()
   const authStatus = useAppStore((s) => s.authStatus)
+  const navigateRef = React.useRef(navigate)
+  const currentFromRef = React.useRef(`${location.pathname}${location.search}`)
+
+  React.useEffect(() => {
+    navigateRef.current = navigate
+    currentFromRef.current = `${location.pathname}${location.search}`
+  }, [navigate, location.pathname, location.search])
 
   React.useEffect(() => {
     const controller = new AbortController()
@@ -33,9 +40,9 @@ export function useSessionLifecycle(): void {
     const redirectToLogin = () => {
       if (!active) return
       useAppStore.getState().clearSession()
-      navigate(APP_ROUTES.LOGIN, {
+      navigateRef.current(APP_ROUTES.LOGIN, {
         replace: true,
-        state: { from: `${location.pathname}${location.search}` },
+        state: { from: currentFromRef.current },
       })
     }
 
@@ -87,7 +94,7 @@ export function useSessionLifecycle(): void {
       unsubExpired()
       unsubBroadcast()
     }
-  }, [navigate, location.pathname, location.search])
+  }, [])
 
   React.useEffect(() => {
     if (authStatus !== 'authenticated') return
