@@ -17,6 +17,8 @@ import { useIsMobile } from '@/hooks/use-mobile'
 import { InlineError, isFullPageError, throwFullPageError, toErrorStatus } from '@/components/layout'
 import { APP_ROUTES } from '@/constants/app-routes'
 import { useAppStore } from '@/app/store'
+import { useLessons } from '@/hooks/use-lessons'
+import { buildTaskLessonHitsMap } from '@/utils/lesson-match'
 import { canCreateTask } from '@/utils/permissions'
 import { cn } from '@/utils'
 import type { RawTask, TaskListParams } from '@/schemas/task'
@@ -58,6 +60,7 @@ export function TaskListPage() {
   } = useTaskListParams()
 
   const { data, isLoading, isError, error, refetch } = useTaskList(params)
+  const { data: lessons = [] } = useLessons()
   const {
     viewMode,
     hiddenSet,
@@ -70,9 +73,14 @@ export function TaskListPage() {
     resetColumns,
   } = useTaskViewPrefs()
 
+  const items = data?.items ?? []
+  const filteredItems = data?.filteredItems ?? []
+  const lessonHitsByTaskId = buildTaskLessonHitsMap(items, lessons)
+
   const columns = useTaskColumns(params.page, params.pageSize, {
     visibleColumnIds,
     useFixedWidths: isDefaultColumns,
+    lessonHitsByTaskId,
   })
 
   usePageClamp({
@@ -89,8 +97,6 @@ export function TaskListPage() {
     throwFullPageError(errorStatus)
   }
 
-  const items = data?.items ?? []
-  const filteredItems = data?.filteredItems ?? []
   const total = data?.total ?? 0
   const counts = data?.counts
   const availableTaskTypes = data?.availableTaskTypes ?? []

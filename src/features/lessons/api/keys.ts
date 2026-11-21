@@ -1,4 +1,1 @@
-export const lessonKeys = {
-  all: ['lessons'] as const,
-  list: () => [...lessonKeys.all, 'list'] as const,
-}
+export { lessonKeys } from '@/hooks/use-lessons'

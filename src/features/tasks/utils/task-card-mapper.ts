@@ -1,3 +1,4 @@
+import type { LessonMarqueeHit } from '@/components/ui/lesson-marquee-banner'
 import type { StatusKey } from '@/components/ui/status-text'
 import type { RawTask } from '@/schemas/task'
 import {
@@ -37,6 +38,7 @@ export type TaskCardViewModel = {
   dispatcherDisplay: string
   progressPercent: number
   needsReportToday: boolean
+  lessonHits?: LessonMarqueeHit[]
 }
 
 export type TaskCardResolvers = {

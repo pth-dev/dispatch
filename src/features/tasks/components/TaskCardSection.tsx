@@ -2,8 +2,11 @@ import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { CheckCircle2, ChevronDown, ChevronRight, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import type { LessonMarqueeHit } from '@/components/ui/lesson-marquee-banner'
+import { useLessons } from '@/hooks/use-lessons'
 import type { RawTask } from '@/schemas/task'
 import { cn } from '@/utils'
+import { buildTaskLessonHitsMap } from '@/utils/lesson-match'
 import { useDeptNameResolver } from '../hooks/use-dept-name-resolver'
 import { useSiteNameResolver } from '../hooks/use-site-name-resolver'
 import { useUserDisplayResolver } from '../hooks/use-user-display-resolver'
@@ -15,9 +18,15 @@ type TaskCardTypeGroupProps = {
   group: TaskGroup
   variant: 'incomplete' | 'completed'
   resolvers: TaskCardResolvers
+  lessonHitsByTaskId?: ReadonlyMap<number, LessonMarqueeHit[]>
 }
 
-function TaskCardTypeGroup({ group, variant, resolvers }: TaskCardTypeGroupProps) {
+function TaskCardTypeGroup({
+  group,
+  variant,
+  resolvers,
+  lessonHitsByTaskId,
+}: TaskCardTypeGroupProps) {
   const { t } = useTranslation()
   const isIncomplete = variant === 'incomplete'
 
@@ -52,9 +61,16 @@ function TaskCardTypeGroup({ group, variant, resolvers }: TaskCardTypeGroupProps
         data-testid="task-card-grid"
         className="grid grid-cols-task-cards auto-rows-fr gap-4"
       >
-        {group.tasks.map((task) => (
-          <TaskCard key={task.id} vm={mapTaskToCardViewModel(task, resolvers)} />
-        ))}
+        {group.tasks.map((task) => {
+          const vm = mapTaskToCardViewModel(task, resolvers)
+          const hits = lessonHitsByTaskId?.get(task.id)
+          return (
+            <TaskCard
+              key={task.id}
+              vm={hits && hits.length > 0 ? { ...vm, lessonHits: hits } : vm}
+            />
+          )
+        })}
       </div>
     </div>
   )
@@ -74,6 +90,7 @@ export function TaskCardSection({
   onShowMore,
 }: TaskCardSectionProps) {
   const { t } = useTranslation()
+  const { data: lessons = [] } = useLessons()
   const resolveDeptName = useDeptNameResolver()
   const resolveSiteName = useSiteNameResolver()
   const { resolveUser, resolveUserDept, resolveAssignees } = useUserDisplayResolver()
@@ -85,6 +102,7 @@ export function TaskCardSection({
     : t('tasks.card.completedSection')
 
   const visibleTasks = tasks.slice(0, limit)
+  const lessonHitsByTaskId = buildTaskLessonHitsMap(visibleTasks, lessons)
   const groups = groupTasksByType(visibleTasks, tasks, t('tasks.card.uncategorized'))
   const resolvers = {
     resolveDeptName,
@@ -135,6 +153,7 @@ export function TaskCardSection({
               group={group}
               variant={variant}
               resolvers={resolvers}
+              lessonHitsByTaskId={lessonHitsByTaskId}
             />
           ))}
 

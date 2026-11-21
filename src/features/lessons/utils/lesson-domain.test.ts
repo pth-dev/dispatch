@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest'
 import type { RawLesson } from '@/schemas/lesson'
 import type { RawTask } from '@/schemas/task'
 import {
+  buildTaskLessonHitsMap,
   filterLessons,
   findShortLatinKeywords,
+  matchLessonsForTask,
   matchTasksForKeywords,
   mergeKeywords,
   normalizeLessonText,
@@ -110,5 +112,23 @@ describe('lesson-domain', () => {
     expect(filterLessons(lessons, hitCounts, 'all', 'printer', '20160').map((l) => l.id)).toEqual([
       2,
     ])
+  })
+
+  it('matches lessons for a single task and builds a task-to-lessons hit map', () => {
+    const lessons = [
+      buildLesson({ id: 1, topic: 'Firewall policy', keywords: 'firewall,VPN' }),
+      buildLesson({ id: 2, topic: 'Printer guide', keywords: 'printer' }),
+    ]
+    const task1 = buildTask({ id: 100, title: 'Firewall & VPN setup' })
+    const task2 = buildTask({ id: 101, title: 'Unrelated task' })
+
+    const hits = matchLessonsForTask(task1, lessons)
+    expect(hits).toHaveLength(1)
+    expect(hits[0]?.id).toBe(1)
+    expect(hits[0]?.matchedKeywords).toEqual(['firewall', 'VPN'])
+
+    const map = buildTaskLessonHitsMap([task1, task2], lessons)
+    expect(map.get(100)?.[0]?.topic).toBe('Firewall policy')
+    expect(map.has(101)).toBe(false)
   })
 })

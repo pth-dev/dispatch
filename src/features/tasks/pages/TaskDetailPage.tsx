@@ -7,8 +7,11 @@ import {
   throwFullPageError,
   toErrorStatus,
 } from '@/components/layout'
+import { LessonMarqueeBanner } from '@/components/ui/lesson-marquee-banner'
 import { APP_ROUTES } from '@/constants/app-routes'
 import { useAppStore } from '@/app/store'
+import { useLessons } from '@/hooks/use-lessons'
+import { matchLessonsForTask } from '@/utils/lesson-match'
 import {
   canCloneTask,
   canDeleteTask,
@@ -34,6 +37,7 @@ export function TaskDetailPage() {
   const user = useAppStore((s) => s.user)
 
   useMetaDepts()
+  const { data: lessons = [] } = useLessons()
   const { data: task, isLoading, isError, error, refetch } = useTaskById(taskId)
   const {
     data: reports = [],
@@ -73,6 +77,7 @@ export function TaskDetailPage() {
 
   const splitMembers = parseSplitMembers(task.split_members)
   const workItems = parseWorkItems(task.work_items)
+  const lessonHits = matchLessonsForTask(task, lessons)
 
   const allowEdit = canEditTask(user, task)
   const allowClone = canCloneTask(user, task)
@@ -106,6 +111,7 @@ export function TaskDetailPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
         <div className="lg:col-span-2 space-y-4">
+          <LessonMarqueeBanner hits={lessonHits} interactive />
           <section className="rounded-xl border border-border bg-card p-4 space-y-3 text-xs">
             <h2 className="text-sm font-semibold text-foreground">
               {t('tasks.detail.description')}

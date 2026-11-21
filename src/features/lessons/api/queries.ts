@@ -1,13 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useLessons } from '@/hooks/use-lessons'
 import { http, type ApiError } from '@/services/http'
-import {
-  LessonMutationResponseSchema,
-  RawLessonListResponseSchema,
-  RawLessonListSchema,
-  type RawLesson,
-} from '@/schemas/lesson'
+import { LessonMutationResponseSchema } from '@/schemas/lesson'
 import type { RawAttachment } from '@/schemas/task'
 import { lessonKeys } from './keys'
+
+export { useLessons }
 
 export type SaveLessonPayload = {
   topic: string
@@ -69,20 +67,6 @@ function buildLessonFormData(
     fd.append('files', file, file.name)
   }
   return fd
-}
-
-export function useLessons() {
-  return useQuery({
-    queryKey: lessonKeys.list(),
-    queryFn: async ({ signal }): Promise<RawLesson[]> => {
-      const raw = await http<unknown>('/lessons', { signal })
-      if (Array.isArray(raw)) {
-        return RawLessonListSchema.parse(raw)
-      }
-      return RawLessonListResponseSchema.parse(raw).list
-    },
-    staleTime: 30_000,
-  })
 }
 
 export function useCreateLesson() {

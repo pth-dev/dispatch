@@ -5,11 +5,25 @@ import {
 } from '@/schemas/lesson'
 import type { RawAttachment, RawTask } from '@/schemas/task'
 import {
+  buildTaskLessonHitsMap,
+  buildTaskNormText,
+  matchLessonsForTask,
+  normalizeLessonText,
+  parseLessonKeywords,
+} from '@/utils/lesson-match'
+import {
   deriveTaskStatus,
-  normalizeT2S,
   parseAttachments,
   parseLocalDateTime,
 } from '@/utils/task-domain'
+
+export {
+  buildTaskLessonHitsMap,
+  buildTaskNormText,
+  matchLessonsForTask,
+  normalizeLessonText,
+  parseLessonKeywords,
+}
 
 export type LessonListFilter = 'all' | 'hit' | 'mine'
 
@@ -26,25 +40,6 @@ export type HighlightSegment = {
 
 const HAN_CHAR_REGEX = /[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/
 const KEYWORD_SPLIT_REGEX = /[,，、;；|\r\n]+/
-
-export function normalizeLessonText(value: string | null | undefined): string {
-  if (!value) return ''
-  return normalizeT2S(String(value).normalize('NFKC').toLowerCase())
-    .replace(/\s+/g, ' ')
-    .trim()
-}
-
-export function parseLessonKeywords(
-  lesson: Pick<RawLesson, 'keyword_list' | 'keywords'>,
-): string[] {
-  if (Array.isArray(lesson.keyword_list) && lesson.keyword_list.length > 0) {
-    return lesson.keyword_list.map((k) => k.trim()).filter(Boolean)
-  }
-  return String(lesson.keywords ?? '')
-    .split(KEYWORD_SPLIT_REGEX)
-    .map((k) => k.trim())
-    .filter(Boolean)
-}
 
 export function parseLessonImages(lesson: Pick<RawLesson, 'images'>): RawAttachment[] {
   return parseAttachments(lesson.images)
@@ -86,21 +81,6 @@ export function mergeKeywords(
 
 export function findShortLatinKeywords(keywords: readonly string[]): string[] {
   return keywords.filter((kw) => kw.length < 2 && !HAN_CHAR_REGEX.test(kw))
-}
-
-export function buildTaskNormText(task: RawTask): string {
-  const combined = [
-    task.title,
-    task.title_vn,
-    task.content,
-    task.content_vn,
-    task.precautions,
-    task.task_type,
-    task.install_req,
-  ]
-    .filter((v): v is string => typeof v === 'string' && v.length > 0)
-    .join('\n')
-  return normalizeLessonText(combined)
 }
 
 type NormalizedTaskEntry = {

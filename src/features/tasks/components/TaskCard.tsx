@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { CircleAlert, Languages, Tag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { LessonMarqueeBanner } from '@/components/ui/lesson-marquee-banner'
 import { StatusText } from '@/components/ui/status-text'
 import {
   Tooltip,
@@ -100,6 +101,10 @@ export function TaskCard({ vm }: TaskCardProps) {
           </div>
           {isMobile && isTruncated && <TaskCardFullTitleAction vm={vm} />}
         </div>
+
+        {vm.lessonHits && vm.lessonHits.length > 0 && (
+          <LessonMarqueeBanner hits={vm.lessonHits} compact interactive />
+        )}
 
         {/* 4. Info block (4 fixed rows) */}
         <TaskCardInfoBlock vm={vm} />
