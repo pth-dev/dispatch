@@ -105,8 +105,40 @@ describe('ReportFeed', () => {
     renderFeed()
 
     await user.click(screen.getByRole('button', { name: /xoá/i }))
+    const dialog = await screen.findByRole('alertdialog')
+    const confirmBtn = Array.from(dialog.querySelectorAll('button')).find((b) =>
+      /xoá/i.test(b.textContent ?? ''),
+    )
+    expect(confirmBtn).toBeTruthy()
+    await user.click(confirmBtn!)
 
     const alert = await screen.findByRole('alert')
     expect(alert).toHaveTextContent('Không có quyền xóa tệp')
+  })
+
+  it('renders InlineError with retry when loading reports fails', async () => {
+    const onRetry = vi.fn()
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    })
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <ReportFeed
+          task={sampleTask}
+          user={sampleUser}
+          reports={[]}
+          isLoading={false}
+          isError={true}
+          error={{ status: 500, message: 'Server error' }}
+          onRetry={onRetry}
+        />
+      </QueryClientProvider>,
+    )
+
+    expect(screen.getByRole('alert')).toBeInTheDocument()
+    const user = userEvent.setup()
+    await user.click(screen.getByRole('button', { name: /thử lại/i }))
+    expect(onRetry).toHaveBeenCalledTimes(1)
   })
 })

@@ -11,7 +11,10 @@ import {
   isTaskPaused,
   isUrgentLevel,
   parseLocalDateTime,
+  sameDept,
 } from '@/utils/task-domain'
+import { getDeptDisplayName } from '../api/meta'
+import { useMetaDepts } from '../api/queries'
 
 export function formatTaskDueDate(dateStr?: string | null): string {
   if (!dateStr) return '-'
@@ -24,7 +27,15 @@ export function formatTaskDueDate(dateStr?: string | null): string {
 }
 
 export function useTaskColumns(page: number, pageSize: number): ColumnDef<RawTask>[] {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const { data: metaDepts } = useMetaDepts()
+
+  const resolveDeptName = (rawDept: string | null | undefined): string => {
+    if (!rawDept) return '-'
+    const catalog = metaDepts?.allDepts ?? metaDepts?.depts ?? []
+    const match = catalog.find((d) => sameDept(d.value, rawDept))
+    return match ? getDeptDisplayName(match, i18n.language) : rawDept
+  }
 
   return [
     {
@@ -62,10 +73,10 @@ export function useTaskColumns(page: number, pageSize: number): ColumnDef<RawTas
       cell: (task) => (
         <div className="flex min-w-0 items-center gap-1.5">
           {isUrgentLevel(task.level) && (
-            <span
-              className="size-1.5 shrink-0 rounded-full bg-destructive"
-              title={t('status.urgent')}
-            />
+            <span className="inline-flex shrink-0 items-center" title={t('status.urgent')}>
+              <span className="size-1.5 rounded-full bg-status-urgent" aria-hidden="true" />
+              <span className="sr-only">{t('status.urgent')}</span>
+            </span>
           )}
           {task.confidential > 0 && (
             <Lock
@@ -83,14 +94,14 @@ export function useTaskColumns(page: number, pageSize: number): ColumnDef<RawTas
       id: 'department',
       header: t('tasks.columns.department'),
       width: '14%',
-      cell: (task) => (
-        <span
-          className="truncate text-muted-foreground"
-          title={task.assigned_unit || '-'}
-        >
-          {task.assigned_unit || '-'}
-        </span>
-      ),
+      cell: (task) => {
+        const deptLabel = resolveDeptName(task.assigned_unit)
+        return (
+          <span className="truncate text-muted-foreground" title={deptLabel}>
+            {deptLabel}
+          </span>
+        )
+      },
     },
     {
       id: 'assignee',

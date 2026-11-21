@@ -240,7 +240,9 @@
       "contentLabel": "回報內容",
       "contentPlaceholder": "輸入進度說明、問題或結果...",
       "kmLink": "知識庫連結 (KM)",
-      "submit": "送出回報"
+      "submit": "送出回報",
+      "deleteAttConfirmTitle": "刪除附件？",
+      "deleteAttConfirmDesc": "此附件將從回報中永久刪除。"
     },
     "approve": {
       "title": "驗收審批",
@@ -326,25 +328,28 @@
       "pausedCannotBe100": "進度為 100% 時不能設為暫停",
       "cloneDueDateMustChange": "複製派案時，請選擇不同於原任務的新截止日期。",
       "recurWeekdaysRequired": "請至少選擇 1 個星期幾",
-      "recurMonthdaysRequired": "請至少選擇 1 個每月日期"
+      "recurMonthdaysRequired": "請至少選擇 1 個每月日期",
+      "cloneRecurEndMustChange": "複製週期任務時，請選擇與原任務不同的新結束日期。",
+      "maxUsers": "最多 100 人",
+      "fileTooLarge": "部分檔案超過 50 MB 限制已被略過。"
     }
   },
   "errors": {
     "status": {
-      "404": {
-        "caption": "錯誤 404 • 找不到頁面",
-        "title": "找不到此頁面",
-        "description": "您請求的位址不存在、已被重新命名或暫時無法使用。"
+      "401": {
+        "caption": "錯誤 401 • 登入已逾時",
+        "title": "登入工作階段已逾時",
+        "description": "為確保資訊安全，您的工作階段已結束。請重新登入。"
       },
       "403": {
         "caption": "錯誤 403 • 無權限",
         "title": "您沒有檢視此頁面的權限",
         "description": "目前帳號無權存取此資源。如需授權，請聯繫管理員。"
       },
-      "401": {
-        "caption": "錯誤 401 • 登入已逾時",
-        "title": "登入工作階段已逾時",
-        "description": "為確保資訊安全，您的工作階段已結束。請重新登入。"
+      "404": {
+        "caption": "錯誤 404 • 找不到頁面",
+        "title": "找不到此頁面",
+        "description": "您請求的位址不存在、已被重新命名或暫時無法使用。"
       },
       "408": {
         "caption": "錯誤 408 • 請求逾時",
@@ -490,13 +495,13 @@
     "scenarioLabel": "Mock API 情境：",
     "devOnlyNote": "僅於 DEV 環境顯示 (import.meta.env.DEV)",
     "scenarios": {
-      "normal": "正常 (Normal 200ms)",
-      "slow": "緩慢 (Slow 1500ms)",
-      "empty": "空資料 (Empty)",
       "401": "401 工作階段逾時",
       "403": "403 禁止存取",
       "404": "404 找不到",
       "500": "500 伺服器錯誤",
+      "normal": "正常 (Normal 200ms)",
+      "slow": "緩慢 (Slow 1500ms)",
+      "empty": "空資料 (Empty)",
       "offline": "網路中斷"
     }
   }

@@ -236,14 +236,20 @@ export type TaskScopeCounts = {
   all: number
 }
 
+export const MAX_UPLOAD_FILE_MB = 50
+export const MAX_UPLOAD_FILE_BYTES = MAX_UPLOAD_FILE_MB * 1024 * 1024
+export const MAX_ASSIGNEES_LIMIT = 20
+export const MAX_VIEWERS_LIMIT = 100
+export const UNCLASSIFIED_TASK_TYPE = '未分類 / Chưa phân loại'
+
 export const TaskReportFormSchema = z
   .object({
-    content: z.string().default(''),
-    progress: z.coerce.number().int().min(0).max(100),
-    km_link: z.string().default(''),
-    status: z.enum(['running', 'paused']).default('running'),
-    pause_reason: z.string().default(''),
-    target_id: z.coerce.number().optional(),
+    content: z.string(),
+    progress: z.number().int().min(0).max(100),
+    km_link: z.string(),
+    status: z.enum(['running', 'paused']),
+    pause_reason: z.string(),
+    target_id: z.number().optional(),
   })
   .refine(
     (data) => !(data.status === 'paused' && data.progress === 100),
@@ -257,37 +263,34 @@ export type TaskReportFormValues = z.infer<typeof TaskReportFormSchema>
 export const TaskEditorFormSchema = z
   .object({
     title: z.string().trim().min(1, 'tasks.validation.titleRequired'),
-    content: z.string().default(''),
-    precautions: z.string().default(''),
-    level: z
-      .string()
-      .default('一般件 (指定时间内完成) / Thường (Hoàn thành trong thời gian quy định, KS nghiêm ngặt)'),
-    risk_status: z.string().default('無 / Không'),
+    content: z.string(),
+    precautions: z.string(),
+    level: z.string(),
+    risk_status: z.string(),
     task_type: z
       .string()
       .trim()
       .min(1, 'tasks.validation.taskTypeRequired')
-      .refine((v) => v !== '未分類 / Chưa phân loại', 'tasks.validation.taskTypeRequired'),
+      .refine((v) => v !== UNCLASSIFIED_TASK_TYPE, 'tasks.validation.taskTypeRequired'),
     req_depts: z.array(z.string().min(1)).min(1, 'tasks.validation.reqDeptRequired'),
     req_contact: z.string().trim().min(1, 'tasks.validation.reqContactRequired'),
     site: z.array(z.string().min(1)).min(1, 'tasks.validation.siteRequired'),
     assigned_unit: z.string().trim().min(1, 'tasks.validation.departmentRequired'),
     assign_person: z
       .array(z.string().min(1))
-      .max(20, 'tasks.validation.maxAssignees')
-      .default([]),
-    due_date: z.string().default(''),
-    recur_type: RecurTypeSchema.default('once'),
-    recur_weekdays: z.array(z.number().int().min(1).max(7)).default([]),
-    recur_monthdays: z.array(z.number().int().min(1).max(31)).default([]),
-    recur_time: z.string().default('17:00'),
-    recur_end: z.string().default(''),
-    confidential: ConfidentialLevelSchema.default(0),
-    readers: z.array(z.string()).max(100).default([]),
-    cross_dept: z.boolean().default(false),
-    cross_viewers: z.array(z.string()).max(100).default([]),
-    cost_estimate: z.string().default(''),
-    km_link: z.string().default(''),
+      .max(MAX_ASSIGNEES_LIMIT, 'tasks.validation.maxAssignees'),
+    due_date: z.string(),
+    recur_type: RecurTypeSchema,
+    recur_weekdays: z.array(z.number().int().min(1).max(7)),
+    recur_monthdays: z.array(z.number().int().min(1).max(31)),
+    recur_time: z.string(),
+    recur_end: z.string(),
+    confidential: ConfidentialLevelSchema,
+    readers: z.array(z.string()).max(MAX_VIEWERS_LIMIT, 'tasks.validation.maxUsers'),
+    cross_dept: z.boolean(),
+    cross_viewers: z.array(z.string()).max(MAX_VIEWERS_LIMIT, 'tasks.validation.maxUsers'),
+    cost_estimate: z.string(),
+    km_link: z.string(),
   })
   .refine(
     (data) => data.recur_type !== 'once' || data.due_date.trim().length > 0,

@@ -5,7 +5,11 @@ import { Paperclip, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import type { PocketValueItem } from '@/schemas/meta'
-import type { RawAttachment, TaskEditorFormValues } from '@/schemas/task'
+import {
+  MAX_UPLOAD_FILE_BYTES,
+  type RawAttachment,
+  type TaskEditorFormValues,
+} from '@/schemas/task'
 import {
   CUSTOM_TASK_TYPE_VALUE,
   SELECT_FIELD_CLASS,
@@ -43,19 +47,20 @@ export function TaskBasicInfoSection({
   const isKnownType =
     !taskType || isStandardTaskType(taskType) || knownPersonalValues.has(taskType)
 
-  const [customMode, setCustomMode] = React.useState(!isKnownType)
-  const isCustomActive = customMode || !isKnownType
+  const [forceCustom, setForceCustom] = React.useState(false)
+  const [fileError, setFileError] = React.useState<string | null>(null)
+  const isCustomActive = forceCustom || !isKnownType
   const selectValue = isCustomActive ? CUSTOM_TASK_TYPE_VALUE : taskType
 
   const handleTaskTypeSelect = (next: string) => {
     if (next === CUSTOM_TASK_TYPE_VALUE) {
-      setCustomMode(true)
+      setForceCustom(true)
       if (isStandardTaskType(taskType) || knownPersonalValues.has(taskType)) {
         setValue('task_type', '', { shouldDirty: true, shouldValidate: false })
       }
       return
     }
-    setCustomMode(false)
+    setForceCustom(false)
     setValue('task_type', next, { shouldDirty: true, shouldValidate: true })
   }
 
@@ -160,9 +165,15 @@ export function TaskBasicInfoSection({
             id="task-files"
             type="file"
             multiple
-            onChange={(e) => onNewFilesChange(Array.from(e.target.files ?? []))}
+            onChange={(e) => {
+              const picked = Array.from(e.target.files ?? [])
+              const valid = picked.filter((f) => f.size <= MAX_UPLOAD_FILE_BYTES)
+              setFileError(valid.length < picked.length ? t('tasks.validation.fileTooLarge') : null)
+              onNewFilesChange(valid)
+            }}
             className="block w-full text-xs text-muted-foreground file:mr-2 file:rounded-md file:border file:border-border file:bg-card file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-foreground"
           />
+          {fileError && <p className="text-xs text-destructive">{fileError}</p>}
           {retainedFiles.length > 0 && (
             <div className="flex flex-wrap gap-1.5 pt-1">
               {retainedFiles.map((att) => (

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import {
+  MAX_UPLOAD_FILE_BYTES,
   TaskReportFormSchema,
   type RawTask,
   type SplitMember,
@@ -15,9 +16,10 @@ import {
 import type { SessionUser } from '@/schemas/auth'
 import { isTaskPaused } from '@/utils/task-domain'
 import { resolveApiErrorMessage } from '@/services'
+import { SELECT_FIELD_CLASS } from '../api/task-catalog'
 import { useSubmitReport } from '../api/queries'
 
-interface ReportComposerProps {
+type ReportComposerProps = {
   task: RawTask
   user: SessionUser
   splitMembers: SplitMember[]
@@ -27,6 +29,7 @@ export function ReportComposer({ task, user, splitMembers }: ReportComposerProps
   const { t, i18n } = useTranslation()
   const submitReport = useSubmitReport()
   const [files, setFiles] = React.useState<File[]>([])
+  const [fileError, setFileError] = React.useState<string | null>(null)
   const [fileInputKey, setFileInputKey] = React.useState(0)
   const [submitError, setSubmitError] = React.useState<string | null>(null)
 
@@ -43,7 +46,7 @@ export function ReportComposer({ task, user, splitMembers }: ReportComposerProps
     reset,
     formState: { errors, isSubmitting },
   } = useForm<TaskReportFormValues>({
-    resolver: zodResolver(TaskReportFormSchema) as never,
+    resolver: zodResolver(TaskReportFormSchema),
     defaultValues: {
       content: '',
       progress: task.progress,
@@ -123,7 +126,7 @@ export function ReportComposer({ task, user, splitMembers }: ReportComposerProps
               min={0}
               max={currentStatus === 'paused' ? 99 : 100}
               aria-invalid={Boolean(errors.progress)}
-              {...register('progress')}
+              {...register('progress', { valueAsNumber: true })}
             />
             {errors.progress?.message && (
               <p className="text-xs text-destructive">{t(errors.progress.message)}</p>
@@ -138,7 +141,7 @@ export function ReportComposer({ task, user, splitMembers }: ReportComposerProps
               id="report-status"
               value={currentStatus}
               onChange={(e) => handleStatusChange(e.target.value as 'running' | 'paused')}
-              className="w-full h-11 lg:h-10 rounded-md border border-border bg-card px-3 text-xs text-foreground outline-none focus:border-primary"
+              className={SELECT_FIELD_CLASS}
             >
               <option value="running">{t('tasks.report.stateRunning')}</option>
               <option value="paused">{t('tasks.report.statePaused')}</option>
@@ -152,8 +155,8 @@ export function ReportComposer({ task, user, splitMembers }: ReportComposerProps
               </label>
               <select
                 id="report-target"
-                {...register('target_id')}
-                className="w-full h-11 lg:h-10 rounded-md border border-border bg-card px-3 text-xs text-foreground outline-none focus:border-primary"
+                {...register('target_id', { valueAsNumber: true })}
+                className={SELECT_FIELD_CLASS}
               >
                 {splitMembers.map((m) => (
                   <option key={m.id} value={m.id}>
@@ -214,7 +217,12 @@ export function ReportComposer({ task, user, splitMembers }: ReportComposerProps
                 id="report-files"
                 type="file"
                 multiple
-                onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
+                onChange={(e) => {
+                  const picked = Array.from(e.target.files ?? [])
+                  const valid = picked.filter((f) => f.size <= MAX_UPLOAD_FILE_BYTES)
+                  setFileError(valid.length < picked.length ? t('tasks.validation.fileTooLarge') : null)
+                  setFiles(valid)
+                }}
                 className="block w-full text-xs text-muted-foreground file:mr-2 file:rounded-md file:border file:border-border file:bg-card file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-foreground"
               />
               {files.length > 0 && (
@@ -224,6 +232,7 @@ export function ReportComposer({ task, user, splitMembers }: ReportComposerProps
                 </span>
               )}
             </div>
+            {fileError && <p className="text-xs text-destructive">{fileError}</p>}
           </div>
         </div>
 

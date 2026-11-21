@@ -3,6 +3,17 @@ import { useTranslation } from 'react-i18next'
 import { CircleAlert, ExternalLink, Paperclip, Pencil, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import { InlineError, toErrorStatus } from '@/components/layout'
 import type { SessionUser } from '@/schemas/auth'
 import type { RawReport, RawTask } from '@/schemas/task'
 import { resolveApiErrorMessage } from '@/services'
@@ -10,14 +21,25 @@ import { canDeleteReportAttachment } from '@/utils/permissions'
 import { parseAttachments, parseLinks, resolveFileUrl } from '@/utils/task-domain'
 import { useDeleteReportAttachment, useUpdateReport } from '../api/queries'
 
-interface ReportFeedProps {
+type ReportFeedProps = {
   task: RawTask
   user: SessionUser | null
   reports: RawReport[]
   isLoading: boolean
+  isError?: boolean
+  error?: unknown
+  onRetry?: () => void
 }
 
-export function ReportFeed({ task, user, reports, isLoading }: ReportFeedProps) {
+export function ReportFeed({
+  task,
+  user,
+  reports,
+  isLoading,
+  isError = false,
+  error,
+  onRetry,
+}: ReportFeedProps) {
   const { t, i18n } = useTranslation()
   const updateReport = useUpdateReport()
   const deleteAttachment = useDeleteReportAttachment()
@@ -25,6 +47,10 @@ export function ReportFeed({ task, user, reports, isLoading }: ReportFeedProps) 
   const [editingId, setEditingId] = React.useState<number | null>(null)
   const [editingContent, setEditingContent] = React.useState('')
   const [actionError, setActionError] = React.useState<string | null>(null)
+  const [pendingDeleteAtt, setPendingDeleteAtt] = React.useState<{
+    reportId: number
+    path: string
+  } | null>(null)
 
   const startEdit = (report: RawReport) => {
     setActionError(null)
@@ -33,12 +59,14 @@ export function ReportFeed({ task, user, reports, isLoading }: ReportFeedProps) 
   }
 
   const saveEdit = async (reportId: number) => {
+    const trimmed = editingContent.trim()
+    if (!trimmed) return
     setActionError(null)
     try {
       await updateReport.mutateAsync({
         taskId: task.id,
         reportId,
-        content: editingContent.trim(),
+        content: trimmed,
       })
       setEditingId(null)
     } catch (err) {
@@ -46,13 +74,16 @@ export function ReportFeed({ task, user, reports, isLoading }: ReportFeedProps) 
     }
   }
 
-  const handleRemoveAttachment = async (reportId: number, path: string) => {
+  const handleConfirmRemoveAttachment = async () => {
+    if (!pendingDeleteAtt) return
+    const target = pendingDeleteAtt
+    setPendingDeleteAtt(null)
     setActionError(null)
     try {
       await deleteAttachment.mutateAsync({
         taskId: task.id,
-        reportId,
-        path,
+        reportId: target.reportId,
+        path: target.path,
       })
     } catch (err) {
       setActionError(resolveApiErrorMessage(err, t, i18n.language))
@@ -61,10 +92,17 @@ export function ReportFeed({ task, user, reports, isLoading }: ReportFeedProps) 
 
   if (isLoading) {
     return (
-      <div className="rounded-xl border border-border bg-card p-4 text-xs text-muted-foreground">
+      <div
+        role="status"
+        className="rounded-xl border border-border bg-card p-4 text-xs text-muted-foreground"
+      >
         {t('common.loading')}
       </div>
     )
+  }
+
+  if (isError) {
+    return <InlineError status={toErrorStatus(error)} onRetry={onRetry} />
   }
 
   if (reports.length === 0) {
@@ -145,6 +183,7 @@ export function ReportFeed({ task, user, reports, isLoading }: ReportFeedProps) 
                 <div className="space-y-2">
                   <Textarea
                     rows={3}
+                    aria-label={t('tasks.report.contentLabel')}
                     value={editingContent}
                     onChange={(e) => setEditingContent(e.target.value)}
                   />
@@ -160,7 +199,7 @@ export function ReportFeed({ task, user, reports, isLoading }: ReportFeedProps) 
                     <Button
                       type="button"
                       size="sm"
-                      disabled={updateReport.isPending}
+                      disabled={updateReport.isPending || editingContent.trim().length === 0}
                       onClick={() => void saveEdit(report.id)}
                     >
                       {t('common.save')}
@@ -177,9 +216,9 @@ export function ReportFeed({ task, user, reports, isLoading }: ReportFeedProps) 
 
               {links.length > 0 && (
                 <div className="flex flex-wrap gap-2 pt-1">
-                  {links.map((url) => (
+                  {links.map((url, idx) => (
                     <a
-                      key={url}
+                      key={`${url}-${idx}`}
                       href={url}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -202,22 +241,31 @@ export function ReportFeed({ task, user, reports, isLoading }: ReportFeedProps) 
                         className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1"
                       >
                         <Paperclip className="size-3 text-muted-foreground" aria-hidden="true" />
-                        <a
-                          href={href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary hover:underline truncate max-w-[200px]"
-                        >
-                          {att.name}
-                        </a>
+                        {href ? (
+                          <a
+                            href={href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline truncate max-w-[200px]"
+                          >
+                            {att.name}
+                          </a>
+                        ) : (
+                          <span className="text-muted-foreground truncate max-w-[200px]">
+                            {att.name}
+                          </span>
+                        )}
                         {canDeleteAtt && (
                           <button
                             type="button"
-                            onClick={() => void handleRemoveAttachment(report.id, att.path)}
-                            className="text-destructive hover:opacity-80 cursor-pointer"
+                            disabled={deleteAttachment.isPending}
+                            onClick={() =>
+                              setPendingDeleteAtt({ reportId: report.id, path: att.path })
+                            }
+                            className="inline-flex min-h-[28px] min-w-[28px] items-center justify-center rounded text-destructive hover:opacity-80 disabled:opacity-40 cursor-pointer"
                             aria-label={t('common.delete')}
                           >
-                            <Trash2 className="size-3" aria-hidden="true" />
+                            <Trash2 className="size-3.5" aria-hidden="true" />
                           </button>
                         )}
                       </div>
@@ -229,6 +277,28 @@ export function ReportFeed({ task, user, reports, isLoading }: ReportFeedProps) 
           )
         })}
       </div>
+
+      <AlertDialog
+        open={Boolean(pendingDeleteAtt)}
+        onOpenChange={(open) => {
+          if (!open) setPendingDeleteAtt(null)
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('tasks.report.deleteAttConfirmTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('tasks.report.deleteAttConfirmDesc')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={() => void handleConfirmRemoveAttachment()}>
+              {t('common.delete')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </section>
   )
 }

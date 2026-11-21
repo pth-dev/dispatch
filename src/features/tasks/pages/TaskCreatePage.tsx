@@ -29,7 +29,13 @@ import {
   type RawTask,
   type TaskEditorFormValues,
 } from '@/schemas/task'
-import { canSetCross, canSetReaders } from '@/utils/permissions'
+import {
+  canCloneTask,
+  canCreateTask,
+  canEditTask,
+  canSetCross,
+  canSetReaders,
+} from '@/utils/permissions'
 import { parseAttachments } from '@/utils/task-domain'
 import { resolveApiErrorMessage } from '@/services'
 import {
@@ -60,6 +66,7 @@ function parsePositiveInt(raw: string | null | undefined): number | undefined {
 export function TaskCreatePage() {
   const { id } = useParams<{ id: string }>()
   const [searchParams] = useSearchParams()
+  const user = useAppStore((s) => s.user)
   const editId = parsePositiveInt(id)
   const cloneId = parsePositiveInt(searchParams.get('clone'))
   const hasInvalidEditId = Boolean(id) && !editId
@@ -76,6 +83,10 @@ export function TaskCreatePage() {
 
   if (hasInvalidEditId) {
     throwFullPageError('404')
+  }
+
+  if (mode === 'create' && !canCreateTask(user)) {
+    throwFullPageError('403')
   }
 
   if (sourceId > 0 && loadingSource) {
@@ -100,6 +111,14 @@ export function TaskCreatePage() {
 
   if (sourceId > 0 && !sourceTask) {
     throwFullPageError('404')
+  }
+
+  if (mode === 'edit' && sourceTask && !canEditTask(user, sourceTask)) {
+    throwFullPageError('403')
+  }
+
+  if (mode === 'clone' && sourceTask && !canCloneTask(user, sourceTask)) {
+    throwFullPageError('403')
   }
 
   return (
@@ -145,10 +164,11 @@ function TaskEditorForm({ mode, sourceTask }: TaskEditorFormProps) {
     register,
     control,
     setValue,
+    setError,
     handleSubmit,
     formState: { errors, isDirty, isSubmitting },
   } = useForm<TaskEditorFormValues>({
-    resolver: zodResolver(TaskEditorFormSchema) as never,
+    resolver: zodResolver(TaskEditorFormSchema),
     defaultValues: buildDefaultTaskEditorValues(user, sourceTask),
   })
 
@@ -164,12 +184,23 @@ function TaskEditorForm({ mode, sourceTask }: TaskEditorFormProps) {
   const onSubmit = async (values: TaskEditorFormValues) => {
     setSubmitError(null)
 
-    if (mode === 'clone' && sourceTask && values.recur_type === 'once') {
-      const srcDay = (sourceTask.due_date ?? '').trim().slice(0, 10)
-      const nextDay = values.due_date.trim().slice(0, 10)
-      if (!nextDay || nextDay === srcDay) {
-        setSubmitError(t('tasks.validation.cloneDueDateMustChange'))
-        return
+    if (mode === 'clone' && sourceTask) {
+      if (values.recur_type === 'once') {
+        const srcDay = (sourceTask.due_date ?? '').trim().slice(0, 10)
+        const nextDay = values.due_date.trim().slice(0, 10)
+        if (!nextDay || nextDay === srcDay) {
+          setError('due_date', { message: 'tasks.validation.cloneDueDateMustChange' })
+          setSubmitError(t('tasks.validation.cloneDueDateMustChange'))
+          return
+        }
+      } else {
+        const srcEnd = (sourceTask.recur_end ?? '').trim().slice(0, 10)
+        const nextEnd = values.recur_end.trim().slice(0, 10)
+        if (!nextEnd || nextEnd === srcEnd) {
+          setError('recur_end', { message: 'tasks.validation.cloneRecurEndMustChange' })
+          setSubmitError(t('tasks.validation.cloneRecurEndMustChange'))
+          return
+        }
       }
     }
 
@@ -212,11 +243,22 @@ function TaskEditorForm({ mode, sourceTask }: TaskEditorFormProps) {
     }
   }
 
+  const navigateAway = () => {
+    if (window.history.length > 1) {
+      navigate(-1)
+      return
+    }
+    navigate(
+      mode === 'edit' && sourceTask ? APP_ROUTES.TASK_DETAIL(sourceTask.id) : APP_ROUTES.TASKS,
+      { replace: true },
+    )
+  }
+
   const handleCancel = () => {
     if (isDirty || newFiles.length > 0) {
       setLeaveDialogOpen(true)
     } else {
-      navigate(-1)
+      navigateAway()
     }
   }
 
@@ -326,7 +368,7 @@ function TaskEditorForm({ mode, sourceTask }: TaskEditorFormProps) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t('tasks.createForm.stay')}</AlertDialogCancel>
-            <AlertDialogAction onClick={() => navigate(-1)}>
+            <AlertDialogAction onClick={navigateAway}>
               {t('tasks.createForm.discard')}
             </AlertDialogAction>
           </AlertDialogFooter>

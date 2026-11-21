@@ -240,7 +240,9 @@
       "contentLabel": "回报内容",
       "contentPlaceholder": "输入进度说明、问题或结果...",
       "kmLink": "知识库链接 (KM)",
-      "submit": "提交回报"
+      "submit": "提交回报",
+      "deleteAttConfirmTitle": "删除附件？",
+      "deleteAttConfirmDesc": "此附件将从报告中永久删除。"
     },
     "approve": {
       "title": "验收审批",
@@ -326,25 +328,28 @@
       "pausedCannotBe100": "进度为 100% 时不能设为暂停",
       "cloneDueDateMustChange": "复制派案时，请选择不同于原任务的新截止日期。",
       "recurWeekdaysRequired": "请至少选择 1 个星期几",
-      "recurMonthdaysRequired": "请至少选择 1 个每月日期"
+      "recurMonthdaysRequired": "请至少选择 1 个每月日期",
+      "cloneRecurEndMustChange": "复制周期任务时，请选择与原任务不同的新结束日期。",
+      "maxUsers": "最多 100 人",
+      "fileTooLarge": "部分文件超过 50 MB 限制已被忽略。"
     }
   },
   "errors": {
     "status": {
-      "404": {
-        "caption": "错误 404 • 未找到",
-        "title": "找不到此页面",
-        "description": "您请求的地址不存在、已被重命名或暂时不可用。"
+      "401": {
+        "caption": "错误 401 • 会话已过期",
+        "title": "登录会话已过期",
+        "description": "为确保信息安全，您的会话已结束。请重新登录。"
       },
       "403": {
         "caption": "错误 403 • 无权限",
         "title": "您没有查看此页面的权限",
         "description": "当前账户无权访问此资源。如需授权，请联系管理员。"
       },
-      "401": {
-        "caption": "错误 401 • 会话已过期",
-        "title": "登录会话已过期",
-        "description": "为确保信息安全，您的会话已结束。请重新登录。"
+      "404": {
+        "caption": "错误 404 • 未找到",
+        "title": "找不到此页面",
+        "description": "您请求的地址不存在、已被重命名或暂时不可用。"
       },
       "408": {
         "caption": "错误 408 • 请求超时",
@@ -490,13 +495,13 @@
     "scenarioLabel": "Mock API 场景：",
     "devOnlyNote": "仅在 DEV 环境显示 (import.meta.env.DEV)",
     "scenarios": {
-      "normal": "正常 (Normal 200ms)",
-      "slow": "缓慢 (Slow 1500ms)",
-      "empty": "空数据 (Empty)",
       "401": "401 会话过期",
       "403": "403 禁止访问",
       "404": "404 未找到",
       "500": "500 服务器错误",
+      "normal": "正常 (Normal 200ms)",
+      "slow": "缓慢 (Slow 1500ms)",
+      "empty": "空数据 (Empty)",
       "offline": "网络断开"
     }
   }

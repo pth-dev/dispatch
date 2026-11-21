@@ -147,13 +147,16 @@ describe('task & report schemas', () => {
     const invalid = TaskReportFormSchema.safeParse({
       content: 'Pausing',
       progress: 100,
+      km_link: '',
       status: 'paused',
+      pause_reason: '',
     })
     expect(invalid.success).toBe(false)
 
     const valid = TaskReportFormSchema.safeParse({
       content: 'Pausing',
       progress: 99,
+      km_link: '',
       status: 'paused',
       pause_reason: 'Chờ vật tư',
     })
@@ -163,6 +166,10 @@ describe('task & report schemas', () => {
   it('enforces task_type, due_date (for once), and max 20 assignees in TaskEditorFormSchema', () => {
     const base = {
       title: 'Task A',
+      content: '',
+      precautions: '',
+      level: '一般件 (指定时间内完成) / Thường (Hoàn thành trong thời gian quy định, KS nghiêm ngặt)',
+      risk_status: '無 / Không',
       task_type: '網路類 / Mạng lưới',
       req_depts: ['資訊部'],
       req_contact: 'hieu',
@@ -171,6 +178,16 @@ describe('task & report schemas', () => {
       assign_person: ['tom'],
       due_date: '2026-11-25T19:00',
       recur_type: 'once' as const,
+      recur_weekdays: [] as number[],
+      recur_monthdays: [] as number[],
+      recur_time: '17:00',
+      recur_end: '',
+      confidential: 0 as const,
+      readers: [] as string[],
+      cross_dept: false,
+      cross_viewers: [] as string[],
+      cost_estimate: '',
+      km_link: '',
     }
 
     expect(TaskEditorFormSchema.safeParse(base).success).toBe(true)

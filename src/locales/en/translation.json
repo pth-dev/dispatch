@@ -240,7 +240,9 @@
       "contentLabel": "Report content",
       "contentPlaceholder": "Enter progress update, blockers, or results...",
       "kmLink": "Reference link (KM)",
-      "submit": "Submit report"
+      "submit": "Submit report",
+      "deleteAttConfirmTitle": "Delete attachment?",
+      "deleteAttConfirmDesc": "This attachment will be permanently removed from the report."
     },
     "approve": {
       "title": "Approve acceptance",
@@ -326,25 +328,28 @@
       "pausedCannotBe100": "Cannot pause a task when progress is 100%",
       "cloneDueDateMustChange": "When cloning a task, please choose a new due date different from the source task.",
       "recurWeekdaysRequired": "Please select at least 1 day of the week",
-      "recurMonthdaysRequired": "Please select at least 1 day of the month"
+      "recurMonthdaysRequired": "Please select at least 1 day of the month",
+      "cloneRecurEndMustChange": "When cloning a recurring task, please choose a new recurrence end date different from the original task.",
+      "maxUsers": "Up to 100 users allowed",
+      "fileTooLarge": "Some files exceed the 50 MB limit and were skipped."
     }
   },
   "errors": {
     "status": {
-      "404": {
-        "caption": "ERROR 404 • NOT FOUND",
-        "title": "This page could not be found",
-        "description": "The address you requested does not exist, has been renamed, or is temporarily unavailable."
+      "401": {
+        "caption": "ERROR 401 • SESSION EXPIRED",
+        "title": "Your session has expired",
+        "description": "To keep your information safe, your session has ended. Please sign in again."
       },
       "403": {
         "caption": "ERROR 403 • FORBIDDEN",
         "title": "You do not have permission to view this page",
         "description": "The current account cannot access this resource. Please contact an administrator if you need access."
       },
-      "401": {
-        "caption": "ERROR 401 • SESSION EXPIRED",
-        "title": "Your session has expired",
-        "description": "To keep your information safe, your session has ended. Please sign in again."
+      "404": {
+        "caption": "ERROR 404 • NOT FOUND",
+        "title": "This page could not be found",
+        "description": "The address you requested does not exist, has been renamed, or is temporarily unavailable."
       },
       "408": {
         "caption": "ERROR 408 • REQUEST TIMEOUT",
@@ -490,13 +495,13 @@
     "scenarioLabel": "Mock API scenario:",
     "devOnlyNote": "Only visible in the DEV environment (import.meta.env.DEV)",
     "scenarios": {
-      "normal": "Normal (200ms)",
-      "slow": "Slow (1500ms)",
-      "empty": "Empty data",
       "401": "401 Session expired",
       "403": "403 Forbidden",
       "404": "404 Not found",
       "500": "500 Server error",
+      "normal": "Normal (200ms)",
+      "slow": "Slow (1500ms)",
+      "empty": "Empty data",
       "offline": "Network disconnected"
     }
   }

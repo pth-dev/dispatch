@@ -39,18 +39,22 @@ import {
 } from '@/utils/permissions'
 import {
   deriveTaskStatus,
+  isRecurringTask,
   isTaskPaused,
   isUrgentLevel,
   parseAttachments,
   parseLinks,
+  parseRecurInts,
   parseReqDepts,
   parseSites,
   parseSplitMembers,
   parseWorkItems,
   resolveFileUrl,
+  sameDept,
 } from '@/utils/task-domain'
 import { resolveApiErrorMessage } from '@/services'
-import { useDeleteTask, useTaskById, useTaskReports } from '../api/queries'
+import { getDeptDisplayName } from '../api/meta'
+import { useDeleteTask, useMetaDepts, useTaskById, useTaskReports } from '../api/queries'
 import { formatTaskDueDate } from '../hooks/use-task-columns'
 import { SplitGroupPanel } from '../components/SplitGroupPanel'
 import { WorkItemsReadOnly } from '../components/WorkItemsReadOnly'
@@ -59,15 +63,27 @@ import { ReportFeed } from '../components/ReportFeed'
 
 export function TaskDetailPage() {
   const { id = '' } = useParams<{ id: string }>()
-  const taskId = Number(id)
+  const parsedId = /^\d+$/.test(id) ? Number(id) : 0
+  const taskId = Number.isInteger(parsedId) && parsedId > 0 ? parsedId : 0
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const user = useAppStore((s) => s.user)
 
+  const { data: metaDepts } = useMetaDepts()
   const { data: task, isLoading, isError, error, refetch } = useTaskById(taskId)
-  const { data: reports = [], isLoading: reportsLoading } = useTaskReports(taskId)
+  const {
+    data: reports = [],
+    isLoading: reportsLoading,
+    isError: reportsError,
+    error: reportsErrorObj,
+    refetch: refetchReports,
+  } = useTaskReports(taskId)
   const deleteTask = useDeleteTask()
   const [deleteError, setDeleteError] = React.useState<string | null>(null)
+
+  if (taskId <= 0) {
+    throwFullPageError('404')
+  }
 
   if (isLoading) {
     return (
@@ -116,14 +132,44 @@ export function TaskDetailPage() {
     }
   }
 
+  const resolveDeptLabel = (rawDept: string | null | undefined): string => {
+    if (!rawDept) return '-'
+    const catalog = metaDepts?.allDepts ?? metaDepts?.depts ?? []
+    const match = catalog.find((d) => sameDept(d.value, rawDept))
+    return match ? getDeptDisplayName(match, i18n.language) : rawDept
+  }
+
+  const recurrenceSummary = (() => {
+    if (!isRecurringTask(task)) return null
+    const base =
+      task.recur_type === 'weekly'
+        ? t('tasks.fields.recurWeekly')
+        : t('tasks.fields.recurMonthly')
+    const days =
+      task.recur_type === 'weekly'
+        ? parseRecurInts(task.recur_weekdays, 1, 7)
+            .map((d) => t(`tasks.weekdays.d${d}`))
+            .join(', ')
+        : parseRecurInts(task.recur_monthdays, 1, 31).join(', ')
+    const parts = [base, days, task.recur_time].filter(Boolean)
+    if (task.recur_end) parts.push(`→ ${task.recur_end.slice(0, 10)}`)
+    return parts.join(' • ')
+  })()
+
   const infoItems: ReadonlyArray<{ label: string; value: string }> = [
     { label: t('tasks.detail.creator'), value: task.reporter_name || task.reporter || '-' },
-    { label: t('tasks.fields.reqDepts'), value: reqDepts.join(', ') || '-' },
+    {
+      label: t('tasks.fields.reqDepts'),
+      value: reqDepts.map((d) => resolveDeptLabel(d)).join(', ') || '-',
+    },
     { label: t('tasks.fields.reqContact'), value: task.req_contact || '-' },
-    { label: t('common.department'), value: task.assigned_unit || '-' },
+    { label: t('common.department'), value: resolveDeptLabel(task.assigned_unit) },
     { label: t('common.assignee'), value: task.assign_person || '-' },
     { label: t('tasks.fields.site'), value: sites.join(', ') || '-' },
     { label: t('tasks.fields.taskType'), value: task.task_type || '-' },
+    ...(recurrenceSummary
+      ? [{ label: t('tasks.fields.recurType'), value: recurrenceSummary }]
+      : []),
     {
       label: t('tasks.confidential.label'),
       value: t(`tasks.confidential.lv${task.confidential}`),
@@ -246,14 +292,18 @@ export function TaskDetailPage() {
           </section>
 
           {allowReport && user && (
-            <ReportComposer task={task} user={user} splitMembers={splitMembers} />
+            <ReportComposer key={task.id} task={task} user={user} splitMembers={splitMembers} />
           )}
 
           <ReportFeed
+            key={`feed-${task.id}`}
             task={task}
             user={user}
             reports={reports}
             isLoading={reportsLoading}
+            isError={reportsError}
+            error={reportsErrorObj}
+            onRetry={() => void refetchReports()}
           />
         </div>
 
@@ -296,28 +346,35 @@ export function TaskDetailPage() {
               <p className="text-muted-foreground">{t('tasks.detail.noAttachments')}</p>
             ) : (
               <ul className="space-y-1.5">
-                {attachments.map((att) => (
-                  <li key={att.path} className="flex items-center gap-1.5">
-                    <Paperclip className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
-                    <a
-                      href={resolveFileUrl(att.path)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline truncate"
-                    >
-                      {att.name}
-                    </a>
-                  </li>
-                ))}
+                {attachments.map((att) => {
+                  const href = resolveFileUrl(att.path)
+                  return (
+                    <li key={att.path} className="flex items-center gap-1.5">
+                      <Paperclip className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+                      {href ? (
+                        <a
+                          href={href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline truncate"
+                        >
+                          {att.name}
+                        </a>
+                      ) : (
+                        <span className="text-muted-foreground truncate">{att.name}</span>
+                      )}
+                    </li>
+                  )
+                })}
               </ul>
             )}
 
             {links.length > 0 && (
               <div className="pt-2 border-t border-border space-y-1.5">
                 <h3 className="font-semibold text-muted-foreground">{t('tasks.report.kmLink')}</h3>
-                {links.map((url) => (
+                {links.map((url, idx) => (
                   <a
-                    key={url}
+                    key={`${url}-${idx}`}
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"

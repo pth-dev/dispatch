@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { createBrowserRouter, Navigate } from 'react-router'
 import { APP_ROUTES } from '@/constants/app-routes'
 import { AppShell, RootRouteErrorBoundary, ErrorState } from '@/components/layout'
+import { RequireMenuPerm } from './RequireMenuPerm'
 
 // Route-based code splitting per performance skill
 const LoginPage = React.lazy(() => import('@/pages/login/LoginPage'))
@@ -42,19 +43,35 @@ export const router = createBrowserRouter([
       },
       {
         path: 'tasks',
-        element: <TaskListPage />,
+        element: (
+          <RequireMenuPerm perm="list" level="r">
+            <TaskListPage />
+          </RequireMenuPerm>
+        ),
       },
       {
         path: 'tasks/new',
-        element: <TaskCreatePage />,
+        element: (
+          <RequireMenuPerm perm="dashboard" level="w">
+            <TaskCreatePage />
+          </RequireMenuPerm>
+        ),
       },
       {
         path: 'tasks/:id/edit',
-        element: <TaskCreatePage />,
+        element: (
+          <RequireMenuPerm perm="dashboard" level="w">
+            <TaskCreatePage />
+          </RequireMenuPerm>
+        ),
       },
       {
         path: 'tasks/:id',
-        element: <TaskDetailPage />,
+        element: (
+          <RequireMenuPerm perm="list" level="r">
+            <TaskDetailPage />
+          </RequireMenuPerm>
+        ),
       },
       {
         path: 'profile',

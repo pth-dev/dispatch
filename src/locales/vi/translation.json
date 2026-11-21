@@ -240,7 +240,9 @@
       "contentLabel": "Nội dung báo cáo",
       "contentPlaceholder": "Nhập tiến độ công việc, vướng mắc hoặc kết quả...",
       "kmLink": "Liên kết tài liệu (KM)",
-      "submit": "Gửi báo cáo"
+      "submit": "Gửi báo cáo",
+      "deleteAttConfirmTitle": "Xoá tệp đính kèm?",
+      "deleteAttConfirmDesc": "Tệp đính kèm này sẽ bị xoá vĩnh viễn khỏi báo cáo."
     },
     "approve": {
       "title": "Phê duyệt nghiệm thu",
@@ -325,6 +327,9 @@
       "maxAssignees": "Tối đa 20 người xử lý",
       "pausedCannotBe100": "Không thể tạm dừng khi tiến độ là 100%",
       "cloneDueDateMustChange": "Khi nhân bản nhiệm vụ, vui lòng chọn ngày hạn hoàn thành mới khác nhiệm vụ gốc.",
+      "cloneRecurEndMustChange": "Khi nhân bản nhiệm vụ định kỳ, vui lòng chọn ngày kết thúc lặp mới khác nhiệm vụ gốc.",
+      "maxUsers": "Tối đa 100 người",
+      "fileTooLarge": "Một số tệp vượt quá giới hạn 50 MB và đã bị bỏ qua.",
       "recurWeekdaysRequired": "Vui lòng chọn ít nhất 1 thứ trong tuần",
       "recurMonthdaysRequired": "Vui lòng chọn ít nhất 1 ngày trong tháng"
     }
