@@ -88,10 +88,10 @@ export function TaskPeopleSection({
                   <button
                     type="button"
                     onClick={() => toggleMulti('assign_person', watchAssignees, uname)}
-                    className="text-muted-foreground hover:text-destructive cursor-pointer"
+                    className="inline-flex size-6 items-center justify-center rounded-full text-muted-foreground hover:text-destructive cursor-pointer"
                     aria-label={t('common.delete')}
                   >
-                    <X className="size-3" aria-hidden="true" />
+                    <X className="size-3.5" aria-hidden="true" />
                   </button>
                 </span>
               )

@@ -12,7 +12,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 
-interface SidebarProps {
+type SidebarProps = {
   className?: string
   onNavigate?: () => void
 }
@@ -46,6 +46,7 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
             <Link
               to={item.href}
               onClick={onNavigate}
+              aria-current={active ? 'page' : undefined}
               data-active={active}
               className={cn(
                 'group relative flex min-h-[44px] items-center gap-3 px-3 py-1.5 rounded-none text-sm font-medium transition-colors select-none outline-none',
@@ -70,13 +71,14 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
               )}
             </Link>
           ) : (
-            <span
+            <button
+              type="button"
               aria-disabled="true"
-              className="flex min-h-[44px] items-center gap-3 px-3 py-1.5 text-sm font-medium text-muted-foreground opacity-50 cursor-not-allowed select-none"
+              className="flex w-full min-h-[44px] items-center gap-3 px-3 py-1.5 text-left text-sm font-medium text-muted-foreground opacity-50 cursor-not-allowed select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
               <Icon className="size-5 shrink-0 text-muted-foreground" />
               <span className="flex-1 line-clamp-2 leading-tight">{title}</span>
-            </span>
+            </button>
           )}
         </TooltipTrigger>
         <TooltipContent side="right" className="text-xs">
@@ -127,6 +129,8 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
           <div className="flex items-center justify-between">
             <span className="text-[11px]">{t('app.version')}</span>
             <span
+              role="img"
+              aria-label={t('sidebar.connected')}
               className="inline-block size-2 rounded-full bg-success"
               title={t('sidebar.connected')}
             />

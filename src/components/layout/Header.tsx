@@ -89,7 +89,7 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
             <Button
               variant="ghost"
               size="sm"
-              className="flex items-center gap-1.5 h-8 px-2 text-xs text-muted-foreground hover:text-foreground"
+              className="flex items-center gap-1.5 min-h-[44px] lg:min-h-0 lg:h-8 px-2 text-xs text-muted-foreground hover:text-foreground"
               aria-label={t('header.changeLanguage')}
             >
               <Globe className="size-3.5" />
@@ -114,7 +114,8 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className="flex items-center gap-2.5 rounded-full p-0.5 outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-primary select-none cursor-pointer"
+              type="button"
+              className="flex min-h-[44px] min-w-[44px] lg:min-h-0 lg:min-w-0 items-center justify-center gap-2.5 rounded-full p-0.5 outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-primary select-none cursor-pointer"
               aria-label={t('header.userMenu')}
             >
               <Avatar className="size-8 border border-border">

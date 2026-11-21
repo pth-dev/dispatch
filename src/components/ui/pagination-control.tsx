@@ -91,7 +91,9 @@ export function PaginationControl({
               ))}
             </SelectContent>
           </Select>
-          <span className="text-[11px] text-muted-foreground">/ trang</span>
+          <span className="text-[11px] text-muted-foreground">
+            {t('common.pagination.perPage')}
+          </span>
         </div>
       </div>
 
@@ -103,7 +105,7 @@ export function PaginationControl({
           className="size-8 hidden sm:inline-flex"
           onClick={() => onPageChange(1)}
           disabled={page <= 1}
-          aria-label="First page"
+          aria-label={t('common.pagination.firstPage')}
         >
           <ChevronsLeft className="size-4" />
         </Button>
@@ -113,7 +115,7 @@ export function PaginationControl({
           className="size-8"
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1}
-          aria-label="Previous page"
+          aria-label={t('common.pagination.previousPage')}
         >
           <ChevronLeft className="size-4" />
         </Button>
@@ -150,7 +152,7 @@ export function PaginationControl({
           className="size-8"
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages}
-          aria-label="Next page"
+          aria-label={t('common.pagination.nextPage')}
         >
           <ChevronRight className="size-4" />
         </Button>
@@ -160,7 +162,7 @@ export function PaginationControl({
           className="size-8 hidden sm:inline-flex"
           onClick={() => onPageChange(totalPages)}
           disabled={page >= totalPages}
-          aria-label="Last page"
+          aria-label={t('common.pagination.lastPage')}
         >
           <ChevronsRight className="size-4" />
         </Button>

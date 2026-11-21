@@ -118,7 +118,10 @@ export function LoginPage() {
 
   if (checkingExisting) {
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-background text-xs text-muted-foreground">
+      <div
+        role="status"
+        className="flex min-h-dvh items-center justify-center bg-background text-xs text-muted-foreground"
+      >
         {t('common.loading')}
       </div>
     )
@@ -136,7 +139,7 @@ export function LoginPage() {
               aria-label={t('header.changeLanguage')}
               value={i18n.language}
               onChange={handleLocaleSelect}
-              className="h-8 rounded-md border border-border bg-card px-2 text-xs text-foreground outline-none focus:border-primary"
+              className="h-11 lg:h-8 rounded-md border border-border bg-card px-2 text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {LANGUAGE_OPTIONS.map((opt) => (
                 <option key={opt.code} value={opt.code}>
@@ -173,10 +176,13 @@ export function LoginPage() {
               autoComplete="username"
               placeholder={t('login.accountPlaceholder')}
               aria-invalid={Boolean(errors.username)}
+              aria-describedby={errors.username?.message ? 'login-username-error' : undefined}
               {...register('username')}
             />
             {errors.username?.message && (
-              <p className="text-xs text-destructive">{t(errors.username.message)}</p>
+              <p id="login-username-error" className="text-xs text-destructive">
+                {t(errors.username.message)}
+              </p>
             )}
           </div>
 
@@ -190,10 +196,13 @@ export function LoginPage() {
               autoComplete="current-password"
               placeholder={t('login.passwordPlaceholder')}
               aria-invalid={Boolean(errors.password)}
+              aria-describedby={errors.password?.message ? 'login-password-error' : undefined}
               {...register('password')}
             />
             {errors.password?.message && (
-              <p className="text-xs text-destructive">{t(errors.password.message)}</p>
+              <p id="login-password-error" className="text-xs text-destructive">
+                {t(errors.password.message)}
+              </p>
             )}
           </div>
 

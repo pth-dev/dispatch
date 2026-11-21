@@ -80,18 +80,22 @@ export function DataTable<T>({
               {emptyMessage || t('common.empty')}
             </div>
           ) : (
-            data.map((item, index) => (
-              <div
-                key={keyExtractor(item)}
-                onClick={() => onRowClick?.(item)}
-                className={cn(
-                  'p-3.5 hover:bg-muted/50 transition-colors',
-                  onRowClick && 'cursor-pointer active:bg-muted',
-                )}
-              >
-                {renderMobileCard(item, index)}
-              </div>
-            ))
+            data.map((item, index) =>
+              onRowClick ? (
+                <button
+                  key={keyExtractor(item)}
+                  type="button"
+                  onClick={() => onRowClick(item)}
+                  className="w-full text-left p-3.5 hover:bg-muted/50 active:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring transition-colors cursor-pointer"
+                >
+                  {renderMobileCard(item, index)}
+                </button>
+              ) : (
+                <div key={keyExtractor(item)} className="p-3.5">
+                  {renderMobileCard(item, index)}
+                </div>
+              ),
+            )
           )}
         </div>
       )}

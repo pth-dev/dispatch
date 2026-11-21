@@ -186,10 +186,10 @@ export function TaskBasicInfoSection({
                   <button
                     type="button"
                     onClick={() => onRemoveRetainedFile(att.path)}
-                    className="text-muted-foreground hover:text-destructive cursor-pointer"
+                    className="inline-flex size-7 items-center justify-center rounded text-muted-foreground hover:text-destructive cursor-pointer"
                     aria-label={t('common.delete')}
                   >
-                    <X className="size-3" aria-hidden="true" />
+                    <X className="size-3.5" aria-hidden="true" />
                   </button>
                 </span>
               ))}

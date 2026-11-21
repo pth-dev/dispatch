@@ -12,7 +12,7 @@ import {
 } from '@/schemas/auth'
 import { resolveApiErrorMessage, updateLocalPassword } from '@/services'
 
-interface PasswordChangeCardProps {
+type PasswordChangeCardProps = {
   user: SessionUser
   onPasswordChanged: () => void
 }
@@ -93,10 +93,13 @@ export function PasswordChangeCard({ user, onPasswordChanged }: PasswordChangeCa
             type="password"
             autoComplete="current-password"
             aria-invalid={Boolean(errors.oldPassword)}
+            aria-describedby={errors.oldPassword?.message ? 'pw-old-error' : undefined}
             {...register('oldPassword')}
           />
           {errors.oldPassword?.message && (
-            <p className="text-xs text-destructive">{t(errors.oldPassword.message)}</p>
+            <p id="pw-old-error" className="text-xs text-destructive">
+              {t(errors.oldPassword.message)}
+            </p>
           )}
         </div>
 
@@ -109,10 +112,13 @@ export function PasswordChangeCard({ user, onPasswordChanged }: PasswordChangeCa
             type="password"
             autoComplete="new-password"
             aria-invalid={Boolean(errors.newPassword)}
+            aria-describedby={errors.newPassword?.message ? 'pw-new-error' : undefined}
             {...register('newPassword')}
           />
           {errors.newPassword?.message && (
-            <p className="text-xs text-destructive">{t(errors.newPassword.message)}</p>
+            <p id="pw-new-error" className="text-xs text-destructive">
+              {t(errors.newPassword.message)}
+            </p>
           )}
         </div>
 
@@ -125,10 +131,13 @@ export function PasswordChangeCard({ user, onPasswordChanged }: PasswordChangeCa
             type="password"
             autoComplete="new-password"
             aria-invalid={Boolean(errors.confirmPassword)}
+            aria-describedby={errors.confirmPassword?.message ? 'pw-confirm-error' : undefined}
             {...register('confirmPassword')}
           />
           {errors.confirmPassword?.message && (
-            <p className="text-xs text-destructive">{t(errors.confirmPassword.message)}</p>
+            <p id="pw-confirm-error" className="text-xs text-destructive">
+              {t(errors.confirmPassword.message)}
+            </p>
           )}
         </div>
 

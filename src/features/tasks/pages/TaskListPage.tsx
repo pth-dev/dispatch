@@ -17,6 +17,7 @@ import { APP_ROUTES } from '@/constants/app-routes'
 import { useAppStore } from '@/app/store'
 import { canWriteMenu } from '@/utils/permissions'
 import { deriveTaskStatus, isTaskPaused } from '@/utils/task-domain'
+import { cn } from '@/utils'
 import type { RawTask } from '@/schemas/task'
 
 export function TaskListPage() {
@@ -97,7 +98,12 @@ export function TaskListPage() {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col space-y-3 short:space-y-2 lg:min-h-[546px]">
+    <div
+      className={cn(
+        'flex min-h-0 flex-1 flex-col space-y-3 short:space-y-2 lg:min-h-[546px]',
+        isMobile && canCreate && 'pb-20 lg:pb-0',
+      )}
+    >
       {/* Page Header Row */}
       <div className="flex items-center justify-between shrink-0">
         <h1 className="text-xl lg:text-2xl font-semibold text-foreground tracking-tight">

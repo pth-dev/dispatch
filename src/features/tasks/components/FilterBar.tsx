@@ -113,13 +113,17 @@ export function FilterBar({
   return (
     <div className={cn('w-full flex flex-col gap-2.5 select-none', className)}>
       {/* ── Desktop Filter Bar (>= lg) ── */}
-      <div className="hidden lg:grid grid-cols-[140px_140px_1fr_180px_160px_40px] items-end gap-3">
+      <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-[140px_140px_1fr_180px_160px_40px] items-end gap-3">
         {/* Từ ngày */}
         <div className="space-y-1">
-          <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+          <label
+            htmlFor="filter-from-date"
+            className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider"
+          >
             {t('tasks.filter.fromDate')}
           </label>
           <Input
+            id="filter-from-date"
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
@@ -129,10 +133,14 @@ export function FilterBar({
 
         {/* Đến ngày */}
         <div className="space-y-1">
-          <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+          <label
+            htmlFor="filter-to-date"
+            className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider"
+          >
             {t('tasks.filter.toDate')}
           </label>
           <Input
+            id="filter-to-date"
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
@@ -142,11 +150,15 @@ export function FilterBar({
 
         {/* Ô tìm kiếm */}
         <div className="space-y-1">
-          <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+          <label
+            htmlFor="filter-search"
+            className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider"
+          >
             {t('common.search')}
           </label>
           <div className="relative">
             <Input
+              id="filter-search"
               type="text"
               placeholder={t('tasks.filter.searchPlaceholder')}
               value={search}
@@ -159,11 +171,14 @@ export function FilterBar({
 
         {/* Chọn phòng ban */}
         <div className="space-y-1">
-          <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+          <label
+            htmlFor="filter-department"
+            className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider"
+          >
             {t('common.department')}
           </label>
           <Select value={department} onValueChange={setDepartment}>
-            <SelectTrigger className="h-11 lg:h-10 text-xs">
+            <SelectTrigger id="filter-department" className="h-11 lg:h-10 text-xs">
               <SelectValue placeholder={t('department.all')} />
             </SelectTrigger>
             <SelectContent>
@@ -181,11 +196,14 @@ export function FilterBar({
 
         {/* Chọn trạng thái */}
         <div className="space-y-1">
-          <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+          <label
+            htmlFor="filter-status"
+            className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider"
+          >
             {t('common.status')}
           </label>
           <Select value={status} onValueChange={setStatus}>
-            <SelectTrigger className="h-11 lg:h-10 text-xs">
+            <SelectTrigger id="filter-status" className="h-11 lg:h-10 text-xs">
               <SelectValue placeholder={t('status.all')} />
             </SelectTrigger>
             <SelectContent>
@@ -215,6 +233,7 @@ export function FilterBar({
         <div className="relative flex-1">
           <Input
             type="text"
+            aria-label={t('common.search')}
             placeholder={t('tasks.filter.searchPlaceholder')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -250,7 +269,7 @@ export function FilterBar({
               )}
             </Button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="rounded-t-2xl max-h-[85vh] p-5 space-y-4">
+          <SheetContent side="bottom" className="rounded-t-2xl max-h-[85vh] overflow-y-auto p-5 space-y-4">
             <SheetHeader className="text-left border-b border-border pb-3">
               <SheetTitle className="text-base font-semibold text-foreground">
                 {t('common.filter')}
@@ -258,12 +277,13 @@ export function FilterBar({
             </SheetHeader>
 
             <div className="space-y-3.5 py-1 text-xs">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="font-semibold text-muted-foreground">
+                  <label htmlFor="filter-mobile-from-date" className="font-semibold text-muted-foreground">
                     {t('tasks.filter.fromDate')}
                   </label>
                   <Input
+                    id="filter-mobile-from-date"
                     type="date"
                     value={fromDate}
                     onChange={(e) => setFromDate(e.target.value)}
@@ -271,10 +291,11 @@ export function FilterBar({
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="font-semibold text-muted-foreground">
+                  <label htmlFor="filter-mobile-to-date" className="font-semibold text-muted-foreground">
                     {t('tasks.filter.toDate')}
                   </label>
                   <Input
+                    id="filter-mobile-to-date"
                     type="date"
                     value={toDate}
                     onChange={(e) => setToDate(e.target.value)}
@@ -284,11 +305,11 @@ export function FilterBar({
               </div>
 
               <div className="space-y-1">
-                <label className="font-semibold text-muted-foreground">
+                <label htmlFor="filter-mobile-department" className="font-semibold text-muted-foreground">
                   {t('common.department')}
                 </label>
                 <Select value={department} onValueChange={setDepartment}>
-                  <SelectTrigger className="h-11 lg:h-10 text-xs">
+                  <SelectTrigger id="filter-mobile-department" className="h-11 lg:h-10 text-xs">
                     <SelectValue placeholder={t('department.all')} />
                   </SelectTrigger>
                   <SelectContent>
@@ -305,11 +326,11 @@ export function FilterBar({
               </div>
 
               <div className="space-y-1">
-                <label className="font-semibold text-muted-foreground">
+                <label htmlFor="filter-mobile-status" className="font-semibold text-muted-foreground">
                   {t('common.status')}
                 </label>
                 <Select value={status} onValueChange={setStatus}>
-                  <SelectTrigger className="h-11 lg:h-10 text-xs">
+                  <SelectTrigger id="filter-mobile-status" className="h-11 lg:h-10 text-xs">
                     <SelectValue placeholder={t('status.all')} />
                   </SelectTrigger>
                   <SelectContent>
