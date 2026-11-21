@@ -9,7 +9,7 @@ import { http, type ApiError } from './http'
 import {
   broadcastLogout,
   clearAllAuthStorage,
-  clearStoredSession,
+  clearRememberToken,
   getRememberToken,
   setLoggingOut,
   setRememberToken,
@@ -47,6 +47,8 @@ export async function loginWithPassword(values: LoginFormValues): Promise<Sessio
       username: parsed.user.username,
       token: parsed.remember_token,
     })
+  } else {
+    clearRememberToken()
   }
 
   return parsed.user
@@ -88,14 +90,7 @@ export async function logoutSession(all = false): Promise<void> {
   } catch {
     // Always clear local session even if server is unreachable
   } finally {
-    if (all) {
-      clearAllAuthStorage()
-    } else {
-      clearStoredSession()
-      if (remember) {
-        clearAllAuthStorage()
-      }
-    }
+    clearAllAuthStorage()
     broadcastLogout()
     setLoggingOut(false)
   }

@@ -410,6 +410,7 @@
     "rememberMe": "Ghi nhớ đăng nhập trên thiết bị này",
     "submit": "Đăng nhập",
     "submitting": "Đang đăng nhập...",
+    "invalidCredentials": "Tài khoản hoặc mật khẩu không đúng",
     "validation": {
       "usernameRequired": "Vui lòng nhập tài khoản",
       "passwordRequired": "Vui lòng nhập mật khẩu"

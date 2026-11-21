@@ -410,6 +410,7 @@
     "rememberMe": "在此裝置上記住登入狀態",
     "submit": "登入",
     "submitting": "正在登入...",
+    "invalidCredentials": "帳號或密碼不正確",
     "validation": {
       "usernameRequired": "請輸入帳號",
       "passwordRequired": "請輸入密碼"

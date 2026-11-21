@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { APP_ROUTES } from '@/constants/app-routes'
+import { queryClient } from '@/app/providers/query-client'
 import { useAppStore } from '@/app/store'
 import {
   clearStoredSession,
@@ -21,12 +22,13 @@ const HEARTBEAT_INTERVAL_MS = 60_000
  * runs a 60s heartbeat while authenticated, and reacts to cross-tab logout
  * or 401 expiry events.
  */
-export function useSessionLifecycle(): void {
+export function useSessionLifecycle(): { retryVerify: () => void } {
   const navigate = useNavigate()
   const location = useLocation()
   const authStatus = useAppStore((s) => s.authStatus)
   const navigateRef = React.useRef(navigate)
   const currentFromRef = React.useRef(`${location.pathname}${location.search}`)
+  const [verifyAttempt, setVerifyAttempt] = React.useState(0)
 
   React.useEffect(() => {
     navigateRef.current = navigate
@@ -39,6 +41,7 @@ export function useSessionLifecycle(): void {
 
     const redirectToLogin = () => {
       if (!active) return
+      queryClient.clear()
       useAppStore.getState().clearSession()
       navigateRef.current(APP_ROUTES.LOGIN, {
         replace: true,
@@ -53,11 +56,25 @@ export function useSessionLifecycle(): void {
         const outcome = await resumeSession()
         if (outcome.status === 'resumed') {
           session = getStoredSession()
+        } else if (outcome.status === 'offline') {
+          if (!active) return
+          useAppStore.getState().setAuthStatus('offline')
+          return
         }
       }
 
       if (!session) {
         redirectToLogin()
+        return
+      }
+
+      // Skip immediate redundant verify right after an interactive login
+      const currentState = useAppStore.getState()
+      if (
+        verifyAttempt === 0 &&
+        currentState.authStatus === 'authenticated' &&
+        currentState.user?.username === session.username
+      ) {
         return
       }
 
@@ -72,10 +89,10 @@ export function useSessionLifecycle(): void {
           redirectToLogin()
           return
         }
-        // Network / 5xx outage: keep existing user if already loaded, else move to login
+        // Network / 5xx outage: preserve local session and show offline retry state
         const existingUser = useAppStore.getState().user
         if (!existingUser) {
-          redirectToLogin()
+          useAppStore.getState().setAuthStatus('offline')
         }
       }
     }
@@ -94,7 +111,7 @@ export function useSessionLifecycle(): void {
       unsubExpired()
       unsubBroadcast()
     }
-  }, [])
+  }, [verifyAttempt])
 
   React.useEffect(() => {
     if (authStatus !== 'authenticated') return
@@ -109,4 +126,11 @@ export function useSessionLifecycle(): void {
       window.clearInterval(timer)
     }
   }, [authStatus])
+
+  const retryVerify = () => {
+    useAppStore.getState().setAuthStatus('checking')
+    setVerifyAttempt((n) => n + 1)
+  }
+
+  return { retryVerify }
 }

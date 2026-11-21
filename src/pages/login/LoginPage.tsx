@@ -10,22 +10,27 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Logo } from '@/components/layout/Logo'
 import { LoginFormSchema, type LoginFormValues } from '@/schemas/auth'
 import { APP_ROUTES } from '@/constants/app-routes'
+import { LANGUAGE_OPTIONS } from '@/i18n'
 import { useAppStore, type SupportedLocale } from '@/app/store'
 import {
+  extractLocalizedMessage,
   getRememberToken,
   getStoredSession,
+  isApiError,
   loginWithPassword,
   resolveApiErrorMessage,
   resumeSession,
   verifySession,
 } from '@/services'
 
-const LANGUAGE_OPTIONS: ReadonlyArray<{ code: SupportedLocale; labelKey: string }> = [
-  { code: 'vi', labelKey: 'language.vi' },
-  { code: 'en', labelKey: 'language.en' },
-  { code: 'zh-CN', labelKey: 'language.zhCN' },
-  { code: 'zh-TW', labelKey: 'language.zhTW' },
-]
+function resolveSafeRedirect(from: unknown): string {
+  if (typeof from !== 'string') return APP_ROUTES.TASKS
+  if (!from.startsWith('/') || from.startsWith('//')) return APP_ROUTES.TASKS
+  if (from === APP_ROUTES.LOGIN || from.startsWith(`${APP_ROUTES.LOGIN}?`)) {
+    return APP_ROUTES.TASKS
+  }
+  return from
+}
 
 export function LoginPage() {
   const { t, i18n } = useTranslation()
@@ -37,11 +42,9 @@ export function LoginPage() {
   const [submitError, setSubmitError] = React.useState<string | null>(null)
   const [checkingExisting, setCheckingExisting] = React.useState(true)
 
-  const redirectTarget =
-    typeof (location.state as { from?: unknown } | null)?.from === 'string' &&
-    ((location.state as { from: string }).from.startsWith('/'))
-      ? (location.state as { from: string }).from
-      : APP_ROUTES.TASKS
+  const redirectTarget = resolveSafeRedirect(
+    (location.state as { from?: unknown } | null)?.from,
+  )
 
   const {
     register,
@@ -49,7 +52,7 @@ export function LoginPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
-    resolver: zodResolver(LoginFormSchema) as never,
+    resolver: zodResolver(LoginFormSchema),
     defaultValues: {
       username: '',
       password: '',
@@ -98,7 +101,12 @@ export function LoginPage() {
       setSession(user)
       navigate(redirectTarget, { replace: true })
     } catch (err) {
-      setSubmitError(resolveApiErrorMessage(err, t, i18n.language))
+      if (isApiError(err) && err.status === 401) {
+        const localized = extractLocalizedMessage(err.message, i18n.language)
+        setSubmitError(localized || t('login.invalidCredentials'))
+      } else {
+        setSubmitError(resolveApiErrorMessage(err, t, i18n.language))
+      }
     }
   }
 

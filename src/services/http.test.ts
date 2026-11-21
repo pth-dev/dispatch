@@ -246,6 +246,33 @@ describe('http', () => {
     expect(getStoredSession()).toBeNull()
     expect(expiredListener).toHaveBeenCalledTimes(1)
   })
+
+  it('clears session and notifies listeners if retried request after resume still returns 401', async () => {
+    setStoredSession({ username: 'hieu', token: 'expired-tok' })
+    setRememberToken({ username: 'hieu', token: 'a'.repeat(64) })
+    const expiredListener = vi.fn()
+    const unsub = onSessionExpired(expiredListener)
+
+    let call = 0
+    stubFetch(async (input) => {
+      call++
+      if (String(input).endsWith('/session/resume')) {
+        return jsonResponse({
+          success: true,
+          token: 'still-bad-tok',
+          user: { username: 'hieu', fullname: 'Hiếu', role: 'user' },
+        })
+      }
+      return jsonResponse({ message: 'Unauthorized' }, 401)
+    })
+
+    await expect(http('/tasks')).rejects.toMatchObject({ status: 401 })
+    unsub()
+
+    expect(call).toBe(3)
+    expect(getStoredSession()).toBeNull()
+    expect(expiredListener).toHaveBeenCalledTimes(1)
+  })
 })
 
 describe('toApiError / getErrorMessage / hybrid error normalization', () => {

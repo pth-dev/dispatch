@@ -11,10 +11,11 @@ import {
 import { Button } from '@/components/ui/button'
 import { Logo } from './Logo'
 import { APP_ROUTES } from '@/constants/app-routes'
+import { env } from '@/services/env'
 import {
   ERROR_TONE_CLASS,
+  createReferenceCode,
   getErrorStatusMeta,
-  getReferenceCode,
   toErrorStatus,
   type ErrorStatusCode,
 } from './error-status'
@@ -27,7 +28,7 @@ const SUGGESTED_LINKS = [
   { labelKey: 'nav.profile', href: APP_ROUTES.PROFILE },
 ]
 
-interface ErrorStateProps {
+type ErrorStateProps = {
   status?: ErrorStatusCode
   technicalDetails?: string
   referenceCode?: string
@@ -48,27 +49,44 @@ export function ErrorState({
   const config = getErrorStatusMeta(status)
   const Icon = config.icon
   const [copied, setCopied] = React.useState(false)
+  const [generatedRefCode] = React.useState(() => createReferenceCode())
+  const copyTimerRef = React.useRef<number | null>(null)
 
-  const activeRefCode = referenceCode || getReferenceCode()
+  React.useEffect(() => {
+    return () => {
+      if (copyTimerRef.current !== null) {
+        window.clearTimeout(copyTimerRef.current)
+      }
+    }
+  }, [])
+
+  const activeRefCode = referenceCode || generatedRefCode
   const caption = t(`errors.status.${status}.caption`)
   const title = t(`errors.status.${status}.title`)
   const description = t(`errors.status.${status}.description`)
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(activeRefCode)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(activeRefCode)
+      setCopied(true)
+      if (copyTimerRef.current !== null) {
+        window.clearTimeout(copyTimerRef.current)
+      }
+      copyTimerRef.current = window.setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // Clipboard API unavailable on non-secure origins; ignore silently
+    }
   }
 
   return (
-    <div className="flex min-h-dvh flex-col bg-background select-none">
+    <div className="flex min-h-dvh flex-col bg-background">
       {/* Top Header 64px */}
       <header className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-card px-6 lg:px-12">
         <Link to="/" className="flex items-center">
           <Logo size={36} />
         </Link>
         <a
-          href="mailto:support@dieuphoi.vn"
+          href={`mailto:${env.supportEmail}`}
           className="text-xs font-semibold text-primary hover:underline"
         >
           {t('errors.support')}
@@ -156,8 +174,9 @@ export function ErrorState({
                   {t('errors.referenceCode', { code: activeRefCode })}
                 </span>
                 <button
-                  onClick={handleCopy}
-                  className="flex items-center gap-1 text-primary hover:underline cursor-pointer"
+                  type="button"
+                  onClick={() => void handleCopy()}
+                  className="flex items-center gap-1 rounded px-1.5 py-0.5 text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
                   title={t('errors.copyReference')}
                 >
                   {copied ? (
@@ -190,7 +209,7 @@ export function ErrorState({
               <p className="text-xs font-semibold text-muted-foreground">
                 {t('errors.suggestions')}
               </p>
-              <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 {SUGGESTED_LINKS.map((link) => (
                   <Link
                     key={link.href}

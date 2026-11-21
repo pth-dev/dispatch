@@ -14,6 +14,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
+import { queryClient } from '@/app/providers/query-client'
 import { useAppStore } from '@/app/store'
 import { APP_ROUTES } from '@/constants/app-routes'
 import { logoutSession } from '@/services'
@@ -25,19 +26,33 @@ export function ProfilePage() {
   const user = useAppStore((s) => s.user)
   const clearSession = useAppStore((s) => s.clearSession)
   const [loggingOutAll, setLoggingOutAll] = React.useState(false)
+  const logoutTimerRef = React.useRef<number | null>(null)
+
+  React.useEffect(() => {
+    return () => {
+      if (logoutTimerRef.current !== null) {
+        window.clearTimeout(logoutTimerRef.current)
+      }
+    }
+  }, [])
 
   if (!user) return null
 
   const handleLogoutAll = async () => {
     setLoggingOutAll(true)
     await logoutSession(true)
+    queryClient.clear()
     clearSession()
     navigate(APP_ROUTES.LOGIN, { replace: true })
   }
 
   const handlePasswordChanged = () => {
-    window.setTimeout(() => {
+    if (logoutTimerRef.current !== null) {
+      window.clearTimeout(logoutTimerRef.current)
+    }
+    logoutTimerRef.current = window.setTimeout(() => {
       void logoutSession(true).then(() => {
+        queryClient.clear()
         clearSession()
         navigate(APP_ROUTES.LOGIN, { replace: true })
       })

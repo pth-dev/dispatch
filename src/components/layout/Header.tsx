@@ -19,20 +19,15 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Logo } from './Logo'
+import { queryClient } from '@/app/providers/query-client'
 import { useAppStore, type SupportedLocale } from '@/app/store'
 import { APP_ROUTES } from '@/constants/app-routes'
+import { LANGUAGE_OPTIONS } from '@/i18n'
 import { logoutSession } from '@/services'
 
-interface HeaderProps {
+type HeaderProps = {
   onOpenMobileMenu?: () => void
 }
-
-const LANGUAGE_OPTIONS: ReadonlyArray<{ code: SupportedLocale; labelKey: string }> = [
-  { code: 'vi', labelKey: 'language.vi' },
-  { code: 'en', labelKey: 'language.en' },
-  { code: 'zh-CN', labelKey: 'language.zhCN' },
-  { code: 'zh-TW', labelKey: 'language.zhTW' },
-]
 
 export function Header({ onOpenMobileMenu }: HeaderProps) {
   const { t, i18n } = useTranslation()
@@ -52,6 +47,7 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
 
   const handleLogout = async () => {
     await logoutSession(false)
+    queryClient.clear()
     clearSession()
     navigate(APP_ROUTES.LOGIN, { replace: true })
   }

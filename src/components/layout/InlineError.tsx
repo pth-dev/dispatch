@@ -1,15 +1,16 @@
+import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { RotateCcw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/utils'
 import {
   ERROR_TONE_CLASS,
+  createReferenceCode,
   getErrorStatusMeta,
-  getReferenceCode,
   type ErrorStatusCode,
 } from './error-status'
 
-interface InlineErrorProps {
+type InlineErrorProps = {
   status: ErrorStatusCode
   onRetry?: () => void
   className?: string
@@ -21,6 +22,7 @@ interface InlineErrorProps {
  */
 export function InlineError({ status, onRetry, className }: InlineErrorProps) {
   const { t } = useTranslation()
+  const [referenceCode] = React.useState(() => createReferenceCode())
   const meta = getErrorStatusMeta(status)
   const Icon = meta.icon
 
@@ -46,7 +48,7 @@ export function InlineError({ status, onRetry, className }: InlineErrorProps) {
           </p>
           {meta.showReferenceCode && (
             <p className="font-mono text-[11px] text-muted-foreground">
-              {t('errors.referenceCode', { code: getReferenceCode() })}
+              {t('errors.referenceCode', { code: referenceCode })}
             </p>
           )}
         </div>

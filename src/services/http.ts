@@ -329,17 +329,17 @@ export async function http<T>(path: string, options?: HttpRequestOptions): Promi
     throw fallbackError
   }
 
-  if (
-    response.status === 401 &&
-    !options?.skipAuth &&
-    !options?.__resumed &&
-    !isLoggingOut()
-  ) {
-    const outcome = await resumeSession()
-    if (outcome.status === 'resumed') {
-      return http<T>(path, { ...options, __resumed: true })
-    }
-    if (outcome.status === 'invalid' || outcome.status === 'no_token') {
+  if (response.status === 401 && !options?.skipAuth && !isLoggingOut()) {
+    if (!options?.__resumed) {
+      const outcome = await resumeSession()
+      if (outcome.status === 'resumed') {
+        return http<T>(path, { ...options, __resumed: true })
+      }
+      if (outcome.status === 'invalid' || outcome.status === 'no_token') {
+        clearStoredSession()
+        notifySessionExpired()
+      }
+    } else {
       clearStoredSession()
       notifySessionExpired()
     }

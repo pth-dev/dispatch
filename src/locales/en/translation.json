@@ -410,6 +410,7 @@
     "rememberMe": "Remember me on this device",
     "submit": "Sign in",
     "submitting": "Signing in...",
+    "invalidCredentials": "Invalid username or password",
     "validation": {
       "usernameRequired": "Please enter your username",
       "passwordRequired": "Please enter your password"

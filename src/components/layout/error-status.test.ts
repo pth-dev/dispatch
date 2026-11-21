@@ -2,9 +2,15 @@ import { describe, expect, it } from 'vitest'
 import en from '@/locales/en/translation.json'
 import vi from '@/locales/vi/translation.json'
 import zhCN from '@/locales/zh-CN/translation.json'
-import { ERROR_STATUS_META, isFullPageError, toErrorStatus } from './error-status'
+import zhTW from '@/locales/zh-TW/translation.json'
+import {
+  ERROR_STATUS_META,
+  createReferenceCode,
+  isFullPageError,
+  toErrorStatus,
+} from './error-status'
 
-const LOCALES = { vi, en, 'zh-CN': zhCN } as const
+const LOCALES = { vi, en, 'zh-CN': zhCN, 'zh-TW': zhTW } as const
 const STATUSES = Object.keys(ERROR_STATUS_META)
 
 function readKey(source: unknown, key: string): unknown {
@@ -58,5 +64,12 @@ describe('toErrorStatus', () => {
     expect(toErrorStatus({ status: 418 })).toBe('unknown')
     expect(toErrorStatus(new Error('boom'))).toBe('unknown')
     expect(toErrorStatus(null)).toBe('unknown')
+  })
+})
+
+describe('createReferenceCode', () => {
+  it('formats dynamic code with ERR prefix and current timestamp', () => {
+    const code = createReferenceCode(new Date(2026, 10, 21, 8, 5))
+    expect(code).toMatch(/^ERR-[0-9A-F]{6} • 21\/11\/2026 08:05$/)
   })
 })

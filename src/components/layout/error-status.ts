@@ -182,6 +182,9 @@ export function throwFullPageError(status: ErrorStatusCode): never {
   })
 }
 
-export function getReferenceCode(): string {
-  return 'ERR-7F3A21 • 18/11/2026 09:30'
+export function createReferenceCode(now: Date = new Date()): string {
+  const rand = Math.random().toString(16).slice(2, 8).toUpperCase().padEnd(6, '0')
+  const pad = (n: number) => String(n).padStart(2, '0')
+  const stamp = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}`
+  return `ERR-${rand} • ${stamp}`
 }

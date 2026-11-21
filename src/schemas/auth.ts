@@ -92,7 +92,7 @@ export type SessionUser = z.infer<typeof SessionUserSchema>
 export const LoginFormSchema = z.object({
   username: z.string().trim().min(1, 'login.validation.usernameRequired'),
   password: z.string().min(1, 'login.validation.passwordRequired'),
-  remember: z.boolean().default(false),
+  remember: z.boolean(),
 })
 
 export type LoginFormValues = z.infer<typeof LoginFormSchema>

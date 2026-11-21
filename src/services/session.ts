@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { SessionResumeResponseSchema, type SessionUser } from '@/schemas/auth'
 import { env } from './env'
 
 /**
@@ -34,16 +35,8 @@ export type RememberToken = {
   savedAt?: number
 }
 
-const ResumeResponseSchema = z.object({
-  success: z.boolean().optional(),
-  token: z.string().min(1).optional(),
-  user: z.record(z.string(), z.unknown()).optional(),
-  remember_days: z.number().optional(),
-  message: z.string().optional(),
-})
-
 export type SessionResumeOutcome =
-  | { status: 'resumed'; token: string; username: string; user?: Record<string, unknown> }
+  | { status: 'resumed'; token: string; username: string; user?: SessionUser }
   | { status: 'no_token' }
   | { status: 'invalid' }
   | { status: 'offline' }
@@ -261,7 +254,7 @@ async function performResume(): Promise<SessionResumeOutcome> {
     }
 
     const rawBody = await response.json().catch(() => null)
-    const parsed = ResumeResponseSchema.safeParse(rawBody)
+    const parsed = SessionResumeResponseSchema.safeParse(rawBody)
     if (!parsed.success || parsed.data.success === false || !parsed.data.token) {
       clearRememberToken()
       return { status: 'invalid' }

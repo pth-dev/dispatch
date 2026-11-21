@@ -2,22 +2,20 @@ import { create } from 'zustand'
 import { getInitialLocale, saveLocale, type SupportedLocale } from '@/i18n'
 import type { BackendUserRole, SessionUser } from '@/schemas/auth'
 
-export type AuthStatus = 'checking' | 'authenticated' | 'unauthenticated'
+export type AuthStatus = 'checking' | 'authenticated' | 'unauthenticated' | 'offline'
 export type TableDensity = 'compact' | 'comfortable'
 
-export interface SessionState {
+export type SessionState = {
   user: SessionUser | null
   authStatus: AuthStatus
   locale: SupportedLocale
   density: TableDensity
-  sidebarCollapsed: boolean
 
   setSession: (user: SessionUser) => void
   clearSession: () => void
   setAuthStatus: (status: AuthStatus) => void
   setLocale: (locale: SupportedLocale) => void
   setDensity: (density: TableDensity) => void
-  setSidebarCollapsed: (collapsed: boolean) => void
 }
 
 export const useAppStore = create<SessionState>((set) => ({
@@ -25,7 +23,6 @@ export const useAppStore = create<SessionState>((set) => ({
   authStatus: 'checking',
   locale: getInitialLocale(),
   density: 'compact',
-  sidebarCollapsed: false,
 
   setSession: (user) => set({ user, authStatus: 'authenticated' }),
   clearSession: () => set({ user: null, authStatus: 'unauthenticated' }),
@@ -35,7 +32,6 @@ export const useAppStore = create<SessionState>((set) => ({
     set({ locale })
   },
   setDensity: (density) => set({ density }),
-  setSidebarCollapsed: (collapsed) => set({ sidebarCollapsed: collapsed }),
 }))
 
 export type { BackendUserRole, SessionUser, SupportedLocale }

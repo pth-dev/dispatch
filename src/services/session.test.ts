@@ -178,11 +178,11 @@ describe('resumeSession', () => {
     const outcome = await resumeSession()
     unsub()
 
-    expect(outcome).toEqual({
+    expect(outcome).toMatchObject({
       status: 'resumed',
       token: 'new-sess-tok',
       username: 'hieu',
-      user: { username: 'hieu', role: 'admin' },
+      user: { username: 'hieu', role: 'admin', auth_source: 'local', menu_perms: null },
     })
     expect(getStoredSession()).toEqual({ username: 'hieu', token: 'new-sess-tok' })
     expect(listener).toHaveBeenCalledWith(outcome)

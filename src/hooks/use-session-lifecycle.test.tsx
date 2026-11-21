@@ -2,9 +2,11 @@ import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Link, MemoryRouter, Route, Routes, useLocation } from 'react-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { queryClient } from '@/app/providers/query-client'
 import { useAppStore } from '@/app/store'
 import {
   clearAllAuthStorage,
+  getStoredSession,
   notifySessionExpired,
   setStoredSession,
 } from '@/services'
@@ -96,5 +98,37 @@ describe('useSessionLifecycle', () => {
 
     expect(await screen.findByTestId('login-from')).toHaveTextContent('/tasks/42')
     expect(useAppStore.getState().authStatus).toBe('unauthenticated')
+  })
+
+  it('preserves local session and sets offline status on 5xx/network verify failure', async () => {
+    setStoredSession({ username: 'hieu', token: 'tok-1' })
+    queryClient.setQueryData(['tasks', 'all'], [{ id: 99 }])
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => jsonResponse({ message: 'Server down' }, 503)),
+    )
+
+    render(
+      <MemoryRouter initialEntries={['/tasks']}>
+        <Routes>
+          <Route path="/login" element={<LoginProbe />} />
+          <Route path="*" element={<ShellHarness />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    await waitFor(() => {
+      expect(useAppStore.getState().authStatus).toBe('offline')
+    })
+    expect(getStoredSession()).toEqual({ username: 'hieu', token: 'tok-1' })
+
+    act(() => {
+      notifySessionExpired()
+    })
+    await waitFor(() => {
+      expect(useAppStore.getState().authStatus).toBe('unauthenticated')
+    })
+    expect(queryClient.getQueryData(['tasks', 'all'])).toBeUndefined()
   })
 })
