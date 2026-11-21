@@ -101,7 +101,7 @@ export function TaskCard({ vm }: TaskCardProps) {
           {isMobile && isTruncated && <TaskCardFullTitleAction vm={vm} />}
         </div>
 
-        {/* 4. Info block (5 fixed rows) */}
+        {/* 4. Info block (4 fixed rows) */}
         <TaskCardInfoBlock vm={vm} />
 
         {/* 5. Progress row (4px bar + percentage) */}

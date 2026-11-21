@@ -76,7 +76,7 @@ export function TaskCardSection({
   const { t } = useTranslation()
   const resolveDeptName = useDeptNameResolver()
   const resolveSiteName = useSiteNameResolver()
-  const { resolveUser, resolveAssignees } = useUserDisplayResolver()
+  const { resolveUser, resolveUserDept, resolveAssignees } = useUserDisplayResolver()
   const [expanded, setExpanded] = React.useState(true)
 
   const isIncomplete = variant === 'incomplete'
@@ -86,7 +86,13 @@ export function TaskCardSection({
 
   const visibleTasks = tasks.slice(0, limit)
   const groups = groupTasksByType(visibleTasks, tasks, t('tasks.card.uncategorized'))
-  const resolvers = { resolveDeptName, resolveSiteName, resolveUser, resolveAssignees }
+  const resolvers = {
+    resolveDeptName,
+    resolveSiteName,
+    resolveUser,
+    resolveUserDept,
+    resolveAssignees,
+  }
 
   return (
     <section className="space-y-3" aria-label={title}>

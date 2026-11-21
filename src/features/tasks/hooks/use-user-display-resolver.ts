@@ -33,6 +33,29 @@ export function formatUserWithCode(
   return raw
 }
 
+export function lookupUserDept(
+  codeOrName: string | null | undefined,
+  explicitDept?: string | null,
+  directory?: readonly DirectoryUser[],
+  currentUser?: { username: string; dept: string } | null,
+): string {
+  const direct = (explicitDept ?? '').trim()
+  if (direct) return direct
+  const raw = (codeOrName ?? '').trim().toLowerCase()
+  if (!raw) return ''
+
+  if (directory) {
+    const match = directory.find((u) => u.username.trim().toLowerCase() === raw)
+    if (match?.dept) return match.dept.trim()
+  }
+
+  if (currentUser && currentUser.username.trim().toLowerCase() === raw) {
+    return currentUser.dept.trim()
+  }
+
+  return ''
+}
+
 export function formatAssigneeListWithNames(
   rawAssignees: string | null | undefined,
   directory?: readonly DirectoryUser[],
@@ -52,11 +75,15 @@ export function useUserDisplayResolver() {
   const resolveUser = (codeOrName: string | null | undefined, explicitFullname?: string | null) =>
     formatUserWithCode(codeOrName, explicitFullname, directory, currentUser)
 
+  const resolveUserDept = (codeOrName: string | null | undefined, explicitDept?: string | null) =>
+    lookupUserDept(codeOrName, explicitDept, directory, currentUser)
+
   const resolveAssignees = (rawAssignees: string | null | undefined) =>
     formatAssigneeListWithNames(rawAssignees, directory, currentUser)
 
   return {
     resolveUser,
+    resolveUserDept,
     resolveAssignees,
   }
 }

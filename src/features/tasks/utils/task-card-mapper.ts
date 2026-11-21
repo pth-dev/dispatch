@@ -6,13 +6,13 @@ import {
   isTaskPaused,
   isUrgentLevel,
   parseLocalDateTime,
-  parseReqDepts,
   parseSites,
   toLocalDateString,
 } from '@/utils/task-domain'
 import {
   formatAssigneeListWithNames,
   formatUserWithCode,
+  lookupUserDept,
 } from '../hooks/use-user-display-resolver'
 import { formatTaskDueDate, parseLastReportSummary } from './task-display'
 
@@ -35,7 +35,6 @@ export type TaskCardViewModel = {
   lastReportAt: string
   assigneeDisplay: string
   dispatcherDisplay: string
-  requesterDisplay: string
   progressPercent: number
   needsReportToday: boolean
 }
@@ -44,6 +43,7 @@ export type TaskCardResolvers = {
   resolveDeptName: (rawDept: string | null | undefined) => string
   resolveSiteName: (code: string) => string
   resolveUser?: (codeOrName: string | null | undefined, explicitFullname?: string | null) => string
+  resolveUserDept?: (codeOrName: string | null | undefined, explicitDept?: string | null) => string
   resolveAssignees?: (rawAssignees: string | null | undefined) => string
 }
 
@@ -100,6 +100,8 @@ export function mapTaskToCardViewModel(
 
   const resolveUser =
     resolvers.resolveUser ?? ((code, name) => formatUserWithCode(code, name))
+  const resolveUserDept =
+    resolvers.resolveUserDept ?? ((code, dept) => lookupUserDept(code, dept))
   const resolveAssignees =
     resolvers.resolveAssignees ?? ((raw) => formatAssigneeListWithNames(raw))
 
@@ -110,14 +112,9 @@ export function mapTaskToCardViewModel(
 
   // 2. Người giao: Tên người giao (Mã) • BP Người giao
   const dispatcherName = resolveUser(task.reporter, task.reporter_name)
-  const dispatcherDept = task.reporter_dept ? resolvers.resolveDeptName(task.reporter_dept) : ''
+  const rawDispatcherDept = resolveUserDept(task.reporter, task.reporter_dept)
+  const dispatcherDept = rawDispatcherDept ? resolvers.resolveDeptName(rawDispatcherDept) : ''
   const dispatcherDisplay = joinPresent([dispatcherName, dispatcherDept])
-
-  // 3. Đơn vị yêu cầu: BP Yêu cầu • Người liên hệ yêu cầu (không gộp nhầm reporter vào đây)
-  const reqDepts = parseReqDepts(task.req_depts, task.req_dept).map(resolvers.resolveDeptName)
-  const reqDeptText = reqDepts.join(', ')
-  const reqContactName = task.req_contact ? resolveUser(task.req_contact) : ''
-  const requesterDisplay = joinPresent([reqDeptText, reqContactName])
 
   return {
     id: task.id,
@@ -134,7 +131,6 @@ export function mapTaskToCardViewModel(
     lastReportAt,
     assigneeDisplay,
     dispatcherDisplay,
-    requesterDisplay,
     progressPercent,
     needsReportToday,
   }

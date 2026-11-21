@@ -29,39 +29,36 @@ function renderCard(task: RawTask) {
 }
 
 describe('TaskCard', () => {
-  it('renders all 5 info rows with "—" when optional fields are missing', () => {
+  it('renders all 4 info rows with "—" when optional fields are missing', () => {
     renderCard(fixture(410))
     expect(screen.getByText('Hạn hoàn thành')).toBeInTheDocument()
     expect(screen.getByText('Báo cáo gần nhất')).toBeInTheDocument()
     expect(screen.getByText('Người nhận')).toBeInTheDocument()
     expect(screen.getByText('Người giao')).toBeInTheDocument()
-    expect(screen.getByText('Đơn vị Y/C')).toBeInTheDocument()
-    expect(screen.getAllByText(EMPTY_DISPLAY_VALUE).length).toBeGreaterThanOrEqual(6)
+    expect(screen.getAllByText(EMPTY_DISPLAY_VALUE).length).toBeGreaterThanOrEqual(5)
   })
 
-  it('clearly separates assignee, dispatcher, and requesting unit with Name (Code) format', () => {
+  it('clearly separates assignee and dispatcher with Name (Code) • Department format', () => {
     const task: RawTask = {
       ...fixture(405),
       assign_person: '15965',
       assigned_unit: 'BP. IT',
-      reporter: '15965',
+      reporter: '20160',
       reporter_name: 'Phan Trung Hiếu',
-      reporter_dept: 'BP. IT',
-      req_dept: 'BP. Sản xuất',
-      req_contact: null,
+      reporter_dept: 'BP. Sản xuất',
     }
     const vm = mapTaskToCardViewModel(
       task,
       {
         ...RESOLVERS,
-        resolveAssignees: () => 'Phan Trung Hiếu (15965)',
-        resolveUser: () => 'Phan Trung Hiếu (15965)',
+        resolveAssignees: () => 'Nguyễn Văn A (15965)',
+        resolveUser: () => 'Phan Trung Hiếu (20160)',
+        resolveUserDept: () => 'BP. Sản xuất',
       },
       NOW,
     )
-    expect(vm.assigneeDisplay).toBe('Phan Trung Hiếu (15965) • BP. IT')
-    expect(vm.dispatcherDisplay).toBe('Phan Trung Hiếu (15965) • BP. IT')
-    expect(vm.requesterDisplay).toBe('BP. Sản xuất')
+    expect(vm.assigneeDisplay).toBe('Nguyễn Văn A (15965) • BP. IT')
+    expect(vm.dispatcherDisplay).toBe('Phan Trung Hiếu (20160) • BP. Sản xuất')
   })
 
   it('switches the action label by needsReportToday', () => {

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Building2, CalendarDays, Clock, Send, UserCheck } from 'lucide-react'
+import { CalendarDays, Clock, Send, UserCheck } from 'lucide-react'
 import { cn } from '@/utils'
 import {
   EMPTY_DISPLAY_VALUE,
@@ -66,11 +66,6 @@ export function TaskCardInfoBlock({ vm }: TaskCardInfoBlockProps) {
         icon={<Send className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />}
         label={t('tasks.card.dispatcher')}
         value={vm.dispatcherDisplay}
-      />
-      <InfoRow
-        icon={<Building2 className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />}
-        label={t('tasks.card.requester')}
-        value={vm.requesterDisplay}
       />
     </div>
   )

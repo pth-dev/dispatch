@@ -31,6 +31,17 @@ export function TaskViewControls({
 
   return (
     <div className={cn('hidden lg:flex items-center gap-2 shrink-0', className)}>
+      {viewMode === 'table' && (
+        <TaskColumnPicker
+          columnOrder={columnOrder}
+          hiddenSet={hiddenSet}
+          isDefault={isDefaultColumns}
+          onToggle={onToggleColumn}
+          onMove={onMoveColumn}
+          onReset={onResetColumns}
+        />
+      )}
+
       <div
         role="group"
         aria-label={t('tasks.view.label')}
@@ -66,17 +77,6 @@ export function TaskViewControls({
           <span>{t('tasks.view.card')}</span>
         </button>
       </div>
-
-      {viewMode === 'table' && (
-        <TaskColumnPicker
-          columnOrder={columnOrder}
-          hiddenSet={hiddenSet}
-          isDefault={isDefaultColumns}
-          onToggle={onToggleColumn}
-          onMove={onMoveColumn}
-          onReset={onResetColumns}
-        />
-      )}
     </div>
   )
 }
