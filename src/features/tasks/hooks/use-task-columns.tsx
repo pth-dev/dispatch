@@ -2,7 +2,7 @@ import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { Eye, Lock } from 'lucide-react'
 import type { ColumnDef } from '@/components/ui/data-table'
-import { LessonMarqueeBanner, type LessonMarqueeHit } from '@/components/ui/lesson-marquee-banner'
+import { LessonRuleBadge, type LessonMarqueeHit } from '@/components/ui/lesson-marquee-banner'
 import { StatusText } from '@/components/ui/status-text'
 import { Button } from '@/components/ui/button'
 import type { RawTask } from '@/schemas/task'
@@ -148,32 +148,23 @@ export function useTaskColumns(
       cell: (task) => {
         const lessonHits = options?.lessonHitsByTaskId?.get(task.id) ?? []
         return (
-          <div className="min-w-0 space-y-1">
-            <div className="flex min-w-0 items-center gap-1.5">
-              {isUrgentLevel(task.level) && (
-                <span className="inline-flex shrink-0 items-center" title={t('status.urgent')}>
-                  <span className="size-1.5 rounded-full bg-status-urgent" aria-hidden="true" />
-                  <span className="sr-only">{t('status.urgent')}</span>
-                </span>
-              )}
-              {task.confidential > 0 && (
-                <span className="inline-flex shrink-0 items-center" title={t('tasks.confidential.label')}>
-                  <Lock className="size-3.5 text-warning" aria-hidden="true" />
-                  <span className="sr-only">{t('tasks.confidential.label')}</span>
-                </span>
-              )}
-              <span className="truncate font-medium text-foreground" title={task.title}>
-                {task.title}
+          <div className="flex min-w-0 items-center gap-1.5">
+            {isUrgentLevel(task.level) && (
+              <span className="inline-flex shrink-0 items-center" title={t('status.urgent')}>
+                <span className="size-1.5 rounded-full bg-status-urgent" aria-hidden="true" />
+                <span className="sr-only">{t('status.urgent')}</span>
               </span>
-            </div>
-            {lessonHits.length > 0 && (
-              <LessonMarqueeBanner
-                hits={lessonHits}
-                compact
-                interactive
-                maxExcerptLength={80}
-              />
             )}
+            {task.confidential > 0 && (
+              <span className="inline-flex shrink-0 items-center" title={t('tasks.confidential.label')}>
+                <Lock className="size-3.5 text-warning" aria-hidden="true" />
+                <span className="sr-only">{t('tasks.confidential.label')}</span>
+              </span>
+            )}
+            <span className="min-w-0 truncate font-medium text-foreground" title={task.title}>
+              {task.title}
+            </span>
+            {lessonHits.length > 0 && <LessonRuleBadge hits={lessonHits} />}
           </div>
         )
       },

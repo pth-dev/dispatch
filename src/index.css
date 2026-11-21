@@ -155,7 +155,7 @@ body {
   overflow-wrap: anywhere;
 }
 
-/* ── Lesson policy reminder marquee (single-line horizontal scroll) ── */
+/* ── Lesson policy reminder marquee (strict single-line horizontal scroll) ── */
 @keyframes lesson-marquee-scroll {
   0% {
     transform: translateX(0);
@@ -167,27 +167,19 @@ body {
 
 .lesson-marquee-track {
   display: inline-flex;
+  flex-wrap: nowrap;
   align-items: center;
   white-space: nowrap;
   padding-left: 100%;
-  animation: lesson-marquee-scroll 22s linear infinite;
+  will-change: transform;
+  animation: lesson-marquee-scroll 20s linear infinite;
 }
 
 .lesson-marquee-track--compact {
-  animation-duration: 18s;
+  animation-duration: 16s;
 }
 
-.lesson-marquee-root:hover .lesson-marquee-track,
-.lesson-marquee-root:focus-within .lesson-marquee-track {
+.lesson-marquee-root--pausable:hover .lesson-marquee-track,
+.lesson-marquee-root--pausable:focus-within .lesson-marquee-track {
   animation-play-state: paused;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .lesson-marquee-track {
-    animation: none;
-    padding-left: 0;
-    white-space: normal;
-    flex-wrap: wrap;
-    row-gap: 0.25rem;
-  }
 }
