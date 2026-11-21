@@ -160,6 +160,19 @@
       "removeChip": "移除筛选 {{label}}",
       "dateRangeInvalid": "开始日期不能晚于结束日期"
     },
+    "view": {
+      "label": "显示模式",
+      "table": "表格",
+      "card": "卡片",
+      "columns": "表格栏位",
+      "columnsHint": "勾选要显示的栏位，并使用箭头调整顺序。",
+      "lockedColumn": "必要栏位",
+      "moveUp": "将 {{column}} 上移",
+      "moveDown": "将 {{column}} 下移"
+    },
+    "card": {
+      "workItemsCount": "{{count}} 项"
+    },
     "columns": {
       "stt": "序号",
       "code": "编号",
@@ -168,6 +181,13 @@
       "assignee": "处理人",
       "dueDate": "截止",
       "status": "状态",
+      "lastReport": "最近回报",
+      "taskType": "类型",
+      "workItems": "项目",
+      "reqDept": "需求单位",
+      "site": "厂区",
+      "level": "等级",
+      "reporter": "发布人",
       "actions": "操作"
     },
     "actions": {

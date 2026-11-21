@@ -160,6 +160,19 @@
       "removeChip": "移除篩選 {{label}}",
       "dateRangeInvalid": "開始日期不能晚於結束日期"
     },
+    "view": {
+      "label": "顯示模式",
+      "table": "表格",
+      "card": "卡片",
+      "columns": "表格欄位",
+      "columnsHint": "勾選要顯示的欄位，並使用箭頭調整順序。",
+      "lockedColumn": "必要欄位",
+      "moveUp": "將 {{column}} 上移",
+      "moveDown": "將 {{column}} 下移"
+    },
+    "card": {
+      "workItemsCount": "{{count}} 項"
+    },
     "columns": {
       "stt": "序號",
       "code": "編號",
@@ -168,6 +181,13 @@
       "assignee": "處理人",
       "dueDate": "截止",
       "status": "狀態",
+      "lastReport": "最近回報",
+      "taskType": "類型",
+      "workItems": "專案",
+      "reqDept": "需求單位",
+      "site": "廠區",
+      "level": "等級",
+      "reporter": "發布人",
       "actions": "操作"
     },
     "actions": {

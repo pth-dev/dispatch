@@ -160,6 +160,19 @@
       "removeChip": "Bỏ lọc {{label}}",
       "dateRangeInvalid": "Ngày bắt đầu không được lớn hơn ngày kết thúc"
     },
+    "view": {
+      "label": "Chế độ hiển thị",
+      "table": "Bảng",
+      "card": "Thẻ",
+      "columns": "Cột bảng",
+      "columnsHint": "Chọn cột muốn hiển thị và dùng mũi tên để đổi thứ tự.",
+      "lockedColumn": "Cột bắt buộc",
+      "moveUp": "Di chuyển cột {{column}} lên",
+      "moveDown": "Di chuyển cột {{column}} xuống"
+    },
+    "card": {
+      "workItemsCount": "{{count}} hạng mục"
+    },
     "columns": {
       "stt": "STT",
       "code": "Mã NV",
@@ -168,6 +181,13 @@
       "assignee": "Người xử lý",
       "dueDate": "Hạn",
       "status": "Trạng thái",
+      "lastReport": "Báo cáo gần nhất",
+      "taskType": "Loại",
+      "workItems": "Dự án",
+      "reqDept": "BP yêu cầu",
+      "site": "Khu vực",
+      "level": "Cấp độ",
+      "reporter": "Người đăng",
       "actions": "Thao tác"
     },
     "actions": {

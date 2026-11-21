@@ -8,9 +8,12 @@ import { TaskScopeTabs } from '../components/TaskScopeTabs'
 import { LegendStrip } from '../components/LegendStrip'
 import { FilterBar } from '../components/FilterBar'
 import { TaskMobileCard } from '../components/TaskMobileCard'
+import { TaskViewControls } from '../components/TaskViewControls'
+import { TaskCardGrid } from '../components/TaskCardGrid'
 import { useTaskList } from '../api/queries'
 import { usePageClamp, useTaskListParams } from '../hooks/use-task-list-params'
 import { useTaskColumns } from '../hooks/use-task-columns'
+import { useTaskViewPrefs } from '../hooks/use-task-view-prefs'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { InlineError, isFullPageError, throwFullPageError, toErrorStatus } from '@/components/layout'
 import { APP_ROUTES } from '@/constants/app-routes'
@@ -39,7 +42,22 @@ export function TaskListPage() {
   } = useTaskListParams()
 
   const { data, isLoading, isError, error, refetch } = useTaskList(params)
-  const columns = useTaskColumns(params.page, params.pageSize)
+  const {
+    viewMode,
+    hiddenSet,
+    columnOrder,
+    visibleColumnIds,
+    isDefaultColumns,
+    setViewMode,
+    toggleColumn,
+    moveColumn,
+    resetColumns,
+  } = useTaskViewPrefs()
+
+  const columns = useTaskColumns(params.page, params.pageSize, {
+    visibleColumnIds,
+    useFixedWidths: isDefaultColumns,
+  })
 
   usePageClamp({
     page: params.page,
@@ -83,35 +101,48 @@ export function TaskListPage() {
       )}
     >
       {/* Page Header Row */}
-      <div className="flex items-center justify-between shrink-0">
+      <div className="flex items-center justify-between gap-3 shrink-0">
         <h1 className="text-xl lg:text-2xl font-semibold text-foreground tracking-tight">
           {t('tasks.title')}
         </h1>
 
-        {!isMobile && canCreate && (
-          <Button
-            asChild
-            className="h-11 lg:h-10 px-4 gap-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-lg cursor-pointer"
-          >
-            <Link to={APP_ROUTES.TASK_NEW}>
-              <Plus className="size-4" />
-              <span>{t('tasks.create')}</span>
-            </Link>
-          </Button>
-        )}
+        <div className="flex items-center gap-2.5 shrink-0">
+          <TaskViewControls
+            viewMode={viewMode}
+            columnOrder={columnOrder}
+            hiddenSet={hiddenSet}
+            isDefaultColumns={isDefaultColumns}
+            onViewModeChange={setViewMode}
+            onToggleColumn={toggleColumn}
+            onMoveColumn={moveColumn}
+            onResetColumns={resetColumns}
+          />
+
+          {!isMobile && canCreate && (
+            <Button
+              asChild
+              className="h-11 lg:h-10 px-4 gap-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-lg cursor-pointer"
+            >
+              <Link to={APP_ROUTES.TASK_NEW}>
+                <Plus className="size-4" aria-hidden="true" />
+                <span>{t('tasks.create')}</span>
+              </Link>
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Main Content Card */}
       <div className="flex min-h-0 flex-1 flex-col rounded-xl border border-border bg-card overflow-hidden">
         <div className="shrink-0 flex flex-col gap-3 short:gap-2 p-4 short:p-3 pb-3 border-b border-border bg-card">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2">
+          <div className="flex items-center justify-between gap-4">
             <TaskScopeTabs
               activeScope={params.scope}
               counts={counts}
               onScopeChange={setScope}
-              className="border-b-0 -mb-2 lg:mb-0"
+              className="min-w-0 xl:shrink-0 border-b-0 -mb-2 lg:mb-0"
             />
-            <LegendStrip className="hidden xl:flex" />
+            <LegendStrip className="hidden xl:flex shrink-0" />
           </div>
 
           <FilterBar
@@ -131,6 +162,13 @@ export function TaskListPage() {
               status={errorStatus}
               onRetry={() => void refetch()}
               className="m-4"
+            />
+          ) : !isMobile && viewMode === 'card' ? (
+            <TaskCardGrid
+              tasks={items}
+              isLoading={isLoading}
+              emptyMessage={emptyMessage}
+              onSelectTask={handleRowClick}
             />
           ) : (
             <DataTable
@@ -166,7 +204,7 @@ export function TaskListPage() {
           aria-label={t('tasks.create')}
         >
           <Link to={APP_ROUTES.TASK_NEW}>
-            <Plus className="size-6" />
+            <Plus className="size-6" aria-hidden="true" />
           </Link>
         </Button>
       )}

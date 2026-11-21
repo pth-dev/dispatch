@@ -160,6 +160,19 @@
       "removeChip": "Remove filter {{label}}",
       "dateRangeInvalid": "From date cannot be later than To date"
     },
+    "view": {
+      "label": "View mode",
+      "table": "Table",
+      "card": "Card",
+      "columns": "Columns",
+      "columnsHint": "Toggle visible columns and use arrows to reorder.",
+      "lockedColumn": "Required column",
+      "moveUp": "Move {{column}} up",
+      "moveDown": "Move {{column}} down"
+    },
+    "card": {
+      "workItemsCount": "{{count}} items"
+    },
     "columns": {
       "stt": "No.",
       "code": "Code",
@@ -168,6 +181,13 @@
       "assignee": "Assignee",
       "dueDate": "Due",
       "status": "Status",
+      "lastReport": "Latest report",
+      "taskType": "Type",
+      "workItems": "Project",
+      "reqDept": "Req. dept",
+      "site": "Site",
+      "level": "Priority",
+      "reporter": "Reporter",
       "actions": "Actions"
     },
     "actions": {

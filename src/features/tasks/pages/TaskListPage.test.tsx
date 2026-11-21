@@ -71,6 +71,7 @@ function renderTaskList(initialEntry = '/tasks') {
 
 describe('TaskListPage', () => {
   beforeEach(() => {
+    localStorage.clear()
     clearAllAuthStorage()
     setStoredSession({ username: 'hieu', token: 'tok-1' })
     useAppStore.setState({ user: ADMIN_USER, authStatus: 'authenticated' })
@@ -126,5 +127,61 @@ describe('TaskListPage', () => {
 
     expect(await screen.findByRole('alert')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /thử lại/i })).toBeInTheDocument()
+  })
+
+  it('switches between table and card view modes and toggles legacy columns', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input) => {
+        const url = String(input)
+        if (url.includes('/meta/depts')) {
+          return jsonResponse({
+            depts: [{ value: '資訊部', vn: 'Bộ phận IT' }],
+            allDepts: [{ value: '資訊部', vn: 'Bộ phận IT' }],
+          })
+        }
+        if (url.includes('/meta/sites')) {
+          return jsonResponse({ sites: [], allSites: [] })
+        }
+        return jsonResponse(TASKS_PAYLOAD)
+      }),
+    )
+
+    renderTaskList('/tasks')
+
+    expect(await screen.findAllByText('Nâng cấp mạng nội bộ')).not.toHaveLength(0)
+
+    const user = userEvent.setup()
+
+    // Default table mode shows Columns button, hides legacy extra column "Người đăng"
+    expect(screen.queryByRole('columnheader', { name: 'Người đăng' })).not.toBeInTheDocument()
+    const columnsBtn = screen.getByRole('button', { name: /cột bảng/i })
+    await user.click(columnsBtn)
+
+    // Enable legacy column "Người đăng"
+    const reporterCheckbox = await screen.findByRole('checkbox', { name: 'Người đăng' })
+    await user.click(reporterCheckbox)
+    expect(screen.getByRole('columnheader', { name: 'Người đăng' })).toBeInTheDocument()
+
+    // Switch to Card mode: table disappears and Columns button hides
+    await user.click(screen.getByRole('button', { name: /^thẻ$/i }))
+    expect(screen.queryByRole('table')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /cột bảng/i })).not.toBeInTheDocument()
+    expect(screen.getByText('Nâng cấp mạng nội bộ')).toBeInTheDocument()
+
+    // Switch back to Table mode: customized column remains visible
+    await user.click(screen.getByRole('button', { name: /^bảng$/i }))
+    expect(screen.getByRole('columnheader', { name: 'Người đăng' })).toBeInTheDocument()
+
+    // Reorder column and reset to default
+    await user.click(screen.getByRole('button', { name: /cột bảng/i }))
+    await user.click(await screen.findByRole('button', { name: /di chuyển cột mã nv lên/i }))
+    const headersAfterMove = screen.getAllByRole('columnheader').map((el) => el.textContent)
+    expect(headersAfterMove[0]).toBe('Mã NV')
+
+    await user.click(screen.getByRole('button', { name: /xoá hết/i }))
+    expect(screen.queryByRole('columnheader', { name: 'Người đăng' })).not.toBeInTheDocument()
+    const headersAfterReset = screen.getAllByRole('columnheader').map((el) => el.textContent)
+    expect(headersAfterReset[0]).toBe('STT')
   })
 })

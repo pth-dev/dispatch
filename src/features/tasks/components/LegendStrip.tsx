@@ -11,8 +11,9 @@ export function LegendStrip({ className }: LegendStripProps) {
 
   return (
     <div
+      role="group"
       className={cn(
-        'flex items-center gap-3.5 text-xs text-muted-foreground select-none flex-wrap',
+        'flex items-center gap-3 text-xs text-muted-foreground select-none whitespace-nowrap',
         className,
       )}
       aria-label={t('common.status')}

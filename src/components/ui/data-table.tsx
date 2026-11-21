@@ -15,6 +15,9 @@ export interface ColumnDef<T> {
   id: string
   header: React.ReactNode
   width?: string
+  minWidth?: string
+  maxWidth?: string
+  sticky?: 'left'
   align?: 'left' | 'center' | 'right'
   className?: string
   cell: (item: T, index: number) => React.ReactNode
@@ -51,6 +54,7 @@ export function DataTable<T>({
   const density = propDensity || storeDensity
 
   const rowHeightClass = density === 'compact' ? 'h-11 py-2' : 'h-[50px] py-3'
+  const hasMinWidth = columns.some((col) => Boolean(col.minWidth))
 
   if (error) {
     return (
@@ -103,19 +107,23 @@ export function DataTable<T>({
       {/* ── Desktop Table View (>= lg, or fallback if no mobile card renderer) ── */}
       <div
         className={cn(
-          'w-full overflow-visible lg:overflow-auto flex-1 min-h-0 border border-border rounded-lg bg-card',
+          'w-full overflow-auto flex-1 min-h-0 border border-border rounded-lg bg-card',
           renderMobileCard ? 'hidden lg:block' : 'block',
         )}
       >
-        <Table className="w-full table-fixed border-collapse">
-          <TableHeader className="sticky top-0 z-10 bg-card border-b border-border">
+        <Table className={cn('w-full border-collapse', hasMinWidth ? 'table-auto' : 'table-fixed')}>
+          <TableHeader className="sticky top-0 z-20 bg-card border-b border-border">
             <TableRow className="hover:bg-transparent">
               {columns.map((col) => (
                 <TableHead
                   key={col.id}
-                  style={{ width: col.width }}
+                  style={{ width: col.width, minWidth: col.minWidth, maxWidth: col.maxWidth }}
                   className={cn(
-                    'text-[13px] font-semibold text-primary px-3 py-2.5 select-none bg-card',
+                    'text-[13px] font-semibold text-primary px-3 py-2.5 select-none bg-card whitespace-nowrap',
+                    col.sticky === 'left' && 'sticky left-0 z-30',
+                    col.sticky === 'left' &&
+                      hasMinWidth &&
+                      'shadow-[inset_-1px_0_0_var(--color-border)]',
                     col.align === 'center' && 'text-center',
                     col.align === 'right' && 'text-right',
                     col.className,
@@ -129,9 +137,21 @@ export function DataTable<T>({
           <TableBody className="divide-y divide-border">
             {isLoading ? (
               Array.from({ length: 8 }).map((_, rIdx) => (
-                <TableRow key={`skel_row_${rIdx}`} className={rowHeightClass}>
-                  {columns.map((_, cIdx) => (
-                    <TableCell key={`skel_cell_${cIdx}`} className="px-3 py-2">
+                <TableRow
+                  key={`skel_row_${rIdx}`}
+                  className={cn('hover:bg-transparent', rowHeightClass)}
+                >
+                  {columns.map((col, cIdx) => (
+                    <TableCell
+                      key={`skel_cell_${cIdx}`}
+                      className={cn(
+                        'px-3 py-2',
+                        col.sticky === 'left' && 'sticky left-0 z-10 bg-card',
+                        col.sticky === 'left' &&
+                          hasMinWidth &&
+                          'shadow-[inset_-1px_0_0_var(--color-border)]',
+                      )}
+                    >
                       <div className="h-4 bg-muted animate-pulse rounded w-3/4" />
                     </TableCell>
                   ))}
@@ -152,7 +172,7 @@ export function DataTable<T>({
                   key={keyExtractor(item)}
                   onClick={() => onRowClick?.(item)}
                   className={cn(
-                    'transition-colors hover:bg-muted/50 text-xs text-foreground',
+                    'group transition-colors hover:bg-secondary text-xs text-foreground',
                     rowHeightClass,
                     onRowClick && 'cursor-pointer',
                   )}
@@ -160,8 +180,14 @@ export function DataTable<T>({
                   {columns.map((col) => (
                     <TableCell
                       key={col.id}
+                      style={col.maxWidth ? { maxWidth: col.maxWidth } : undefined}
                       className={cn(
                         'px-3 py-1.5 truncate',
+                        col.sticky === 'left' &&
+                          'sticky left-0 z-10 bg-card transition-colors group-hover:bg-secondary',
+                        col.sticky === 'left' &&
+                          hasMinWidth &&
+                          'shadow-[inset_-1px_0_0_var(--color-border)]',
                         col.align === 'center' && 'text-center',
                         col.align === 'right' && 'text-right',
                         col.className,
