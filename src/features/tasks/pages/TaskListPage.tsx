@@ -7,7 +7,6 @@ import { PaginationControl } from '@/components/ui/pagination-control'
 import { TaskScopeTabs } from '../components/TaskScopeTabs'
 import { LegendStrip } from '../components/LegendStrip'
 import { FilterBar } from '../components/FilterBar'
-import { TaskMobileCard } from '../components/TaskMobileCard'
 import { TaskViewControls } from '../components/TaskViewControls'
 import { TaskCardGrid } from '../components/TaskCardGrid'
 import { useTaskList } from '../api/queries'
@@ -95,7 +94,7 @@ export function TaskListPage() {
   const total = data?.total ?? 0
   const counts = data?.counts
   const availableTaskTypes = data?.availableTaskTypes ?? []
-  const isCardView = !isMobile && viewMode === 'card'
+  const isCardView = isMobile || viewMode === 'card'
   const cardResetKey = buildCardResetKey(params)
 
   const emptyMessage =
@@ -110,8 +109,6 @@ export function TaskListPage() {
   const handleRowClick = (task: RawTask) => {
     navigate(APP_ROUTES.TASK_DETAIL(task.id))
   }
-
-  const renderMobileCard = (task: RawTask) => <TaskMobileCard task={task} />
 
   return (
     <div
@@ -187,11 +184,8 @@ export function TaskListPage() {
             <TaskCardGrid
               tasks={filteredItems}
               isLoading={isLoading}
-              statusFilter={params.status}
-              showRoleTags={params.scope === 'all'}
               resetKey={cardResetKey}
               emptyMessage={emptyMessage}
-              onSelectTask={handleRowClick}
             />
           ) : (
             <DataTable
@@ -201,7 +195,6 @@ export function TaskListPage() {
               isLoading={isLoading}
               emptyMessage={emptyMessage}
               onRowClick={handleRowClick}
-              renderMobileCard={renderMobileCard}
               className="flex-1 min-h-0"
             />
           )}

@@ -1,144 +1,117 @@
+import * as React from 'react'
+import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { CalendarDays, MessageSquareText, User } from 'lucide-react'
+import { CircleAlert, Languages, Tag } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { StatusText } from '@/components/ui/status-text'
-import { useAppStore } from '@/app/store'
-import type { RawTask } from '@/schemas/task'
+import { APP_ROUTES } from '@/constants/app-routes'
 import { cn } from '@/utils'
-import {
-  deriveTaskStatus,
-  getTaskLevelCode,
-  isTaskPaused,
-  parseReqDepts,
-  sameDept,
-} from '@/utils/task-domain'
-import { matchesAssignee, matchesCreator } from '../api/filter-tasks'
-import { formatTaskDueDate, parseLastReportSummary } from '../utils/task-display'
-import { TaskCardChips } from './TaskCardChips'
+import type { TaskCardViewModel } from '../utils/task-card-mapper'
+import { TaskCardInfoBlock } from './TaskCardInfoBlock'
 
-type TaskCardProps = {
-  task: RawTask
-  resolveDeptName: (rawDept: string | null | undefined) => string
-  showRoleTags: boolean
-  onSelect: (task: RawTask) => void
+export type TaskCardProps = {
+  vm: TaskCardViewModel
+  titleRef?: React.Ref<HTMLAnchorElement>
+  titleAction?: React.ReactNode
 }
 
-export function TaskCard({
-  task,
-  resolveDeptName,
-  showRoleTags,
-  onSelect,
-}: TaskCardProps) {
+export function TaskCard({ vm, titleRef, titleAction }: TaskCardProps) {
   const { t } = useTranslation()
-  const user = useAppStore((s) => s.user)
-  const derived = deriveTaskStatus(task)
-  const paused = isTaskPaused(task)
-  const levelCode = getTaskLevelCode(task.level)
-  const isMine = showRoleTags && matchesAssignee(task, user)
-  const isCreated = showRoleTags && matchesCreator(task, user)
-  const lastReport = parseLastReportSummary(task)
-  const reporterLabel = task.reporter_name?.trim() || task.reporter || '-'
-  const progress = Math.min(100, Math.max(0, task.progress))
-  const deptLabel = resolveDeptName(task.assigned_unit)
-  const distinctReqDept = parseReqDepts(task.req_depts, task.req_dept).find(
-    (dept) => !sameDept(dept, task.assigned_unit),
-  )
-  const reqDeptLabel = distinctReqDept ? resolveDeptName(distinctReqDept) : ''
+  const detailPath = APP_ROUTES.TASK_DETAIL(vm.id)
+  const actionPath = vm.needsReportToday ? `${detailPath}#report` : detailPath
 
   return (
-    <article className="relative flex h-full flex-col gap-2.5 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/50 focus-within:ring-2 focus-within:ring-ring">
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex flex-wrap items-center gap-1.5 text-xs">
-          <span className="font-semibold text-primary">#{task.id}</span>
-          {levelCode !== 'normal' && (
-            <span
-              className={cn(
-                'font-semibold',
-                levelCode === 'critical' ? 'text-status-urgent' : 'text-warning',
-              )}
-            >
-              {levelCode === 'critical'
-                ? t('tasks.filter.levelCritical')
-                : t('tasks.filter.levelUrgent')}
+    <article data-testid="task-card" className="h-full">
+      <Card className="relative h-full p-4 gap-3 focus-within:ring-2 focus-within:ring-ring">
+        {/* 1. Meta row (1 line) */}
+        <div className="flex h-card-row items-center justify-between gap-2 text-xs">
+          <div className="flex min-w-0 flex-1 items-center gap-1.5">
+            <span className="shrink-0 font-medium text-primary">{vm.code}</span>
+            <span className="shrink-0 text-muted-foreground" aria-hidden="true">
+              •
             </span>
-          )}
-          {isMine && (
-            <span className="rounded bg-primary-soft px-1.5 py-0.5 text-xs font-medium text-primary">
-              {t('tasks.card.assignedToMe')}
-            </span>
-          )}
-          {isCreated && !isMine && (
-            <span className="rounded border border-border bg-secondary px-1.5 py-0.5 text-xs font-medium text-foreground">
-              {t('tasks.card.createdByMe')}
-            </span>
-          )}
-        </div>
-        <StatusText status={paused ? 'paused' : derived} className="shrink-0 text-xs" />
-      </div>
-
-      <div className="space-y-1 min-w-0">
-        <h4>
-          <button
-            type="button"
-            onClick={() => onSelect(task)}
-            className="text-left text-sm font-semibold text-foreground line-clamp-2 leading-snug after:absolute after:inset-0 focus:outline-none cursor-pointer"
-          >
-            {task.title}
-          </button>
-        </h4>
-        {task.title_vn && task.title_vn !== task.title && (
-          <p className="text-xs text-muted-foreground line-clamp-1">{task.title_vn}</p>
-        )}
-      </div>
-
-      <TaskCardChips task={task} />
-
-      <div className="mt-auto space-y-2 pt-2 border-t border-border text-xs text-muted-foreground">
-        {lastReport && (
-          <div className="flex items-start gap-1.5 rounded-md bg-secondary/50 px-2 py-1.5 text-xs text-foreground">
-            <MessageSquareText
-              className="size-3.5 shrink-0 mt-0.5 text-muted-foreground"
-              aria-hidden="true"
-            />
-            <p className="line-clamp-2 min-w-0 leading-snug">
-              {lastReport.text || lastReport.at}
-            </p>
+            <span className="min-w-0 truncate text-muted-foreground">{vm.site}</span>
+            {vm.isUrgent && (
+              <span className="inline-flex shrink-0 items-center gap-1 font-medium text-destructive">
+                <CircleAlert className="size-4 shrink-0" aria-hidden="true" />
+                <span>{t('status.urgent')}</span>
+              </span>
+            )}
           </div>
-        )}
+          <StatusText
+            status={
+              vm.needsReportToday && vm.status !== 'delayed_pending' ? 'paused' : vm.status
+            }
+            label={
+              vm.needsReportToday && vm.status !== 'delayed_pending'
+                ? t('status.due_today')
+                : undefined
+            }
+            className="shrink-0"
+          />
+        </div>
 
-        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-          <span className="inline-flex items-center gap-1 truncate max-w-full">
-            <User className="size-3 shrink-0" aria-hidden="true" />
-            <span className="truncate text-foreground font-medium">
-              {task.assign_person || '-'}
+        {/* 2. Title (2 lines reserved, stretched-link) */}
+        <h3 className="m-0">
+          <Link
+            ref={titleRef}
+            to={detailPath}
+            className="block h-card-title line-clamp-2 wrap-anywhere text-base font-semibold text-foreground after:absolute after:inset-0 focus-visible:outline-none"
+          >
+            {vm.title}
+          </Link>
+        </h3>
+
+        {/* 3. Sub row (1 line reserved) */}
+        <div className="flex h-card-row items-center justify-between gap-2 text-xs text-muted-foreground">
+          <div className="flex min-w-0 flex-1 items-center gap-3">
+            <span className="inline-flex min-w-0 items-center gap-1.5">
+              <Tag className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+              <span className="truncate">{vm.category}</span>
             </span>
-          </span>
-          <span className="truncate">{deptLabel}</span>
-          {reqDeptLabel && (
-            <span className="truncate">{t('tasks.card.reqDeptLabel', { dept: reqDeptLabel })}</span>
-          )}
+            {vm.isUntranslated && (
+              <span className="inline-flex shrink-0 items-center gap-1">
+                <Languages className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                <span>{t('tasks.card.untranslated')}</span>
+              </span>
+            )}
+          </div>
+          {titleAction}
         </div>
 
-        <div className="flex items-center justify-between gap-2">
-          <span className="inline-flex items-center gap-1">
-            <CalendarDays className="size-3 shrink-0" aria-hidden="true" />
-            <span>{formatTaskDueDate(task.due_date)}</span>
-          </span>
-          <span className="truncate">{reporterLabel}</span>
-        </div>
+        {/* 4. Info block (4 fixed rows) */}
+        <TaskCardInfoBlock vm={vm} />
 
-        <div className="flex items-center gap-2">
-          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-secondary">
+        {/* 5. Progress row (4px bar + percentage) */}
+        <div className="flex h-card-row items-center gap-2.5">
+          <div className="h-1 flex-1 overflow-hidden rounded-full bg-secondary">
             <div
               className={cn(
-                'h-full rounded-full transition-all',
-                progress >= 100 ? 'bg-success' : 'bg-primary',
+                'h-full rounded-full',
+                vm.progressPercent >= 100 ? 'bg-success' : 'bg-primary',
               )}
-              style={{ width: `${progress}%` }}
+              style={{ width: `${vm.progressPercent}%` }}
             />
           </div>
-          <span className="font-semibold text-foreground tabular-nums">{progress}%</span>
+          <span className="shrink-0 text-xs font-medium text-foreground tabular-nums">
+            {vm.progressPercent}%
+          </span>
         </div>
-      </div>
+
+        {/* 6. Action row (44px, pinned at bottom, above stretched-link) */}
+        <div className="mt-auto">
+          <Button
+            asChild
+            variant={vm.needsReportToday ? 'default' : 'outline'}
+            className="relative z-10 h-11 w-full text-sm font-medium"
+          >
+            <Link to={actionPath}>
+              {vm.needsReportToday ? t('tasks.card.reportNow') : t('tasks.card.viewDetail')}
+            </Link>
+          </Button>
+        </div>
+      </Card>
     </article>
   )
 }

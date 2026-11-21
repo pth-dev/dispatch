@@ -185,7 +185,7 @@ describe('TaskListPage', () => {
     expect(headersAfterReset[0]).toBe('STT')
   })
 
-  it('groups cards by task type into incomplete and completed sections without pagination', async () => {
+  it('renders cards in a single equal-size grid without pagination', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn(async (input) => {
@@ -238,14 +238,12 @@ describe('TaskListPage', () => {
     const user = userEvent.setup()
     await user.click(screen.getByRole('button', { name: /^thẻ$/i }))
 
-    // Both sections expanded by default, grouped by task_type, pagination hidden
-    expect(screen.getByRole('region', { name: 'Đang xử lý' })).toBeInTheDocument()
-    expect(screen.getByRole('region', { name: 'Đã hoàn thành' })).toBeInTheDocument()
+    // Single equal-size grid: one card per task, pagination hidden
+    const cards = screen.getAllByTestId('task-card')
+    expect(cards).toHaveLength(2)
+    expect(screen.getByTestId('task-card-grid')).toBeInTheDocument()
     expect(screen.getByText('Hệ thống mạng')).toBeInTheDocument()
     expect(screen.getByText('Phần cứng')).toBeInTheDocument()
-    expect(screen.getByText('YS')).toBeInTheDocument()
-    expect(screen.getByText('Bảo mật')).toBeInTheDocument()
-    expect(screen.getByText('Xem liên BP')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /trang sau/i })).not.toBeInTheDocument()
   })
 })

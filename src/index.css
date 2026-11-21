@@ -76,8 +76,13 @@
   --radius-xl: 16px;
   --radius-pill: 999px;
 
-  /* ── Font (brief §3.3) ── */
-  --font-sans: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  /* ── Font (brief §3.3 + CJK-capable fallback for identical line heights) ── */
+  --font-sans: 'Inter', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', system-ui, sans-serif;
+
+  /* ── Task Card layout tokens (equal-size card anatomy) ── */
+  --card-min-width: 22.5rem;
+  --card-title-lh: 1.5rem;
+  --card-row-lh: 1.25rem;
 
   /* ── Sidebar (brief §3.4) ── */
   --sidebar-width: 260px;
@@ -129,4 +134,23 @@ body {
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--color-border) transparent;
+}
+
+/* ── Task Card equal-size utilities (tokens in @theme) ── */
+@utility grid-cols-task-cards {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--card-min-width)), 1fr));
+}
+
+@utility h-card-title {
+  height: calc(var(--card-title-lh) * 2);
+  line-height: var(--card-title-lh);
+}
+
+@utility h-card-row {
+  height: var(--card-row-lh);
+  line-height: var(--card-row-lh);
+}
+
+@utility wrap-anywhere {
+  overflow-wrap: anywhere;
 }
