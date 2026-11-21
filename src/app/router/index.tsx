@@ -11,6 +11,7 @@ const TaskListPage = React.lazy(() => import('@/features/tasks/pages/TaskListPag
 const TaskDetailPage = React.lazy(() => import('@/features/tasks/pages/TaskDetailPage'))
 const TaskCreatePage = React.lazy(() => import('@/features/tasks/pages/TaskCreatePage'))
 const MessagesPage = React.lazy(() => import('@/features/messages/pages/MessagesPage'))
+const LessonsPage = React.lazy(() => import('@/features/lessons/pages/LessonsPage'))
 const ProfilePage = React.lazy(() => import('@/features/profile/pages/ProfilePage'))
 const TaskCardFixturePreviewPage = import.meta.env.DEV
   ? React.lazy(() => import('@/features/tasks/pages/TaskCardFixturePreviewPage'))
@@ -95,6 +96,14 @@ export const router = createBrowserRouter([
         element: (
           <RequireMenuPerm perm="messages" level="r">
             <MessagesPage />
+          </RequireMenuPerm>
+        ),
+      },
+      {
+        path: 'lessons',
+        element: (
+          <RequireMenuPerm perm="learnknow" level="r">
+            <LessonsPage />
           </RequireMenuPerm>
         ),
       },
