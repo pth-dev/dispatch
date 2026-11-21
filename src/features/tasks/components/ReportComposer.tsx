@@ -2,12 +2,12 @@ import * as React from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
-import { CircleAlert, Paperclip, Send } from 'lucide-react'
+import { CircleAlert, Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { FileDropzone } from '@/components/ui/file-dropzone'
 import {
-  MAX_UPLOAD_FILE_BYTES,
   TaskReportFormSchema,
   type RawTask,
   type SplitMember,
@@ -29,8 +29,6 @@ export function ReportComposer({ task, user, splitMembers }: ReportComposerProps
   const { t, i18n } = useTranslation()
   const submitReport = useSubmitReport()
   const [files, setFiles] = React.useState<File[]>([])
-  const [fileError, setFileError] = React.useState<string | null>(null)
-  const [fileInputKey, setFileInputKey] = React.useState(0)
   const [submitError, setSubmitError] = React.useState<string | null>(null)
 
   const selfSplitMember = splitMembers.find(
@@ -97,7 +95,6 @@ export function ReportComposer({ task, user, splitMembers }: ReportComposerProps
         target_id: values.target_id,
       })
       setFiles([])
-      setFileInputKey((k) => k + 1)
     } catch (err) {
       setSubmitError(resolveApiErrorMessage(err, t, i18n.language))
     }
@@ -194,7 +191,7 @@ export function ReportComposer({ task, user, splitMembers }: ReportComposerProps
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="space-y-3">
           <div className="space-y-1">
             <label htmlFor="report-kmlink" className="block text-xs font-semibold text-foreground">
               {t('tasks.report.kmLink')}
@@ -211,28 +208,12 @@ export function ReportComposer({ task, user, splitMembers }: ReportComposerProps
             <label htmlFor="report-files" className="block text-xs font-semibold text-foreground">
               {t('tasks.detail.attachments')}
             </label>
-            <div className="flex items-center gap-2">
-              <input
-                key={fileInputKey}
-                id="report-files"
-                type="file"
-                multiple
-                onChange={(e) => {
-                  const picked = Array.from(e.target.files ?? [])
-                  const valid = picked.filter((f) => f.size <= MAX_UPLOAD_FILE_BYTES)
-                  setFileError(valid.length < picked.length ? t('tasks.validation.fileTooLarge') : null)
-                  setFiles(valid)
-                }}
-                className="block w-full text-xs text-muted-foreground file:mr-2 file:rounded-md file:border file:border-border file:bg-card file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-foreground"
-              />
-              {files.length > 0 && (
-                <span className="shrink-0 text-xs text-primary flex items-center gap-1">
-                  <Paperclip className="size-3.5" aria-hidden="true" />
-                  {files.length}
-                </span>
-              )}
-            </div>
-            {fileError && <p className="text-xs text-destructive">{fileError}</p>}
+            <FileDropzone
+              id="report-files"
+              files={files}
+              onFilesChange={setFiles}
+              disabled={isSubmitting || submitReport.isPending}
+            />
           </div>
         </div>
 

@@ -111,6 +111,12 @@
       "previousPage": "Previous page",
       "nextPage": "Next page",
       "lastPage": "Last page"
+    },
+    "fileUpload": {
+      "dropHint": "Drag & drop files here, or click to browse",
+      "maxSizeHint": "Up to {{maxMb}} MB per file",
+      "removeFile": "Remove file {{name}}",
+      "fileTooLarge": "Some files exceed the {{maxMb}} MB limit and were skipped."
     }
   },
   "tasks": {

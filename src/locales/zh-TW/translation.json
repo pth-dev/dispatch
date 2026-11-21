@@ -111,6 +111,12 @@
       "previousPage": "上一頁",
       "nextPage": "下一頁",
       "lastPage": "末頁"
+    },
+    "fileUpload": {
+      "dropHint": "拖曳檔案到此處，或點擊選擇",
+      "maxSizeHint": "單一檔案最大 {{maxMb}} MB",
+      "removeFile": "刪除檔案 {{name}}",
+      "fileTooLarge": "部分檔案超過 {{maxMb}} MB 限制已被略過。"
     }
   },
   "tasks": {

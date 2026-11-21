@@ -111,6 +111,12 @@
       "previousPage": "上一页",
       "nextPage": "下一页",
       "lastPage": "末页"
+    },
+    "fileUpload": {
+      "dropHint": "拖拽文件到此处，或点击选择",
+      "maxSizeHint": "单个文件最大 {{maxMb}} MB",
+      "removeFile": "删除文件 {{name}}",
+      "fileTooLarge": "部分文件超过 {{maxMb}} MB 限制已被忽略。"
     }
   },
   "tasks": {

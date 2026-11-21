@@ -227,7 +227,9 @@ export function TaskEditorForm({ mode, sourceTask }: TaskEditorFormProps) {
               setValue={setValue}
               errors={errors}
               pocketTypes={pocketTypes}
+              newFiles={newFiles}
               retainedFiles={retainedFiles}
+              disabled={isSubmitting || createTask.isPending || updateTask.isPending}
               onNewFilesChange={setNewFiles}
               onRemoveRetainedFile={(path) =>
                 setRetainedFiles((prev) => prev.filter((f) => f.path !== path))

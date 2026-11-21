@@ -4,12 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { Paperclip, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { FileDropzone } from '@/components/ui/file-dropzone'
 import type { PocketValueItem } from '@/schemas/meta'
-import {
-  MAX_UPLOAD_FILE_BYTES,
-  type RawAttachment,
-  type TaskEditorFormValues,
-} from '@/schemas/task'
+import type { RawAttachment, TaskEditorFormValues } from '@/schemas/task'
 import {
   CUSTOM_TASK_TYPE_VALUE,
   SELECT_FIELD_CLASS,
@@ -18,13 +15,15 @@ import {
   isStandardTaskType,
 } from '../../api/task-catalog'
 
-interface TaskBasicInfoSectionProps {
+type TaskBasicInfoSectionProps = {
   control: Control<TaskEditorFormValues>
   register: UseFormRegister<TaskEditorFormValues>
   setValue: UseFormSetValue<TaskEditorFormValues>
   errors: FieldErrors<TaskEditorFormValues>
   pocketTypes: PocketValueItem[]
+  newFiles: File[]
   retainedFiles: RawAttachment[]
+  disabled?: boolean
   onNewFilesChange: (files: File[]) => void
   onRemoveRetainedFile: (path: string) => void
 }
@@ -35,7 +34,9 @@ export function TaskBasicInfoSection({
   setValue,
   errors,
   pocketTypes,
+  newFiles,
   retainedFiles,
+  disabled = false,
   onNewFilesChange,
   onRemoveRetainedFile,
 }: TaskBasicInfoSectionProps) {
@@ -48,7 +49,6 @@ export function TaskBasicInfoSection({
     !taskType || isStandardTaskType(taskType) || knownPersonalValues.has(taskType)
 
   const [forceCustom, setForceCustom] = React.useState(false)
-  const [fileError, setFileError] = React.useState<string | null>(null)
   const isCustomActive = forceCustom || !isKnownType
   const selectValue = isCustomActive ? CUSTOM_TASK_TYPE_VALUE : taskType
 
@@ -157,23 +157,16 @@ export function TaskBasicInfoSection({
           <Input id="task-kmlink" placeholder="https://..." {...register('km_link')} />
         </div>
 
-        <div className="space-y-1.5">
+        <div className="md:col-span-2 space-y-1.5">
           <label htmlFor="task-files" className="block text-xs font-semibold text-foreground">
             {t('tasks.detail.attachments')}
           </label>
-          <input
+          <FileDropzone
             id="task-files"
-            type="file"
-            multiple
-            onChange={(e) => {
-              const picked = Array.from(e.target.files ?? [])
-              const valid = picked.filter((f) => f.size <= MAX_UPLOAD_FILE_BYTES)
-              setFileError(valid.length < picked.length ? t('tasks.validation.fileTooLarge') : null)
-              onNewFilesChange(valid)
-            }}
-            className="block w-full text-xs text-muted-foreground file:mr-2 file:rounded-md file:border file:border-border file:bg-card file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-foreground"
+            files={newFiles}
+            onFilesChange={onNewFilesChange}
+            disabled={disabled}
           />
-          {fileError && <p className="text-xs text-destructive">{fileError}</p>}
           {retainedFiles.length > 0 && (
             <div className="flex flex-wrap gap-1.5 pt-1">
               {retainedFiles.map((att) => (

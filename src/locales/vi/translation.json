@@ -111,6 +111,12 @@
       "previousPage": "Trang trước",
       "nextPage": "Trang sau",
       "lastPage": "Trang cuối"
+    },
+    "fileUpload": {
+      "dropHint": "Kéo thả tệp vào đây hoặc bấm để chọn",
+      "maxSizeHint": "Tối đa {{maxMb}} MB mỗi tệp",
+      "removeFile": "Xoá tệp {{name}}",
+      "fileTooLarge": "Một số tệp vượt quá giới hạn {{maxMb}} MB và đã bị bỏ qua."
     }
   },
   "tasks": {
@@ -336,20 +342,20 @@
   },
   "errors": {
     "status": {
-      "404": {
-        "caption": "LỖI 404 • KHÔNG TÌM THẤY",
-        "title": "Không tìm thấy trang này",
-        "description": "Địa chỉ bạn yêu cầu không tồn tại, đã bị đổi tên hoặc tạm thời không khả dụng."
+      "401": {
+        "caption": "LỖI 401 • HẾT PHIÊN ĐĂNG NHẬP",
+        "title": "Phiên đăng nhập đã hết hạn",
+        "description": "Để đảm bảo an toàn thông tin, phiên làm việc của bạn đã kết thúc. Vui lòng đăng nhập lại."
       },
       "403": {
         "caption": "LỖI 403 • KHÔNG CÓ QUYỀN",
         "title": "Bạn chưa có quyền xem trang này",
         "description": "Tài khoản hiện tại không có quyền truy cập vào tài nguyên này. Vui lòng liên hệ Quản trị viên nếu bạn cần cấp quyền."
       },
-      "401": {
-        "caption": "LỖI 401 • HẾT PHIÊN ĐĂNG NHẬP",
-        "title": "Phiên đăng nhập đã hết hạn",
-        "description": "Để đảm bảo an toàn thông tin, phiên làm việc của bạn đã kết thúc. Vui lòng đăng nhập lại."
+      "404": {
+        "caption": "LỖI 404 • KHÔNG TÌM THẤY",
+        "title": "Không tìm thấy trang này",
+        "description": "Địa chỉ bạn yêu cầu không tồn tại, đã bị đổi tên hoặc tạm thời không khả dụng."
       },
       "408": {
         "caption": "LỖI 408 • QUÁ THỜI GIAN CHỜ",
@@ -495,13 +501,13 @@
     "scenarioLabel": "Kịch bản Mock API:",
     "devOnlyNote": "Chỉ hiển thị trong môi trường DEV (import.meta.env.DEV)",
     "scenarios": {
-      "normal": "Bình thường (Normal 200ms)",
-      "slow": "Chậm (Slow 1500ms)",
-      "empty": "Dữ liệu rỗng (Empty)",
       "401": "Lỗi 401 Hết hạn phiên",
       "403": "Lỗi 403 Cấm truy cập",
       "404": "Lỗi 404 Không tìm thấy",
       "500": "Lỗi 500 Máy chủ",
+      "normal": "Bình thường (Normal 200ms)",
+      "slow": "Chậm (Slow 1500ms)",
+      "empty": "Dữ liệu rỗng (Empty)",
       "offline": "Mất kết nối mạng"
     }
   }
