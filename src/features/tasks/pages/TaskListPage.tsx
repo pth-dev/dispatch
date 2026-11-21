@@ -184,6 +184,7 @@ export function TaskListPage() {
             <TaskCardGrid
               tasks={filteredItems}
               isLoading={isLoading}
+              statusFilter={params.status}
               resetKey={cardResetKey}
               emptyMessage={emptyMessage}
             />

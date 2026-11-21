@@ -1,40 +1,51 @@
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/components/ui/button'
-import type { RawTask } from '@/schemas/task'
-import { useDeptNameResolver } from '../hooks/use-dept-name-resolver'
-import { useSiteNameResolver } from '../hooks/use-site-name-resolver'
-import { mapTaskToCardViewModel } from '../utils/task-card-mapper'
-import { TaskCard } from './TaskCard'
+import type { RawTask, TaskStatusFilter } from '@/schemas/task'
+import { TaskCardSection } from './TaskCardSection'
 import { TaskCardSkeleton } from './TaskCardSkeleton'
 
 type TaskCardGridProps = {
   tasks: RawTask[]
   isLoading: boolean
+  statusFilter?: TaskStatusFilter
   resetKey: string
   emptyMessage?: string
-  renderCard?: (task: RawTask) => React.ReactNode
 }
 
 const SKELETON_INDICES = [0, 1, 2, 3, 4, 5] as const
-const CARD_BATCH_SIZE = 24
+const INCOMPLETE_BATCH_SIZE = 18
+const COMPLETED_BATCH_SIZE = 12
+
+const COMPLETED_ONLY_FILTERS = new Set<TaskStatusFilter>([
+  'completed',
+  'completed_ontime',
+  'late_completed',
+])
+
+const INCOMPLETE_ONLY_FILTERS = new Set<TaskStatusFilter>([
+  'incomplete',
+  'not_started',
+  'in_progress',
+  'delayed_pending',
+  'paused',
+])
 
 export function TaskCardGrid({
   tasks,
   isLoading,
+  statusFilter,
   resetKey,
   emptyMessage,
-  renderCard,
 }: TaskCardGridProps) {
   const { t } = useTranslation()
-  const resolveDeptName = useDeptNameResolver()
-  const resolveSiteName = useSiteNameResolver()
   const [prevResetKey, setPrevResetKey] = React.useState(resetKey)
-  const [limit, setLimit] = React.useState(CARD_BATCH_SIZE)
+  const [incompleteLimit, setIncompleteLimit] = React.useState(INCOMPLETE_BATCH_SIZE)
+  const [completedLimit, setCompletedLimit] = React.useState(COMPLETED_BATCH_SIZE)
 
   if (prevResetKey !== resetKey) {
     setPrevResetKey(resetKey)
-    setLimit(CARD_BATCH_SIZE)
+    setIncompleteLimit(INCOMPLETE_BATCH_SIZE)
+    setCompletedLimit(COMPLETED_BATCH_SIZE)
   }
 
   if (isLoading) {
@@ -58,34 +69,32 @@ export function TaskCardGrid({
     )
   }
 
-  const visibleTasks = tasks.slice(0, limit)
+  const incompleteTasks = tasks.filter((task) => task.progress < 100)
+  const completedTasks = tasks.filter((task) => task.progress >= 100)
+
+  const showIncomplete =
+    (!statusFilter || !COMPLETED_ONLY_FILTERS.has(statusFilter)) && incompleteTasks.length > 0
+  const showCompleted =
+    (!statusFilter || !INCOMPLETE_ONLY_FILTERS.has(statusFilter)) && completedTasks.length > 0
 
   return (
-    <div className="flex-1 min-h-0 overflow-auto p-4 space-y-4">
-      <div data-testid="task-card-grid" className="grid grid-cols-task-cards auto-rows-fr gap-4">
-        {visibleTasks.map((task) =>
-          renderCard ? (
-            <React.Fragment key={task.id}>{renderCard(task)}</React.Fragment>
-          ) : (
-            <TaskCard
-              key={task.id}
-              vm={mapTaskToCardViewModel(task, { resolveDeptName, resolveSiteName })}
-            />
-          ),
-        )}
-      </div>
+    <div className="flex-1 min-h-0 overflow-auto p-4 space-y-6">
+      {showIncomplete && (
+        <TaskCardSection
+          variant="incomplete"
+          tasks={incompleteTasks}
+          limit={incompleteLimit}
+          onShowMore={() => setIncompleteLimit((n) => n + INCOMPLETE_BATCH_SIZE)}
+        />
+      )}
 
-      {visibleTasks.length < tasks.length && (
-        <div className="flex justify-center pt-1">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setLimit((n) => n + CARD_BATCH_SIZE)}
-            className="h-11 lg:h-10 px-4 text-xs"
-          >
-            {t('tasks.card.showMore', { shown: visibleTasks.length, total: tasks.length })}
-          </Button>
-        </div>
+      {showCompleted && (
+        <TaskCardSection
+          variant="completed"
+          tasks={completedTasks}
+          limit={completedLimit}
+          onShowMore={() => setCompletedLimit((n) => n + COMPLETED_BATCH_SIZE)}
+        />
       )}
     </div>
   )

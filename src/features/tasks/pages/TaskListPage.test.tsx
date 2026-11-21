@@ -238,12 +238,12 @@ describe('TaskListPage', () => {
     const user = userEvent.setup()
     await user.click(screen.getByRole('button', { name: /^thẻ$/i }))
 
-    // Single equal-size grid: one card per task, pagination hidden
-    const cards = screen.getAllByTestId('task-card')
-    expect(cards).toHaveLength(2)
-    expect(screen.getByTestId('task-card-grid')).toBeInTheDocument()
-    expect(screen.getByText('Hệ thống mạng')).toBeInTheDocument()
-    expect(screen.getByText('Phần cứng')).toBeInTheDocument()
+    // Single equal-size cards grouped by task_type inside incomplete/completed sections, pagination hidden
+    expect(screen.getByRole('region', { name: 'Đang xử lý' })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: 'Đã hoàn thành' })).toBeInTheDocument()
+    expect(screen.getAllByTestId('task-card')).toHaveLength(2)
+    expect(screen.getAllByText('Hệ thống mạng').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText('Phần cứng').length).toBeGreaterThanOrEqual(1)
     expect(screen.queryByRole('button', { name: /trang sau/i })).not.toBeInTheDocument()
   })
 })

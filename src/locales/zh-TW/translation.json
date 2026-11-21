@@ -173,6 +173,10 @@
     },
     "card": {
       "workItemsCount": "{{count}} 項",
+      "incompleteSection": "處理中",
+      "completedSection": "已結案",
+      "uncategorized": "未分類",
+      "groupCount": "{{count}} 案",
       "untranslated": "未翻譯",
       "translated": "已翻譯",
       "readFull": "檢視完整",

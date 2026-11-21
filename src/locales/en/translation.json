@@ -173,6 +173,10 @@
     },
     "card": {
       "workItemsCount": "{{count}} items",
+      "incompleteSection": "In progress",
+      "completedSection": "Completed",
+      "uncategorized": "Uncategorized",
+      "groupCount": "{{count}} tasks",
       "untranslated": "Untranslated",
       "translated": "Translated",
       "readFull": "Read full",

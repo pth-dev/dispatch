@@ -4,7 +4,14 @@ import { CircleAlert, Languages, Tag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { StatusText } from '@/components/ui/status-text'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { APP_ROUTES } from '@/constants/app-routes'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { cn } from '@/utils'
 import { useTitleTruncation } from '../hooks/use-title-truncation'
 import type { TaskCardViewModel } from '../utils/task-card-mapper'
@@ -17,9 +24,12 @@ export type TaskCardProps = {
 
 export function TaskCard({ vm }: TaskCardProps) {
   const { t } = useTranslation()
+  const isMobile = useIsMobile()
   const { ref: titleRef, isTruncated } = useTitleTruncation(vm.title)
   const detailPath = APP_ROUTES.TASK_DETAIL(vm.id)
   const actionPath = vm.needsReportToday ? `${detailPath}#report` : detailPath
+
+  const showDesktopTooltip = !isMobile && isTruncated
 
   return (
     <article data-testid="task-card" className="h-full">
@@ -52,18 +62,29 @@ export function TaskCard({ vm }: TaskCardProps) {
           />
         </div>
 
-        {/* 2. Title (2 lines reserved, stretched-link) */}
-        <h3 className="m-0">
-          <Link
-            ref={titleRef}
-            to={detailPath}
-            className="block h-card-title line-clamp-2 wrap-anywhere text-base font-semibold text-foreground after:absolute after:inset-0 focus-visible:outline-none"
-          >
-            {vm.title}
-          </Link>
-        </h3>
+        {/* 2. Title (2 lines reserved, stretched-link, tooltip on desktop when truncated) */}
+        <h4 className="m-0">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  ref={titleRef}
+                  to={detailPath}
+                  className="block h-card-title line-clamp-2 wrap-anywhere text-base font-semibold text-foreground after:absolute after:inset-0 focus-visible:outline-none"
+                >
+                  {vm.title}
+                </Link>
+              </TooltipTrigger>
+              {showDesktopTooltip && (
+                <TooltipContent className="max-w-sm wrap-anywhere">
+                  {vm.title}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        </h4>
 
-        {/* 3. Sub row (1 line reserved) */}
+        {/* 3. Sub row (1 line reserved; "Xem đủ" on mobile only) */}
         <div className="flex h-card-row items-center justify-between gap-2 text-xs text-muted-foreground">
           <div className="flex min-w-0 flex-1 items-center gap-3">
             <span className="inline-flex min-w-0 items-center gap-1.5">
@@ -77,7 +98,7 @@ export function TaskCard({ vm }: TaskCardProps) {
               </span>
             )}
           </div>
-          {isTruncated && <TaskCardFullTitleAction vm={vm} />}
+          {isMobile && isTruncated && <TaskCardFullTitleAction vm={vm} />}
         </div>
 
         {/* 4. Info block (4 fixed rows) */}

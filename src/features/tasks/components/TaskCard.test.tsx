@@ -71,29 +71,38 @@ describe('TaskCard', () => {
     expect(screen.getByText('Chưa dịch')).toBeInTheDocument()
   })
 
-  it('shows "Xem đủ" only when the title overflows and opens the popover with the full title', async () => {
+  it('uses a tooltip on desktop and shows "Xem đủ" sheet with full title only on mobile when truncated', async () => {
     const task = fixture(407)
-    renderCard(task)
+    const user = userEvent.setup()
 
+    // 1. Desktop (default width >= 1024): tooltip renders on hover, no "Xem đủ" button
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1440 })
+    const { unmount } = renderCard(task)
+    const desktopLink = screen.getByRole('link', { name: task.title })
+    Object.defineProperty(desktopLink, 'clientHeight', { configurable: true, value: 48 })
+    Object.defineProperty(desktopLink, 'scrollHeight', { configurable: true, value: 96 })
+    window.dispatchEvent(new Event('resize'))
+
+    await user.hover(desktopLink)
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(task.title)
     expect(screen.queryByRole('button', { name: 'Xem đủ' })).not.toBeInTheDocument()
+    unmount()
 
-    const link = screen.getByRole('link', { name: task.title })
-    Object.defineProperty(link, 'clientHeight', { configurable: true, value: 48 })
-    Object.defineProperty(link, 'scrollHeight', { configurable: true, value: 96 })
+    // 2. Mobile (< 1024): "Xem đủ" button appears and opens sheet with the full title only
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 375 })
+    renderCard(task)
+    const mobileLink = screen.getByRole('link', { name: task.title })
+    Object.defineProperty(mobileLink, 'clientHeight', { configurable: true, value: 48 })
+    Object.defineProperty(mobileLink, 'scrollHeight', { configurable: true, value: 96 })
     window.dispatchEvent(new Event('resize'))
 
     const readFullBtn = await waitFor(() =>
       screen.getByRole('button', { name: 'Xem đủ' }),
     )
-    expect(readFullBtn).toBeInTheDocument()
-
-    const user = userEvent.setup()
     await user.click(readFullBtn)
 
-    expect(await screen.findByRole('link', { name: 'Mở nhiệm vụ' })).toHaveAttribute(
-      'href',
-      '/tasks/407',
-    )
+    expect(await screen.findByText(/#407 — Tiêu đề đầy đủ/)).toBeInTheDocument()
     expect(screen.getAllByText(task.title).length).toBeGreaterThanOrEqual(2)
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1440 })
   })
 })
