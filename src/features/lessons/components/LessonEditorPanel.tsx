@@ -168,7 +168,7 @@ export function LessonEditorPanel({
             htmlFor="lesson-topic"
             className="text-xs font-semibold tracking-wide text-muted-foreground uppercase"
           >
-            {t('lessons.fields.topic')} <span className="text-destructive">*</span>
+            {t('lessons.fields.topic')} <span aria-hidden="true" className="text-destructive">*</span>
           </label>
           <Controller
             name="topic"
@@ -181,12 +181,13 @@ export function LessonEditorPanel({
                 disabled={isSaving}
                 placeholder={t('lessons.editor.topicPlaceholder')}
                 aria-invalid={Boolean(errors.topic)}
+                aria-describedby={errors.topic?.message ? 'lesson-topic-error' : undefined}
                 className="h-11 lg:h-10"
               />
             )}
           />
           {errors.topic?.message && (
-            <p role="alert" className="text-xs text-destructive">
+            <p id="lesson-topic-error" role="alert" className="text-xs text-destructive">
               {t(errors.topic.message, { max: LESSON_TOPIC_MAX })}
             </p>
           )}
@@ -197,7 +198,7 @@ export function LessonEditorPanel({
             htmlFor="lesson-keywords"
             className="text-xs font-semibold tracking-wide text-muted-foreground uppercase"
           >
-            {t('lessons.fields.keywords')} <span className="text-destructive">*</span>
+            {t('lessons.fields.keywords')} <span aria-hidden="true" className="text-destructive">*</span>
           </label>
           <Controller
             name="keywords"
@@ -253,7 +254,7 @@ export function LessonEditorPanel({
         </div>
       </div>
 
-      <div className="space-y-3 rounded-xl border border-destructive/25 bg-card p-4">
+      <div className="space-y-3 rounded-xl border border-border bg-card p-4">
         <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
           {t('lessons.preview.liveHeading')}
         </h3>
@@ -264,7 +265,7 @@ export function LessonEditorPanel({
           content={watchedContent}
         />
         {previewKeywords.length > 0 && (
-          <p className="text-xs font-medium text-destructive">
+          <p className="text-xs font-medium text-warning">
             {t('lessons.preview.hitSummary', {
               total: previewHits.length,
               open: openHitsCount,

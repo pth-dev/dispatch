@@ -200,7 +200,9 @@ export function LessonsPage() {
         <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-12">
           <div
             className={
-              isRightPanelActiveOnMobile ? 'hidden lg:col-span-5 lg:block' : 'lg:col-span-5'
+              isRightPanelActiveOnMobile
+                ? 'hidden lg:sticky lg:top-4 lg:col-span-5 lg:block'
+                : 'lg:sticky lg:top-4 lg:col-span-5'
             }
           >
             <LessonListPanel

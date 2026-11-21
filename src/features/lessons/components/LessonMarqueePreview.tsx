@@ -38,7 +38,7 @@ export function LessonMarqueePreview({
   const displayTopic = topic.trim() || t('lessons.preview.untitledTopic')
 
   return (
-    <div className="flex items-start gap-2 rounded-lg border border-destructive/25 bg-destructive/5 px-3 py-2 text-xs text-destructive">
+    <div className="flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/5 px-3 py-2 text-xs text-warning">
       <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
       <p className="min-w-0 flex-1 leading-relaxed break-words">
         <span className="font-semibold">{t('lessons.preview.alertPrefix')}</span>{' '}

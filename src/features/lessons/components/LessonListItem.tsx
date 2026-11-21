@@ -1,4 +1,4 @@
-import { AlertTriangle, GraduationCap, Image as ImageIcon, User } from 'lucide-react'
+import { AlertCircle, GraduationCap, Image as ImageIcon, Link2, User } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { RawLesson } from '@/schemas/lesson'
 import { resolveFileUrl } from '@/utils/task-domain'
@@ -9,7 +9,7 @@ import {
   parseLessonKeywords,
 } from '../utils/lesson-domain'
 
-const MAX_VISIBLE_KEYWORDS = 6
+const MAX_VISIBLE_KEYWORDS = 3
 
 type LessonListItemProps = {
   lesson: RawLesson
@@ -73,13 +73,13 @@ export function LessonListItem({
               {visibleKeywords.map((kw) => (
                 <span
                   key={kw}
-                  className="rounded border border-destructive/20 bg-destructive/5 px-1.5 py-0.5 text-[11px] font-medium text-destructive"
+                  className="max-w-44 truncate rounded border border-border bg-secondary px-1.5 py-0.5 text-[11px] font-medium text-secondary-foreground"
                 >
                   {kw}
                 </span>
               ))}
               {extraCount > 0 && (
-                <span className="px-1 py-0.5 text-[11px] font-medium text-muted-foreground">
+                <span className="rounded border border-border bg-card px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground">
                   +{extraCount}
                 </span>
               )}
@@ -100,10 +100,14 @@ export function LessonListItem({
             )}
             <span
               className={`inline-flex items-center gap-1 ${
-                openHitCount > 0 ? 'font-semibold text-destructive' : ''
+                openHitCount > 0 ? 'font-medium text-warning' : ''
               }`}
             >
-              <AlertTriangle className="size-3" aria-hidden="true" />
+              {openHitCount > 0 ? (
+                <AlertCircle className="size-3" aria-hidden="true" />
+              ) : (
+                <Link2 className="size-3" aria-hidden="true" />
+              )}
               {openHitCount > 0
                 ? t('lessons.list.hitSummaryOpen', {
                     total: hitCount,

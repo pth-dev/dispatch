@@ -29,7 +29,7 @@ function LessonMatchedTaskRow({ hit }: { hit: MatchedLessonTask }) {
     <Link
       to={APP_ROUTES.TASK_DETAIL(task.id)}
       className={`flex items-center gap-3 rounded-lg border bg-card px-3 py-2.5 transition-colors hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-        isCompleted ? 'border-border' : 'border-destructive/30'
+        isCompleted ? 'border-border' : 'border-warning/35'
       }`}
     >
       <span className="shrink-0 text-xs font-semibold text-muted-foreground">
@@ -42,7 +42,7 @@ function LessonMatchedTaskRow({ hit }: { hit: MatchedLessonTask }) {
             seg.highlighted ? (
               <mark
                 key={idx}
-                className="rounded bg-destructive/15 px-0.5 text-destructive"
+                className="rounded bg-warning/15 px-0.5 font-semibold text-warning"
               >
                 {seg.text}
               </mark>
@@ -59,15 +59,19 @@ function LessonMatchedTaskRow({ hit }: { hit: MatchedLessonTask }) {
           <span>
             {t('lessons.matchedTasks.reporter')}: {task.reporter || '-'}
           </span>
-          <span className="font-medium text-destructive">
+          <span className="font-medium text-warning">
             {matchedKeywords.join(', ')}
           </span>
         </div>
       </div>
 
       <Badge
-        variant={isCompleted ? 'secondary' : 'destructive'}
-        className="shrink-0 text-[11px]"
+        variant="outline"
+        className={`shrink-0 text-[11px] ${
+          isCompleted
+            ? 'border-success/25 bg-success/10 text-success'
+            : 'border-primary/25 bg-primary-soft text-primary'
+        }`}
       >
         {isCompleted
           ? t('lessons.matchedTasks.completed')

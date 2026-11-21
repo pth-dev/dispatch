@@ -89,7 +89,7 @@ export function LessonKeywordInput({
         {keywords.map((kw, idx) => (
           <span
             key={`${kw}-${idx}`}
-            className="inline-flex items-center gap-1 rounded-md border border-destructive/25 bg-destructive/5 py-0.5 pr-1 pl-2 text-xs font-medium text-destructive"
+            className="inline-flex items-center gap-1 rounded-md border border-border bg-secondary py-0.5 pr-1 pl-2 text-xs font-medium text-secondary-foreground"
           >
             <span>{kw}</span>
             <button
@@ -97,7 +97,7 @@ export function LessonKeywordInput({
               disabled={disabled}
               onClick={() => handleRemove(idx)}
               aria-label={t('lessons.editor.removeKeyword', { keyword: kw })}
-              className="inline-flex size-5 items-center justify-center rounded hover:bg-destructive/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+              className="inline-flex size-5 items-center justify-center rounded text-muted-foreground hover:bg-border/70 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
             >
               <X className="size-3" aria-hidden="true" />
             </button>

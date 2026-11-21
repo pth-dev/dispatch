@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowLeft, GraduationCap, Pencil, Trash2 } from 'lucide-react'
+import { ArrowLeft, FileText, GraduationCap, Link2, Pencil, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import {
   AlertDialog,
@@ -12,6 +12,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { RawLesson } from '@/schemas/lesson'
 import { resolveFileUrl } from '@/utils/task-domain'
 import {
@@ -61,7 +62,7 @@ export function LessonDetailPanel({
         <p className="mt-1 text-xs text-muted-foreground">
           {t('lessons.empty.selectSubprompt')}
         </p>
-        <div className="mt-5 max-w-lg rounded-xl border border-destructive/20 bg-destructive/5 p-4 text-left text-xs leading-relaxed text-destructive">
+        <div className="mt-5 max-w-lg rounded-xl border border-warning/30 bg-warning/5 p-4 text-left text-xs leading-relaxed text-warning">
           {t('lessons.ruleNotice')}
         </div>
       </section>
@@ -163,7 +164,7 @@ export function LessonDetailPanel({
             {keywords.map((kw) => (
               <span
                 key={kw}
-                className="rounded-md border border-destructive/25 bg-destructive/5 px-2 py-0.5 text-xs font-medium text-destructive"
+                className="rounded-md border border-border bg-secondary px-2 py-0.5 text-xs font-medium text-secondary-foreground"
               >
                 {kw}
               </span>
@@ -184,54 +185,64 @@ export function LessonDetailPanel({
         </div>
       </div>
 
-      <div className="space-y-1.5">
-        <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-          {t('lessons.fields.content')}
-        </h3>
-        <div className="rounded-xl border border-border bg-card p-4 text-sm leading-relaxed whitespace-pre-wrap text-foreground">
-          {lesson.content.trim() ? (
-            lesson.content
-          ) : (
-            <span className="text-muted-foreground">{t('lessons.detail.noContent')}</span>
-          )}
-        </div>
-      </div>
+      <Tabs key={lesson.id} defaultValue="content" className="gap-3">
+        <TabsList
+          variant="line"
+          className="w-full justify-start overflow-x-auto border-b border-border pb-1"
+        >
+          <TabsTrigger value="content" className="flex-none px-3 cursor-pointer">
+            <FileText className="size-3.5" aria-hidden="true" />
+            <span>{t('lessons.fields.content')}</span>
+          </TabsTrigger>
+          <TabsTrigger value="matched" className="flex-none px-3 cursor-pointer">
+            <Link2 className="size-3.5" aria-hidden="true" />
+            <span>{t('lessons.matchedTasks.heading', { count: matchedTasks.length })}</span>
+          </TabsTrigger>
+        </TabsList>
 
-      {images.length > 0 && (
-        <div className="space-y-1.5">
-          <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-            {t('lessons.fields.imagesCount', { count: images.length })}
-          </h3>
-          <div className="flex flex-wrap gap-3 rounded-xl border border-border bg-card p-4">
-            {images.map((img, index) => {
-              const url = resolveFileUrl(img.path)
-              if (!url) return null
-              return (
-                <button
-                  key={`${img.path}-${index}`}
-                  type="button"
-                  onClick={() => onOpenImage({ src: url, name: img.name })}
-                  className="overflow-hidden rounded-lg border border-border transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
-                >
-                  <img
-                    src={url}
-                    alt={img.name || lesson.topic}
-                    loading="lazy"
-                    className="size-24 object-cover"
-                  />
-                </button>
-              )
-            })}
+        <TabsContent value="content" className="space-y-4">
+          <div className="rounded-xl border border-border bg-card p-5 text-sm leading-relaxed whitespace-pre-wrap text-foreground">
+            {lesson.content.trim() ? (
+              lesson.content
+            ) : (
+              <span className="text-muted-foreground">{t('lessons.detail.noContent')}</span>
+            )}
           </div>
-        </div>
-      )}
 
-      <div className="space-y-2">
-        <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-          {t('lessons.matchedTasks.heading', { count: matchedTasks.length })}
-        </h3>
-        <LessonMatchedTasks hits={matchedTasks} />
-      </div>
+          {images.length > 0 && (
+            <div className="space-y-1.5">
+              <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                {t('lessons.fields.imagesCount', { count: images.length })}
+              </h3>
+              <div className="flex flex-wrap gap-3 rounded-xl border border-border bg-card p-4">
+                {images.map((img, index) => {
+                  const url = resolveFileUrl(img.path)
+                  if (!url) return null
+                  return (
+                    <button
+                      key={`${img.path}-${index}`}
+                      type="button"
+                      onClick={() => onOpenImage({ src: url, name: img.name })}
+                      className="overflow-hidden rounded-lg border border-border transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+                    >
+                      <img
+                        src={url}
+                        alt={img.name || lesson.topic}
+                        loading="lazy"
+                        className="size-24 object-cover"
+                      />
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="matched">
+          <LessonMatchedTasks hits={matchedTasks} />
+        </TabsContent>
+      </Tabs>
 
       <AlertDialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
         <AlertDialogContent>

@@ -115,12 +115,13 @@ describe('LessonsPage', () => {
     expect(await screen.findByText('Quy định thay đổi tường lửa')).toBeInTheDocument()
     expect(screen.getByText('Bảo trì máy in tem')).toBeInTheDocument()
 
-    // Select first lesson to inspect details and matched tasks
+    // Select first lesson to inspect details and switch to matched tasks tab
     await user.click(screen.getByText('Quy định thay đổi tường lửa'))
     expect(
       await screen.findByRole('heading', { name: 'Quy định thay đổi tường lửa' }),
     ).toBeInTheDocument()
-    expect(screen.getByText('#501')).toBeInTheDocument()
+    await user.click(screen.getByRole('tab', { name: /Bài điều phối trùng từ khóa/i }))
+    expect(await screen.findByText('#501')).toBeInTheDocument()
 
     // Filter by "Có bài trùng" -> hides printer lesson
     await user.click(screen.getByRole('button', { name: 'Có bài trùng' }))
