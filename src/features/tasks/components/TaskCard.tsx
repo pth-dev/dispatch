@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { CircleAlert, Languages, Tag } from 'lucide-react'
@@ -7,17 +6,18 @@ import { Card } from '@/components/ui/card'
 import { StatusText } from '@/components/ui/status-text'
 import { APP_ROUTES } from '@/constants/app-routes'
 import { cn } from '@/utils'
+import { useTitleTruncation } from '../hooks/use-title-truncation'
 import type { TaskCardViewModel } from '../utils/task-card-mapper'
+import { TaskCardFullTitleAction } from './TaskCardFullTitleAction'
 import { TaskCardInfoBlock } from './TaskCardInfoBlock'
 
 export type TaskCardProps = {
   vm: TaskCardViewModel
-  titleRef?: React.Ref<HTMLAnchorElement>
-  titleAction?: React.ReactNode
 }
 
-export function TaskCard({ vm, titleRef, titleAction }: TaskCardProps) {
+export function TaskCard({ vm }: TaskCardProps) {
   const { t } = useTranslation()
+  const { ref: titleRef, isTruncated } = useTitleTruncation(vm.title)
   const detailPath = APP_ROUTES.TASK_DETAIL(vm.id)
   const actionPath = vm.needsReportToday ? `${detailPath}#report` : detailPath
 
@@ -77,7 +77,7 @@ export function TaskCard({ vm, titleRef, titleAction }: TaskCardProps) {
               </span>
             )}
           </div>
-          {titleAction}
+          {isTruncated && <TaskCardFullTitleAction vm={vm} />}
         </div>
 
         {/* 4. Info block (4 fixed rows) */}

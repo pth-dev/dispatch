@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
 import { describe, expect, it } from 'vitest'
 import type { RawTask } from '@/schemas/task'
@@ -68,5 +69,31 @@ describe('TaskCard', () => {
     renderCard(fixture(407))
     expect(screen.getByText('Khẩn cấp')).toBeInTheDocument()
     expect(screen.getByText('Chưa dịch')).toBeInTheDocument()
+  })
+
+  it('shows "Xem đủ" only when the title overflows and opens the popover with the full title', async () => {
+    const task = fixture(407)
+    renderCard(task)
+
+    expect(screen.queryByRole('button', { name: 'Xem đủ' })).not.toBeInTheDocument()
+
+    const link = screen.getByRole('link', { name: task.title })
+    Object.defineProperty(link, 'clientHeight', { configurable: true, value: 48 })
+    Object.defineProperty(link, 'scrollHeight', { configurable: true, value: 96 })
+    window.dispatchEvent(new Event('resize'))
+
+    const readFullBtn = await waitFor(() =>
+      screen.getByRole('button', { name: 'Xem đủ' }),
+    )
+    expect(readFullBtn).toBeInTheDocument()
+
+    const user = userEvent.setup()
+    await user.click(readFullBtn)
+
+    expect(await screen.findByRole('link', { name: 'Mở nhiệm vụ' })).toHaveAttribute(
+      'href',
+      '/tasks/407',
+    )
+    expect(screen.getAllByText(task.title).length).toBeGreaterThanOrEqual(2)
   })
 })
