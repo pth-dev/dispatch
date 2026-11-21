@@ -284,7 +284,9 @@
       "recurEnd": "Recurrence end date (optional)",
       "autoSplitHint": "Selecting 2+ assignees automatically splits into per-person tasks",
       "readers": "Read-only viewers",
-      "crossDept": "Allow cross-department viewing & reporting"
+      "crossDept": "Allow cross-department viewing & reporting",
+      "crossViewers": "Cross-department viewers",
+      "filterByAssignedDept": "Only show assigned department"
     },
     "weekdays": {
       "d1": "Mon",

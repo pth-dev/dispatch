@@ -19,26 +19,19 @@ import { APP_ROUTES } from '@/constants/app-routes'
 import { useAppStore } from '@/app/store'
 import {
   TaskEditorFormSchema,
-  type RawAttachment,
   type RawTask,
   type TaskEditorFormValues,
 } from '@/schemas/task'
 import { canSetCross, canSetReaders } from '@/utils/permissions'
-import { parseAttachments } from '@/utils/task-domain'
-import { resolveApiErrorMessage } from '@/services'
 import {
-  useCreateTask,
   useMetaDepts,
   useMetaSites,
   usePocketTaskTypes,
-  useUpdateTask,
   useUserDirectory,
 } from '../../api/queries'
-import {
-  buildDefaultTaskEditorValues,
-  buildTaskFormData,
-} from '../../api/build-task-form-data'
+import { buildDefaultTaskEditorValues } from '../../api/build-task-form-data'
 import { useDuplicateTaskCheck } from '../../hooks/use-duplicate-task-check'
+import { useTaskEditorSubmit } from '../../hooks/use-task-editor-submit'
 import { TaskBasicInfoSection } from './TaskBasicInfoSection'
 import { TaskPeopleSection } from './TaskPeopleSection'
 import { TaskScheduleSection } from './TaskScheduleSection'
@@ -50,7 +43,7 @@ type TaskEditorFormProps = {
 }
 
 export function TaskEditorForm({ mode, sourceTask }: TaskEditorFormProps) {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const user = useAppStore((s) => s.user)
 
@@ -59,19 +52,10 @@ export function TaskEditorForm({ mode, sourceTask }: TaskEditorFormProps) {
   const { data: directory = [] } = useUserDirectory()
   const { data: pocketTypes = [] } = usePocketTaskTypes()
 
-  const createTask = useCreateTask()
-  const updateTask = useUpdateTask()
-
   const depts = metaDepts?.depts ?? []
   const sites = metaSites?.sites ?? []
   const allowReaders = canSetReaders(user)
   const allowCross = canSetCross(user)
-
-  const [newFiles, setNewFiles] = React.useState<File[]>([])
-  const [retainedFiles, setRetainedFiles] = React.useState<RawAttachment[]>(() =>
-    sourceTask ? parseAttachments(sourceTask.attachments) : [],
-  )
-  const [submitError, setSubmitError] = React.useState<string | null>(null)
   const [leaveDialogOpen, setLeaveDialogOpen] = React.useState(false)
 
   const {
@@ -86,6 +70,21 @@ export function TaskEditorForm({ mode, sourceTask }: TaskEditorFormProps) {
     defaultValues: buildDefaultTaskEditorValues(user, sourceTask),
   })
 
+  const {
+    newFiles,
+    setNewFiles,
+    retainedFiles,
+    handleRemoveRetainedFile,
+    submitError,
+    isPending,
+    onSubmit,
+  } = useTaskEditorSubmit({
+    mode,
+    sourceTask,
+    reporterUsername: user?.username ?? '',
+    setError,
+  })
+
   const watchTitle = useWatch({ control, name: 'title' })
   const watchDueDate = useWatch({ control, name: 'due_date' })
 
@@ -94,68 +93,6 @@ export function TaskEditorForm({ mode, sourceTask }: TaskEditorFormProps) {
     dueDate: watchDueDate,
     excludeId: mode === 'edit' ? sourceTask?.id : undefined,
   })
-
-  const onSubmit = async (values: TaskEditorFormValues) => {
-    setSubmitError(null)
-
-    if (mode === 'clone' && sourceTask) {
-      if (values.recur_type === 'once') {
-        const srcDay = (sourceTask.due_date ?? '').trim().slice(0, 10)
-        const nextDay = values.due_date.trim().slice(0, 10)
-        if (!nextDay || nextDay === srcDay) {
-          setError('due_date', { message: 'tasks.validation.cloneDueDateMustChange' })
-          setSubmitError(t('tasks.validation.cloneDueDateMustChange'))
-          return
-        }
-      } else {
-        const srcEnd = (sourceTask.recur_end ?? '').trim().slice(0, 10)
-        const nextEnd = values.recur_end.trim().slice(0, 10)
-        if (!nextEnd || nextEnd === srcEnd) {
-          setError('recur_end', { message: 'tasks.validation.cloneRecurEndMustChange' })
-          setSubmitError(t('tasks.validation.cloneRecurEndMustChange'))
-          return
-        }
-      }
-    }
-
-    const preservedWorkItems =
-      mode === 'edit' && sourceTask?.work_items
-        ? typeof sourceTask.work_items === 'string'
-          ? sourceTask.work_items
-          : JSON.stringify(sourceTask.work_items)
-        : null
-
-    const preservedTypeDetail =
-      mode === 'edit' && sourceTask?.type_detail
-        ? typeof sourceTask.type_detail === 'string'
-          ? sourceTask.type_detail
-          : JSON.stringify(sourceTask.type_detail)
-        : null
-
-    const formData = buildTaskFormData({
-      mode,
-      values,
-      reporter: user?.username ?? '',
-      newFiles,
-      retainedFiles,
-      cloneFromId: mode === 'clone' ? sourceTask?.id : undefined,
-      preservedWorkItems,
-      preservedTypeDetail,
-      preservedInstallReq: mode === 'edit' || mode === 'clone' ? sourceTask?.install_req ?? null : null,
-    })
-
-    try {
-      if (mode === 'edit' && sourceTask) {
-        await updateTask.mutateAsync({ id: sourceTask.id, formData })
-        navigate(APP_ROUTES.TASK_DETAIL(sourceTask.id), { replace: true })
-      } else {
-        const res = await createTask.mutateAsync(formData)
-        navigate(res.id ? APP_ROUTES.TASK_DETAIL(res.id) : APP_ROUTES.TASKS, { replace: true })
-      }
-    } catch (err) {
-      setSubmitError(resolveApiErrorMessage(err, t, i18n.language))
-    }
-  }
 
   const navigateAway = () => {
     if (window.history.length > 1) {
@@ -229,11 +166,9 @@ export function TaskEditorForm({ mode, sourceTask }: TaskEditorFormProps) {
               pocketTypes={pocketTypes}
               newFiles={newFiles}
               retainedFiles={retainedFiles}
-              disabled={isSubmitting || createTask.isPending || updateTask.isPending}
+              disabled={isSubmitting || isPending}
               onNewFilesChange={setNewFiles}
-              onRemoveRetainedFile={(path) =>
-                setRetainedFiles((prev) => prev.filter((f) => f.path !== path))
-              }
+              onRemoveRetainedFile={handleRemoveRetainedFile}
             />
             <TaskPeopleSection
               control={control}
@@ -269,10 +204,7 @@ export function TaskEditorForm({ mode, sourceTask }: TaskEditorFormProps) {
           <Button type="button" variant="outline" onClick={handleCancel}>
             {t('common.cancel')}
           </Button>
-          <Button
-            type="submit"
-            disabled={isSubmitting || createTask.isPending || updateTask.isPending}
-          >
+          <Button type="submit" disabled={isSubmitting || isPending}>
             {mode === 'edit' ? t('common.save') : t('tasks.createForm.submit')}
           </Button>
         </div>

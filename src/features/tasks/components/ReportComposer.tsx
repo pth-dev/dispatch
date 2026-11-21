@@ -18,6 +18,7 @@ import { isTaskPaused } from '@/utils/task-domain'
 import { resolveApiErrorMessage } from '@/services'
 import { SELECT_FIELD_CLASS } from '../api/task-catalog'
 import { useSubmitReport } from '../api/queries'
+import { useUserDisplayResolver } from '../hooks/use-user-display-resolver'
 
 type ReportComposerProps = {
   task: RawTask
@@ -28,6 +29,7 @@ type ReportComposerProps = {
 export function ReportComposer({ task, user, splitMembers }: ReportComposerProps) {
   const { t, i18n } = useTranslation()
   const submitReport = useSubmitReport()
+  const { resolveAssignees } = useUserDisplayResolver()
   const [files, setFiles] = React.useState<File[]>([])
   const [submitError, setSubmitError] = React.useState<string | null>(null)
 
@@ -157,7 +159,7 @@ export function ReportComposer({ task, user, splitMembers }: ReportComposerProps
               >
                 {splitMembers.map((m) => (
                   <option key={m.id} value={m.id}>
-                    #{m.id} • {m.assignee}
+                    #{m.id} • {resolveAssignees(m.assignee)}
                   </option>
                 ))}
               </select>

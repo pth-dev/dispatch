@@ -284,7 +284,9 @@
       "recurEnd": "循環結束日期（選填）",
       "autoSplitHint": "選擇 2 人以上將自動按人拆分任務",
       "readers": "唯讀人員",
-      "crossDept": "允許跨部門檢視與回報"
+      "crossDept": "允許跨部門檢視與回報",
+      "crossViewers": "跨部門可檢視人員",
+      "filterByAssignedDept": "僅顯示承辦部門人員"
     },
     "weekdays": {
       "d1": "週一",

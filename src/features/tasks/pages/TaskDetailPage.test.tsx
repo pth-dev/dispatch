@@ -68,6 +68,17 @@ describe('TaskDetailPage', () => {
           allDepts: [{ value: '資訊部', vn: 'Bộ phận IT' }],
         })
       }
+      if (url.includes('/meta/sites')) {
+        return jsonResponse({
+          sites: [{ value: 'YS', vn: 'Vĩnh Thịnh' }],
+          allSites: [{ value: 'YS', vn: 'Vĩnh Thịnh' }],
+        })
+      }
+      if (url.includes('/users/directory')) {
+        return jsonResponse([
+          { username: 'hieu', fullname: 'Phan Trung Hiếu', dept: '資訊部', site: 'YS' },
+        ])
+      }
       if (url.endsWith('/tasks/205/reports') && init?.method === 'POST') {
         return jsonResponse({ success: true, task_id: 205 })
       }
@@ -94,7 +105,8 @@ describe('TaskDetailPage', () => {
 
     expect(await screen.findByText('Sao lưu máy chủ hàng tuần')).toBeInTheDocument()
     expect(screen.getByText(/Hàng tuần • T2, T6/i)).toBeInTheDocument()
-    expect(screen.getByText('Bộ phận IT')).toBeInTheDocument()
+    expect(await screen.findByText('Bộ phận IT')).toBeInTheDocument()
+    expect(screen.getAllByText('Phan Trung Hiếu (hieu)').length).toBeGreaterThanOrEqual(2)
 
     const user = userEvent.setup()
     const progressInput = screen.getByLabelText(/tiến độ/i) as HTMLInputElement

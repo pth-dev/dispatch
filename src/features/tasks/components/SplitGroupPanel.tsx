@@ -5,6 +5,7 @@ import { APP_ROUTES } from '@/constants/app-routes'
 import { cn } from '@/utils'
 import { summarizeSplitMembers } from '@/utils/task-domain'
 import type { SplitMember } from '@/schemas/task'
+import { useUserDisplayResolver } from '../hooks/use-user-display-resolver'
 
 interface SplitGroupPanelProps {
   currentTaskId: number
@@ -13,6 +14,7 @@ interface SplitGroupPanelProps {
 
 export function SplitGroupPanel({ currentTaskId, members }: SplitGroupPanelProps) {
   const { t } = useTranslation()
+  const { resolveAssignees } = useUserDisplayResolver()
   if (members.length === 0) return null
 
   const summary = summarizeSplitMembers(members)
@@ -48,7 +50,7 @@ export function SplitGroupPanel({ currentTaskId, members }: SplitGroupPanelProps
               )}
             >
               <span className="truncate">
-                #{member.id} • {member.assignee || '-'}
+                #{member.id} • {resolveAssignees(member.assignee) || '-'}
               </span>
               <span className="shrink-0 font-semibold">
                 {member.paused ? t('status.paused') : `${member.progress}%`}

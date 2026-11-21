@@ -6,9 +6,10 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import type { DirectoryUser } from '@/schemas/auth'
 import type { TaskEditorFormValues } from '@/schemas/task'
+import { sameDept } from '@/utils/task-domain'
 import { MAX_ASSIGNEES } from '../../api/task-catalog'
-
-type PeopleMultiField = 'assign_person' | 'readers' | 'cross_viewers'
+import { formatUserWithCode } from '../../hooks/use-user-display-resolver'
+import { TaskViewersSubsection } from './TaskViewersSubsection'
 
 interface TaskPeopleSectionProps {
   control: Control<TaskEditorFormValues>
@@ -29,29 +30,40 @@ export function TaskPeopleSection({
 }: TaskPeopleSectionProps) {
   const { t } = useTranslation()
   const [assigneeQuery, setAssigneeQuery] = React.useState('')
+  const [filterByDept, setFilterByDept] = React.useState(false)
 
   const watchAssignees = useWatch({ control, name: 'assign_person' })
-  const watchCrossDept = useWatch({ control, name: 'cross_dept' })
-  const watchReaders = useWatch({ control, name: 'readers' })
-  const watchCrossViewers = useWatch({ control, name: 'cross_viewers' })
+  const watchAssignedUnit = useWatch({ control, name: 'assigned_unit' })
 
-  const toggleMulti = (field: PeopleMultiField, current: string[], value: string) => {
-    const next = current.includes(value)
-      ? current.filter((v) => v !== value)
-      : [...current, value]
-    setValue(field, next, { shouldDirty: true, shouldValidate: true })
+  const toggleAssignee = (username: string) => {
+    const next = watchAssignees.includes(username)
+      ? watchAssignees.filter((v) => v !== username)
+      : [...watchAssignees, username]
+    setValue('assign_person', next, { shouldDirty: true, shouldValidate: true })
   }
 
   const normalizedQuery = assigneeQuery.trim().toLowerCase()
-  const filteredDirectory = normalizedQuery
-    ? directory.filter((p) => {
-        const name = (p.fullname ?? '').toLowerCase()
-        const uname = p.username.toLowerCase()
-        return name.includes(normalizedQuery) || uname.includes(normalizedQuery)
-      })
-    : directory
-
-  const directoryByUsername = new Map(directory.map((u) => [u.username, u]))
+  const filteredDirectory = directory
+    .filter((p) => {
+      if (filterByDept && watchAssignedUnit && !sameDept(p.dept, watchAssignedUnit)) {
+        return false
+      }
+      if (!normalizedQuery) return true
+      const name = (p.fullname ?? '').toLowerCase()
+      const uname = p.username.toLowerCase()
+      const dept = (p.dept ?? '').toLowerCase()
+      return (
+        name.includes(normalizedQuery) ||
+        uname.includes(normalizedQuery) ||
+        dept.includes(normalizedQuery)
+      )
+    })
+    .sort((a, b) => {
+      if (!watchAssignedUnit) return 0
+      const aMatch = sameDept(a.dept, watchAssignedUnit) ? 0 : 1
+      const bMatch = sameDept(b.dept, watchAssignedUnit) ? 0 : 1
+      return aMatch - bMatch
+    })
 
   return (
     <section className="rounded-xl border border-border bg-card p-5 space-y-4">
@@ -77,8 +89,7 @@ export function TaskPeopleSection({
         {watchAssignees.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {watchAssignees.map((uname) => {
-              const person = directoryByUsername.get(uname)
-              const label = person?.fullname ? `${person.fullname} (${uname})` : uname
+              const label = formatUserWithCode(uname, undefined, directory)
               return (
                 <span
                   key={uname}
@@ -87,7 +98,7 @@ export function TaskPeopleSection({
                   <span className="truncate max-w-[180px]">{label}</span>
                   <button
                     type="button"
-                    onClick={() => toggleMulti('assign_person', watchAssignees, uname)}
+                    onClick={() => toggleAssignee(uname)}
                     className="inline-flex size-6 items-center justify-center rounded-full text-muted-foreground hover:text-destructive cursor-pointer"
                     aria-label={t('common.delete')}
                   >
@@ -99,19 +110,31 @@ export function TaskPeopleSection({
           </div>
         )}
 
-        <div className="relative">
-          <Search
-            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground"
-            aria-hidden="true"
-          />
-          <Input
-            type="search"
-            value={assigneeQuery}
-            onChange={(e) => setAssigneeQuery(e.target.value)}
-            placeholder={t('tasks.fields.assigneeSearchPlaceholder')}
-            aria-label={t('tasks.fields.assigneeSearchPlaceholder')}
-            className="pl-8"
-          />
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <div className="relative flex-1">
+            <Search
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <Input
+              type="search"
+              value={assigneeQuery}
+              onChange={(e) => setAssigneeQuery(e.target.value)}
+              placeholder={t('tasks.fields.assigneeSearchPlaceholder')}
+              aria-label={t('tasks.fields.assigneeSearchPlaceholder')}
+              className="pl-8"
+            />
+          </div>
+
+          {watchAssignedUnit && (
+            <label className="relative flex items-center gap-2 text-xs text-muted-foreground cursor-pointer shrink-0">
+              <Checkbox
+                checked={filterByDept}
+                onCheckedChange={(checked) => setFilterByDept(checked === true)}
+              />
+              <span>{t('tasks.fields.filterByAssignedDept')}</span>
+            </label>
+          )}
         </div>
 
         <div className="relative max-h-48 overflow-y-auto rounded-lg border border-border p-2.5 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-1.5 text-xs">
@@ -121,15 +144,16 @@ export function TaskPeopleSection({
             </p>
           ) : (
             filteredDirectory.map((person) => (
-              <label key={person.username} className="relative flex items-center gap-2 cursor-pointer">
+              <label
+                key={person.username}
+                className="relative flex items-center gap-2 cursor-pointer"
+              >
                 <Checkbox
                   checked={watchAssignees.includes(person.username)}
-                  onCheckedChange={() =>
-                    toggleMulti('assign_person', watchAssignees, person.username)
-                  }
+                  onCheckedChange={() => toggleAssignee(person.username)}
                 />
                 <span className="truncate">
-                  {person.fullname ? `${person.fullname} (${person.username})` : person.username}
+                  {formatUserWithCode(person.username, person.fullname)}
                 </span>
               </label>
             ))
@@ -138,55 +162,13 @@ export function TaskPeopleSection({
       </div>
 
       {(allowReaders || allowCross) && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-border">
-          {allowReaders && (
-            <div className="space-y-1.5">
-              <span className="block text-xs font-semibold text-foreground">
-                {t('tasks.fields.readers')} ({watchReaders.length})
-              </span>
-              <div className="relative max-h-32 overflow-y-auto rounded-lg border border-border p-2.5 space-y-1.5 text-xs">
-                {directory.map((person) => (
-                  <label key={person.username} className="relative flex items-center gap-2 cursor-pointer">
-                    <Checkbox
-                      checked={watchReaders.includes(person.username)}
-                      onCheckedChange={() => toggleMulti('readers', watchReaders, person.username)}
-                    />
-                    <span className="truncate">{person.fullname || person.username}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {allowCross && (
-            <div className="space-y-1.5">
-              <label className="relative flex items-center gap-2 text-xs font-semibold text-foreground cursor-pointer">
-                <Checkbox
-                  checked={watchCrossDept}
-                  onCheckedChange={(checked) =>
-                    setValue('cross_dept', checked === true, { shouldDirty: true })
-                  }
-                />
-                <span>{t('tasks.fields.crossDept')}</span>
-              </label>
-              {watchCrossDept && (
-                <div className="relative max-h-32 overflow-y-auto rounded-lg border border-border p-2.5 space-y-1.5 text-xs">
-                  {directory.map((person) => (
-                    <label key={person.username} className="relative flex items-center gap-2 cursor-pointer">
-                      <Checkbox
-                        checked={watchCrossViewers.includes(person.username)}
-                        onCheckedChange={() =>
-                          toggleMulti('cross_viewers', watchCrossViewers, person.username)
-                        }
-                      />
-                      <span className="truncate">{person.fullname || person.username}</span>
-                    </label>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+        <TaskViewersSubsection
+          control={control}
+          setValue={setValue}
+          directory={directory}
+          allowReaders={allowReaders}
+          allowCross={allowCross}
+        />
       )}
     </section>
   )

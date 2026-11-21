@@ -284,7 +284,9 @@
       "recurEnd": "Ngày kết thúc lặp (tuỳ chọn)",
       "autoSplitHint": "Chọn từ 2 người trở lên sẽ tự động tách nhiệm vụ theo từng người",
       "readers": "Người chỉ đọc",
-      "crossDept": "Cho phép xem & báo cáo liên phòng ban"
+      "crossDept": "Cho phép xem & báo cáo liên phòng ban",
+      "crossViewers": "Người xem liên bộ phận",
+      "filterByAssignedDept": "Chỉ hiện bộ phận phụ trách"
     },
     "weekdays": {
       "d1": "T2",

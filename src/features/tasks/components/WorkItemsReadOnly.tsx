@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { ListChecks } from 'lucide-react'
 import type { WorkItemsEnvelope } from '@/schemas/task'
+import { useUserDisplayResolver } from '../hooks/use-user-display-resolver'
 
 interface WorkItemsReadOnlyProps {
   envelope: WorkItemsEnvelope | null
@@ -8,6 +9,7 @@ interface WorkItemsReadOnlyProps {
 
 export function WorkItemsReadOnly({ envelope }: WorkItemsReadOnlyProps) {
   const { t } = useTranslation()
+  const { resolveUser } = useUserDisplayResolver()
   if (!envelope || envelope.items.length === 0) return null
 
   return (
@@ -48,8 +50,8 @@ export function WorkItemsReadOnly({ envelope }: WorkItemsReadOnlyProps) {
                   )}
                 </td>
                 <td className="py-2 pr-3 text-muted-foreground">
-                  {item.owner || '-'}
-                  {item.agent ? ` (${item.agent})` : ''}
+                  {resolveUser(item.owner) || '-'}
+                  {item.agent ? ` (${resolveUser(item.agent)})` : ''}
                 </td>
                 <td className="py-2 pr-3 whitespace-nowrap text-muted-foreground">
                   {item.start || '-'} ~ {item.end || '-'}

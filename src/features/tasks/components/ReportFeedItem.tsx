@@ -6,6 +6,7 @@ import type { SessionUser } from '@/schemas/auth'
 import type { RawReport, RawTask } from '@/schemas/task'
 import { canDeleteReportAttachment } from '@/utils/permissions'
 import { parseAttachments, parseLinks, resolveFileUrl } from '@/utils/task-domain'
+import { useUserDisplayResolver } from '../hooks/use-user-display-resolver'
 
 type ReportFeedItemProps = {
   task: RawTask
@@ -37,6 +38,7 @@ export function ReportFeedItem({
   onRequestDeleteAttachment,
 }: ReportFeedItemProps) {
   const { t } = useTranslation()
+  const { resolveUser, resolveAssignees } = useUserDisplayResolver()
   const attachments = parseAttachments(report.attachments)
   const links = parseLinks(report.km_link)
   const isAuthor =
@@ -49,11 +51,11 @@ export function ReportFeedItem({
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="font-semibold text-foreground">
-            {report.fullname || report.username}
+            {resolveUser(report.username, report.fullname)}
           </span>
           {report.split_assignee && (
             <span className="rounded-full border border-border px-2 py-0.5 text-[11px] text-primary">
-              {report.split_assignee}
+              {resolveAssignees(report.split_assignee)}
             </span>
           )}
           {typeof report.progress === 'number' && (
