@@ -35,7 +35,7 @@ export function TaskCardFixturePreviewPage() {
 
       <div
         data-testid="fixture-card-grid"
-        className="grid grid-cols-task-cards auto-rows-fr gap-4"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-4"
       >
         {fixtures.map((task) => (
           <TaskCard

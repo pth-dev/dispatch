@@ -52,7 +52,7 @@ export function TaskCardGrid({
     return (
       <div className="flex-1 min-h-0 overflow-auto p-4" role="status" aria-live="polite">
         <span className="sr-only">{t('common.loading')}</span>
-        <div className="grid grid-cols-task-cards auto-rows-fr gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-4">
           {SKELETON_INDICES.map((index) => (
             <TaskCardSkeleton key={`task_card_skel_${index}`} />
           ))}

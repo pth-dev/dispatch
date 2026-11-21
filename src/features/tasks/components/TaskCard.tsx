@@ -33,8 +33,8 @@ export function TaskCard({ vm }: TaskCardProps) {
   const showDesktopTooltip = !isMobile && isTruncated
 
   return (
-    <article data-testid="task-card" className="h-full">
-      <Card className="relative h-full p-4 gap-3 focus-within:ring-2 focus-within:ring-ring">
+    <article data-testid="task-card" className="h-full min-w-0">
+      <Card className="relative h-full min-w-0 p-4 gap-3 focus-within:ring-2 focus-within:ring-ring">
         {/* 1. Meta row (1 line) */}
         <div className="flex h-card-row items-center justify-between gap-2 text-xs">
           <div className="flex min-w-0 flex-1 items-center gap-1.5">
