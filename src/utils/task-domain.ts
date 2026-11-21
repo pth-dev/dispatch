@@ -457,6 +457,20 @@ export function isUrgentLevel(level: string | null | undefined): boolean {
   return getTaskLevelCode(level) !== 'normal'
 }
 
+export function isAssignedToUser(
+  task: Pick<RawTask, 'assign_person'>,
+  user: { username: string; fullname: string } | null | undefined,
+): boolean {
+  if (!user) return false
+  const assignees = parseAssigneeList(task.assign_person)
+  const uname = user.username.trim().toLowerCase()
+  const fname = user.fullname.trim().toLowerCase()
+  return assignees.some((assignee) => {
+    const lower = assignee.trim().toLowerCase()
+    return lower === uname || (fname.length > 0 && lower === fname)
+  })
+}
+
 export function isRecurNeedsReportToday(
   task: Pick<RawTask, 'recur_type' | 'progress' | 'paused' | 'due_date' | 'recur_cycle_date'>,
   now: Date = new Date(),

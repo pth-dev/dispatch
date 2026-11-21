@@ -9,7 +9,7 @@ import {
   toErrorStatus,
 } from '@/components/layout'
 import { Button } from '@/components/ui/button'
-import { useAllTasks } from '@/features/tasks/api/queries'
+import { useAllTasks } from '@/hooks/use-tasks'
 import type { LessonFormValues } from '@/schemas/lesson'
 import type { RawAttachment } from '@/schemas/task'
 import { canEditLesson, canWriteMenu } from '@/utils/permissions'

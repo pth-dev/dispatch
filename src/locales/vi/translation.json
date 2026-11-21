@@ -745,5 +745,82 @@
       "reset": "Khôi phục tỷ lệ",
       "download": "Tải xuống"
     }
+  },
+  "todo": {
+    "title": "Việc cần làm hôm nay",
+    "subtitle": "Sắp xếp thứ tự ưu tiên và giờ dự kiến bắt đầu cho các nhiệm vụ của bạn",
+    "workDateLabel": "Ngày làm việc",
+    "unsavedBadge": "Chưa lưu",
+    "hint": "Mẹo: Thêm hoặc kéo thả nhiệm vụ từ trái sang phải và cài đặt giờ bắt đầu.",
+    "noticePrefix": "Lưu ý đánh giá:",
+    "noticeBody": "Vui lòng điền chính xác \"Giờ bắt đầu\" cho mỗi lịch trình và thực hiện đúng hạn. Lịch trình của bạn có thể được dùng làm cơ sở đánh giá hiệu suất.",
+    "timeUnset": "Chưa đặt",
+    "noDueDate": "Không hạn",
+    "actions": {
+      "save": "Lưu lịch trình",
+      "saving": "Đang lưu...",
+      "export": "Tải lịch (CSV)",
+      "today": "Hôm nay",
+      "add": "Thêm",
+      "remove": "Xóa",
+      "moveUp": "Chuyển lên",
+      "moveDown": "Chuyển xuống"
+    },
+    "available": {
+      "title": "Danh sách chờ xử lý",
+      "subtitle": "Nhiệm vụ chưa hoàn thành được giao cho bạn",
+      "searchPlaceholder": "Tìm theo mã hoặc tiêu đề...",
+      "empty": "Tuyệt vời! Không còn nhiệm vụ chờ xử lý.",
+      "emptySearch": "Không tìm thấy nhiệm vụ phù hợp."
+    },
+    "selected": {
+      "title": "Lịch trình hôm nay",
+      "subtitle": "Kéo thả hoặc dùng nút mũi tên để sắp xếp thứ tự",
+      "searchPlaceholder": "Tìm trong lịch trình (mã / tiêu đề)...",
+      "empty": "Chọn nhiệm vụ từ danh sách bên trái để thêm vào lịch trình.",
+      "emptySearch": "Không tìm thấy mục nào trong lịch trình."
+    },
+    "row": {
+      "progress": "Tiến độ",
+      "due": "Hạn",
+      "startTime": "Giờ bắt đầu"
+    },
+    "timeline": {
+      "title": "Lịch trình nhiệm vụ chưa hoàn thành",
+      "subtitle": "{{count}} nhiệm vụ đang xử lý, ưu tiên hiển thị quá hạn trước",
+      "empty": "Tuyệt vời! Bạn đã hoàn thành tất cả nhiệm vụ được giao.",
+      "overdueLabel": "Quá hạn",
+      "precautions": "Mục đích / Hiệu quả / Lưu ý",
+      "noPrecautions": "Không có lưu ý đặc biệt.",
+      "lastReport": "Báo cáo mới nhất",
+      "noLastReport": "Chưa có báo cáo tiến độ."
+    },
+    "confirmDate": {
+      "title": "Bỏ thay đổi chưa lưu?",
+      "description": "Lịch trình hiện tại chưa được lưu. Đổi sang ngày khác sẽ bỏ toàn bộ thay đổi chưa lưu.",
+      "confirm": "Đổi ngày"
+    },
+    "confirmMissingTime": {
+      "title": "Còn mục chưa đặt giờ bắt đầu",
+      "description": "Có {{count}} nhiệm vụ trong lịch trình chưa đặt \"Giờ bắt đầu\". Bạn vẫn muốn lưu?",
+      "confirm": "Vẫn lưu"
+    },
+    "toast": {
+      "saveSuccess": "Đã lưu lịch trình!",
+      "saveError": "Lưu lịch trình thất bại, vui lòng thử lại.",
+      "exportEmpty": "Lịch trình đang trống, không có dữ liệu để tải.",
+      "exportSuccess": "Đã tải xuống lịch trình."
+    },
+    "csv": {
+      "startTime": "Giờ bắt đầu",
+      "taskId": "Mã NV",
+      "title": "Tiêu đề",
+      "titleVn": "Tiêu đề (VN)",
+      "site": "Khu vực",
+      "level": "Cấp độ",
+      "progress": "Tiến độ",
+      "dueDate": "Hạn chót",
+      "reqDept": "BP Yêu cầu"
+    }
   }
 }

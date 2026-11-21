@@ -10,10 +10,10 @@ import { isCrossViewer, isReaderOnly } from '@/utils/permissions'
 import {
   deriveTaskStatus,
   getTaskLevelCode,
+  isAssignedToUser,
   isRecurringTask,
   isRecurNeedsReportToday,
   isTaskPaused,
-  parseAssigneeList,
   parseLocalDateTime,
   parseReqDepts,
   parseSites,
@@ -21,14 +21,7 @@ import {
 } from '@/utils/task-domain'
 
 export function matchesAssignee(task: RawTask, user: SessionUser | null): boolean {
-  if (!user) return false
-  const assignees = parseAssigneeList(task.assign_person)
-  const uname = user.username.trim().toLowerCase()
-  const fname = user.fullname.trim().toLowerCase()
-  return assignees.some((a) => {
-    const lower = a.trim().toLowerCase()
-    return lower === uname || (fname.length > 0 && lower === fname)
-  })
+  return isAssignedToUser(task, user)
 }
 
 export function matchesCreator(task: RawTask, user: SessionUser | null): boolean {

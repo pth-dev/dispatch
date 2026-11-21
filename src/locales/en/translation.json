@@ -745,5 +745,82 @@
       "reset": "Reset zoom",
       "download": "Download"
     }
+  },
+  "todo": {
+    "title": "Today's To-Do",
+    "subtitle": "Prioritize your unfinished tasks and schedule expected start times",
+    "workDateLabel": "Work date",
+    "unsavedBadge": "Unsaved",
+    "hint": "Tip: Add or drag tasks from left to right and set an expected start time.",
+    "noticePrefix": "Evaluation notice:",
+    "noticeBody": "Please enter an accurate \"Start time\" for each scheduled item and execute on time. Your schedule may be used as a reference for efficiency evaluation.",
+    "timeUnset": "Not set",
+    "noDueDate": "No deadline",
+    "actions": {
+      "save": "Save schedule",
+      "saving": "Saving...",
+      "export": "Export (CSV)",
+      "today": "Today",
+      "add": "Add",
+      "remove": "Remove",
+      "moveUp": "Move up",
+      "moveDown": "Move down"
+    },
+    "available": {
+      "title": "Pending tasks",
+      "subtitle": "Unfinished tasks assigned to you",
+      "searchPlaceholder": "Search by ID or title...",
+      "empty": "Great! No pending tasks left.",
+      "emptySearch": "No matching tasks found."
+    },
+    "selected": {
+      "title": "Today's schedule",
+      "subtitle": "Drag and drop or use arrows to reorder",
+      "searchPlaceholder": "Search schedule (ID / title)...",
+      "empty": "Pick tasks from the left list to build your schedule.",
+      "emptySearch": "No matching items in the schedule."
+    },
+    "row": {
+      "progress": "Progress",
+      "due": "Due",
+      "startTime": "Start time"
+    },
+    "timeline": {
+      "title": "Unfinished tasks timeline",
+      "subtitle": "{{count}} active tasks, overdue items listed first",
+      "empty": "Great! All assigned tasks have been completed.",
+      "overdueLabel": "Overdue",
+      "precautions": "Purpose / Impact / Precautions",
+      "noPrecautions": "No special precautions.",
+      "lastReport": "Latest report",
+      "noLastReport": "No progress reports yet."
+    },
+    "confirmDate": {
+      "title": "Discard unsaved changes?",
+      "description": "Your current schedule has unsaved changes. Switching dates will discard them.",
+      "confirm": "Switch date"
+    },
+    "confirmMissingTime": {
+      "title": "Missing start times",
+      "description": "{{count}} scheduled item(s) have no start time set. Save anyway?",
+      "confirm": "Save anyway"
+    },
+    "toast": {
+      "saveSuccess": "Schedule saved!",
+      "saveError": "Failed to save schedule. Please try again.",
+      "exportEmpty": "Schedule is empty, nothing to export.",
+      "exportSuccess": "Schedule exported."
+    },
+    "csv": {
+      "startTime": "Start time",
+      "taskId": "Task ID",
+      "title": "Title",
+      "titleVn": "Title (VN)",
+      "site": "Site",
+      "level": "Level",
+      "progress": "Progress",
+      "dueDate": "Due date",
+      "reqDept": "Requesting dept"
+    }
   }
 }

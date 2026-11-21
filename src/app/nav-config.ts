@@ -1,4 +1,10 @@
-import { GraduationCap, ListChecks, MessagesSquare, type LucideIcon } from 'lucide-react'
+import {
+  CalendarCheck2,
+  GraduationCap,
+  ListChecks,
+  MessagesSquare,
+  type LucideIcon,
+} from 'lucide-react'
 import { APP_ROUTES } from '@/constants/app-routes'
 import type { MenuPermKey } from '@/schemas/auth'
 
@@ -29,6 +35,13 @@ export const MAIN_NAV_ITEMS: NavItemConfig[] = [
     href: APP_ROUTES.TASKS,
     icon: ListChecks,
     menuPermKey: 'list',
+  },
+  {
+    id: 'todo',
+    titleKey: 'nav.todo',
+    href: APP_ROUTES.TODO,
+    icon: CalendarCheck2,
+    menuPermKey: 'todo',
   },
   {
     id: 'messages',

@@ -745,5 +745,82 @@
       "reset": "还原",
       "download": "下载"
     }
+  },
+  "todo": {
+    "title": "今日待办",
+    "subtitle": "安排您未完成派案的优先顺序与预计开始时间",
+    "workDateLabel": "工作日期",
+    "unsavedBadge": "尚未保存",
+    "hint": "提示：从左侧加入或拖曳任务至右侧，并设置「预计开始时间」。",
+    "noticePrefix": "考核提示：",
+    "noticeBody": "请务必确实为每个排程填写「预计开始时间」，并按时执行。您的排程纪录将可能作为单位绩效与效率评估的依据。",
+    "timeUnset": "未设置",
+    "noDueDate": "无期限",
+    "actions": {
+      "save": "保存排程",
+      "saving": "保存中...",
+      "export": "下载排程 (CSV)",
+      "today": "今天",
+      "add": "加入",
+      "remove": "移除",
+      "moveUp": "上移",
+      "moveDown": "下移"
+    },
+    "available": {
+      "title": "待处理派案清单",
+      "subtitle": "指派给您的未完成任务",
+      "searchPlaceholder": "搜索编号、标题关键字...",
+      "empty": "太棒了！没有待处理任务。",
+      "emptySearch": "找不到符合的任务。"
+    },
+    "selected": {
+      "title": "今日待办排程",
+      "subtitle": "支持拖曳或点击上下箭头调整顺序",
+      "searchPlaceholder": "搜索今日排程（编号 / 标题）...",
+      "empty": "从左侧选择任务加入今日排程。",
+      "emptySearch": "找不到符合的排程项目。"
+    },
+    "row": {
+      "progress": "进度",
+      "due": "期限",
+      "startTime": "预计开始"
+    },
+    "timeline": {
+      "title": "未完成任务时间表",
+      "subtitle": "共 {{count}} 笔未完成任务，逾期案件优先排列",
+      "empty": "太棒了！所有任务皆已完成。",
+      "overdueLabel": "逾期中",
+      "precautions": "目的／效率／应注意事项",
+      "noPrecautions": "无特别注意事项。",
+      "lastReport": "最新回报纪录",
+      "noLastReport": "尚无回报纪录。"
+    },
+    "confirmDate": {
+      "title": "放弃未保存的变更？",
+      "description": "目前排程尚未保存，切换日期将放弃所有未保存的修改。",
+      "confirm": "切换日期"
+    },
+    "confirmMissingTime": {
+      "title": "尚有项目未设置开始时间",
+      "description": "有 {{count}} 笔排程尚未设置「预计开始时间」，仍要保存吗？",
+      "confirm": "仍要保存"
+    },
+    "toast": {
+      "saveSuccess": "排程保存成功！",
+      "saveError": "保存失败，请重试。",
+      "exportEmpty": "目前排程为空，无数据可导出。",
+      "exportSuccess": "今日排程导出成功。"
+    },
+    "csv": {
+      "startTime": "预计开始时间",
+      "taskId": "任务编号",
+      "title": "任务标题",
+      "titleVn": "任务标题(越)",
+      "site": "厂区",
+      "level": "案件等级",
+      "progress": "目前进度",
+      "dueDate": "完工期限",
+      "reqDept": "需求单位"
+    }
   }
 }

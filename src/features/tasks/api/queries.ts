@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { http } from '@/services/http'
 import { useAppStore } from '@/app/store'
+import { useAllTasks } from '@/hooks/use-tasks'
 import {
   DupCheckResponseSchema,
   RawReportListSchema,
@@ -19,6 +20,7 @@ import {
   fetchUserDirectory,
 } from './meta'
 
+export { useAllTasks }
 export { filterAndPaginateTasks, type FilteredTaskPage }
 export {
   assertMutationSuccess,
@@ -29,17 +31,6 @@ export {
   useUpdateReport,
   useUpdateTask,
 } from './mutations'
-
-export function useAllTasks() {
-  return useQuery({
-    queryKey: taskKeys.list(),
-    queryFn: async ({ signal }): Promise<RawTask[]> => {
-      const raw = await http<unknown>('/tasks', { signal })
-      return RawTaskListSchema.parse(raw)
-    },
-    staleTime: 30_000,
-  })
-}
 
 export function useTaskList(params: TaskListParams) {
   const user = useAppStore((s) => s.user)
