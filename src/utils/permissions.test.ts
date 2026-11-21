@@ -6,6 +6,7 @@ import {
   canCreateTask,
   canDeleteReportAttachment,
   canDeleteTask,
+  canEditLesson,
   canEditTask,
   canReadMenu,
   canSetCross,
@@ -187,5 +188,27 @@ describe('task-level permission helpers', () => {
     expect(getDefaultTaskScope(buildUser({ role: 'user' }))).toBe('all')
     expect(getDefaultTaskScope(buildUser({ role: 'admin' }))).toBe('all')
     expect(getDefaultTaskScope(buildUser({ role: 'exec_vp' }))).toBe('all')
+  })
+
+  it('evaluates canEditLesson for superadmin, exec, creator, same-dept admin, and menu perm', () => {
+    const lesson = { created_by: '20160', dept: '資訊部' }
+
+    expect(canEditLesson(buildUser({ username: '20160', role: 'user' }), lesson)).toBe(true)
+    expect(canEditLesson(buildUser({ username: '18001', role: 'user' }), lesson)).toBe(false)
+    expect(
+      canEditLesson(buildUser({ username: 'admin1', role: 'admin', dept: '資訊部' }), lesson),
+    ).toBe(true)
+    expect(
+      canEditLesson(buildUser({ username: 'admin2', role: 'admin', dept: 'HR' }), lesson),
+    ).toBe(false)
+    expect(
+      canEditLesson(buildUser({ username: 'vp1', role: 'exec_vp', dept: 'HQ' }), lesson),
+    ).toBe(true)
+    expect(
+      canEditLesson(
+        buildUser({ username: '20160', role: 'user', menu_perms: { learnknow: 'sr' } }),
+        lesson,
+      ),
+    ).toBe(false)
   })
 })

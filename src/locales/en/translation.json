@@ -640,5 +640,110 @@
       "empty": "Empty data",
       "offline": "Network disconnected"
     }
+  },
+  "lessons": {
+    "subtitle": "Dispatch tasks containing these keywords display a policy reminder alert.",
+    "searchPlaceholder": "Search topic, keywords, content, author...",
+    "ruleNotice": "Rule: Whenever a dispatch task title, content, precautions, type, or install requirement matches any keyword, an alert reminds the assignee to review this lesson.",
+    "filters": {
+      "all": "All",
+      "hit": "With matches",
+      "mine": "Created by me"
+    },
+    "list": {
+      "hitSummary": "Matches: {{total}}",
+      "hitSummaryOpen": "Matches: {{total}} (Open {{open}})"
+    },
+    "empty": {
+      "all": "No lessons learned yet.",
+      "filtered": "No lessons match the current filter.",
+      "clearFilters": "Clear filters",
+      "selectPrompt": "Select a lesson on the left to view details, or create a new one",
+      "selectSubprompt": "Keywords are matched automatically against visible dispatch tasks."
+    },
+    "fields": {
+      "topic": "Topic",
+      "keywords": "Keywords",
+      "content": "Content",
+      "images": "Images",
+      "imagesCount": "Images ({{count}})"
+    },
+    "detail": {
+      "createdMeta": "Created: {{author}} ({{dept}}) · {{time}}",
+      "updatedMeta": "Updated: {{author}} · {{time}}",
+      "noContent": "No content"
+    },
+    "preview": {
+      "label": "Alert preview",
+      "liveHeading": "Live preview",
+      "alertPrefix": "Policy reminder!",
+      "lessonTag": "Lesson",
+      "untitledTopic": "(Topic)",
+      "enterKeywordHint": "Enter at least one keyword to preview the alert banner.",
+      "hitSummary": "Currently matches {{total}} dispatch tasks ({{open}} in progress)"
+    },
+    "matchedTasks": {
+      "heading": "Matched dispatch tasks ({{count}})",
+      "empty": "No visible dispatch tasks currently match these keywords.",
+      "assignee": "Assignee",
+      "reporter": "Reporter",
+      "unassigned": "Unassigned",
+      "completed": "Done",
+      "inProgress": "In progress {{progress}}%",
+      "truncated": "Showing first {{count}} tasks"
+    },
+    "actions": {
+      "create": "Add lesson",
+      "createFirst": "Add first lesson",
+      "publish": "Publish lesson",
+      "saveEdit": "Save changes",
+      "saving": "Saving...",
+      "backToList": "Back to list",
+      "clearSearch": "Clear search"
+    },
+    "editor": {
+      "createTitle": "New lesson learned",
+      "editTitle": "Edit lesson #{{id}}",
+      "topicPlaceholder": "Example: Firewall changes require prior approval",
+      "keywordsPlaceholder": "Type and press Enter or comma",
+      "keywordsHint": "Case-insensitive, up to {{max}} keywords.",
+      "removeKeyword": "Remove keyword {{keyword}}",
+      "contentPlaceholder": "Write rules, lessons learned, handling steps...",
+      "imageDropHint": "Drag images here, click to select, or paste with Ctrl+V",
+      "imageLimitHint": "Images only, up to {{maxMb}}MB each and {{maxFiles}} new images per save.",
+      "imageSavedTag": "Saved",
+      "imageNewTag": "New",
+      "removeImage": "Remove image {{name}}",
+      "imageInvalidType": "Images only: {{name}}",
+      "imageTooLarge": "Image exceeds {{maxMb}}MB: {{name}}",
+      "imageMaxFiles": "Maximum {{maxFiles}} new images per upload."
+    },
+    "validation": {
+      "topicRequired": "Please enter a topic.",
+      "topicMax": "Topic must be at most {{max}} characters.",
+      "keywordsRequired": "Please enter at least one keyword.",
+      "keywordsMax": "Maximum {{max}} keywords allowed."
+    },
+    "deleteDialog": {
+      "title": "Delete lesson learned?",
+      "description": "Are you sure you want to delete lesson #{{id}} \"{{topic}}\"? Dispatch tasks will no longer show alerts for this lesson."
+    },
+    "discardDialog": {
+      "title": "Discard unsaved changes?",
+      "description": "Your changes to this lesson have not been saved yet. Discard them?",
+      "confirm": "Discard changes"
+    },
+    "shortKeywordDialog": {
+      "title": "Short keyword warning",
+      "description": "The keyword \"{{keywords}}\" is only 1 character long and may trigger too many false matches. Save anyway?",
+      "confirm": "Save anyway"
+    },
+    "lightbox": {
+      "title": "Image preview",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "reset": "Reset zoom",
+      "download": "Download"
+    }
   }
 }

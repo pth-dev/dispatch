@@ -640,5 +640,110 @@
       "empty": "Dữ liệu rỗng (Empty)",
       "offline": "Mất kết nối mạng"
     }
+  },
+  "lessons": {
+    "subtitle": "Bài điều phối có từ khóa sẽ hiện cảnh báo nhắc nhở quy định.",
+    "searchPlaceholder": "Tìm chủ đề, từ khóa, nội dung, người tạo...",
+    "ruleNotice": "Quy tắc: Chỉ cần tiêu đề, nội dung, lưu ý, loại hoặc yêu cầu cài đặt của bài điều phối có chứa bất kỳ từ khóa nào, hệ thống sẽ hiển thị cảnh báo nhắc quy định để người xử lý đọc lại bài học này.",
+    "filters": {
+      "all": "Tất cả",
+      "hit": "Có bài trùng",
+      "mine": "Tôi tạo"
+    },
+    "list": {
+      "hitSummary": "Trùng: {{total}}",
+      "hitSummaryOpen": "Trùng: {{total}} (Đang XL {{open}})"
+    },
+    "empty": {
+      "all": "Chưa có bài học kinh nghiệm nào.",
+      "filtered": "Không tìm thấy bài học phù hợp bộ lọc.",
+      "clearFilters": "Xóa bộ lọc",
+      "selectPrompt": "Chọn chủ đề bên trái để xem nội dung, hoặc thêm bài học mới",
+      "selectSubprompt": "Tất cả từ khóa sẽ tự động đối chiếu với các bài điều phối hiện có."
+    },
+    "fields": {
+      "topic": "Chủ đề",
+      "keywords": "Từ khóa",
+      "content": "Nội dung",
+      "images": "Hình ảnh",
+      "imagesCount": "Hình ảnh ({{count}})"
+    },
+    "detail": {
+      "createdMeta": "Tạo: {{author}} ({{dept}}) · {{time}}",
+      "updatedMeta": "Cập nhật: {{author}} · {{time}}",
+      "noContent": "Không có nội dung"
+    },
+    "preview": {
+      "label": "Xem trước cảnh báo",
+      "liveHeading": "Xem trước trực tiếp",
+      "alertPrefix": "Chú ý quy định!",
+      "lessonTag": "Bài học",
+      "untitledTopic": "(Chủ đề)",
+      "enterKeywordHint": "Nhập từ khóa để xem trước dải cảnh báo.",
+      "hitSummary": "Hiện trùng {{total}} bài điều phối (đang xử lý {{open}} bài)"
+    },
+    "matchedTasks": {
+      "heading": "Bài điều phối trùng từ khóa ({{count}})",
+      "empty": "Hiện không có bài điều phối nào trùng từ khóa trong phạm vi bạn xem được.",
+      "assignee": "Nhận",
+      "reporter": "Đăng",
+      "unassigned": "Chưa định",
+      "completed": "Đã HT",
+      "inProgress": "Đang XL {{progress}}%",
+      "truncated": "Chỉ hiển thị {{count}} bài đầu tiên"
+    },
+    "actions": {
+      "create": "Thêm bài học",
+      "createFirst": "Thêm bài đầu tiên",
+      "publish": "Đăng bài học",
+      "saveEdit": "Lưu thay đổi",
+      "saving": "Đang lưu...",
+      "backToList": "Quay lại danh sách",
+      "clearSearch": "Xóa từ khóa tìm kiếm"
+    },
+    "editor": {
+      "createTitle": "Thêm bài học kinh nghiệm",
+      "editTitle": "Sửa bài học #{{id}}",
+      "topicPlaceholder": "Ví dụ: Thay đổi tường lửa phải xin phép trước",
+      "keywordsPlaceholder": "Nhập rồi nhấn Enter hoặc dấu phẩy",
+      "keywordsHint": "Không phân biệt hoa thường, tối đa {{max}} từ khóa.",
+      "removeKeyword": "Xóa từ khóa {{keyword}}",
+      "contentPlaceholder": "Ghi quy định, bài học, các bước xử lý...",
+      "imageDropHint": "Kéo thả ảnh vào đây, nhấp để chọn hoặc dán bằng Ctrl+V",
+      "imageLimitHint": "Chỉ nhận hình ảnh, tối đa {{maxMb}}MB/ảnh và {{maxFiles}} ảnh mỗi lần.",
+      "imageSavedTag": "Đã tải",
+      "imageNewTag": "Mới",
+      "removeImage": "Xóa ảnh {{name}}",
+      "imageInvalidType": "Chỉ chấp nhận tệp hình ảnh: {{name}}",
+      "imageTooLarge": "Ảnh vượt quá {{maxMb}}MB: {{name}}",
+      "imageMaxFiles": "Tối đa {{maxFiles}} ảnh mới mỗi lần tải lên."
+    },
+    "validation": {
+      "topicRequired": "Vui lòng nhập chủ đề.",
+      "topicMax": "Chủ đề tối đa {{max}} ký tự.",
+      "keywordsRequired": "Vui lòng nhập ít nhất 1 từ khóa.",
+      "keywordsMax": "Tối đa {{max}} từ khóa."
+    },
+    "deleteDialog": {
+      "title": "Xóa bài học kinh nghiệm?",
+      "description": "Bạn có chắc muốn xóa bài học #{{id}} \"{{topic}}\"? Các bài điều phối sẽ không còn hiển thị cảnh báo từ bài học này."
+    },
+    "discardDialog": {
+      "title": "Bỏ thay đổi chưa lưu?",
+      "description": "Nội dung bài học đang chỉnh sửa chưa được lưu. Bạn có chắc muốn hủy bỏ?",
+      "confirm": "Bỏ thay đổi"
+    },
+    "shortKeywordDialog": {
+      "title": "Từ khóa quá ngắn",
+      "description": "Từ khóa \"{{keywords}}\" chỉ có 1 ký tự, có thể gây nhiều cảnh báo sai. Bạn vẫn muốn lưu?",
+      "confirm": "Vẫn lưu"
+    },
+    "lightbox": {
+      "title": "Xem trước hình ảnh",
+      "zoomIn": "Phóng to",
+      "zoomOut": "Thu nhỏ",
+      "reset": "Khôi phục tỷ lệ",
+      "download": "Tải xuống"
+    }
   }
 }

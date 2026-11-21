@@ -246,6 +246,26 @@ export function canSubmitReport(
   return canWriteMenu(user, 'list') && !isReaderOnly(user, task)
 }
 
+type LessonPermissionTarget = {
+  created_by?: string | null
+  dept?: string | null
+}
+
+/**
+ * Matches legacy `canEditLesson` in `Dispatch-learnknow.html`:
+ * superadmin/exec_*, creator, or same-department admin — gated by `learnknow` write perm.
+ */
+export function canEditLesson(
+  user: UserIdentity | null | undefined,
+  lesson: LessonPermissionTarget | null | undefined,
+): boolean {
+  if (!user || !lesson) return false
+  if (!canWriteMenu(user, 'learnknow')) return false
+  if (isSuperLike(user)) return true
+  if (sameUser(lesson.created_by, user.username)) return true
+  return user.role === 'admin' && sameDept(lesson.dept, user.dept)
+}
+
 const COMPUTER_ROOM_PATTERN = /电脑|電腦/
 
 /**

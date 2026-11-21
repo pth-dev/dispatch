@@ -640,5 +640,110 @@
       "empty": "空資料 (Empty)",
       "offline": "網路中斷"
     }
+  },
+  "lessons": {
+    "subtitle": "派案帖子出現關鍵字時，會顯示提示注意規定。",
+    "searchPlaceholder": "搜尋主題、關鍵字、內容、建立人...",
+    "ruleNotice": "規則：派案帖子的標題、內容、應注意事項、類型或安裝需求只要出現任一關鍵字，就會提示注意規定並引導閱讀本經驗學習。",
+    "filters": {
+      "all": "全部",
+      "hit": "有命中帖子",
+      "mine": "我建立的"
+    },
+    "list": {
+      "hitSummary": "命中: {{total}}",
+      "hitSummaryOpen": "命中: {{total}} (處理中 {{open}})"
+    },
+    "empty": {
+      "all": "尚無經驗學習。",
+      "filtered": "沒有符合篩選條件的經驗學習。",
+      "clearFilters": "清除篩選",
+      "selectPrompt": "選擇左側主題查看內容，或新增經驗學習",
+      "selectSubprompt": "關鍵字會自動比對目前可見的派案帖子。"
+    },
+    "fields": {
+      "topic": "主題",
+      "keywords": "關鍵字",
+      "content": "內容",
+      "images": "圖片",
+      "imagesCount": "圖片 ({{count}})"
+    },
+    "detail": {
+      "createdMeta": "建立: {{author}} ({{dept}}) · {{time}}",
+      "updatedMeta": "更新: {{author}} · {{time}}",
+      "noContent": "無內容"
+    },
+    "preview": {
+      "label": "提示預覽",
+      "liveHeading": "即時預覽",
+      "alertPrefix": "注意規定！",
+      "lessonTag": "經驗學習",
+      "untitledTopic": "（主題）",
+      "enterKeywordHint": "請輸入關鍵字以預覽提示內容。",
+      "hitSummary": "目前命中 {{total}} 筆派案帖子（處理中 {{open}} 筆）"
+    },
+    "matchedTasks": {
+      "heading": "命中的派案帖子 ({{count}})",
+      "empty": "目前您可查看的派案帖子中沒有命中。",
+      "assignee": "受理",
+      "reporter": "發布",
+      "unassigned": "未定",
+      "completed": "已結案",
+      "inProgress": "處理中 {{progress}}%",
+      "truncated": "僅顯示前 {{count}} 筆"
+    },
+    "actions": {
+      "create": "新增經驗學習",
+      "createFirst": "新增第一筆",
+      "publish": "發布經驗學習",
+      "saveEdit": "儲存修改",
+      "saving": "儲存中...",
+      "backToList": "返回列表",
+      "clearSearch": "清除搜尋"
+    },
+    "editor": {
+      "createTitle": "新增經驗學習",
+      "editTitle": "修改經驗學習 #{{id}}",
+      "topicPlaceholder": "例如：防火牆變更須事先申請",
+      "keywordsPlaceholder": "輸入後按 Enter 或逗號加入",
+      "keywordsHint": "不分大小寫，最多 {{max}} 個關鍵字。",
+      "removeKeyword": "移除關鍵字 {{keyword}}",
+      "contentPlaceholder": "寫下規定、教訓、處理步驟...",
+      "imageDropHint": "拖曳圖片到這裡、點擊選取，或使用 Ctrl+V 貼上",
+      "imageLimitHint": "僅接受圖片，單張不超過 {{maxMb}}MB，一次最多 {{maxFiles}} 張。",
+      "imageSavedTag": "已上傳",
+      "imageNewTag": "新增",
+      "removeImage": "移除圖片 {{name}}",
+      "imageInvalidType": "僅接受圖片：{{name}}",
+      "imageTooLarge": "圖片超過 {{maxMb}}MB：{{name}}",
+      "imageMaxFiles": "一次最多上傳 {{maxFiles}} 張新圖片。"
+    },
+    "validation": {
+      "topicRequired": "請輸入主題。",
+      "topicMax": "主題最多 {{max}} 個字元。",
+      "keywordsRequired": "請至少輸入一個關鍵字。",
+      "keywordsMax": "最多 {{max}} 個關鍵字。"
+    },
+    "deleteDialog": {
+      "title": "刪除經驗學習？",
+      "description": "確定刪除經驗學習 #{{id}}「{{topic}}」嗎？刪除後派案帖子將不再出現此提示。"
+    },
+    "discardDialog": {
+      "title": "放棄未儲存的修改？",
+      "description": "經驗學習尚未儲存，確定放棄修改嗎？",
+      "confirm": "放棄修改"
+    },
+    "shortKeywordDialog": {
+      "title": "關鍵字過短提示",
+      "description": "關鍵字「{{keywords}}」過短，可能造成大量誤判提示，確定儲存？",
+      "confirm": "仍然儲存"
+    },
+    "lightbox": {
+      "title": "圖片預覽",
+      "zoomIn": "放大",
+      "zoomOut": "縮小",
+      "reset": "還原",
+      "download": "下載"
+    }
   }
 }

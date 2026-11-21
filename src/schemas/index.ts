@@ -1,4 +1,5 @@
 export * from './auth'
+export * from './lesson'
 export * from './message'
 export * from './meta'
 export * from './task'
