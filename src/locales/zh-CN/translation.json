@@ -204,9 +204,21 @@
       "recurWeekly": "每周",
       "recurMonthly": "每月",
       "recurTime": "周期截止时间",
+      "recurWeekdays": "每周日期",
+      "recurMonthdays": "每月日期",
+      "recurEnd": "循环结束日期（可选）",
       "autoSplitHint": "选择 2 人及以上将自动按人拆分任务",
       "readers": "只读人员",
       "crossDept": "允许跨部门查看与回报"
+    },
+    "weekdays": {
+      "d1": "周一",
+      "d2": "周二",
+      "d3": "周三",
+      "d4": "周四",
+      "d5": "周五",
+      "d6": "周六",
+      "d7": "周日"
     },
     "report": {
       "composerTitle": "动态回报 / 暂停",
@@ -302,7 +314,9 @@
       "siteRequired": "请至少选择 1 个厂区",
       "maxAssignees": "最多选择 20 名处理人",
       "pausedCannotBe100": "进度为 100% 时不能设为暂停",
-      "cloneDueDateMustChange": "复制派案时，请选择不同于原任务的新截止日期。"
+      "cloneDueDateMustChange": "复制派案时，请选择不同于原任务的新截止日期。",
+      "recurWeekdaysRequired": "请至少选择 1 个星期几",
+      "recurMonthdaysRequired": "请至少选择 1 个每月日期"
     }
   },
   "errors": {

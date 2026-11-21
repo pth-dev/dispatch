@@ -276,4 +276,18 @@ export const TaskEditorFormSchema = z
       message: 'tasks.validation.dueDateRequired',
     },
   )
+  .refine(
+    (data) => data.recur_type !== 'weekly' || data.recur_weekdays.length > 0,
+    {
+      path: ['recur_weekdays'],
+      message: 'tasks.validation.recurWeekdaysRequired',
+    },
+  )
+  .refine(
+    (data) => data.recur_type !== 'monthly' || data.recur_monthdays.length > 0,
+    {
+      path: ['recur_monthdays'],
+      message: 'tasks.validation.recurMonthdaysRequired',
+    },
+  )
 export type TaskEditorFormValues = z.infer<typeof TaskEditorFormSchema>

@@ -204,9 +204,21 @@
       "recurWeekly": "Weekly",
       "recurMonthly": "Monthly",
       "recurTime": "Cycle cutoff time",
+      "recurWeekdays": "Days of week",
+      "recurMonthdays": "Days of month",
+      "recurEnd": "Recurrence end date (optional)",
       "autoSplitHint": "Selecting 2+ assignees automatically splits into per-person tasks",
       "readers": "Read-only viewers",
       "crossDept": "Allow cross-department viewing & reporting"
+    },
+    "weekdays": {
+      "d1": "Mon",
+      "d2": "Tue",
+      "d3": "Wed",
+      "d4": "Thu",
+      "d5": "Fri",
+      "d6": "Sat",
+      "d7": "Sun"
     },
     "report": {
       "composerTitle": "Progress update / Pause",
@@ -302,7 +314,9 @@
       "siteRequired": "Please select at least 1 site",
       "maxAssignees": "Maximum 20 assignees allowed",
       "pausedCannotBe100": "Cannot pause a task when progress is 100%",
-      "cloneDueDateMustChange": "When cloning a task, please choose a new due date different from the source task."
+      "cloneDueDateMustChange": "When cloning a task, please choose a new due date different from the source task.",
+      "recurWeekdaysRequired": "Please select at least 1 day of the week",
+      "recurMonthdaysRequired": "Please select at least 1 day of the month"
     }
   },
   "errors": {

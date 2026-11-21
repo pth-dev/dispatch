@@ -169,6 +169,33 @@ describe('task & report schemas', () => {
     expect(
       TaskEditorFormSchema.safeParse({
         ...base,
+        recur_type: 'weekly',
+        recur_weekdays: [],
+        due_date: '',
+      }).success,
+    ).toBe(false)
+
+    expect(
+      TaskEditorFormSchema.safeParse({
+        ...base,
+        recur_type: 'monthly',
+        recur_monthdays: [1, 15],
+        due_date: '',
+      }).success,
+    ).toBe(true)
+
+    expect(
+      TaskEditorFormSchema.safeParse({
+        ...base,
+        recur_type: 'monthly',
+        recur_monthdays: [],
+        due_date: '',
+      }).success,
+    ).toBe(false)
+
+    expect(
+      TaskEditorFormSchema.safeParse({
+        ...base,
         assign_person: Array.from({ length: 21 }, (_, i) => `u${i}`),
       }).success,
     ).toBe(false)
