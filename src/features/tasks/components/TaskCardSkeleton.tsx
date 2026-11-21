@@ -5,7 +5,7 @@ const INFO_ROW_INDICES = [0, 1, 2, 3] as const
 export function TaskCardSkeleton() {
   return (
     <div data-testid="task-card-skeleton" className="h-full" aria-hidden="true">
-      <Card className="h-full p-4 gap-3 animate-pulse">
+      <Card className="h-full p-4 gap-3 animate-pulse motion-reduce:animate-none">
         {/* 1. Meta row */}
         <div className="flex h-card-row items-center justify-between gap-2">
           <div className="h-3.5 w-28 rounded bg-muted" />

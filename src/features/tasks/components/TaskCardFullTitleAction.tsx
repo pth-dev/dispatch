@@ -97,6 +97,7 @@ export function TaskCardFullTitleAction({ vm }: TaskCardFullTitleActionProps) {
         </SheetTrigger>
         <SheetContent
           side="bottom"
+          aria-describedby={undefined}
           className="rounded-t-xl p-5 space-y-3 motion-reduce:animate-none motion-reduce:transition-none"
         >
           <SheetHeader className="text-left border-b border-border pb-2">

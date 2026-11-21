@@ -85,7 +85,7 @@ export function TaskCard({ vm }: TaskCardProps) {
 
         {/* 5. Progress row (4px bar + percentage) */}
         <div className="flex h-card-row items-center gap-2.5">
-          <div className="h-1 flex-1 overflow-hidden rounded-full bg-secondary">
+          <div className="h-1 flex-1 overflow-hidden rounded-full bg-secondary" aria-hidden="true">
             <div
               className={cn(
                 'h-full rounded-full',

@@ -11,6 +11,9 @@ const TaskListPage = React.lazy(() => import('@/features/tasks/pages/TaskListPag
 const TaskDetailPage = React.lazy(() => import('@/features/tasks/pages/TaskDetailPage'))
 const TaskCreatePage = React.lazy(() => import('@/features/tasks/pages/TaskCreatePage'))
 const ProfilePage = React.lazy(() => import('@/features/profile/pages/ProfilePage'))
+const TaskCardFixturePreviewPage = import.meta.env.DEV
+  ? React.lazy(() => import('@/features/tasks/pages/TaskCardFixturePreviewPage'))
+  : null
 
 function RouteFallback() {
   const { t } = useTranslation()
@@ -23,6 +26,19 @@ function RouteFallback() {
 }
 
 export const router = createBrowserRouter([
+  ...(import.meta.env.DEV && TaskCardFixturePreviewPage
+    ? [
+        {
+          path: '/dev/task-cards',
+          element: (
+            <React.Suspense fallback={<RouteFallback />}>
+              <TaskCardFixturePreviewPage />
+            </React.Suspense>
+          ),
+          errorElement: <RootRouteErrorBoundary />,
+        },
+      ]
+    : []),
   {
     path: APP_ROUTES.LOGIN,
     element: (
