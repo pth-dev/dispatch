@@ -182,6 +182,7 @@ export function LessonsPage() {
             {canWrite && (
               <Button
                 type="button"
+                disabled={isError}
                 onClick={() => {
                   clearActionError()
                   openCreate()
@@ -199,7 +200,7 @@ export function LessonsPage() {
         {isError ? (
           <InlineError status={errorStatus} onRetry={() => void refetch()} />
         ) : (
-          <div className="grid grid-cols-1 gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-12 lg:grid-rows-1">
+          <div className="grid grid-cols-1 gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-12 lg:grid-rows-1 lg:short:min-h-[360px] lg:short:[contain:size]">
             <div
               className={
                 isRightPanelActiveOnMobile

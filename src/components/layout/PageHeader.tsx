@@ -23,7 +23,8 @@ export function PageHeader({
   )
 
   const hasBadge = badge !== undefined && badge !== null && badge !== false
-  const hasSubtitle = subtitle !== undefined && subtitle !== null && subtitle !== false
+  const hasSubtitle =
+    subtitle !== undefined && subtitle !== null && subtitle !== false && subtitle !== ''
 
   const titleRow = hasBadge ? (
     <div className="flex items-center gap-2.5">

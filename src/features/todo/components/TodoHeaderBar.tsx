@@ -10,6 +10,7 @@ interface TodoHeaderBarProps {
   isDirty: boolean
   canWrite: boolean
   isSaving: boolean
+  saveDisabled?: boolean
   hasSelectedItems: boolean
   onDateChange: (nextDate: string) => void
   onSave: () => void
@@ -22,6 +23,7 @@ export function TodoHeaderBar({
   isDirty,
   canWrite,
   isSaving,
+  saveDisabled = false,
   hasSelectedItems,
   onDateChange,
   onSave,
@@ -54,12 +56,12 @@ export function TodoHeaderBar({
             onClick={onExportCsv}
             disabled={!hasSelectedItems}
           >
-            <Download className="size-4" />
+            <Download className="size-4" aria-hidden="true" />
             <span>{t('todo.actions.export')}</span>
           </Button>
           {canWrite && (
-            <Button type="button" onClick={onSave} disabled={isSaving}>
-              <Save className="size-4" />
+            <Button type="button" onClick={onSave} disabled={isSaving || saveDisabled}>
+              <Save className="size-4" aria-hidden="true" />
               <span>
                 {isSaving ? t('todo.actions.saving') : t('todo.actions.save')}
               </span>
@@ -73,7 +75,7 @@ export function TodoHeaderBar({
           htmlFor="todo-date-picker"
           className="inline-flex items-center gap-2 text-sm font-medium text-foreground"
         >
-          <CalendarDays className="size-4 text-primary" />
+          <CalendarDays className="size-4 text-primary" aria-hidden="true" />
           <span>{t('todo.workDateLabel')}</span>
         </label>
         <Input

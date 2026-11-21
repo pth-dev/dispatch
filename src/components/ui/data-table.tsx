@@ -34,6 +34,8 @@ export interface DataTableProps<T> {
   renderMobileCard?: (item: T, index: number) => React.ReactNode
   /** Replaces the table body with an inline error block (5xx/network/timeout). */
   error?: React.ReactNode
+  /** Minimum height class for the desktop table viewport (defaults to 5 rows: `lg:min-h-[297px]`). */
+  minViewportHeightClass?: string
   className?: string
 }
 
@@ -47,6 +49,7 @@ export function DataTable<T>({
   density: propDensity,
   renderMobileCard,
   error,
+  minViewportHeightClass = 'lg:min-h-[297px]',
   className,
 }: DataTableProps<T>) {
   const { t } = useTranslation()
@@ -61,7 +64,6 @@ export function DataTable<T>({
   // Measured heights: sticky thead = 40px, compact single-line row = 44px,
   // wrapped status/comfortable row = 51px (max standard row height), top+bottom border = 2px.
   // Minimum table scroll viewport height = 40 + (5 * 51) + 2 = 297px.
-  const desktopMinRowsHeightClass = 'lg:min-h-[297px]'
 
   if (error) {
     return (
@@ -71,7 +73,7 @@ export function DataTable<T>({
 
   // Mobile rendering (cards fallback if renderMobileCard provided)
   return (
-    <div className={cn('w-full flex flex-col min-h-0', className, desktopMinRowsHeightClass)}>
+    <div className={cn('w-full flex flex-col min-h-0', minViewportHeightClass, className)}>
       {/* ── Mobile Card View (< lg) ── */}
       {renderMobileCard && (
         <div className="flex lg:hidden flex-col divide-y divide-border">
@@ -115,7 +117,7 @@ export function DataTable<T>({
       <div
         className={cn(
           'w-full overflow-auto flex-1 min-h-0 lg:short:[contain:size] border border-border rounded-lg bg-card',
-          desktopMinRowsHeightClass,
+          minViewportHeightClass,
           renderMobileCard ? 'hidden lg:block' : 'block',
         )}
       >

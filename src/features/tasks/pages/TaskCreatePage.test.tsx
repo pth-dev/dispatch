@@ -183,4 +183,60 @@ describe('TaskCreatePage', () => {
     expect(await screen.findByDisplayValue(DAILY_REPAIR_TITLE)).toBeInTheDocument()
     expect(screen.getByDisplayValue(DAILY_REPAIR_PRECAUTIONS)).toBeInTheDocument()
   })
+
+  it('switches from full mode to quick mode via header mode bar and preserves typed title', async () => {
+    stubTaskCreateFetch()
+    renderTaskCreate('/tasks/new')
+
+    const titleInput = await screen.findByLabelText(/tên nhiệm vụ/i)
+    const user = userEvent.setup()
+    await user.type(titleInput, 'Thay dây mạng phòng họp')
+    await user.click(screen.getByRole('button', { name: /tạo nhanh/i }))
+
+    expect(screen.getByDisplayValue('Thay dây mạng phòng họp')).toBeInTheDocument()
+    expect(screen.queryByText(/đơn vị yêu cầu/i)).not.toBeInTheDocument()
+  })
+
+  it('keeps PageHeader visible on clone source 500 error and recovers on retry', async () => {
+    let shouldFail = true
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input) => {
+        const url = String(input)
+        if (url.includes('/meta/depts')) {
+          return jsonResponse({ depts: [{ value: '資訊部', vn: 'Bộ phận IT' }], allDepts: [] })
+        }
+        if (url.includes('/meta/sites')) {
+          return jsonResponse({ sites: [{ value: 'YS', vn: 'Vĩnh Thịnh' }], allSites: [] })
+        }
+        if (url.includes('/users/directory')) {
+          return jsonResponse([{ username: 'hieu', fullname: 'Hiếu', dept: '資訊部', site: 'YS' }])
+        }
+        if (url.includes('/pocket/task-types')) {
+          return jsonResponse({ items: [] })
+        }
+        if (url.includes('/tasks/dup-check')) {
+          return jsonResponse({ success: true, duplicate: false })
+        }
+        if (url.includes('/tasks/history/mine')) {
+          return jsonResponse({ items: [] })
+        }
+        if (shouldFail) {
+          return jsonResponse({ message: 'Internal Server Error' }, 500)
+        }
+        return jsonResponse([RECURRING_SOURCE])
+      }),
+    )
+
+    renderTaskCreate('/tasks/new?clone=301')
+
+    const retryBtn = await screen.findByRole('button', { name: /thử lại/i })
+    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
+
+    shouldFail = false
+    const user = userEvent.setup()
+    await user.click(retryBtn)
+
+    expect(await screen.findByDisplayValue('Kiểm tra hệ thống định kỳ')).toBeInTheDocument()
+  })
 })

@@ -29,9 +29,10 @@ import { TodoTimelineSection } from '../components/TodoTimelineSection'
 import { useTodoSchedule } from '../hooks/use-todo-schedule'
 import type { ScheduledTodoTask } from '../utils/todo-domain'
 
-function TodoLoadingSkeleton() {
+function TodoLoadingSkeleton({ label }: { label: string }) {
   return (
-    <div className="space-y-4">
+    <div role="status" className="space-y-4">
+      <span className="sr-only">{label}</span>
       <div className="h-16 animate-pulse rounded-xl border border-border bg-card" />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div className="h-[420px] animate-pulse rounded-xl border border-border bg-card" />
@@ -183,6 +184,7 @@ export function TodoPage() {
           isDirty={schedule.isDirty}
           canWrite={schedule.canWrite}
           isSaving={schedule.isSaving}
+          saveDisabled={schedule.isLoading || Boolean(errorStatus)}
           hasSelectedItems={schedule.selected.length > 0}
           onDateChange={schedule.requestDateChange}
           onSave={schedule.requestSave}
@@ -221,7 +223,7 @@ export function TodoPage() {
             )}
 
             {schedule.isLoading ? (
-              <TodoLoadingSkeleton />
+              <TodoLoadingSkeleton label={t('common.loading')} />
             ) : (
               <>
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

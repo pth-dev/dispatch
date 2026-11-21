@@ -2,7 +2,7 @@
 
 /*
  * Short viewport variant (brief §4: "Short viewports (<700px high): reduce
- * padding/gap one step"). Applied only to the app shell padding, see AppShell.tsx.
+ * padding/gap one step" and allow <main> scroll when tables/panes hit min-height).
  */
 @custom-variant short {
   @media (max-height: 699px) {

@@ -181,7 +181,7 @@ export function TaskListPage() {
           />
         </div>
 
-        <div className="flex flex-col lg:min-h-0 lg:flex-1 lg:overflow-hidden">
+        <div className="flex flex-col lg:min-h-0 lg:flex-1 lg:overflow-hidden lg:short:min-h-fit">
           {isError ? (
             <InlineError
               status={errorStatus}

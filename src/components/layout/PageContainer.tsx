@@ -67,7 +67,7 @@ export function PageContainerBody({
         surface === 'card' && 'overflow-hidden rounded-xl border border-border bg-card',
         scrollable
           ? 'block w-full lg:overflow-y-auto lg:scrollbar-gutter-stable lg:short:[contain:size]'
-          : 'flex flex-col lg:overflow-hidden lg:short:min-h-fit lg:short:[&>*]:min-h-fit lg:short:[&>.grid]:min-h-[360px] lg:short:[&>.grid]:[contain:size]',
+          : 'flex flex-col lg:overflow-hidden lg:short:min-h-fit',
         scrollable && surface === 'transparent' && 'lg:pr-1',
         className,
       )}

@@ -43,13 +43,15 @@ import { TaskPeopleSection } from './TaskPeopleSection'
 import { TaskScheduleSection } from './TaskScheduleSection'
 import { TaskRequesterSection } from './TaskRequesterSection'
 
+export type TaskEditorVariant = 'full' | 'quick' | 'daily'
+
 type TaskEditorFormProps = {
   mode: 'create' | 'edit' | 'clone'
   sourceTask?: RawTask
-  initialVariant?: 'full' | 'quick' | 'daily'
-  variant?: 'full' | 'quick' | 'daily'
-  onVariantChange?: (next: 'full' | 'quick' | 'daily') => void
-  enterQuickModeRef?: React.MutableRefObject<(() => void) | null>
+  initialVariant?: TaskEditorVariant
+  variant?: TaskEditorVariant
+  onVariantChange?: (next: TaskEditorVariant) => void
+  enterQuickModeRef?: React.RefObject<(() => void) | null>
 }
 
 export function TaskEditorForm({
@@ -76,11 +78,11 @@ export function TaskEditorForm({
   const allowReaders = canSetReaders(user)
   const allowCross = canSetCross(user)
 
-  const [internalVariant, setInternalVariant] = React.useState<'full' | 'quick' | 'daily'>(
+  const [internalVariant, setInternalVariant] = React.useState<TaskEditorVariant>(
     mode === 'create' ? initialVariant : 'full',
   )
   const variant = controlledVariant ?? internalVariant
-  const setVariant = (next: 'full' | 'quick' | 'daily') => {
+  const setVariant = (next: TaskEditorVariant) => {
     setInternalVariant(next)
     onVariantChange?.(next)
   }
@@ -189,7 +191,7 @@ export function TaskEditorForm({
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 w-full max-w-[1440px] space-y-4">
+    <div className="w-full space-y-4">
       {isQuickMode && (
         <div
           role="status"

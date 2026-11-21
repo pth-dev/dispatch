@@ -178,10 +178,12 @@ describe('TodoPage', () => {
       screen.getByRole('heading', { level: 1, name: /việc cần làm hôm nay/i }),
     ).toBeInTheDocument()
     expect(screen.getByLabelText(/ngày làm việc/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /lưu lịch trình/i })).toBeDisabled()
 
     failTodos = false
     await user.click(retryBtn)
 
     expect(await screen.findAllByRole('link', { name: 'Kiểm tra switch tầng 2' })).toHaveLength(2)
+    expect(screen.getByRole('button', { name: /lưu lịch trình/i })).toBeEnabled()
   })
 })

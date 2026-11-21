@@ -50,7 +50,11 @@ export function TaskCardGrid({
 
   if (isLoading) {
     return (
-      <div className="flex-1 min-h-0 overflow-auto p-4" role="status" aria-live="polite">
+      <div
+        className="flex-1 min-h-0 overflow-auto p-4 lg:short:min-h-[297px] lg:short:[contain:size]"
+        role="status"
+        aria-live="polite"
+      >
         <span className="sr-only">{t('common.loading')}</span>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-4">
           {SKELETON_INDICES.map((index) => (
@@ -78,7 +82,7 @@ export function TaskCardGrid({
     (!statusFilter || !INCOMPLETE_ONLY_FILTERS.has(statusFilter)) && completedTasks.length > 0
 
   return (
-    <div className="flex-1 min-h-0 overflow-auto p-4 space-y-6">
+    <div className="flex-1 min-h-0 overflow-auto p-4 space-y-6 lg:short:min-h-[297px] lg:short:[contain:size]">
       {showIncomplete && (
         <TaskCardSection
           variant="incomplete"

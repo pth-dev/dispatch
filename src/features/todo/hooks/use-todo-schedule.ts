@@ -178,8 +178,11 @@ export function useTodoSchedule() {
     )
   }
 
+  const isLoading = tasksQuery.isLoading || todosQuery.isLoading
+  const loadError = tasksQuery.error ?? todosQuery.error
+
   const requestSave = () => {
-    if (!canWrite || saveMutation.isPending) return
+    if (!canWrite || saveMutation.isPending || isLoading || Boolean(loadError)) return
     if (missingTimeCount > 0) {
       setConfirmMissingTimeOpen(true)
       return
@@ -222,8 +225,8 @@ export function useTodoSchedule() {
     isDirty,
     feedback,
     dismissFeedback: () => setFeedback(null),
-    isLoading: tasksQuery.isLoading || todosQuery.isLoading,
-    error: tasksQuery.error ?? todosQuery.error,
+    isLoading,
+    error: loadError,
     refetchAll: () => {
       void tasksQuery.refetch()
       void todosQuery.refetch()
