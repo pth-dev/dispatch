@@ -1,33 +1,63 @@
-import type { FieldErrors, UseFormRegister } from 'react-hook-form'
+import * as React from 'react'
+import { useWatch, type Control, type FieldErrors, type UseFormRegister, type UseFormSetValue } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { Paperclip, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import type { DirectoryUser } from '@/schemas/auth'
 import type { PocketValueItem } from '@/schemas/meta'
-import type { TaskEditorFormValues } from '@/schemas/task'
-
-const LEVEL_OPTIONS = [
-  '一般件 (指定時間內完成) / Bình thường',
-  '緊急件 (優先處理) / Khẩn cấp',
-  '最速件 (立即處理) / Hỏa tốc',
-]
-
-const RISK_OPTIONS = ['無 / Không', '低 / Thấp', '中 / Trung bình', '高 / Cao']
+import type { RawAttachment, TaskEditorFormValues } from '@/schemas/task'
+import {
+  CUSTOM_TASK_TYPE_VALUE,
+  SELECT_FIELD_CLASS,
+  STANDARD_TASK_TYPES,
+  formatBilingualOption,
+  isStandardTaskType,
+} from '../../api/task-catalog'
 
 interface TaskBasicInfoSectionProps {
+  control: Control<TaskEditorFormValues>
   register: UseFormRegister<TaskEditorFormValues>
+  setValue: UseFormSetValue<TaskEditorFormValues>
   errors: FieldErrors<TaskEditorFormValues>
   pocketTypes: PocketValueItem[]
-  directory: DirectoryUser[]
+  retainedFiles: RawAttachment[]
+  onNewFilesChange: (files: File[]) => void
+  onRemoveRetainedFile: (path: string) => void
 }
 
 export function TaskBasicInfoSection({
+  control,
   register,
+  setValue,
   errors,
   pocketTypes,
-  directory,
+  retainedFiles,
+  onNewFilesChange,
+  onRemoveRetainedFile,
 }: TaskBasicInfoSectionProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const taskType = useWatch({ control, name: 'task_type' })
+
+  const personalTypes = pocketTypes.filter((item) => !isStandardTaskType(item.value))
+  const knownPersonalValues = new Set(personalTypes.map((p) => p.value))
+  const isKnownType =
+    !taskType || isStandardTaskType(taskType) || knownPersonalValues.has(taskType)
+
+  const [customMode, setCustomMode] = React.useState(!isKnownType)
+  const isCustomActive = customMode || !isKnownType
+  const selectValue = isCustomActive ? CUSTOM_TASK_TYPE_VALUE : taskType
+
+  const handleTaskTypeSelect = (next: string) => {
+    if (next === CUSTOM_TASK_TYPE_VALUE) {
+      setCustomMode(true)
+      if (isStandardTaskType(taskType) || knownPersonalValues.has(taskType)) {
+        setValue('task_type', '', { shouldDirty: true, shouldValidate: false })
+      }
+      return
+    }
+    setCustomMode(false)
+    setValue('task_type', next, { shouldDirty: true, shouldValidate: true })
+  }
 
   return (
     <section className="rounded-xl border border-border bg-card p-5 space-y-4">
@@ -51,81 +81,49 @@ export function TaskBasicInfoSection({
           )}
         </div>
 
-        <div className="space-y-1.5">
-          <label htmlFor="task-type" className="block text-xs font-semibold text-foreground">
+        <div className="md:col-span-2 space-y-2">
+          <label htmlFor="task-type-select" className="block text-xs font-semibold text-foreground">
             {t('tasks.fields.taskType')} *
           </label>
-          <Input
-            id="task-type"
-            list="pocket-task-types"
+          <select
+            id="task-type-select"
             aria-invalid={Boolean(errors.task_type)}
-            placeholder={t('tasks.fields.taskTypePlaceholder')}
-            {...register('task_type')}
-          />
-          <datalist id="pocket-task-types">
-            {pocketTypes.map((item) => (
-              <option key={item.id} value={item.value} />
-            ))}
-          </datalist>
+            value={selectValue}
+            onChange={(e) => handleTaskTypeSelect(e.target.value)}
+            className={SELECT_FIELD_CLASS}
+          >
+            <option value="">{t('tasks.fields.taskTypeSelectPlaceholder')}</option>
+            <optgroup label={t('tasks.fields.taskTypeStandardGroup')}>
+              {STANDARD_TASK_TYPES.map((item) => (
+                <option key={item} value={item}>
+                  {formatBilingualOption(item, i18n.language)}
+                </option>
+              ))}
+            </optgroup>
+            {personalTypes.length > 0 && (
+              <optgroup label={t('tasks.fields.taskTypePersonalGroup')}>
+                {personalTypes.map((item) => (
+                  <option key={item.id} value={item.value}>
+                    {item.value}
+                  </option>
+                ))}
+              </optgroup>
+            )}
+            <option value={CUSTOM_TASK_TYPE_VALUE}>{t('tasks.fields.taskTypeCustomOption')}</option>
+          </select>
+
+          {isCustomActive && (
+            <Input
+              id="task-type-custom"
+              aria-label={t('tasks.fields.taskTypeCustomPlaceholder')}
+              aria-invalid={Boolean(errors.task_type)}
+              placeholder={t('tasks.fields.taskTypeCustomPlaceholder')}
+              {...register('task_type')}
+            />
+          )}
           {errors.task_type?.message && (
             <p className="text-xs text-destructive">{t(errors.task_type.message)}</p>
           )}
-        </div>
-
-        <div className="space-y-1.5">
-          <label htmlFor="task-contact" className="block text-xs font-semibold text-foreground">
-            {t('tasks.fields.reqContact')} *
-          </label>
-          <Input
-            id="task-contact"
-            list="directory-users"
-            aria-invalid={Boolean(errors.req_contact)}
-            {...register('req_contact')}
-          />
-          <datalist id="directory-users">
-            {directory.map((u) => (
-              <option key={u.username} value={u.username}>
-                {u.fullname ? `${u.username} - ${u.fullname}` : u.username}
-              </option>
-            ))}
-          </datalist>
-          {errors.req_contact?.message && (
-            <p className="text-xs text-destructive">{t(errors.req_contact.message)}</p>
-          )}
-        </div>
-
-        <div className="space-y-1.5">
-          <label htmlFor="task-level" className="block text-xs font-semibold text-foreground">
-            {t('tasks.createForm.priority')}
-          </label>
-          <select
-            id="task-level"
-            {...register('level')}
-            className="w-full h-11 lg:h-10 rounded-md border border-border bg-card px-3 text-xs text-foreground outline-none focus:border-primary"
-          >
-            {LEVEL_OPTIONS.map((lv) => (
-              <option key={lv} value={lv}>
-                {lv}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="space-y-1.5">
-          <label htmlFor="task-risk" className="block text-xs font-semibold text-foreground">
-            {t('tasks.fields.riskStatus')}
-          </label>
-          <select
-            id="task-risk"
-            {...register('risk_status')}
-            className="w-full h-11 lg:h-10 rounded-md border border-border bg-card px-3 text-xs text-foreground outline-none focus:border-primary"
-          >
-            {RISK_OPTIONS.map((r) => (
-              <option key={r} value={r}>
-                {r}
-              </option>
-            ))}
-          </select>
         </div>
 
         <div className="md:col-span-2 space-y-1.5">
@@ -145,6 +143,47 @@ export function TaskBasicInfoSection({
             {t('tasks.fields.precautions')}
           </label>
           <Textarea id="task-precautions" rows={2} {...register('precautions')} />
+        </div>
+
+        <div className="space-y-1.5">
+          <label htmlFor="task-kmlink" className="block text-xs font-semibold text-foreground">
+            {t('tasks.report.kmLink')}
+          </label>
+          <Input id="task-kmlink" placeholder="https://..." {...register('km_link')} />
+        </div>
+
+        <div className="space-y-1.5">
+          <label htmlFor="task-files" className="block text-xs font-semibold text-foreground">
+            {t('tasks.detail.attachments')}
+          </label>
+          <input
+            id="task-files"
+            type="file"
+            multiple
+            onChange={(e) => onNewFilesChange(Array.from(e.target.files ?? []))}
+            className="block w-full text-xs text-muted-foreground file:mr-2 file:rounded-md file:border file:border-border file:bg-card file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-foreground"
+          />
+          {retainedFiles.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 pt-1">
+              {retainedFiles.map((att) => (
+                <span
+                  key={att.path}
+                  className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-0.5 text-xs"
+                >
+                  <Paperclip className="size-3 text-muted-foreground" aria-hidden="true" />
+                  <span className="truncate max-w-[160px]">{att.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => onRemoveRetainedFile(att.path)}
+                    className="text-muted-foreground hover:text-destructive cursor-pointer"
+                    aria-label={t('common.delete')}
+                  >
+                    <X className="size-3" aria-hidden="true" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>

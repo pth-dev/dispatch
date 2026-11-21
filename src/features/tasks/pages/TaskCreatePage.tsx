@@ -15,6 +15,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import {
+  InlineError,
+  isFullPageError,
+  throwFullPageError,
+  toErrorStatus,
+} from '@/components/layout'
 import { APP_ROUTES } from '@/constants/app-routes'
 import { useAppStore } from '@/app/store'
 import {
@@ -41,24 +47,59 @@ import {
 } from '../api/build-task-form-data'
 import { useDuplicateTaskCheck } from '../hooks/use-duplicate-task-check'
 import { TaskBasicInfoSection } from '../components/editor/TaskBasicInfoSection'
+import { TaskPeopleSection } from '../components/editor/TaskPeopleSection'
 import { TaskScheduleSection } from '../components/editor/TaskScheduleSection'
-import { TaskAssignmentSection } from '../components/editor/TaskAssignmentSection'
+import { TaskRequesterSection } from '../components/editor/TaskRequesterSection'
+
+function parsePositiveInt(raw: string | null | undefined): number | undefined {
+  if (!raw) return undefined
+  const num = Number(raw)
+  return Number.isInteger(num) && num > 0 ? num : undefined
+}
 
 export function TaskCreatePage() {
   const { id } = useParams<{ id: string }>()
   const [searchParams] = useSearchParams()
-  const editId = id ? Number(id) : undefined
-  const cloneId = searchParams.get('clone') ? Number(searchParams.get('clone')) : undefined
+  const editId = parsePositiveInt(id)
+  const cloneId = parsePositiveInt(searchParams.get('clone'))
+  const hasInvalidEditId = Boolean(id) && !editId
   const mode: 'create' | 'edit' | 'clone' = editId ? 'edit' : cloneId ? 'clone' : 'create'
 
   const sourceId = editId ?? cloneId ?? 0
-  const { data: sourceTask, isLoading: loadingSource } = useTaskById(sourceId)
-  const { t } = useTranslation()
+  const {
+    data: sourceTask,
+    isLoading: loadingSource,
+    isError,
+    error,
+    refetch,
+  } = useTaskById(sourceId)
+
+  if (hasInvalidEditId) {
+    throwFullPageError('404')
+  }
 
   if (sourceId > 0 && loadingSource) {
     return (
-      <div className="flex-1 p-6 text-xs text-muted-foreground">{t('common.loading')}</div>
+      <div className="flex-1 w-full max-w-[1440px] space-y-4 animate-pulse">
+        <div className="h-4 w-48 rounded bg-muted" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div className="lg:col-span-8 h-80 rounded-xl bg-muted" />
+          <div className="lg:col-span-4 h-80 rounded-xl bg-muted" />
+        </div>
+      </div>
     )
+  }
+
+  if (sourceId > 0 && isError) {
+    const errorStatus = toErrorStatus(error)
+    if (isFullPageError(errorStatus)) {
+      throwFullPageError(errorStatus)
+    }
+    return <InlineError status={errorStatus} onRetry={() => void refetch()} />
+  }
+
+  if (sourceId > 0 && !sourceTask) {
+    throwFullPageError('404')
   }
 
   return (
@@ -190,13 +231,13 @@ function TaskEditorForm({ mode, sourceTask }: TaskEditorFormProps) {
         : t('tasks.createForm.title')
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 max-w-4xl space-y-4">
+    <div className="flex-1 flex flex-col min-h-0 w-full max-w-[1440px] space-y-4">
       <div className="flex items-center gap-2 text-xs text-muted-foreground select-none">
         <Link to={APP_ROUTES.TASKS} className="flex items-center gap-1 hover:text-foreground font-medium">
-          <ArrowLeft className="size-3.5" />
+          <ArrowLeft className="size-3.5" aria-hidden="true" />
           <span>{t('tasks.detail.backToList')}</span>
         </Link>
-        <span>›</span>
+        <span aria-hidden="true">›</span>
         <span className="font-semibold text-primary">{pageTitle}</span>
       </div>
 
@@ -217,41 +258,49 @@ function TaskEditorForm({ mode, sourceTask }: TaskEditorFormProps) {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pb-2" noValidate>
-        <TaskBasicInfoSection
-          register={register}
-          errors={errors}
-          pocketTypes={pocketTypes}
-          directory={directory}
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+          <div className="lg:col-span-8 space-y-4">
+            <TaskBasicInfoSection
+              control={control}
+              register={register}
+              setValue={setValue}
+              errors={errors}
+              pocketTypes={pocketTypes}
+              retainedFiles={retainedFiles}
+              onNewFilesChange={setNewFiles}
+              onRemoveRetainedFile={handleRemoveRetainedFile}
+            />
 
-        <section className="rounded-xl border border-border bg-card p-5 space-y-5">
-          <h2 className="text-base font-semibold text-foreground">
-            {t('tasks.createForm.assignmentSection')}
-          </h2>
+            <TaskPeopleSection
+              control={control}
+              setValue={setValue}
+              errors={errors}
+              directory={directory}
+              allowReaders={allowReaders}
+              allowCross={allowCross}
+            />
+          </div>
 
-          <TaskScheduleSection
-            control={control}
-            register={register}
-            setValue={setValue}
-            errors={errors}
-            depts={depts}
-          />
+          <div className="lg:col-span-4 space-y-4">
+            <TaskScheduleSection
+              control={control}
+              register={register}
+              setValue={setValue}
+              errors={errors}
+              depts={depts}
+            />
 
-          <TaskAssignmentSection
-            control={control}
-            register={register}
-            setValue={setValue}
-            errors={errors}
-            depts={depts}
-            sites={sites}
-            directory={directory}
-            allowReaders={allowReaders}
-            allowCross={allowCross}
-            retainedFiles={retainedFiles}
-            onNewFilesChange={setNewFiles}
-            onRemoveRetainedFile={handleRemoveRetainedFile}
-          />
-        </section>
+            <TaskRequesterSection
+              control={control}
+              register={register}
+              setValue={setValue}
+              errors={errors}
+              depts={depts}
+              sites={sites}
+              directory={directory}
+            />
+          </div>
+        </div>
 
         <div className="sticky bottom-0 z-20 flex items-center justify-end gap-3 rounded-xl border border-border bg-card px-4 py-3">
           <Button type="button" variant="outline" onClick={handleCancel}>

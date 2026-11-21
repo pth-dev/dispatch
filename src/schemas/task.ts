@@ -241,7 +241,9 @@ export const TaskEditorFormSchema = z
     title: z.string().trim().min(1, 'tasks.validation.titleRequired'),
     content: z.string().default(''),
     precautions: z.string().default(''),
-    level: z.string().default('一般件 (指定時間內完成) / Bình thường'),
+    level: z
+      .string()
+      .default('一般件 (指定时间内完成) / Thường (Hoàn thành trong thời gian quy định, KS nghiêm ngặt)'),
     risk_status: z.string().default('無 / Không'),
     task_type: z
       .string()

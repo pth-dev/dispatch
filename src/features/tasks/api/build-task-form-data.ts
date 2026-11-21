@@ -8,7 +8,14 @@ import {
   toLocalDateString,
 } from '@/utils/task-domain'
 
+import {
+  DEFAULT_RISK_STATUS,
+  DEFAULT_TASK_LEVEL,
+  isStandardTaskType,
+} from './task-catalog'
+
 export const DEFAULT_DUE_TIME = '19:00'
+export const DEFAULT_RECUR_TIME = '17:00'
 
 export function getDefaultDueDateTime(now: Date = new Date()): string {
   return `${toLocalDateString(now)}T${DEFAULT_DUE_TIME}`
@@ -38,8 +45,8 @@ export function buildDefaultTaskEditorValues(
       title: '',
       content: '',
       precautions: '',
-      level: '一般件 (指定時間內完成) / Bình thường',
-      risk_status: '無 / Không',
+      level: DEFAULT_TASK_LEVEL,
+      risk_status: DEFAULT_RISK_STATUS,
       task_type: '',
       req_depts: user?.dept ? [user.dept] : [],
       req_contact: user?.username ?? '',
@@ -50,7 +57,7 @@ export function buildDefaultTaskEditorValues(
       recur_type: 'once',
       recur_weekdays: [],
       recur_monthdays: [],
-      recur_time: '17:00',
+      recur_time: DEFAULT_RECUR_TIME,
       recur_end: '',
       confidential: 0,
       readers: [],
@@ -70,8 +77,8 @@ export function buildDefaultTaskEditorValues(
     title: sourceTask.title,
     content: sourceTask.content ?? '',
     precautions: sourceTask.precautions ?? '',
-    level: sourceTask.level || '一般件 (指定時間內完成) / Bình thường',
-    risk_status: sourceTask.risk_status || '無 / Không',
+    level: sourceTask.level || DEFAULT_TASK_LEVEL,
+    risk_status: sourceTask.risk_status || DEFAULT_RISK_STATUS,
     task_type: sourceTask.task_type ?? '',
     req_depts: parseReqDepts(sourceTask.req_depts, sourceTask.req_dept),
     req_contact: sourceTask.req_contact || user?.username || '',
@@ -82,7 +89,7 @@ export function buildDefaultTaskEditorValues(
     recur_type: recurType,
     recur_weekdays: parseRecurInts(sourceTask.recur_weekdays, 1, 7),
     recur_monthdays: parseRecurInts(sourceTask.recur_monthdays, 1, 31),
-    recur_time: sourceTask.recur_time || '17:00',
+    recur_time: sourceTask.recur_time || DEFAULT_RECUR_TIME,
     recur_end: sourceTask.recur_end ?? '',
     confidential: sourceTask.confidential,
     readers: parseAssigneeList(sourceTask.readers, 100),
@@ -121,8 +128,9 @@ export function buildTaskFormData(options: BuildTaskFormDataOptions): FormData {
   formData.append('req_depts', JSON.stringify(values.req_depts))
   formData.append('req_dept_custom', JSON.stringify([]))
   formData.append('req_contact', values.req_contact.trim())
-  formData.append('task_type', values.task_type.trim())
-  formData.append('task_type_is_custom', '0')
+  const trimmedTaskType = values.task_type.trim()
+  formData.append('task_type', trimmedTaskType)
+  formData.append('task_type_is_custom', trimmedTaskType && !isStandardTaskType(trimmedTaskType) ? '1' : '0')
   formData.append('install_req', '')
   formData.append('type_detail', options.preservedTypeDetail ?? '')
   formData.append('work_items', options.preservedWorkItems ?? '')
