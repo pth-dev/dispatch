@@ -61,9 +61,9 @@ export function TaskAssignmentSection({
         <span className="block text-xs font-semibold text-foreground">
           {t('tasks.fields.reqDepts')} *
         </span>
-        <div className="max-h-36 overflow-y-auto rounded-lg border border-border p-2.5 space-y-1.5 text-xs">
+        <div className="relative max-h-36 overflow-y-auto rounded-lg border border-border p-2.5 space-y-1.5 text-xs">
           {depts.map((dept) => (
-            <label key={dept.value} className="flex items-center gap-2 cursor-pointer">
+            <label key={dept.value} className="relative flex items-center gap-2 cursor-pointer">
               <Checkbox
                 checked={watchReqDepts.includes(dept.value)}
                 onCheckedChange={() => toggleMulti('req_depts', watchReqDepts, dept.value)}
@@ -81,9 +81,9 @@ export function TaskAssignmentSection({
         <span className="block text-xs font-semibold text-foreground">
           {t('tasks.fields.site')} *
         </span>
-        <div className="max-h-36 overflow-y-auto rounded-lg border border-border p-2.5 space-y-1.5 text-xs">
+        <div className="relative max-h-36 overflow-y-auto rounded-lg border border-border p-2.5 space-y-1.5 text-xs">
           {sites.map((site) => (
-            <label key={site.value} className="flex items-center gap-2 cursor-pointer">
+            <label key={site.value} className="relative flex items-center gap-2 cursor-pointer">
               <Checkbox
                 checked={watchSites.includes(site.value)}
                 onCheckedChange={() => toggleMulti('site', watchSites, site.value)}
@@ -106,9 +106,9 @@ export function TaskAssignmentSection({
             <span className="text-primary">{t('tasks.fields.autoSplitHint')}</span>
           )}
         </div>
-        <div className="max-h-40 overflow-y-auto rounded-lg border border-border p-2.5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5 text-xs">
+        <div className="relative max-h-40 overflow-y-auto rounded-lg border border-border p-2.5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5 text-xs">
           {directory.map((person) => (
-            <label key={person.username} className="flex items-center gap-2 cursor-pointer">
+            <label key={person.username} className="relative flex items-center gap-2 cursor-pointer">
               <Checkbox
                 checked={watchAssignees.includes(person.username)}
                 onCheckedChange={() =>
@@ -128,9 +128,9 @@ export function TaskAssignmentSection({
           <span className="block text-xs font-semibold text-foreground">
             {t('tasks.fields.readers')} ({watchReaders.length})
           </span>
-          <div className="max-h-32 overflow-y-auto rounded-lg border border-border p-2.5 space-y-1.5 text-xs">
+          <div className="relative max-h-32 overflow-y-auto rounded-lg border border-border p-2.5 space-y-1.5 text-xs">
             {directory.map((person) => (
-              <label key={person.username} className="flex items-center gap-2 cursor-pointer">
+              <label key={person.username} className="relative flex items-center gap-2 cursor-pointer">
                 <Checkbox
                   checked={watchReaders.includes(person.username)}
                   onCheckedChange={() => toggleMulti('readers', watchReaders, person.username)}
@@ -144,7 +144,7 @@ export function TaskAssignmentSection({
 
       {allowCross && (
         <div className="space-y-1.5">
-          <label className="flex items-center gap-2 text-xs font-semibold text-foreground cursor-pointer">
+          <label className="relative flex items-center gap-2 text-xs font-semibold text-foreground cursor-pointer">
             <Checkbox
               checked={watchCrossDept}
               onCheckedChange={(checked) =>
@@ -154,9 +154,9 @@ export function TaskAssignmentSection({
             <span>{t('tasks.fields.crossDept')}</span>
           </label>
           {watchCrossDept && (
-            <div className="max-h-32 overflow-y-auto rounded-lg border border-border p-2.5 space-y-1.5 text-xs">
+            <div className="relative max-h-32 overflow-y-auto rounded-lg border border-border p-2.5 space-y-1.5 text-xs">
               {directory.map((person) => (
-                <label key={person.username} className="flex items-center gap-2 cursor-pointer">
+                <label key={person.username} className="relative flex items-center gap-2 cursor-pointer">
                   <Checkbox
                     checked={watchCrossViewers.includes(person.username)}
                     onCheckedChange={() =>

@@ -216,7 +216,7 @@ function TaskEditorForm({ mode, sourceTask }: TaskEditorFormProps) {
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pb-20 lg:pb-6" noValidate>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pb-2" noValidate>
         <TaskBasicInfoSection
           register={register}
           errors={errors}
@@ -253,7 +253,7 @@ function TaskEditorForm({ mode, sourceTask }: TaskEditorFormProps) {
           />
         </section>
 
-        <div className="fixed bottom-0 left-0 right-0 z-30 flex items-center justify-end gap-3 border-t border-border bg-card p-3 lg:static lg:border-0 lg:bg-transparent lg:p-0">
+        <div className="sticky bottom-0 z-20 flex items-center justify-end gap-3 rounded-xl border border-border bg-card px-4 py-3">
           <Button type="button" variant="outline" onClick={handleCancel}>
             {t('common.cancel')}
           </Button>

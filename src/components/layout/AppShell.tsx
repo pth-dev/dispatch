@@ -30,7 +30,7 @@ export function AppShell() {
   }
 
   return (
-    <div className="flex h-dvh w-full overflow-hidden bg-background">
+    <div className="relative flex h-dvh w-full overflow-hidden bg-background">
       {/* Desktop Persistent Sidebar */}
       <div className="hidden lg:flex lg:shrink-0">
         <Sidebar />
@@ -49,7 +49,7 @@ export function AppShell() {
         <Header onOpenMobileMenu={() => setMobileMenuOpen(true)} />
 
         {/* Fixed-height scroll area; padding lives here and nowhere else. */}
-        <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto bg-background px-4 py-4 lg:px-6 short:py-3">
+        <main className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto bg-background px-4 py-4 lg:px-6 short:py-3">
           <React.Suspense
             fallback={
               <div className="flex h-32 items-center justify-center text-xs text-muted-foreground">
