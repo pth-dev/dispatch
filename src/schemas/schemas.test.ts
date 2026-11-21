@@ -119,6 +119,30 @@ describe('task & report schemas', () => {
     expect(reports[0]?.task_id).toBe(1024)
   })
 
+  it('tolerates null legacy SQLite strings in RawTaskSchema and RawReportSchema', () => {
+    const tasks = RawTaskListSchema.parse([
+      {
+        id: 2001,
+        title: null,
+        reporter: null,
+        attachments: [{ name: 'a.pdf', path: '/uploads/a.pdf', size: null }],
+      },
+    ])
+    expect(tasks[0]?.title).toBe('')
+    expect(tasks[0]?.reporter).toBe('')
+
+    const reports = RawReportListSchema.parse([
+      {
+        id: 601,
+        task_id: 2001,
+        username: null,
+        createdAt: null,
+      },
+    ])
+    expect(reports[0]?.username).toBe('')
+    expect(reports[0]?.createdAt).toBe('')
+  })
+
   it('rejects paused status with 100% progress in TaskReportFormSchema', () => {
     const invalid = TaskReportFormSchema.safeParse({
       content: 'Pausing',

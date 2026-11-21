@@ -100,7 +100,7 @@ export function buildDefaultTaskEditorValues(
   }
 }
 
-export interface BuildTaskFormDataOptions {
+export type BuildTaskFormDataOptions = {
   mode: 'create' | 'edit' | 'clone'
   values: TaskEditorFormValues
   reporter: string
@@ -110,6 +110,7 @@ export interface BuildTaskFormDataOptions {
   /** Original `work_items` JSON string preserved verbatim on PUT (Decision #8). */
   preservedWorkItems?: string | null
   preservedTypeDetail?: string | null
+  preservedInstallReq?: string | null
 }
 
 export function buildTaskFormData(options: BuildTaskFormDataOptions): FormData {
@@ -131,7 +132,7 @@ export function buildTaskFormData(options: BuildTaskFormDataOptions): FormData {
   const trimmedTaskType = values.task_type.trim()
   formData.append('task_type', trimmedTaskType)
   formData.append('task_type_is_custom', trimmedTaskType && !isStandardTaskType(trimmedTaskType) ? '1' : '0')
-  formData.append('install_req', '')
+  formData.append('install_req', options.preservedInstallReq ?? '')
   formData.append('type_detail', options.preservedTypeDetail ?? '')
   formData.append('work_items', options.preservedWorkItems ?? '')
   formData.append('cost_estimate', values.cost_estimate)

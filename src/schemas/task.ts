@@ -28,7 +28,7 @@ export type RecurType = z.infer<typeof RecurTypeSchema>
 export const RawAttachmentSchema = z.object({
   name: z.string(),
   path: z.string(),
-  size: z.number().optional(),
+  size: z.number().nullish(),
 })
 export type RawAttachment = z.infer<typeof RawAttachmentSchema>
 
@@ -64,7 +64,10 @@ export type WorkItemsEnvelope = z.infer<typeof WorkItemsEnvelopeSchema>
 
 export const RawTaskSchema = z.object({
   id: z.coerce.number(),
-  title: z.string().default(''),
+  title: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ''),
   title_vn: z.string().nullish(),
   content: z.string().nullish(),
   content_vn: z.string().nullish(),
@@ -119,7 +122,10 @@ export const RawTaskSchema = z.object({
   split_group: z.coerce.number().nullish(),
   split_seq: z.coerce.number().nullish(),
   split_members: z.string().nullish(),
-  reporter: z.string().default(''),
+  reporter: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ''),
   reporter_name: z.string().nullish(),
   reporter_dept: z.string().nullish(),
   due_date: z.string().nullish(),
@@ -139,12 +145,18 @@ export const RawTaskListSchema = z.array(RawTaskSchema)
 export const RawReportSchema = z.object({
   id: z.coerce.number(),
   task_id: z.coerce.number(),
-  username: z.string().default(''),
+  username: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ''),
   fullname: z.string().nullish(),
   content: z.string().nullish(),
   attachments: z.union([z.string(), z.array(RawAttachmentSchema)]).nullish(),
   km_link: z.string().nullish(),
-  createdAt: z.string().default(''),
+  createdAt: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ''),
   updatedAt: z.string().nullish(),
   progress: z.coerce.number().nullish(),
   pause_action: z.string().nullish(),
@@ -168,43 +180,49 @@ export type DupCheckResponse = z.infer<typeof DupCheckResponseSchema>
 
 export const TaskMutationResponseSchema = z.object({
   success: z.boolean(),
-  id: z.coerce.number().optional(),
+  id: z.coerce.number().nullish(),
   recur_cycle_date: z.string().nullish(),
-  unit_synced: z.boolean().optional(),
-  assigned_unit: z.string().optional(),
-  unit_person: z.string().optional(),
-  cross_unknown: z.array(z.string()).optional(),
-  readers_unknown: z.array(z.string()).optional(),
-  split_created: z.number().optional(),
-  split_group: z.number().optional(),
-  split_kept: z.array(z.string()).optional(),
-  code: z.string().optional(),
-  message: z.string().optional(),
-  err: z.string().optional(),
+  unit_synced: z.boolean().nullish(),
+  assigned_unit: z.string().nullish(),
+  unit_person: z.string().nullish(),
+  cross_unknown: z.array(z.string()).nullish(),
+  readers_unknown: z.array(z.string()).nullish(),
+  split_created: z.number().nullish(),
+  split_group: z.number().nullish(),
+  split_kept: z.array(z.string()).nullish(),
+  code: z.string().nullish(),
+  message: z.string().nullish(),
+  err: z.string().nullish(),
 })
 export type TaskMutationResponse = z.infer<typeof TaskMutationResponseSchema>
 
 export const ReportMutationResponseSchema = z.object({
   success: z.boolean(),
-  closed: z.boolean().optional(),
-  cycle_done: z.boolean().optional(),
-  task_id: z.coerce.number().optional(),
-  message: z.string().optional(),
+  closed: z.boolean().nullish(),
+  cycle_done: z.boolean().nullish(),
+  task_id: z.coerce.number().nullish(),
+  code: z.string().nullish(),
+  message: z.string().nullish(),
+  err: z.string().nullish(),
 })
 export type ReportMutationResponse = z.infer<typeof ReportMutationResponseSchema>
 
 export const DeleteAttachmentResponseSchema = z.object({
   success: z.boolean(),
-  attachments: z.array(RawAttachmentSchema).optional(),
-  message: z.string().optional(),
+  attachments: z.array(RawAttachmentSchema).nullish(),
+  code: z.string().nullish(),
+  message: z.string().nullish(),
+  err: z.string().nullish(),
 })
 export type DeleteAttachmentResponse = z.infer<typeof DeleteAttachmentResponseSchema>
+
+const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 
 export const TaskListParamsSchema = z.object({
   scope: z.enum(['mine', 'created', 'all']).default('mine'),
   search: z.string().optional(),
-  fromDate: z.string().optional(),
-  toDate: z.string().optional(),
+  fromDate: z.string().regex(ISO_DATE_RE).optional(),
+  toDate: z.string().regex(ISO_DATE_RE).optional(),
   department: z.string().optional(),
   status: TaskStatusFilterSchema.optional(),
   page: z.coerce.number().int().min(1).default(1),

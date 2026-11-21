@@ -196,6 +196,7 @@ function TaskEditorForm({ mode, sourceTask }: TaskEditorFormProps) {
       cloneFromId: mode === 'clone' ? sourceTask?.id : undefined,
       preservedWorkItems,
       preservedTypeDetail,
+      preservedInstallReq: mode === 'edit' || mode === 'clone' ? sourceTask?.install_req ?? null : null,
     })
 
     try {

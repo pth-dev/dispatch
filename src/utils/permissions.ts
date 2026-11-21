@@ -112,6 +112,28 @@ function userMatchesAnyTaskDept(userDept: string, task: TaskPermissionTarget): b
   return reqDepts.some((dept) => sameDept(userDept, dept))
 }
 
+function sameUser(a: string | null | undefined, b: string | null | undefined): boolean {
+  const na = (a ?? '').trim().toLowerCase()
+  const nb = (b ?? '').trim().toLowerCase()
+  return na.length > 0 && na === nb
+}
+
+/**
+ * Default task list scope per role (`docs/DEVIATIONS.md §3 D3`):
+ * staff (`user`) defaults to `mine`, department heads / managers / execs default to `all`.
+ */
+export function getDefaultTaskScope(
+  user: Pick<SessionUser, 'role'> | null | undefined,
+): 'mine' | 'all' {
+  if (!user) return 'mine'
+  return user.role === 'user' ? 'mine' : 'all'
+}
+
+export function canCreateTask(user: UserIdentity | null | undefined): boolean {
+  if (!user) return false
+  return canWriteMenu(user, 'dashboard')
+}
+
 /**
  * True when user is listed in `readers` and has no elevated relationship
  * (not creator, assignee, cross-viewer, super-like, or same-dept).
@@ -125,7 +147,7 @@ export function isReaderOnly(
   if (!includesUser(readers, user.username)) return false
 
   if (isSuperLike(user)) return false
-  if (task.reporter.toLowerCase() === user.username.toLowerCase()) return false
+  if (sameUser(task.reporter, user.username)) return false
   if (includesUser(parseAssigneeList(task.assign_person), user.username)) return false
   if (isCrossViewer(user, task)) return false
   if (userMatchesAnyTaskDept(user.dept, task)) return false
@@ -138,9 +160,10 @@ export function canEditTask(
   task: TaskPermissionTarget,
 ): boolean {
   if (!user) return false
+  if (!canWriteMenu(user, 'dashboard')) return false
   if (isReaderOnly(user, task)) return false
   if (isSuperLike(user)) return true
-  if (task.reporter.toLowerCase() === user.username.toLowerCase()) return true
+  if (sameUser(task.reporter, user.username)) return true
 
   if (user.role === 'admin') {
     return userMatchesAnyTaskDept(user.dept, task)
@@ -159,8 +182,9 @@ export function canDeleteTask(
   task: Pick<TaskPermissionTarget, 'reporter' | 'reporter_dept' | 'req_dept' | 'req_depts'>,
 ): boolean {
   if (!user) return false
+  if (!canWriteMenu(user, 'dashboard')) return false
   if (isSuperLike(user)) return true
-  if (task.reporter.toLowerCase() === user.username.toLowerCase()) return true
+  if (sameUser(task.reporter, user.username)) return true
 
   if (user.role === 'admin' && user.dept) {
     if (sameDept(user.dept, task.reporter_dept)) return true
@@ -195,8 +219,8 @@ export function canDeleteReportAttachment(
 ): boolean {
   if (!user) return false
   if (isExec(user)) return true
-  if (report.username.toLowerCase() === user.username.toLowerCase()) return true
-  if (task.reporter.toLowerCase() === user.username.toLowerCase()) return true
+  if (sameUser(report.username, user.username)) return true
+  if (sameUser(task.reporter, user.username)) return true
 
   if (user.role === 'admin') {
     return userMatchesAnyTaskDept(user.dept, task)
@@ -206,11 +230,12 @@ export function canDeleteReportAttachment(
 }
 
 export function canCloneTask(
-  user: Pick<SessionUser, 'username'> | null | undefined,
+  user: UserIdentity | null | undefined,
   task: Pick<RawTask, 'reporter'>,
 ): boolean {
   if (!user) return false
-  return task.reporter.toLowerCase() === user.username.toLowerCase()
+  if (!canWriteMenu(user, 'dashboard')) return false
+  return sameUser(task.reporter, user.username)
 }
 
 export function canSubmitReport(

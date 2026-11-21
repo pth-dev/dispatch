@@ -1,42 +1,58 @@
 import * as React from 'react'
 import { useSearchParams } from 'react-router'
-import { TaskStatusFilterSchema, type TaskListParams } from '@/schemas/task'
+import { useAppStore } from '@/app/store'
+import { TaskListParamsSchema, type TaskListParams } from '@/schemas/task'
+import { getDefaultTaskScope } from '@/utils/permissions'
 
-const DEFAULT_SCOPE = 'mine'
 const DEFAULT_PAGE = 1
 const DEFAULT_PAGE_SIZE = 10
 
+function parseUrlParams(
+  searchParams: URLSearchParams,
+  defaultScope: 'mine' | 'all',
+): TaskListParams {
+  const rawSize = Number(searchParams.get('size') || searchParams.get('pageSize') || DEFAULT_PAGE_SIZE)
+  const raw = {
+    scope: searchParams.get('scope') ?? defaultScope,
+    search: searchParams.get('search') || undefined,
+    fromDate: searchParams.get('fromDate') || undefined,
+    toDate: searchParams.get('toDate') || undefined,
+    department: searchParams.get('department') || undefined,
+    status: searchParams.get('status') || undefined,
+    page: searchParams.get('page') ?? DEFAULT_PAGE,
+    pageSize: rawSize === 20 || rawSize === 30 || rawSize === 50 ? rawSize : DEFAULT_PAGE_SIZE,
+  }
+
+  const parsed = TaskListParamsSchema.safeParse(raw)
+  if (parsed.success) {
+    return parsed.data
+  }
+
+  // Fallback field-by-field if a single URL param is malformed
+  const scopeParsed = TaskListParamsSchema.shape.scope.safeParse(raw.scope)
+  const fromParsed = TaskListParamsSchema.shape.fromDate.safeParse(raw.fromDate)
+  const toParsed = TaskListParamsSchema.shape.toDate.safeParse(raw.toDate)
+  const statusParsed = TaskListParamsSchema.shape.status.safeParse(raw.status)
+  const pageParsed = TaskListParamsSchema.shape.page.safeParse(raw.page)
+
+  return {
+    scope: scopeParsed.success ? scopeParsed.data : defaultScope,
+    search: raw.search,
+    fromDate: fromParsed.success ? fromParsed.data : undefined,
+    toDate: toParsed.success ? toParsed.data : undefined,
+    department: raw.department,
+    status: statusParsed.success ? statusParsed.data : undefined,
+    page: pageParsed.success ? pageParsed.data : DEFAULT_PAGE,
+    pageSize: raw.pageSize as 10 | 20 | 30 | 50,
+  }
+}
+
 export function useTaskListParams() {
   const [searchParams, setSearchParams] = useSearchParams()
+  const user = useAppStore((s) => s.user)
+  const defaultScope = getDefaultTaskScope(user)
 
-  const rawScope = searchParams.get('scope')
-  const scope: 'mine' | 'created' | 'all' =
-    rawScope === 'created' || rawScope === 'all' ? rawScope : 'mine'
-
-  const rawPage = parseInt(searchParams.get('page') || '1', 10)
-  const page = Number.isInteger(rawPage) && rawPage > 0 ? rawPage : DEFAULT_PAGE
-
-  const rawPageSize = parseInt(searchParams.get('size') || searchParams.get('pageSize') || '10', 10)
-  const pageSize: 10 | 20 | 30 | 50 =
-    rawPageSize === 20 || rawPageSize === 30 || rawPageSize === 50 ? rawPageSize : 10
-
-  const search = searchParams.get('search') || undefined
-  const fromDate = searchParams.get('fromDate') || undefined
-  const toDate = searchParams.get('toDate') || undefined
-  const department = searchParams.get('department') || undefined
-  const parsedStatus = TaskStatusFilterSchema.safeParse(searchParams.get('status'))
-  const status = parsedStatus.success ? parsedStatus.data : undefined
-
-  const params: TaskListParams = {
-    scope,
-    search,
-    fromDate,
-    toDate,
-    department,
-    status,
-    page,
-    pageSize,
-  }
+  const params = parseUrlParams(searchParams, defaultScope)
 
   // Count active filters (excluding scope, page, pageSize)
   let activeFilterCount = 0
@@ -44,14 +60,14 @@ export function useTaskListParams() {
   if (params.fromDate) activeFilterCount++
   if (params.toDate) activeFilterCount++
   if (params.department && params.department !== 'all') activeFilterCount++
-  if (params.status && (params.status as string) !== 'all') activeFilterCount++
+  if (params.status) activeFilterCount++
 
   // Functional setter to safely write to URL params
   const setScope = (newScope: 'mine' | 'created' | 'all') => {
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev)
-        if (newScope === DEFAULT_SCOPE) {
+        if (newScope === defaultScope) {
           next.delete('scope')
         } else {
           next.set('scope', newScope)
@@ -161,7 +177,7 @@ export function useTaskListParams() {
   }
 }
 
-export interface PageClampOptions {
+export type PageClampOptions = {
   page: number
   pageSize: number
   total?: number
@@ -182,7 +198,7 @@ export function usePageClamp({
   setPage,
 }: PageClampOptions) {
   React.useEffect(() => {
-    if (isPlaceholderData || !total || total <= 0) return
+    if (isPlaceholderData || total === undefined) return
     const lastPage = Math.max(1, Math.ceil(total / pageSize))
     if (page > lastPage) setPage(lastPage, { replace: true })
   }, [page, pageSize, total, isPlaceholderData, setPage])

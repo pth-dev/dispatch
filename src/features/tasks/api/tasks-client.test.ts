@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { SessionUser } from '@/schemas/auth'
 import type { RawTask } from '@/schemas/task'
-import { filterAndPaginateTasks } from './queries'
+import { assertMutationSuccess, filterAndPaginateTasks } from './queries'
 import { buildDefaultTaskEditorValues, buildTaskFormData } from './build-task-form-data'
 
 const USER: SessionUser = {
@@ -78,6 +78,38 @@ describe('filterAndPaginateTasks', () => {
     expect(page2.total).toBe(15)
     expect(page2.items.map((t) => t.id)).toEqual([5, 4, 3, 2, 1])
   })
+
+  it('excludes tasks with no reference date when date range filter is active', () => {
+    const withEmptyDate = [
+      ...tasks,
+      makeTask({ id: 99, title: 'No date task', due_date: '', createdAt: '' }),
+    ]
+    const res = filterAndPaginateTasks(
+      withEmptyDate,
+      { scope: 'all', fromDate: '2026-11-01', page: 1, pageSize: 10 },
+      USER,
+      now,
+    )
+    expect(res.items.map((t) => t.id)).not.toContain(99)
+  })
+})
+
+describe('assertMutationSuccess', () => {
+  it('throws business ApiError when HTTP 200 body has success=false', () => {
+    expect(() =>
+      assertMutationSuccess({
+        success: false,
+        code: 'DUP_TITLE_DUE',
+        message: 'Duplicate task',
+      }),
+    ).toThrowError(
+      expect.objectContaining({
+        status: 400,
+        code: 'DUP_TITLE_DUE',
+        kind: 'business',
+      }),
+    )
+  })
 })
 
 describe('buildTaskFormData', () => {
@@ -94,9 +126,11 @@ describe('buildTaskFormData', () => {
       newFiles: [],
       retainedFiles: [{ name: 'a.pdf', path: '/uploads/a.pdf' }],
       preservedWorkItems: originalWorkItems,
+      preservedInstallReq: 'Titop, OFFICE',
     })
 
     expect(fd.get('work_items')).toBe(originalWorkItems)
+    expect(fd.get('install_req')).toBe('Titop, OFFICE')
     expect(fd.get('retainedFiles')).toBe(JSON.stringify([{ name: 'a.pdf', path: '/uploads/a.pdf' }]))
     expect(fd.get('clone_from')).toBeNull()
   })

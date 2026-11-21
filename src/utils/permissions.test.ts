@@ -3,6 +3,7 @@ import type { SessionUser } from '@/schemas/auth'
 import type { RawTask } from '@/schemas/task'
 import {
   canCloneTask,
+  canCreateTask,
   canDeleteReportAttachment,
   canDeleteTask,
   canEditTask,
@@ -12,6 +13,7 @@ import {
   canShowMenu,
   canSubmitReport,
   canWriteMenu,
+  getDefaultTaskScope,
   getMenuPermFlags,
   isCrossViewer,
   isExec,
@@ -167,5 +169,23 @@ describe('task-level permission helpers', () => {
     expect(
       canDeleteReportAttachment(buildUser({ username: 'itadmin', role: 'admin', dept: '資訊部' }), task, report),
     ).toBe(true)
+  })
+
+  it('enforces menu_perms.dashboard write flag for create/edit/delete/clone and D3 default scope', () => {
+    const task = buildTask({ reporter: 'creator1', reporter_dept: '製造部', req_depts: '製造部' })
+    const readOnlyCreator = buildUser({
+      username: 'creator1',
+      role: 'user',
+      menu_perms: { dashboard: 'sr', list: 'srw' },
+    })
+
+    expect(canCreateTask(readOnlyCreator)).toBe(false)
+    expect(canEditTask(readOnlyCreator, task)).toBe(false)
+    expect(canDeleteTask(readOnlyCreator, task)).toBe(false)
+    expect(canCloneTask(readOnlyCreator, task)).toBe(false)
+
+    expect(getDefaultTaskScope(buildUser({ role: 'user' }))).toBe('mine')
+    expect(getDefaultTaskScope(buildUser({ role: 'admin' }))).toBe('all')
+    expect(getDefaultTaskScope(buildUser({ role: 'exec_vp' }))).toBe('all')
   })
 })

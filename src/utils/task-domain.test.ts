@@ -151,6 +151,7 @@ describe('encoded field decoders', () => {
   it('sanitizes external links and attachment URLs against javascript: scheme', () => {
     expect(resolveFileUrl('uploads/a.png')).toBe('/uploads/a.png')
     expect(resolveFileUrl('javascript:alert(1)')).toBe('')
+    expect(resolveFileUrl('//evil.com/x.exe')).toBe('')
     expect(getSafeExternalUrl('javascript:alert(1)')).toBeNull()
     expect(getSafeExternalUrl('km.corp.local/doc/1')).toBe('https://km.corp.local/doc/1')
     expect(parseLinks('https://a.com javascript:evil() b.com')).toEqual([

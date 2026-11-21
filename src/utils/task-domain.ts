@@ -21,7 +21,6 @@ const T2S_CHAR_MAP: Record<string, string> = {
   總: '总',
   務: '务',
   財: '财',
-  研: '研',
   發: '发',
   業: '业',
   質: '质',
@@ -50,11 +49,8 @@ const T2S_CHAR_MAP: Record<string, string> = {
   經: '经',
   營: '营',
   審: '审',
-  核: '核',
-  法: '法',
   規: '规',
   專: '专',
-  案: '案',
   類: '类',
   維: '维',
   護: '护',
@@ -62,7 +58,6 @@ const T2S_CHAR_MAP: Record<string, string> = {
   設: '设',
   備: '备',
   無: '无',
-  高: '高',
   報: '报',
   國: '国',
   際: '际',
@@ -76,8 +71,6 @@ const T2S_CHAR_MAP: Record<string, string> = {
   開: '开',
   軟: '软',
   體: '体',
-  硬: '硬',
-  系: '系',
   測: '测',
   試: '试',
 }
@@ -259,6 +252,7 @@ export function resolveFileUrl(filePath: string): string {
   const trimmed = filePath.trim()
   if (!trimmed) return ''
   if (/^(javascript|data|vbscript):/i.test(trimmed)) return ''
+  if (trimmed.startsWith('//')) return ''
   if (/^https?:\/\//i.test(trimmed)) return trimmed
   return trimmed.startsWith('/') ? trimmed : `/${trimmed}`
 }

@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
 import { act, renderHook } from '@testing-library/react'
 import { MemoryRouter, useLocation } from 'react-router'
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
+import { useAppStore } from '@/app/store'
 import { usePageClamp, useTaskListParams } from './use-task-list-params'
 
 function createWrapper(initialEntry: string) {
@@ -24,6 +25,10 @@ function useListHarness(total?: number, isPlaceholderData = false) {
 }
 
 describe('useTaskListParams', () => {
+  beforeEach(() => {
+    useAppStore.setState({ user: null, authStatus: 'unauthenticated' })
+  })
+
   it('returns documented defaults and writes nothing to the URL', () => {
     const { result } = renderHook(() => useListHarness(), {
       wrapper: createWrapper('/tasks'),
@@ -124,7 +129,7 @@ describe('useTaskListParams', () => {
     expect(result.current.location.search).toBe('?page=3&search=api')
   })
 
-  it('does not clamp while the total is unknown or still placeholder data', () => {
+  it('does not clamp while the total is unknown or still placeholder data, and clamps to page 1 when empty', () => {
     const unknownTotal = renderHook(() => useListHarness(undefined), {
       wrapper: createWrapper('/tasks?page=99'),
     })
@@ -139,7 +144,30 @@ describe('useTaskListParams', () => {
     expect(unknownTotal.result.current.location.search).toBe('?page=99')
     expect(placeholder.result.current.params.page).toBe(99)
     expect(placeholder.result.current.location.search).toBe('?page=99')
-    expect(emptyTotal.result.current.params.page).toBe(99)
-    expect(emptyTotal.result.current.location.search).toBe('?page=99')
+    expect(emptyTotal.result.current.params.page).toBe(1)
+    expect(emptyTotal.result.current.location.search).toBe('')
+  })
+
+  it('defaults scope to all for admin/exec roles and ignores malformed date params', () => {
+    useAppStore.setState({
+      authStatus: 'authenticated',
+      user: {
+        username: 'lead',
+        fullname: 'Lead',
+        dept: '資訊部',
+        site: 'YS',
+        role: 'admin',
+        auth_source: 'local',
+        menu_perms: null,
+        is_computer_room: false,
+      },
+    })
+
+    const { result } = renderHook(() => useListHarness(), {
+      wrapper: createWrapper('/tasks?fromDate=not-a-date&toDate=2026-11-30'),
+    })
+    expect(result.current.params.scope).toBe('all')
+    expect(result.current.params.fromDate).toBeUndefined()
+    expect(result.current.params.toDate).toBe('2026-11-30')
   })
 })
