@@ -149,4 +149,39 @@ describe('TodoPage', () => {
       })
     })
   })
+
+  it('keeps TodoHeaderBar visible on 500 error and recovers when clicking retry', async () => {
+    const user = userEvent.setup()
+    let failTodos = true
+
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async (input) => {
+      const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url
+      if (url.includes('/api/tasks')) {
+        return jsonResponse(SAMPLE_TASKS)
+      }
+      if (url.includes('/api/lessons')) {
+        return jsonResponse({ list: [] })
+      }
+      if (url.includes('/api/todos')) {
+        if (failTodos) {
+          return jsonResponse({ message: 'Internal Server Error' }, 500)
+        }
+        return jsonResponse({ task_data: [{ id: 301, start_time: '09:00' }] })
+      }
+      return jsonResponse({})
+    })
+
+    renderTodoPage()
+
+    const retryBtn = await screen.findByRole('button', { name: /thử lại/i })
+    expect(
+      screen.getByRole('heading', { level: 1, name: /việc cần làm hôm nay/i }),
+    ).toBeInTheDocument()
+    expect(screen.getByLabelText(/ngày làm việc/i)).toBeInTheDocument()
+
+    failTodos = false
+    await user.click(retryBtn)
+
+    expect(await screen.findAllByRole('link', { name: 'Kiểm tra switch tầng 2' })).toHaveLength(2)
+  })
 })

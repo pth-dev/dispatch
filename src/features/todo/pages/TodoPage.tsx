@@ -165,21 +165,9 @@ export function TodoPage() {
   const schedule = useTodoSchedule()
   const [draggingTaskId, setDraggingTaskId] = React.useState<number | null>(null)
 
-  if (schedule.error) {
-    const errorStatus = toErrorStatus(schedule.error)
-    if (isFullPageError(errorStatus)) {
-      throwFullPageError(errorStatus)
-    }
-    return (
-      <PageContainer>
-        <h1 className="shrink-0 text-2xl font-semibold tracking-tight text-foreground">
-          {t('todo.title')}
-        </h1>
-        <PageContainerBody>
-          <InlineError status={errorStatus} onRetry={schedule.refetchAll} />
-        </PageContainerBody>
-      </PageContainer>
-    )
+  const errorStatus = schedule.error ? toErrorStatus(schedule.error) : null
+  if (errorStatus && isFullPageError(errorStatus)) {
+    throwFullPageError(errorStatus)
   }
 
   const selectedCountLabel = schedule.selectedSearch.trim()
@@ -203,99 +191,105 @@ export function TodoPage() {
       </div>
 
       <PageContainerBody className="space-y-4">
-        <TodoNoticeBanner />
-
-        {schedule.feedback && (
-          <div
-            role={schedule.feedback.tone === 'error' ? 'alert' : 'status'}
-            className={cn(
-              'flex items-center justify-between gap-3 rounded-xl border px-4 py-2.5 text-sm',
-              schedule.feedback.tone === 'success'
-                ? 'border-success/30 bg-success/5 text-success'
-                : 'border-destructive/30 bg-destructive/5 text-destructive',
-            )}
-          >
-            <span>{schedule.feedback.message}</span>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-xs"
-              onClick={schedule.dismissFeedback}
-              aria-label={t('common.close')}
-            >
-              <X className="size-3.5" aria-hidden="true" />
-            </Button>
-          </div>
-        )}
-
-        {schedule.isLoading ? (
-          <TodoLoadingSkeleton />
+        {errorStatus ? (
+          <InlineError status={errorStatus} onRetry={schedule.refetchAll} />
         ) : (
           <>
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              <TodoTaskColumn
-                title={t('todo.available.title')}
-                subtitle={t('todo.available.subtitle')}
-                countLabel={String(schedule.filteredAvailable.length)}
-                searchValue={schedule.availableSearch}
-                searchPlaceholder={t('todo.available.searchPlaceholder')}
-                onSearchChange={schedule.setAvailableSearch}
-                icon={<Inbox className="size-4" />}
-                accent="neutral"
-                canDrop={schedule.canWrite}
-                isDragActive={draggingTaskId !== null}
-                onDropTask={(taskId) => {
-                  setDraggingTaskId(null)
-                  schedule.moveByDrop(taskId, 'left')
-                }}
-              >
-                <TodoAvailableList
-                  tasks={schedule.filteredAvailable}
-                  hasSearch={schedule.availableSearch.trim().length > 0}
-                  canWrite={schedule.canWrite}
-                  lessonHitsByTaskId={schedule.lessonHitsByTaskId}
-                  onAdd={schedule.addTask}
-                  onDragStartTask={setDraggingTaskId}
-                  onDragEndTask={() => setDraggingTaskId(null)}
-                />
-              </TodoTaskColumn>
+            <TodoNoticeBanner />
 
-              <TodoTaskColumn
-                title={t('todo.selected.title')}
-                subtitle={t('todo.selected.subtitle')}
-                countLabel={selectedCountLabel}
-                searchValue={schedule.selectedSearch}
-                searchPlaceholder={t('todo.selected.searchPlaceholder')}
-                onSearchChange={schedule.setSelectedSearch}
-                icon={<ListChecks className="size-4" />}
-                accent="primary"
-                canDrop={schedule.canWrite}
-                isDragActive={draggingTaskId !== null}
-                onDropTask={(taskId) => {
-                  setDraggingTaskId(null)
-                  schedule.moveByDrop(taskId, 'right')
-                }}
+            {schedule.feedback && (
+              <div
+                role={schedule.feedback.tone === 'error' ? 'alert' : 'status'}
+                className={cn(
+                  'flex items-center justify-between gap-3 rounded-xl border px-4 py-2.5 text-sm',
+                  schedule.feedback.tone === 'success'
+                    ? 'border-success/30 bg-success/5 text-success'
+                    : 'border-destructive/30 bg-destructive/5 text-destructive',
+                )}
               >
-                <TodoSelectedList
-                  entries={schedule.filteredSelected}
-                  totalCount={schedule.selected.length}
-                  selectedIndexById={schedule.selectedIndexById}
-                  hasSearch={schedule.selectedSearch.trim().length > 0}
-                  canWrite={schedule.canWrite}
-                  lessonHitsByTaskId={schedule.lessonHitsByTaskId}
-                  onRemove={schedule.removeTask}
-                  onReorder={schedule.reorderTask}
-                  onStartTimeChange={schedule.updateStartTime}
-                  onDragStartTask={setDraggingTaskId}
-                  onDragEndTask={() => setDraggingTaskId(null)}
-                />
-              </TodoTaskColumn>
-            </div>
+                <span>{schedule.feedback.message}</span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  onClick={schedule.dismissFeedback}
+                  aria-label={t('common.close')}
+                >
+                  <X className="size-3.5" aria-hidden="true" />
+                </Button>
+              </div>
+            )}
 
-            <TodoTimelineSection
-              tasks={schedule.timelineTasks}
-              lessonHitsByTaskId={schedule.lessonHitsByTaskId}
-            />
+            {schedule.isLoading ? (
+              <TodoLoadingSkeleton />
+            ) : (
+              <>
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                  <TodoTaskColumn
+                    title={t('todo.available.title')}
+                    subtitle={t('todo.available.subtitle')}
+                    countLabel={String(schedule.filteredAvailable.length)}
+                    searchValue={schedule.availableSearch}
+                    searchPlaceholder={t('todo.available.searchPlaceholder')}
+                    onSearchChange={schedule.setAvailableSearch}
+                    icon={<Inbox className="size-4" />}
+                    accent="neutral"
+                    canDrop={schedule.canWrite}
+                    isDragActive={draggingTaskId !== null}
+                    onDropTask={(taskId) => {
+                      setDraggingTaskId(null)
+                      schedule.moveByDrop(taskId, 'left')
+                    }}
+                  >
+                    <TodoAvailableList
+                      tasks={schedule.filteredAvailable}
+                      hasSearch={schedule.availableSearch.trim().length > 0}
+                      canWrite={schedule.canWrite}
+                      lessonHitsByTaskId={schedule.lessonHitsByTaskId}
+                      onAdd={schedule.addTask}
+                      onDragStartTask={setDraggingTaskId}
+                      onDragEndTask={() => setDraggingTaskId(null)}
+                    />
+                  </TodoTaskColumn>
+
+                  <TodoTaskColumn
+                    title={t('todo.selected.title')}
+                    subtitle={t('todo.selected.subtitle')}
+                    countLabel={selectedCountLabel}
+                    searchValue={schedule.selectedSearch}
+                    searchPlaceholder={t('todo.selected.searchPlaceholder')}
+                    onSearchChange={schedule.setSelectedSearch}
+                    icon={<ListChecks className="size-4" />}
+                    accent="primary"
+                    canDrop={schedule.canWrite}
+                    isDragActive={draggingTaskId !== null}
+                    onDropTask={(taskId) => {
+                      setDraggingTaskId(null)
+                      schedule.moveByDrop(taskId, 'right')
+                    }}
+                  >
+                    <TodoSelectedList
+                      entries={schedule.filteredSelected}
+                      totalCount={schedule.selected.length}
+                      selectedIndexById={schedule.selectedIndexById}
+                      hasSearch={schedule.selectedSearch.trim().length > 0}
+                      canWrite={schedule.canWrite}
+                      lessonHitsByTaskId={schedule.lessonHitsByTaskId}
+                      onRemove={schedule.removeTask}
+                      onReorder={schedule.reorderTask}
+                      onStartTimeChange={schedule.updateStartTime}
+                      onDragStartTask={setDraggingTaskId}
+                      onDragEndTask={() => setDraggingTaskId(null)}
+                    />
+                  </TodoTaskColumn>
+                </div>
+
+                <TodoTimelineSection
+                  tasks={schedule.timelineTasks}
+                  lessonHitsByTaskId={schedule.lessonHitsByTaskId}
+                />
+              </>
+            )}
           </>
         )}
       </PageContainerBody>

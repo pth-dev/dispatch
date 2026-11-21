@@ -102,6 +102,23 @@ export function TaskCreatePage() {
     throwFullPageError('403')
   }
 
+  const errorStatus = toErrorStatus(activeError)
+  if (sourceId > 0 && hasSourceError && isFullPageError(errorStatus)) {
+    throwFullPageError(errorStatus)
+  }
+
+  if (sourceId > 0 && !loadingSource && !hasSourceError && !sourceTask) {
+    throwFullPageError('404')
+  }
+
+  if (mode === 'edit' && sourceTask && !canEditTask(user, sourceTask)) {
+    throwFullPageError('403')
+  }
+
+  if (mode === 'clone' && sourceTask && !canCloneTask(user, sourceTask)) {
+    throwFullPageError('403')
+  }
+
   const isQuickMode = mode === 'create' && variant === 'quick'
   const isDailyMode = mode === 'create' && variant === 'daily'
   const activeModeVariant: TaskCreateVariant = mode === 'clone' ? 'clone' : variant
@@ -148,43 +165,40 @@ export function TaskCreatePage() {
     navigate(`${APP_ROUTES.TASK_NEW}?clone=${picked.id}`, { replace: true })
   }
 
-  const headerSection = (
-    <div className="shrink-0 space-y-3">
-      <div className="flex items-center gap-2 text-xs text-muted-foreground select-none">
-        <Link
-          to={APP_ROUTES.TASKS}
-          className="flex items-center gap-1 hover:text-foreground font-medium"
-        >
-          <ArrowLeft className="size-3.5" aria-hidden="true" />
-          <span>{t('tasks.detail.backToList')}</span>
-        </Link>
-        <span>›</span>
-        <span className="font-semibold text-foreground">{pageTitle}</span>
+  return (
+    <PageContainer width="narrow">
+      <div className="shrink-0 space-y-3">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground select-none">
+          <Link
+            to={APP_ROUTES.TASKS}
+            className="flex items-center gap-1 hover:text-foreground font-medium"
+          >
+            <ArrowLeft className="size-3.5" aria-hidden="true" />
+            <span>{t('tasks.detail.backToList')}</span>
+          </Link>
+          <span>›</span>
+          <span className="font-semibold text-foreground">{pageTitle}</span>
+        </div>
+
+        <PageHeader
+          title={pageTitle}
+          actions={
+            mode !== 'edit' ? (
+              <TaskCreateModeBar
+                activeVariant={activeModeVariant}
+                showDailyRepair={showDailyRepair}
+                onSelectFull={handleSelectFull}
+                onSelectQuick={handleSelectQuick}
+                onOpenHistoryPicker={() => setHistoryOpen(true)}
+                onSelectDailyRepair={handleSelectDailyRepair}
+              />
+            ) : undefined
+          }
+        />
       </div>
 
-      <PageHeader
-        title={pageTitle}
-        actions={
-          mode !== 'edit' ? (
-            <TaskCreateModeBar
-              activeVariant={activeModeVariant}
-              showDailyRepair={showDailyRepair}
-              onSelectFull={handleSelectFull}
-              onSelectQuick={handleSelectQuick}
-              onOpenHistoryPicker={() => setHistoryOpen(true)}
-              onSelectDailyRepair={handleSelectDailyRepair}
-            />
-          ) : undefined
-        }
-      />
-    </div>
-  )
-
-  if (sourceId > 0 && loadingSource) {
-    return (
-      <PageContainer width="narrow">
-        {headerSection}
-        <PageContainerBody>
+      <PageContainerBody>
+        {sourceId > 0 && loadingSource ? (
           <div role="status" className="space-y-4 animate-pulse">
             <span className="sr-only">{t('common.loading')}</span>
             <div className="h-4 w-48 rounded bg-muted" />
@@ -193,20 +207,7 @@ export function TaskCreatePage() {
               <div className="lg:col-span-4 h-80 rounded-xl bg-muted" />
             </div>
           </div>
-        </PageContainerBody>
-      </PageContainer>
-    )
-  }
-
-  if (sourceId > 0 && hasSourceError) {
-    const errorStatus = toErrorStatus(activeError)
-    if (isFullPageError(errorStatus)) {
-      throwFullPageError(errorStatus)
-    }
-    return (
-      <PageContainer width="narrow">
-        {headerSection}
-        <PageContainerBody>
+        ) : sourceId > 0 && hasSourceError ? (
           <InlineError
             status={errorStatus}
             onRetry={() => {
@@ -214,37 +215,17 @@ export function TaskCreatePage() {
               if (cloneId) void refetchHistory()
             }}
           />
-        </PageContainerBody>
-      </PageContainer>
-    )
-  }
-
-  if (sourceId > 0 && !sourceTask) {
-    throwFullPageError('404')
-  }
-
-  if (mode === 'edit' && sourceTask && !canEditTask(user, sourceTask)) {
-    throwFullPageError('403')
-  }
-
-  if (mode === 'clone' && sourceTask && !canCloneTask(user, sourceTask)) {
-    throwFullPageError('403')
-  }
-
-  return (
-    <PageContainer width="narrow">
-      {headerSection}
-
-      <PageContainerBody>
-        <TaskEditorForm
-          key={`${mode}-${sourceTask?.id ?? initialVariant}`}
-          mode={mode}
-          sourceTask={sourceTask}
-          initialVariant={initialVariant}
-          variant={variant}
-          onVariantChange={setVariant}
-          enterQuickModeRef={enterQuickModeRef}
-        />
+        ) : (
+          <TaskEditorForm
+            key={`${mode}-${sourceTask?.id ?? initialVariant}`}
+            mode={mode}
+            sourceTask={sourceTask}
+            initialVariant={initialVariant}
+            variant={variant}
+            onVariantChange={setVariant}
+            enterQuickModeRef={enterQuickModeRef}
+          />
+        )}
       </PageContainerBody>
 
       {mode !== 'edit' && (

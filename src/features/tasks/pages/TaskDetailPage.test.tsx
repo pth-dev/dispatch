@@ -123,4 +123,52 @@ describe('TaskDetailPage', () => {
       expect.objectContaining({ method: 'POST' }),
     )
   })
+
+  it('keeps static page header visible while loading and when rendering 5xx InlineError with retry', async () => {
+    let shouldFail = true
+    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+      const url = String(input)
+      if (url.includes('/meta/depts')) {
+        return jsonResponse({ depts: [], allDepts: [] })
+      }
+      if (url.endsWith('/tasks/205/reports')) {
+        return jsonResponse([])
+      }
+      if (shouldFail) {
+        return jsonResponse({ message: 'Internal Server Error' }, 500)
+      }
+      return jsonResponse([RECURRING_TASK])
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    })
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={['/tasks/205']}>
+          <Routes>
+            <Route path="/tasks/:id" element={<TaskDetailPage />} />
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
+    )
+
+    // While loading, static h1 header is shown
+    expect(screen.getByRole('heading', { level: 1, name: 'Chi tiết nhiệm vụ' })).toBeInTheDocument()
+
+    // When 500 error resolves, static h1 header remains visible along with InlineError
+    const retryBtn = await screen.findByRole('button', { name: /thử lại/i })
+    expect(screen.getByRole('heading', { level: 1, name: 'Chi tiết nhiệm vụ' })).toBeInTheDocument()
+
+    // Clicking retry reloads and shows task title in header
+    shouldFail = false
+    const user = userEvent.setup()
+    await user.click(retryBtn)
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Sao lưu máy chủ hàng tuần' }),
+    ).toBeInTheDocument()
+  })
 })

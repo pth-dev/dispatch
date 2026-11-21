@@ -5,6 +5,7 @@ import {
   InlineError,
   PageContainer,
   PageContainerBody,
+  PageHeader,
   isFullPageError,
   throwFullPageError,
   toErrorStatus,
@@ -55,49 +56,26 @@ export function TaskDetailPage() {
     throwFullPageError('404')
   }
 
-  if (isLoading) {
-    return (
-      <PageContainer>
-        <PageContainerBody>
-          <div role="status" className="space-y-4 animate-pulse">
-            <span className="sr-only">{t('common.loading')}</span>
-            <div className="h-4 bg-muted rounded w-48" />
-            <div className="h-28 bg-muted rounded-xl" />
-            <div className="h-64 bg-muted rounded-xl" />
-          </div>
-        </PageContainerBody>
-      </PageContainer>
-    )
+  const errorStatus = toErrorStatus(error)
+  if (isError && isFullPageError(errorStatus)) {
+    throwFullPageError(errorStatus)
   }
 
-  if (isError) {
-    const errorStatus = toErrorStatus(error)
-    if (isFullPageError(errorStatus)) {
-      throwFullPageError(errorStatus)
-    }
-    return (
-      <PageContainer>
-        <PageContainerBody>
-          <InlineError status={errorStatus} onRetry={() => void refetch()} />
-        </PageContainerBody>
-      </PageContainer>
-    )
-  }
-
-  if (!task) {
+  if (!isLoading && !isError && !task) {
     throwFullPageError('404')
   }
 
-  const splitMembers = parseSplitMembers(task.split_members)
-  const workItems = parseWorkItems(task.work_items)
-  const lessonHits = matchLessonsForTask(task, lessons)
+  const splitMembers = task ? parseSplitMembers(task.split_members) : []
+  const workItems = task ? parseWorkItems(task.work_items) : null
+  const lessonHits = task ? matchLessonsForTask(task, lessons) : []
 
-  const allowEdit = canEditTask(user, task)
-  const allowClone = canCloneTask(user, task)
-  const allowDelete = canDeleteTask(user, task)
-  const allowReport = canSubmitReport(user, task)
+  const allowEdit = task ? canEditTask(user, task) : false
+  const allowClone = task ? canCloneTask(user, task) : false
+  const allowDelete = task ? canDeleteTask(user, task) : false
+  const allowReport = task ? canSubmitReport(user, task) : false
 
   const handleDelete = async () => {
+    if (!task) return
     setDeleteError(null)
     try {
       await deleteTask.mutateAsync(task.id)
@@ -109,60 +87,82 @@ export function TaskDetailPage() {
 
   return (
     <PageContainer>
-      <div className="shrink-0">
-        <TaskDetailHeader
-          task={task}
-          allowEdit={allowEdit}
-          allowClone={allowClone}
-          allowDelete={allowDelete}
-          isDeleting={deleteTask.isPending}
-          deleteError={deleteError}
-          onConfirmDelete={() => void handleDelete()}
-        />
-      </div>
+      {task && !isLoading && !isError ? (
+        <div className="shrink-0">
+          <TaskDetailHeader
+            task={task}
+            allowEdit={allowEdit}
+            allowClone={allowClone}
+            allowDelete={allowDelete}
+            isDeleting={deleteTask.isPending}
+            deleteError={deleteError}
+            onConfirmDelete={() => void handleDelete()}
+          />
+        </div>
+      ) : (
+        <PageHeader title={t('tasks.detail.title')} />
+      )}
 
       <PageContainerBody className="space-y-4">
-        <SplitGroupPanel currentTaskId={task.id} members={splitMembers} />
-        <WorkItemsReadOnly envelope={workItems} />
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
-          <div className="lg:col-span-2 space-y-4">
-            <LessonMarqueeBanner hits={lessonHits} interactive />
-            <section className="rounded-xl border border-border bg-card p-4 space-y-3 text-xs">
-              <h2 className="text-sm font-semibold text-foreground">
-                {t('tasks.detail.description')}
-              </h2>
-              <p className="whitespace-pre-wrap text-foreground leading-relaxed">
-                {task.content || t('tasks.detail.noDescription')}
-              </p>
-              {task.precautions && (
-                <div className="pt-2 border-t border-border space-y-1">
-                  <h3 className="font-semibold text-muted-foreground">
-                    {t('tasks.fields.precautions')}
-                  </h3>
-                  <p className="whitespace-pre-wrap text-foreground">{task.precautions}</p>
-                </div>
-              )}
-            </section>
-
-            {allowReport && user && (
-              <ReportComposer key={task.id} task={task} user={user} splitMembers={splitMembers} />
-            )}
-
-            <ReportFeed
-              key={`feed-${task.id}`}
-              task={task}
-              user={user}
-              reports={reports}
-              isLoading={reportsLoading}
-              isError={reportsError}
-              error={reportsErrorObj}
-              onRetry={() => void refetchReports()}
-            />
+        {isLoading ? (
+          <div role="status" className="space-y-4 animate-pulse">
+            <span className="sr-only">{t('common.loading')}</span>
+            <div className="h-4 bg-muted rounded w-48" />
+            <div className="h-28 bg-muted rounded-xl" />
+            <div className="h-64 bg-muted rounded-xl" />
           </div>
+        ) : isError ? (
+          <InlineError status={errorStatus} onRetry={() => void refetch()} />
+        ) : task ? (
+          <>
+            <SplitGroupPanel currentTaskId={task.id} members={splitMembers} />
+            <WorkItemsReadOnly envelope={workItems} />
 
-          <TaskDetailSidebar task={task} />
-        </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+              <div className="lg:col-span-2 space-y-4">
+                <LessonMarqueeBanner hits={lessonHits} interactive />
+                <section className="rounded-xl border border-border bg-card p-4 space-y-3 text-xs">
+                  <h2 className="text-sm font-semibold text-foreground">
+                    {t('tasks.detail.description')}
+                  </h2>
+                  <p className="whitespace-pre-wrap text-foreground leading-relaxed">
+                    {task.content || t('tasks.detail.noDescription')}
+                  </p>
+                  {task.precautions && (
+                    <div className="pt-2 border-t border-border space-y-1">
+                      <h3 className="font-semibold text-muted-foreground">
+                        {t('tasks.fields.precautions')}
+                      </h3>
+                      <p className="whitespace-pre-wrap text-foreground">{task.precautions}</p>
+                    </div>
+                  )}
+                </section>
+
+                {allowReport && user && (
+                  <ReportComposer
+                    key={task.id}
+                    task={task}
+                    user={user}
+                    splitMembers={splitMembers}
+                  />
+                )}
+
+                <ReportFeed
+                  key={`feed-${task.id}`}
+                  task={task}
+                  user={user}
+                  reports={reports}
+                  isLoading={reportsLoading}
+                  isError={reportsError}
+                  error={reportsErrorObj}
+                  onRetry={() => void refetchReports()}
+                />
+              </div>
+
+              <TaskDetailSidebar task={task} />
+            </div>
+          </>
+        ) : null}
       </PageContainerBody>
     </PageContainer>
   )
