@@ -1,10 +1,11 @@
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
-import { ExternalLink, Paperclip, Pencil, Trash2 } from 'lucide-react'
+import { CircleAlert, ExternalLink, Paperclip, Pencil, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import type { SessionUser } from '@/schemas/auth'
 import type { RawReport, RawTask } from '@/schemas/task'
+import { resolveApiErrorMessage } from '@/services'
 import { canDeleteReportAttachment } from '@/utils/permissions'
 import { parseAttachments, parseLinks, resolveFileUrl } from '@/utils/task-domain'
 import { useDeleteReportAttachment, useUpdateReport } from '../api/queries'
@@ -17,33 +18,45 @@ interface ReportFeedProps {
 }
 
 export function ReportFeed({ task, user, reports, isLoading }: ReportFeedProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const updateReport = useUpdateReport()
   const deleteAttachment = useDeleteReportAttachment()
 
   const [editingId, setEditingId] = React.useState<number | null>(null)
   const [editingContent, setEditingContent] = React.useState('')
+  const [actionError, setActionError] = React.useState<string | null>(null)
 
   const startEdit = (report: RawReport) => {
+    setActionError(null)
     setEditingId(report.id)
     setEditingContent(report.content ?? '')
   }
 
   const saveEdit = async (reportId: number) => {
-    await updateReport.mutateAsync({
-      taskId: task.id,
-      reportId,
-      content: editingContent.trim(),
-    })
-    setEditingId(null)
+    setActionError(null)
+    try {
+      await updateReport.mutateAsync({
+        taskId: task.id,
+        reportId,
+        content: editingContent.trim(),
+      })
+      setEditingId(null)
+    } catch (err) {
+      setActionError(resolveApiErrorMessage(err, t, i18n.language))
+    }
   }
 
   const handleRemoveAttachment = async (reportId: number, path: string) => {
-    await deleteAttachment.mutateAsync({
-      taskId: task.id,
-      reportId,
-      path,
-    })
+    setActionError(null)
+    try {
+      await deleteAttachment.mutateAsync({
+        taskId: task.id,
+        reportId,
+        path,
+      })
+    } catch (err) {
+      setActionError(resolveApiErrorMessage(err, t, i18n.language))
+    }
   }
 
   if (isLoading) {
@@ -67,6 +80,16 @@ export function ReportFeed({ task, user, reports, isLoading }: ReportFeedProps) 
       <h2 className="text-sm font-semibold text-foreground">
         {t('tasks.report.feedTitle', { count: reports.length })}
       </h2>
+
+      {actionError && (
+        <div
+          role="alert"
+          className="flex items-start gap-2 rounded-lg border border-border p-3 text-xs text-destructive"
+        >
+          <CircleAlert className="size-4 shrink-0 mt-0.5" aria-hidden="true" />
+          <span>{actionError}</span>
+        </div>
+      )}
 
       <div className="space-y-3">
         {reports.map((report) => {
