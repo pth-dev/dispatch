@@ -3,14 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { cn } from '@/utils/cn'
 import { canReadMenu, canShowMenu, isSuperLike } from '@/utils/permissions'
 import { Logo } from './Logo'
+import { SidebarNavItem } from './SidebarNavItem'
 import { MAIN_NAV_ITEMS, ADMIN_NAV_ITEMS, type NavItemConfig } from '@/app/nav-config'
 import { useAppStore } from '@/app/store'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { TooltipProvider } from '@/components/ui/tooltip'
 
 type SidebarProps = {
   className?: string
@@ -30,61 +26,19 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
     return location.pathname === href
   }
 
-  const renderNavItem = (item: NavItemConfig) => {
+  const renderItem = (item: NavItemConfig) => {
     if (item.menuPermKey && !canShowMenu(user, item.menuPermKey)) {
       return null
     }
     const readable = !item.menuPermKey || canReadMenu(user, item.menuPermKey)
-    const Icon = item.icon
-    const active = readable && isItemActive(item.href)
-    const title = t(item.titleKey)
-
     return (
-      <Tooltip key={item.id} delayDuration={400}>
-        <TooltipTrigger asChild>
-          {readable ? (
-            <Link
-              to={item.href}
-              onClick={onNavigate}
-              aria-current={active ? 'page' : undefined}
-              data-active={active}
-              className={cn(
-                'group relative flex min-h-[44px] items-center gap-3 px-3 py-1.5 rounded-none text-sm font-medium transition-colors select-none outline-none',
-                'hover:bg-secondary hover:text-foreground',
-                'focus-visible:ring-1 focus-visible:ring-primary',
-                active
-                  ? 'bg-primary-soft text-primary shadow-[inset_3px_0_0_var(--color-primary)]'
-                  : 'text-foreground',
-              )}
-            >
-              <Icon
-                className={cn(
-                  'size-5 shrink-0 transition-colors',
-                  active ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground',
-                )}
-              />
-              <span className="flex-1 line-clamp-2 leading-tight">{title}</span>
-              {typeof item.badgeCount === 'number' && (
-                <span className="shrink-0 text-xs text-muted-foreground font-normal">
-                  {item.badgeCount}
-                </span>
-              )}
-            </Link>
-          ) : (
-            <button
-              type="button"
-              aria-disabled="true"
-              className="flex w-full min-h-[44px] items-center gap-3 px-3 py-1.5 text-left text-sm font-medium text-muted-foreground opacity-50 cursor-not-allowed select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            >
-              <Icon className="size-5 shrink-0 text-muted-foreground" />
-              <span className="flex-1 line-clamp-2 leading-tight">{title}</span>
-            </button>
-          )}
-        </TooltipTrigger>
-        <TooltipContent side="right" className="text-xs">
-          {title}
-        </TooltipContent>
-      </Tooltip>
+      <SidebarNavItem
+        key={item.id}
+        item={item}
+        readable={readable}
+        active={readable && isItemActive(item.href)}
+        onNavigate={onNavigate}
+      />
     )
   }
 
@@ -96,20 +50,18 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
           className,
         )}
       >
-        {/* Sidebar Header */}
         <div className="flex h-14 shrink-0 items-center border-b border-border px-4">
           <Link to="/" onClick={onNavigate} className="flex items-center">
             <Logo size={36} />
           </Link>
         </div>
 
-        {/* Sidebar Navigation Links */}
         <div
           className="flex-1 overflow-y-auto py-2"
           style={{ scrollbarGutter: 'stable' }}
         >
           <nav className="flex flex-col space-y-0.5">
-            {MAIN_NAV_ITEMS.map(renderNavItem)}
+            {MAIN_NAV_ITEMS.map(renderItem)}
 
             {isAdmin && ADMIN_NAV_ITEMS.length > 0 && (
               <>
@@ -118,13 +70,12 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
                     {t('nav.admin')}
                   </span>
                 </div>
-                {ADMIN_NAV_ITEMS.map(renderNavItem)}
+                {ADMIN_NAV_ITEMS.map(renderItem)}
               </>
             )}
           </nav>
         </div>
 
-        {/* Sidebar Footer info */}
         <div className="shrink-0 border-t border-border p-3 text-xs text-muted-foreground">
           <div className="flex items-center justify-between">
             <span className="text-[11px]">{t('app.version')}</span>

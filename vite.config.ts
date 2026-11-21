@@ -37,6 +37,30 @@ export default defineConfig(({ mode }) => {
       // production. It stays served by the dev server because Vite reads
       // `publicDir` regardless of this flag.
       copyPublicDir: false,
+      rolldownOptions: {
+        output: {
+          codeSplitting: {
+            groups: [
+              {
+                name: 'react-vendor',
+                test: /node_modules[\\/](react|react-dom|react-router|scheduler)[\\/]/,
+              },
+              {
+                name: 'tanstack-vendor',
+                test: /node_modules[\\/]@tanstack[\\/]/,
+              },
+              {
+                name: 'radix-vendor',
+                test: /node_modules[\\/](radix-ui|@radix-ui|lucide-react)[\\/]/,
+              },
+              {
+                name: 'i18n-vendor',
+                test: /node_modules[\\/](i18next|react-i18next)[\\/]/,
+              },
+            ],
+          },
+        },
+      },
     },
   }
 })

@@ -4,19 +4,18 @@ import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { DataTable } from '@/components/ui/data-table'
 import { PaginationControl } from '@/components/ui/pagination-control'
-import { StatusText } from '@/components/ui/status-text'
 import { TaskScopeTabs } from '../components/TaskScopeTabs'
 import { LegendStrip } from '../components/LegendStrip'
 import { FilterBar } from '../components/FilterBar'
+import { TaskMobileCard } from '../components/TaskMobileCard'
 import { useTaskList } from '../api/queries'
 import { usePageClamp, useTaskListParams } from '../hooks/use-task-list-params'
-import { formatTaskDueDate, useTaskColumns } from '../hooks/use-task-columns'
+import { useTaskColumns } from '../hooks/use-task-columns'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { InlineError, isFullPageError, throwFullPageError, toErrorStatus } from '@/components/layout'
 import { APP_ROUTES } from '@/constants/app-routes'
 import { useAppStore } from '@/app/store'
-import { canWriteMenu } from '@/utils/permissions'
-import { deriveTaskStatus, isTaskPaused } from '@/utils/task-domain'
+import { canCreateTask } from '@/utils/permissions'
 import { cn } from '@/utils'
 import type { RawTask } from '@/schemas/task'
 
@@ -25,7 +24,7 @@ export function TaskListPage() {
   const navigate = useNavigate()
   const isMobile = useIsMobile()
   const user = useAppStore((s) => s.user)
-  const canCreate = canWriteMenu(user, 'dashboard')
+  const canCreate = canCreateTask(user)
 
   const {
     params,
@@ -71,31 +70,7 @@ export function TaskListPage() {
     navigate(APP_ROUTES.TASK_DETAIL(task.id))
   }
 
-  const renderMobileCard = (task: RawTask) => {
-    const derived = deriveTaskStatus(task)
-    const paused = isTaskPaused(task)
-    return (
-      <div className="space-y-1.5 text-xs">
-        <div className="flex items-center justify-between gap-2">
-          <span className="font-semibold text-primary">#{task.id}</span>
-          <div className="flex items-center gap-1.5">
-            <StatusText status={paused ? 'paused' : derived} />
-            <span className="text-[11px] text-muted-foreground">{task.progress}%</span>
-          </div>
-        </div>
-
-        <p className="font-medium text-foreground line-clamp-2 leading-snug">{task.title}</p>
-
-        <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground truncate">
-          <span>{task.assigned_unit || '-'}</span>
-          <span>•</span>
-          <span>{task.assign_person || '-'}</span>
-          <span>•</span>
-          <span>{t('tasks.mobile.dueDate', { date: formatTaskDueDate(task.due_date) })}</span>
-        </div>
-      </div>
-    )
-  }
+  const renderMobileCard = (task: RawTask) => <TaskMobileCard task={task} />
 
   return (
     <div
