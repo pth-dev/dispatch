@@ -20,7 +20,7 @@ import {
   sameDept,
 } from '@/utils/task-domain'
 
-function matchesAssignee(task: RawTask, user: SessionUser | null): boolean {
+export function matchesAssignee(task: RawTask, user: SessionUser | null): boolean {
   if (!user) return false
   const assignees = parseAssigneeList(task.assign_person)
   const uname = user.username.trim().toLowerCase()
@@ -31,7 +31,7 @@ function matchesAssignee(task: RawTask, user: SessionUser | null): boolean {
   })
 }
 
-function matchesCreator(task: RawTask, user: SessionUser | null): boolean {
+export function matchesCreator(task: RawTask, user: SessionUser | null): boolean {
   if (!user) return false
   return task.reporter.trim().toLowerCase() === user.username.trim().toLowerCase()
 }
@@ -101,6 +101,7 @@ function matchesSearchKeyword(task: RawTask, keyword: string): boolean {
 
 export type FilteredTaskPage = {
   items: RawTask[]
+  filteredItems: RawTask[]
   total: number
   counts: TaskScopeCounts
   availableTaskTypes: string[]
@@ -211,6 +212,7 @@ export function filterAndPaginateTasks(
 
   return {
     items,
+    filteredItems: filtered,
     total,
     counts,
     availableTaskTypes: Array.from(typeSet).sort((a, b) => a.localeCompare(b)),

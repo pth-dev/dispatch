@@ -119,14 +119,14 @@ function sameUser(a: string | null | undefined, b: string | null | undefined): b
 }
 
 /**
- * Default task list scope per role (`docs/DEVIATIONS.md §3 D3`):
- * staff (`user`) defaults to `mine`, department heads / managers / execs default to `all`.
+ * Default task list scope: matches legacy (`scopeChip = 'all'`),
+ * defaulting all roles to `all`.
  */
 export function getDefaultTaskScope(
-  user: Pick<SessionUser, 'role'> | null | undefined,
-): 'mine' | 'all' {
-  if (!user) return 'mine'
-  return user.role === 'user' ? 'mine' : 'all'
+  user?: Pick<SessionUser, 'role'> | null,
+): 'all' {
+  void user
+  return 'all'
 }
 
 export function canCreateTask(user: UserIdentity | null | undefined): boolean {

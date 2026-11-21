@@ -171,7 +171,19 @@
       "moveDown": "Di chuyển cột {{column}} xuống"
     },
     "card": {
-      "workItemsCount": "{{count}} hạng mục"
+      "workItemsCount": "{{count}} hạng mục",
+      "incompleteSection": "Đang xử lý",
+      "completedSection": "Đã hoàn thành",
+      "uncategorized": "Chưa phân loại",
+      "groupCount": "{{count}} vụ",
+      "showMore": "Xem thêm ({{shown}} / {{total}})",
+      "assignedToMe": "Giao cho tôi",
+      "createdByMe": "Tôi giao",
+      "splitGroup": "Nhóm tách",
+      "splitGroupCount": "Nhóm tách ({{count}})",
+      "reqDeptLabel": "Y/C: {{dept}}",
+      "secrecyPrivate": "Riêng tư",
+      "secrecyTopSecret": "Tối mật"
     },
     "columns": {
       "stt": "STT",

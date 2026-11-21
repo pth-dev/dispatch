@@ -250,7 +250,7 @@ export type DeleteAttachmentResponse = z.infer<typeof DeleteAttachmentResponseSc
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 
 export const TaskListParamsSchema = z.object({
-  scope: z.enum(['mine', 'created', 'all']).default('mine'),
+  scope: z.enum(['mine', 'created', 'all']).default('all'),
   search: z.string().optional(),
   fromDate: z.string().regex(ISO_DATE_RE).optional(),
   toDate: z.string().regex(ISO_DATE_RE).optional(),

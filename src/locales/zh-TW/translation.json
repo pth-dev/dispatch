@@ -171,7 +171,19 @@
       "moveDown": "將 {{column}} 下移"
     },
     "card": {
-      "workItemsCount": "{{count}} 項"
+      "workItemsCount": "{{count}} 項",
+      "incompleteSection": "處理中",
+      "completedSection": "已結案",
+      "uncategorized": "未分類",
+      "groupCount": "{{count}} 案",
+      "showMore": "顯示更多（{{shown}} / {{total}}）",
+      "assignedToMe": "指派給我",
+      "createdByMe": "我的發帖",
+      "splitGroup": "拆分群組",
+      "splitGroupCount": "拆分（{{count}}）",
+      "reqDeptLabel": "需求: {{dept}}",
+      "secrecyPrivate": "私有",
+      "secrecyTopSecret": "最高機密"
     },
     "columns": {
       "stt": "序號",

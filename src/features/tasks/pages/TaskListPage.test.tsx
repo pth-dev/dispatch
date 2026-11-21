@@ -184,4 +184,68 @@ describe('TaskListPage', () => {
     const headersAfterReset = screen.getAllByRole('columnheader').map((el) => el.textContent)
     expect(headersAfterReset[0]).toBe('STT')
   })
+
+  it('groups cards by task type into incomplete and completed sections without pagination', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input) => {
+        const url = String(input)
+        if (url.includes('/meta/depts')) {
+          return jsonResponse({
+            depts: [{ value: '資訊部', vn: 'Bộ phận IT' }],
+            allDepts: [{ value: '資訊部', vn: 'Bộ phận IT' }],
+          })
+        }
+        if (url.includes('/meta/sites')) {
+          return jsonResponse({ sites: [], allSites: [] })
+        }
+        return jsonResponse([
+          {
+            id: 201,
+            title: 'Cấu hình tường lửa',
+            task_type: 'Hệ thống mạng',
+            reporter: 'other',
+            assigned_unit: '資訊部',
+            assign_person: 'hieu',
+            site: 'YS',
+            due_date: '2026-12-20T17:00',
+            progress: 40,
+            paused: 0,
+            confidential: 1,
+            cross_dept: 1,
+          },
+          {
+            id: 202,
+            title: 'Bàn giao máy chủ cũ',
+            task_type: 'Phần cứng',
+            reporter: 'hieu',
+            assigned_unit: '資訊部',
+            assign_person: 'tom',
+            due_date: '2026-12-01T17:00',
+            finish_date: '2026-11-30 16:00:00',
+            progress: 100,
+            paused: 0,
+            confidential: 0,
+            cross_dept: 0,
+          },
+        ])
+      }),
+    )
+
+    renderTaskList('/tasks')
+    expect(await screen.findAllByText('Cấu hình tường lửa')).not.toHaveLength(0)
+
+    const user = userEvent.setup()
+    await user.click(screen.getByRole('button', { name: /^thẻ$/i }))
+
+    // Both sections expanded by default, grouped by task_type, pagination hidden
+    expect(screen.getByRole('region', { name: 'Đang xử lý' })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: 'Đã hoàn thành' })).toBeInTheDocument()
+    expect(screen.getByText('Hệ thống mạng')).toBeInTheDocument()
+    expect(screen.getByText('Phần cứng')).toBeInTheDocument()
+    expect(screen.getByText('YS')).toBeInTheDocument()
+    expect(screen.getByText('Bảo mật')).toBeInTheDocument()
+    expect(screen.getByText('Xem liên BP')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /trang sau/i })).not.toBeInTheDocument()
+  })
 })

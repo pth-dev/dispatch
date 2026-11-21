@@ -1,89 +1,82 @@
 import { useTranslation } from 'react-i18next'
-import { CalendarDays, FolderKanban, Lock, Repeat, User } from 'lucide-react'
+import { CalendarDays, MessageSquareText, User } from 'lucide-react'
 import { StatusText } from '@/components/ui/status-text'
+import { useAppStore } from '@/app/store'
 import type { RawTask } from '@/schemas/task'
 import { cn } from '@/utils'
 import {
   deriveTaskStatus,
   getTaskLevelCode,
-  isRecurringTask,
   isTaskPaused,
-  parseSites,
+  parseReqDepts,
+  sameDept,
 } from '@/utils/task-domain'
-import { formatTaskDueDate, getWorkItemsSummary } from '../utils/task-display'
-
-type TaskCardBadgesProps = {
-  task: RawTask
-}
-
-function TaskCardBadges({ task }: TaskCardBadgesProps) {
-  const { t } = useTranslation()
-  const levelCode = getTaskLevelCode(task.level)
-  const recurring = isRecurringTask(task)
-  const workItems = getWorkItemsSummary(task)
-
-  return (
-    <div className="flex flex-wrap items-center gap-1.5 text-xs">
-      <span className="font-semibold text-primary">#{task.id}</span>
-      {levelCode !== 'normal' && (
-        <span
-          className={cn(
-            'text-xs font-semibold',
-            levelCode === 'critical' ? 'text-status-urgent' : 'text-warning',
-          )}
-        >
-          {levelCode === 'critical'
-            ? t('tasks.filter.levelCritical')
-            : t('tasks.filter.levelUrgent')}
-        </span>
-      )}
-      {task.confidential > 0 && (
-        <span className="inline-flex items-center" title={t('tasks.confidential.label')}>
-          <Lock className="size-3.5 text-warning" aria-hidden="true" />
-          <span className="sr-only">{t('tasks.confidential.label')}</span>
-        </span>
-      )}
-      {recurring && (
-        <span className="inline-flex items-center" title={t('tasks.filter.flagRecurring')}>
-          <Repeat className="size-3.5 text-primary" aria-hidden="true" />
-          <span className="sr-only">{t('tasks.filter.flagRecurring')}</span>
-        </span>
-      )}
-      {workItems && (
-        <span className="inline-flex items-center gap-1 rounded border border-border px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
-          <FolderKanban className="size-3" aria-hidden="true" />
-          {t('tasks.card.workItemsCount', { count: workItems.count })}
-        </span>
-      )}
-    </div>
-  )
-}
+import { matchesAssignee, matchesCreator } from '../api/filter-tasks'
+import { formatTaskDueDate, parseLastReportSummary } from '../utils/task-display'
+import { TaskCardChips } from './TaskCardChips'
 
 type TaskCardProps = {
   task: RawTask
-  deptLabel: string
+  resolveDeptName: (rawDept: string | null | undefined) => string
+  showRoleTags: boolean
   onSelect: (task: RawTask) => void
 }
 
-export function TaskCard({ task, deptLabel, onSelect }: TaskCardProps) {
+export function TaskCard({
+  task,
+  resolveDeptName,
+  showRoleTags,
+  onSelect,
+}: TaskCardProps) {
+  const { t } = useTranslation()
+  const user = useAppStore((s) => s.user)
   const derived = deriveTaskStatus(task)
   const paused = isTaskPaused(task)
-  const sites = parseSites(task.site)
+  const levelCode = getTaskLevelCode(task.level)
+  const isMine = showRoleTags && matchesAssignee(task, user)
+  const isCreated = showRoleTags && matchesCreator(task, user)
+  const lastReport = parseLastReportSummary(task)
   const reporterLabel = task.reporter_name?.trim() || task.reporter || '-'
   const progress = Math.min(100, Math.max(0, task.progress))
+  const deptLabel = resolveDeptName(task.assigned_unit)
+  const distinctReqDept = parseReqDepts(task.req_depts, task.req_dept).find(
+    (dept) => !sameDept(dept, task.assigned_unit),
+  )
+  const reqDeptLabel = distinctReqDept ? resolveDeptName(distinctReqDept) : ''
 
   return (
     <article className="relative flex h-full flex-col gap-2.5 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/50 focus-within:ring-2 focus-within:ring-ring">
       <div className="flex items-start justify-between gap-2">
-        <TaskCardBadges task={task} />
+        <div className="flex flex-wrap items-center gap-1.5 text-xs">
+          <span className="font-semibold text-primary">#{task.id}</span>
+          {levelCode !== 'normal' && (
+            <span
+              className={cn(
+                'font-semibold',
+                levelCode === 'critical' ? 'text-status-urgent' : 'text-warning',
+              )}
+            >
+              {levelCode === 'critical'
+                ? t('tasks.filter.levelCritical')
+                : t('tasks.filter.levelUrgent')}
+            </span>
+          )}
+          {isMine && (
+            <span className="rounded bg-primary-soft px-1.5 py-0.5 text-xs font-medium text-primary">
+              {t('tasks.card.assignedToMe')}
+            </span>
+          )}
+          {isCreated && !isMine && (
+            <span className="rounded border border-border bg-secondary px-1.5 py-0.5 text-xs font-medium text-foreground">
+              {t('tasks.card.createdByMe')}
+            </span>
+          )}
+        </div>
         <StatusText status={paused ? 'paused' : derived} className="shrink-0 text-xs" />
       </div>
 
       <div className="space-y-1 min-w-0">
-        {task.task_type && (
-          <p className="truncate text-xs text-muted-foreground">{task.task_type}</p>
-        )}
-        <h3>
+        <h4>
           <button
             type="button"
             onClick={() => onSelect(task)}
@@ -91,14 +84,28 @@ export function TaskCard({ task, deptLabel, onSelect }: TaskCardProps) {
           >
             {task.title}
           </button>
-        </h3>
+        </h4>
         {task.title_vn && task.title_vn !== task.title && (
           <p className="text-xs text-muted-foreground line-clamp-1">{task.title_vn}</p>
         )}
       </div>
 
+      <TaskCardChips task={task} />
+
       <div className="mt-auto space-y-2 pt-2 border-t border-border text-xs text-muted-foreground">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+        {lastReport && (
+          <div className="flex items-start gap-1.5 rounded-md bg-secondary/50 px-2 py-1.5 text-xs text-foreground">
+            <MessageSquareText
+              className="size-3.5 shrink-0 mt-0.5 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <p className="line-clamp-2 min-w-0 leading-snug">
+              {lastReport.text || lastReport.at}
+            </p>
+          </div>
+        )}
+
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
           <span className="inline-flex items-center gap-1 truncate max-w-full">
             <User className="size-3 shrink-0" aria-hidden="true" />
             <span className="truncate text-foreground font-medium">
@@ -106,7 +113,9 @@ export function TaskCard({ task, deptLabel, onSelect }: TaskCardProps) {
             </span>
           </span>
           <span className="truncate">{deptLabel}</span>
-          {sites.length > 0 && <span className="truncate">{sites.join(', ')}</span>}
+          {reqDeptLabel && (
+            <span className="truncate">{t('tasks.card.reqDeptLabel', { dept: reqDeptLabel })}</span>
+          )}
         </div>
 
         <div className="flex items-center justify-between gap-2">
@@ -127,7 +136,7 @@ export function TaskCard({ task, deptLabel, onSelect }: TaskCardProps) {
               style={{ width: `${progress}%` }}
             />
           </div>
-          <span className="text-xs font-semibold text-foreground tabular-nums">{progress}%</span>
+          <span className="font-semibold text-foreground tabular-nums">{progress}%</span>
         </div>
       </div>
     </article>

@@ -184,7 +184,7 @@ describe('task-level permission helpers', () => {
     expect(canDeleteTask(readOnlyCreator, task)).toBe(false)
     expect(canCloneTask(readOnlyCreator, task)).toBe(false)
 
-    expect(getDefaultTaskScope(buildUser({ role: 'user' }))).toBe('mine')
+    expect(getDefaultTaskScope(buildUser({ role: 'user' }))).toBe('all')
     expect(getDefaultTaskScope(buildUser({ role: 'admin' }))).toBe('all')
     expect(getDefaultTaskScope(buildUser({ role: 'exec_vp' }))).toBe('all')
   })

@@ -171,7 +171,19 @@
       "moveDown": "Move {{column}} down"
     },
     "card": {
-      "workItemsCount": "{{count}} items"
+      "workItemsCount": "{{count}} items",
+      "incompleteSection": "In progress",
+      "completedSection": "Completed",
+      "uncategorized": "Uncategorized",
+      "groupCount": "{{count}} tasks",
+      "showMore": "Show more ({{shown}} / {{total}})",
+      "assignedToMe": "Assigned to me",
+      "createdByMe": "Created by me",
+      "splitGroup": "Split group",
+      "splitGroupCount": "Split ({{count}})",
+      "reqDeptLabel": "Req: {{dept}}",
+      "secrecyPrivate": "Private",
+      "secrecyTopSecret": "Top secret"
     },
     "columns": {
       "stt": "No.",

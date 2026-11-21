@@ -1,16 +1,35 @@
+import * as React from 'react'
 import { useTranslation } from 'react-i18next'
-import type { RawTask } from '@/schemas/task'
-import { useDeptNameResolver } from '../hooks/use-dept-name-resolver'
-import { TaskCard } from './TaskCard'
+import type { RawTask, TaskStatusFilter } from '@/schemas/task'
+import { TaskCardSection } from './TaskCardSection'
 
 type TaskCardGridProps = {
   tasks: RawTask[]
   isLoading: boolean
+  statusFilter?: TaskStatusFilter
+  showRoleTags: boolean
+  resetKey: string
   emptyMessage?: string
   onSelectTask: (task: RawTask) => void
 }
 
 const SKELETON_INDICES = [0, 1, 2, 3, 4, 5] as const
+const INCOMPLETE_BATCH_SIZE = 18
+const COMPLETED_BATCH_SIZE = 12
+
+const COMPLETED_ONLY_FILTERS = new Set<TaskStatusFilter>([
+  'completed',
+  'completed_ontime',
+  'late_completed',
+])
+
+const INCOMPLETE_ONLY_FILTERS = new Set<TaskStatusFilter>([
+  'incomplete',
+  'not_started',
+  'in_progress',
+  'delayed_pending',
+  'paused',
+])
 
 function TaskCardSkeleton() {
   return (
@@ -29,11 +48,22 @@ function TaskCardSkeleton() {
 export function TaskCardGrid({
   tasks,
   isLoading,
+  statusFilter,
+  showRoleTags,
+  resetKey,
   emptyMessage,
   onSelectTask,
 }: TaskCardGridProps) {
   const { t } = useTranslation()
-  const resolveDeptName = useDeptNameResolver()
+  const [prevResetKey, setPrevResetKey] = React.useState(resetKey)
+  const [incompleteLimit, setIncompleteLimit] = React.useState(INCOMPLETE_BATCH_SIZE)
+  const [completedLimit, setCompletedLimit] = React.useState(COMPLETED_BATCH_SIZE)
+
+  if (prevResetKey !== resetKey) {
+    setPrevResetKey(resetKey)
+    setIncompleteLimit(INCOMPLETE_BATCH_SIZE)
+    setCompletedLimit(COMPLETED_BATCH_SIZE)
+  }
 
   if (isLoading) {
     return (
@@ -55,18 +85,37 @@ export function TaskCardGrid({
     )
   }
 
+  const incompleteTasks = tasks.filter((task) => task.progress < 100)
+  const completedTasks = tasks.filter((task) => task.progress >= 100)
+
+  const showIncomplete =
+    (!statusFilter || !COMPLETED_ONLY_FILTERS.has(statusFilter)) && incompleteTasks.length > 0
+  const showCompleted =
+    (!statusFilter || !INCOMPLETE_ONLY_FILTERS.has(statusFilter)) && completedTasks.length > 0
+
   return (
-    <div className="flex-1 min-h-0 overflow-auto p-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-        {tasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            deptLabel={resolveDeptName(task.assigned_unit)}
-            onSelect={onSelectTask}
-          />
-        ))}
-      </div>
+    <div className="flex-1 min-h-0 overflow-auto p-4 space-y-6">
+      {showIncomplete && (
+        <TaskCardSection
+          variant="incomplete"
+          tasks={incompleteTasks}
+          limit={incompleteLimit}
+          showRoleTags={showRoleTags}
+          onShowMore={() => setIncompleteLimit((n) => n + INCOMPLETE_BATCH_SIZE)}
+          onSelectTask={onSelectTask}
+        />
+      )}
+
+      {showCompleted && (
+        <TaskCardSection
+          variant="completed"
+          tasks={completedTasks}
+          limit={completedLimit}
+          showRoleTags={showRoleTags}
+          onShowMore={() => setCompletedLimit((n) => n + COMPLETED_BATCH_SIZE)}
+          onSelectTask={onSelectTask}
+        />
+      )}
     </div>
   )
 }

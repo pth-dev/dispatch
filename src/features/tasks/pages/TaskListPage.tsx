@@ -20,7 +20,24 @@ import { APP_ROUTES } from '@/constants/app-routes'
 import { useAppStore } from '@/app/store'
 import { canCreateTask } from '@/utils/permissions'
 import { cn } from '@/utils'
-import type { RawTask } from '@/schemas/task'
+import type { RawTask, TaskListParams } from '@/schemas/task'
+
+function buildCardResetKey(params: TaskListParams): string {
+  return [
+    params.scope,
+    params.search ?? '',
+    params.fromDate ?? '',
+    params.toDate ?? '',
+    params.department ?? '',
+    params.status ?? '',
+    params.site ?? '',
+    params.level ?? '',
+    params.taskType ?? '',
+    params.confidential ?? '',
+    (params.flags ?? []).join(','),
+    params.sort ?? 'default',
+  ].join('|')
+}
 
 export function TaskListPage() {
   const { t } = useTranslation()
@@ -74,9 +91,12 @@ export function TaskListPage() {
   }
 
   const items = data?.items ?? []
+  const filteredItems = data?.filteredItems ?? []
   const total = data?.total ?? 0
   const counts = data?.counts
   const availableTaskTypes = data?.availableTaskTypes ?? []
+  const isCardView = !isMobile && viewMode === 'card'
+  const cardResetKey = buildCardResetKey(params)
 
   const emptyMessage =
     activeFilterCount > 0
@@ -163,10 +183,13 @@ export function TaskListPage() {
               onRetry={() => void refetch()}
               className="m-4"
             />
-          ) : !isMobile && viewMode === 'card' ? (
+          ) : isCardView ? (
             <TaskCardGrid
-              tasks={items}
+              tasks={filteredItems}
               isLoading={isLoading}
+              statusFilter={params.status}
+              showRoleTags={params.scope === 'all'}
+              resetKey={cardResetKey}
               emptyMessage={emptyMessage}
               onSelectTask={handleRowClick}
             />
@@ -184,7 +207,7 @@ export function TaskListPage() {
           )}
         </div>
 
-        {!isError && total > 0 && (
+        {!isError && total > 0 && !isCardView && (
           <div className="shrink-0 border-t border-border bg-card px-4 py-2.5">
             <PaginationControl
               page={params.page}

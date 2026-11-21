@@ -53,3 +53,35 @@ export function getWorkItemsSummary(task: Pick<RawTask, 'work_items'>): {
     firstTopic: parsed.items[0]?.topic.trim() ?? '',
   }
 }
+
+export type TaskGroup = {
+  typeLabel: string
+  totalInType: number
+  tasks: RawTask[]
+}
+
+export function groupTasksByType(
+  visibleTasks: RawTask[],
+  allSectionTasks: RawTask[],
+  uncategorizedLabel: string,
+): TaskGroup[] {
+  const totalsByType = new Map<string, number>()
+  for (const task of allSectionTasks) {
+    const key = (task.task_type ?? '').trim() || uncategorizedLabel
+    totalsByType.set(key, (totalsByType.get(key) ?? 0) + 1)
+  }
+
+  const grouped = new Map<string, RawTask[]>()
+  for (const task of visibleTasks) {
+    const key = (task.task_type ?? '').trim() || uncategorizedLabel
+    const bucket = grouped.get(key)
+    if (bucket) bucket.push(task)
+    else grouped.set(key, [task])
+  }
+
+  return Array.from(grouped.entries()).map(([typeLabel, tasks]) => ({
+    typeLabel,
+    totalInType: totalsByType.get(typeLabel) ?? tasks.length,
+    tasks,
+  }))
+}

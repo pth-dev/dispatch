@@ -35,7 +35,7 @@ describe('useTaskListParams', () => {
     })
 
     expect(result.current.params).toMatchObject({
-      scope: 'mine',
+      scope: 'all',
       page: 1,
       pageSize: 10,
       search: undefined,
@@ -53,7 +53,7 @@ describe('useTaskListParams', () => {
       wrapper: createWrapper('/tasks?scope=bogus&page=abc&size=99&status=bogus&department='),
     })
 
-    expect(result.current.params.scope).toBe('mine')
+    expect(result.current.params.scope).toBe('all')
     expect(result.current.params.page).toBe(1)
     expect(result.current.params.pageSize).toBe(10)
     expect(result.current.params.status).toBeUndefined()
@@ -69,7 +69,7 @@ describe('useTaskListParams', () => {
     expect(result.current.location.search).toBe('?scope=created')
     expect(result.current.params.page).toBe(1)
 
-    act(() => result.current.setScope('mine'))
+    act(() => result.current.setScope('all'))
     expect(result.current.location.search).toBe('')
   })
 
