@@ -88,7 +88,13 @@ export function PasswordChangeCard({ user, onPasswordChanged }: PasswordChangeCa
           <label htmlFor="pw-old" className="block text-xs font-semibold text-foreground">
             {t('profile.oldPassword')}
           </label>
-          <Input id="pw-old" type="password" autoComplete="current-password" {...register('oldPassword')} />
+          <Input
+            id="pw-old"
+            type="password"
+            autoComplete="current-password"
+            aria-invalid={Boolean(errors.oldPassword)}
+            {...register('oldPassword')}
+          />
           {errors.oldPassword?.message && (
             <p className="text-xs text-destructive">{t(errors.oldPassword.message)}</p>
           )}
@@ -98,7 +104,13 @@ export function PasswordChangeCard({ user, onPasswordChanged }: PasswordChangeCa
           <label htmlFor="pw-new" className="block text-xs font-semibold text-foreground">
             {t('profile.newPassword')}
           </label>
-          <Input id="pw-new" type="password" autoComplete="new-password" {...register('newPassword')} />
+          <Input
+            id="pw-new"
+            type="password"
+            autoComplete="new-password"
+            aria-invalid={Boolean(errors.newPassword)}
+            {...register('newPassword')}
+          />
           {errors.newPassword?.message && (
             <p className="text-xs text-destructive">{t(errors.newPassword.message)}</p>
           )}
@@ -108,7 +120,13 @@ export function PasswordChangeCard({ user, onPasswordChanged }: PasswordChangeCa
           <label htmlFor="pw-confirm" className="block text-xs font-semibold text-foreground">
             {t('profile.confirmPassword')}
           </label>
-          <Input id="pw-confirm" type="password" autoComplete="new-password" {...register('confirmPassword')} />
+          <Input
+            id="pw-confirm"
+            type="password"
+            autoComplete="new-password"
+            aria-invalid={Boolean(errors.confirmPassword)}
+            {...register('confirmPassword')}
+          />
           {errors.confirmPassword?.message && (
             <p className="text-xs text-destructive">{t(errors.confirmPassword.message)}</p>
           )}

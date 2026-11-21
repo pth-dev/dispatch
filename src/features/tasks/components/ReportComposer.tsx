@@ -122,6 +122,7 @@ export function ReportComposer({ task, user, splitMembers }: ReportComposerProps
               type="number"
               min={0}
               max={currentStatus === 'paused' ? 99 : 100}
+              aria-invalid={Boolean(errors.progress)}
               {...register('progress')}
             />
             {errors.progress?.message && (
