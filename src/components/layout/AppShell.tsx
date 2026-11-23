@@ -5,6 +5,7 @@ import { Sidebar } from './Sidebar'
 import { Header } from './Header'
 import { ErrorState } from './ErrorState'
 import { ScrollToTopButton } from './ScrollToTopButton'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useMainScrollRestoration } from '@/hooks/use-main-scroll-restoration'
@@ -23,14 +24,7 @@ export function AppShell() {
   useMainScrollRestoration(mainRef, authStatus === 'authenticated')
 
   if (authStatus === 'checking') {
-    return (
-      <div
-        role="status"
-        className="flex min-h-dvh items-center justify-center bg-background text-xs text-muted-foreground"
-      >
-        {t('common.loading')}
-      </div>
-    )
+    return <LoadingSpinner size="lg" className="min-h-dvh bg-background" />
   }
 
   if (authStatus === 'offline') {
@@ -66,14 +60,7 @@ export function AppShell() {
           className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto bg-background px-4 py-4 lg:overflow-hidden lg:short:overflow-y-auto lg:px-6 short:py-3"
         >
           <React.Suspense
-            fallback={
-              <div
-                role="status"
-                className="flex h-32 items-center justify-center text-xs text-muted-foreground"
-              >
-                {t('common.loadingPage')}
-              </div>
-            }
+            fallback={<LoadingSpinner size="md" label={t('common.loadingPage')} className="h-32" />}
           >
             <Outlet />
           </React.Suspense>

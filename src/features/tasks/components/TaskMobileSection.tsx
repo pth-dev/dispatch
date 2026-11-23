@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { CheckCircle2, ChevronDown, ChevronRight, Clock } from 'lucide-react'
 import type { LessonMarqueeHit } from '@/components/ui/lesson-marquee-banner'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { useLessons } from '@/hooks/use-lessons'
 import type { RawTask } from '@/schemas/task'
 import { cn } from '@/utils'
@@ -143,15 +144,13 @@ export function TaskMobileSection({
           ))}
 
           {hasMore && (
-            <div
+            <LoadingSpinner
               ref={sentinelRef}
-              role="status"
+              size="sm"
+              label={t('tasks.mobile.loadingMore')}
               data-testid={`infinite-sentinel-${variant}`}
-              className="flex items-center justify-center bg-card px-4 py-3 text-xs text-muted-foreground"
-              aria-live="polite"
-            >
-              {t('tasks.mobile.loadingMore')}
-            </div>
+              className="bg-card px-4 py-3.5"
+            />
           )}
         </div>
       )}

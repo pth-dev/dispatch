@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { CircleAlert } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Logo } from '@/components/layout/Logo'
@@ -56,14 +57,7 @@ export function LoginPage() {
   }
 
   if (checkingExisting) {
-    return (
-      <div
-        role="status"
-        className="flex min-h-dvh items-center justify-center bg-background text-xs text-muted-foreground"
-      >
-        {t('common.loading')}
-      </div>
-    )
+    return <LoadingSpinner size="lg" className="min-h-dvh bg-background" />
   }
 
   return (

@@ -12,6 +12,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { InlineError, toErrorStatus } from '@/components/layout'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import type { SessionUser } from '@/schemas/auth'
 import type { RawReport, RawTask } from '@/schemas/task'
 import { resolveApiErrorMessage } from '@/services'
@@ -84,14 +85,7 @@ export function ReportFeed({
   }
 
   if (isLoading) {
-    return (
-      <div
-        role="status"
-        className="rounded-xl border border-border bg-card p-4 text-xs text-muted-foreground"
-      >
-        {t('common.loading')}
-      </div>
-    )
+    return <LoadingSpinner size="md" className="rounded-xl border border-border bg-card p-6" />
   }
 
   if (isError) {

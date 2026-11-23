@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { useTranslation } from 'react-i18next'
 import { createBrowserRouter, Navigate } from 'react-router'
 import { APP_ROUTES } from '@/constants/app-routes'
 import { getDefaultLandingRoute } from '@/app/nav-config'
 import { useAppStore } from '@/app/store'
 import { AppShell, RootRouteErrorBoundary, ErrorState } from '@/components/layout'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { RequireMenuPerm } from './RequireMenuPerm'
 
 // Route-based code splitting per performance skill
@@ -21,16 +21,7 @@ const TaskCardFixturePreviewPage = import.meta.env.DEV
   : null
 
 function RouteFallback() {
-  const { t } = useTranslation()
-
-  return (
-    <div
-      role="status"
-      className="flex min-h-dvh items-center justify-center text-xs text-muted-foreground"
-    >
-      {t('common.loading')}
-    </div>
-  )
+  return <LoadingSpinner size="lg" className="min-h-dvh bg-background" />
 }
 
 function HomeRedirect() {

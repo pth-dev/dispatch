@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { InlineError, toErrorStatus } from '@/components/layout'
 import type { RawTask } from '@/schemas/task'
 import { isRecurringTask } from '@/utils/task-domain'
@@ -141,9 +142,7 @@ export function TaskHistoryCloneDialog({
           ) : (
             <div className="max-h-80 overflow-y-auto divide-y divide-border rounded-lg border border-border">
               {isLoading ? (
-                <p className="p-4 text-center text-xs text-muted-foreground">
-                  {t('common.loading')}
-                </p>
+                <LoadingSpinner size="md" className="p-6" />
               ) : filtered.length === 0 ? (
                 <p className="p-4 text-center text-xs text-muted-foreground">
                   {history.length === 0
