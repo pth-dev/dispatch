@@ -21,9 +21,9 @@ export function SplitGroupPanel({ currentTaskId, members }: SplitGroupPanelProps
 
   return (
     <section className="rounded-xl border border-border bg-card p-4 space-y-3">
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
         <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
-          <Users className="size-4 text-primary" aria-hidden="true" />
+          <Users className="size-4 shrink-0 text-primary" aria-hidden="true" />
           <span>{t('tasks.detail.splitGroupTitle')}</span>
         </h2>
         <span className="text-xs text-muted-foreground">
@@ -43,7 +43,7 @@ export function SplitGroupPanel({ currentTaskId, members }: SplitGroupPanelProps
               key={member.id}
               to={APP_ROUTES.TASK_DETAIL(member.id)}
               className={cn(
-                'flex items-center justify-between gap-2 rounded-lg border px-3 py-2 text-xs transition-colors',
+                'flex min-h-10 items-center justify-between gap-2 rounded-lg border px-3 py-2 text-xs transition-colors',
                 isCurrent
                   ? 'border-primary bg-primary-soft text-primary font-medium'
                   : 'border-border bg-card text-foreground hover:bg-secondary',

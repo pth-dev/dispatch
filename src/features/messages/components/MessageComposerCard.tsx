@@ -88,10 +88,10 @@ export function MessageComposerCard({
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <span className="text-xs text-muted-foreground">
+          <span className="hidden text-xs text-muted-foreground sm:inline">
             {t('messages.composer.shortcutHint')}
           </span>
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting} className="ml-auto">
             <Send className="size-4" aria-hidden="true" />
             <span>
               {isSubmitting ? t('messages.composer.sending') : t('messages.composer.submit')}

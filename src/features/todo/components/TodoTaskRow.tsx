@@ -84,28 +84,38 @@ export function TodoTaskRow({
         canWrite && 'cursor-grab hover:border-primary/40 active:cursor-grabbing',
       )}
     >
-      <div className="flex items-start gap-2.5">
+      <div className="flex flex-col gap-2.5 sm:flex-row sm:items-start">
         {canWrite && (
           <GripVertical
-            className="mt-0.5 size-4 shrink-0 text-muted-foreground/60"
+            className="mt-0.5 hidden size-4 shrink-0 text-muted-foreground/60 sm:block"
             aria-hidden="true"
           />
         )}
 
         <div className="min-w-0 flex-1 space-y-1.5">
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="rounded bg-secondary px-1.5 py-0.5 text-[11px] font-semibold text-muted-foreground">
+          <div className="flex items-start gap-1.5 sm:items-center">
+            <span className="mt-0.5 shrink-0 rounded bg-secondary px-1.5 py-0.5 text-[11px] font-semibold text-muted-foreground sm:mt-0">
               #{task.id}
             </span>
             <Link
               to={APP_ROUTES.TASK_DETAIL(task.id)}
-              className="min-w-0 flex-1 truncate text-sm font-medium text-foreground hover:text-primary hover:underline focus-visible:rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="min-w-0 flex-1 line-clamp-2 text-sm font-medium leading-snug text-foreground hover:text-primary hover:underline focus-visible:rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:line-clamp-none sm:truncate"
               title={task.title}
             >
               {task.title}
             </Link>
-            {lessonHits.length > 0 && <LessonRuleBadge hits={lessonHits} />}
+            {lessonHits.length > 0 && (
+              <span className="hidden shrink-0 sm:inline-flex">
+                <LessonRuleBadge hits={lessonHits} />
+              </span>
+            )}
           </div>
+
+          {lessonHits.length > 0 && (
+            <div className="sm:hidden">
+              <LessonRuleBadge hits={lessonHits} />
+            </div>
+          )}
 
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
             <span>
@@ -153,10 +163,10 @@ export function TodoTaskRow({
           </div>
 
           {variant === 'selected' && (
-            <div className="flex flex-wrap items-center gap-2 border-t border-border pt-2">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-2 sm:justify-start">
               <label
                 htmlFor={`todo-time-${task.id}`}
-                className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground"
+                className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-muted-foreground"
               >
                 <Clock className="size-3.5 text-primary" aria-hidden="true" />
                 <span>{t('todo.row.startTime')}</span>
@@ -167,7 +177,7 @@ export function TodoTaskRow({
                 value={startTime}
                 disabled={!canWrite}
                 onChange={(e) => onStartTimeChange?.(task.id, e.target.value)}
-                className="h-8 w-auto px-2 text-xs font-medium lg:h-8"
+                className="h-9 w-auto px-2.5 text-xs font-medium sm:h-8 sm:px-2"
               />
               {!startTime && (
                 <span className="text-[11px] font-medium text-destructive">
@@ -179,31 +189,33 @@ export function TodoTaskRow({
         </div>
 
         {canWrite && (
-          <div className="flex shrink-0 flex-col items-end gap-1">
+          <div className="flex shrink-0 items-center justify-between gap-2 border-t border-border/60 pt-2 sm:flex-col sm:items-end sm:justify-start sm:gap-1 sm:border-t-0 sm:pt-0">
             {variant === 'selected' ? (
               <>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5 sm:gap-1">
                   <Button
                     type="button"
-                    variant="ghost"
+                    variant="outline"
                     size="icon-xs"
                     disabled={index <= 0}
                     onClick={() => onReorder?.(task.id, -1)}
                     aria-label={t('todo.actions.moveUp')}
                     title={t('todo.actions.moveUp')}
+                    className="size-9 sm:size-6 sm:border-transparent sm:shadow-none"
                   >
-                    <ArrowUp className="size-3.5" />
+                    <ArrowUp className="size-4 sm:size-3.5" aria-hidden="true" />
                   </Button>
                   <Button
                     type="button"
-                    variant="ghost"
+                    variant="outline"
                     size="icon-xs"
                     disabled={index >= totalCount - 1}
                     onClick={() => onReorder?.(task.id, 1)}
                     aria-label={t('todo.actions.moveDown')}
                     title={t('todo.actions.moveDown')}
+                    className="size-9 sm:size-6 sm:border-transparent sm:shadow-none"
                   >
-                    <ArrowDown className="size-3.5" />
+                    <ArrowDown className="size-4 sm:size-3.5" aria-hidden="true" />
                   </Button>
                 </div>
                 <Button
@@ -211,9 +223,9 @@ export function TodoTaskRow({
                   variant="outline"
                   size="xs"
                   onClick={() => onRemove?.(task.id)}
-                  className="border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                  className="h-9 px-3 border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive sm:h-6 sm:px-2"
                 >
-                  <Trash2 className="size-3.5" />
+                  <Trash2 className="size-3.5" aria-hidden="true" />
                   <span>{t('todo.actions.remove')}</span>
                 </Button>
               </>
@@ -223,9 +235,9 @@ export function TodoTaskRow({
                 variant="outline"
                 size="sm"
                 onClick={() => onAdd?.(task.id)}
-                className="border-primary/30 text-primary hover:bg-primary-soft hover:text-primary"
+                className="w-full border-primary/30 text-primary hover:bg-primary-soft hover:text-primary sm:w-auto"
               >
-                <Plus className="size-3.5" />
+                <Plus className="size-3.5" aria-hidden="true" />
                 <span>{t('todo.actions.add')}</span>
               </Button>
             )}

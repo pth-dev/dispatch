@@ -91,7 +91,7 @@ export function TaskMobileList({
     (!statusFilter || !INCOMPLETE_ONLY_FILTERS.has(statusFilter)) && completedTasks.length > 0
 
   return (
-    <div data-testid="task-mobile-list" className="flex flex-col">
+    <div data-testid="task-mobile-list" className="flex flex-col pb-16">
       {showIncomplete && (
         <TaskMobileSection
           variant="incomplete"

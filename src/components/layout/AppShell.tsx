@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Outlet } from 'react-router'
+import { Outlet, useLocation } from 'react-router'
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
 import { ErrorState } from './ErrorState'
@@ -14,11 +14,14 @@ import { useAppStore } from '@/app/store'
 
 export function AppShell() {
   const { t } = useTranslation()
+  const { pathname } = useLocation()
   const isMobile = useIsMobile()
   const authStatus = useAppStore((s) => s.authStatus)
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
   const mainRef = React.useRef<HTMLElement>(null)
   const isDrawerOpen = isMobile && mobileMenuOpen
+  const hasStickyBottomBar =
+    pathname === '/tasks/new' || /^\/tasks\/\d+\/edit$/.test(pathname)
 
   const { retryVerify } = useSessionLifecycle()
   useMainScrollRestoration(mainRef, authStatus === 'authenticated')
@@ -66,7 +69,7 @@ export function AppShell() {
           </React.Suspense>
         </main>
 
-        <ScrollToTopButton scrollContainerRef={mainRef} />
+        <ScrollToTopButton scrollContainerRef={mainRef} elevated={hasStickyBottomBar} />
       </div>
     </div>
   )

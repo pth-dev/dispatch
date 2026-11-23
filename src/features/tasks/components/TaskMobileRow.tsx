@@ -121,7 +121,7 @@ export function TaskMobileRow({ vm }: TaskMobileRowProps) {
           <Button
             asChild
             size="sm"
-            className="relative z-10 h-7 shrink-0 rounded-md px-2.5 text-xs font-medium before:absolute before:-inset-2 before:content-['']"
+            className="relative z-10 h-8 shrink-0 rounded-md px-2.5 text-xs font-medium before:absolute before:-inset-1.5 before:content-['']"
           >
             <Link to={reportPath}>{t('tasks.mobile.report')}</Link>
           </Button>

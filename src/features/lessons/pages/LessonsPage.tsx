@@ -183,6 +183,7 @@ export function LessonsPage() {
               <Button
                 type="button"
                 disabled={isError}
+                className={isRightPanelActiveOnMobile ? 'hidden lg:inline-flex' : undefined}
                 onClick={() => {
                   clearActionError()
                   openCreate()

@@ -195,7 +195,7 @@ export function TaskEditorForm({
       {isQuickMode && (
         <div
           role="status"
-          className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 py-3 text-xs text-foreground"
+          className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 py-3 text-xs text-foreground"
         >
           <div className="flex items-start gap-2 min-w-0 flex-1">
             <Zap className="size-4 shrink-0 mt-0.5 text-primary" aria-hidden="true" />
@@ -206,7 +206,13 @@ export function TaskEditorForm({
               })}
             </span>
           </div>
-          <Button type="button" variant="outline" size="sm" onClick={() => setVariant('full')}>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setVariant('full')}
+            className="w-full sm:w-auto shrink-0"
+          >
             <ChevronsDown className="size-3.5" aria-hidden="true" />
             <span>{t('tasks.createModes.expandFull')}</span>
           </Button>

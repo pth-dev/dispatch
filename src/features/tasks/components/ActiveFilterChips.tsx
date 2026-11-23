@@ -25,7 +25,7 @@ function FilterChip({ label, onRemove }: Omit<ActiveChip, 'key'>) {
         type="button"
         onClick={onRemove}
         aria-label={t('tasks.filter.removeChip', { label })}
-        className="inline-flex size-7 lg:size-5 items-center justify-center rounded hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+        className="inline-flex size-8 lg:size-5 items-center justify-center rounded hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
       >
         <X className="size-3" aria-hidden="true" />
       </button>
@@ -154,7 +154,7 @@ export function ActiveFilterChips({
       <button
         type="button"
         onClick={onReset}
-        className="ml-auto inline-flex items-center gap-1 px-1.5 py-0.5 font-semibold text-primary hover:underline cursor-pointer"
+        className="ml-auto inline-flex min-h-8 lg:min-h-0 items-center gap-1 rounded-md px-2 py-1 font-semibold text-primary hover:bg-primary-soft hover:underline cursor-pointer"
       >
         <RotateCcw className="size-3" aria-hidden="true" />
         <span>{t('tasks.filter.clearAll')}</span>

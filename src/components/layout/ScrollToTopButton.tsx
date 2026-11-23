@@ -3,13 +3,19 @@ import { useTranslation } from 'react-i18next'
 import { ArrowUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
+import { cn } from '@/utils'
+
 const SHOW_THRESHOLD_PX = 320
 
 type ScrollToTopButtonProps = {
   scrollContainerRef: React.RefObject<HTMLElement | null>
+  elevated?: boolean
 }
 
-export function ScrollToTopButton({ scrollContainerRef }: ScrollToTopButtonProps) {
+export function ScrollToTopButton({
+  scrollContainerRef,
+  elevated = false,
+}: ScrollToTopButtonProps) {
   const { t } = useTranslation()
   const [visible, setVisible] = React.useState(false)
 
@@ -43,7 +49,10 @@ export function ScrollToTopButton({ scrollContainerRef }: ScrollToTopButtonProps
       size="icon"
       onClick={handleClick}
       aria-label={t('common.scrollToTop')}
-      className="fixed bottom-5 right-4 z-30 size-11 rounded-full border-border bg-card/95 text-foreground shadow-md backdrop-blur-xs hover:bg-secondary lg:hidden"
+      className={cn(
+        'fixed right-4 z-30 size-11 rounded-full border-border bg-card/95 text-foreground shadow-md backdrop-blur-xs hover:bg-secondary lg:hidden',
+        elevated ? 'bottom-20' : 'bottom-5',
+      )}
     >
       <ArrowUp className="size-5" aria-hidden="true" />
     </Button>

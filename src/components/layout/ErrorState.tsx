@@ -157,7 +157,11 @@ export function ErrorState({
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 {suggestedLinks.map((link) => (
-                  <Link key={link.href} to={link.href} className="text-primary hover:underline py-1">
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    className="inline-flex min-h-9 items-center text-primary hover:underline py-1.5"
+                  >
                     • {t(link.labelKey)}
                   </Link>
                 ))}

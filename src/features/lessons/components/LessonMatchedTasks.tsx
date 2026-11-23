@@ -28,60 +28,64 @@ function LessonMatchedTaskRow({ hit }: { hit: MatchedLessonTask }) {
   return (
     <Link
       to={APP_ROUTES.TASK_DETAIL(task.id)}
-      className={`flex items-center gap-3 rounded-lg border bg-card px-3 py-2.5 transition-colors hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+      className={`flex flex-col gap-2 rounded-lg border bg-card px-3 py-2.5 transition-colors hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:flex-row sm:items-center sm:gap-3 ${
         isCompleted ? 'border-border' : 'border-warning/35'
       }`}
     >
-      <span className="shrink-0 text-xs font-semibold text-muted-foreground">
-        #{task.id}
-      </span>
+      <div className="flex min-w-0 flex-1 items-start gap-2 sm:items-center sm:gap-3">
+        <span className="mt-0.5 shrink-0 text-xs font-semibold text-muted-foreground sm:mt-0">
+          #{task.id}
+        </span>
 
-      <div className="min-w-0 flex-1 space-y-1">
-        <p className="truncate text-sm font-medium text-foreground">
-          {segments.map((seg, idx) =>
-            seg.highlighted ? (
-              <mark
-                key={idx}
-                className="rounded bg-warning/15 px-0.5 font-semibold text-warning"
-              >
-                {seg.text}
-              </mark>
-            ) : (
-              <span key={idx}>{seg.text}</span>
-            ),
-          )}
-        </p>
+        <div className="min-w-0 flex-1 space-y-1">
+          <p className="line-clamp-2 text-sm font-medium leading-snug text-foreground sm:line-clamp-none sm:truncate">
+            {segments.map((seg, idx) =>
+              seg.highlighted ? (
+                <mark
+                  key={idx}
+                  className="rounded bg-warning/15 px-0.5 font-semibold text-warning"
+                >
+                  {seg.text}
+                </mark>
+              ) : (
+                <span key={idx}>{seg.text}</span>
+              ),
+            )}
+          </p>
 
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-muted-foreground">
-          <span>
-            {t('lessons.matchedTasks.assignee')}: {assigneeText}
-          </span>
-          <span>
-            {t('lessons.matchedTasks.reporter')}: {task.reporter || '-'}
-          </span>
-          <span className="font-medium text-warning">
-            {matchedKeywords.join(', ')}
-          </span>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-muted-foreground">
+            <span>
+              {t('lessons.matchedTasks.assignee')}: {assigneeText}
+            </span>
+            <span>
+              {t('lessons.matchedTasks.reporter')}: {task.reporter || '-'}
+            </span>
+            <span className="font-medium text-warning">
+              {matchedKeywords.join(', ')}
+            </span>
+          </div>
         </div>
       </div>
 
-      <Badge
-        variant="outline"
-        className={`shrink-0 text-[11px] ${
-          isCompleted
-            ? 'border-success/25 bg-success/10 text-success'
-            : 'border-primary/25 bg-primary-soft text-primary'
-        }`}
-      >
-        {isCompleted
-          ? t('lessons.matchedTasks.completed')
-          : t('lessons.matchedTasks.inProgress', { progress: task.progress })}
-      </Badge>
+      <div className="flex items-center justify-between gap-2 pl-8 sm:shrink-0 sm:justify-end sm:pl-0">
+        <Badge
+          variant="outline"
+          className={`shrink-0 text-[11px] ${
+            isCompleted
+              ? 'border-success/25 bg-success/10 text-success'
+              : 'border-primary/25 bg-primary-soft text-primary'
+          }`}
+        >
+          {isCompleted
+            ? t('lessons.matchedTasks.completed')
+            : t('lessons.matchedTasks.inProgress', { progress: task.progress })}
+        </Badge>
 
-      <ExternalLink
-        className="size-3.5 shrink-0 text-muted-foreground"
-        aria-hidden="true"
-      />
+        <ExternalLink
+          className="size-3.5 shrink-0 text-muted-foreground"
+          aria-hidden="true"
+        />
+      </div>
     </Link>
   )
 }

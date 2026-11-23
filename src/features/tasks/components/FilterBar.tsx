@@ -354,15 +354,15 @@ export function FilterBar({
           </SheetTrigger>
           <SheetContent
             side="bottom"
-            className="w-full max-w-full rounded-t-2xl max-h-[85dvh] overflow-y-auto overflow-x-hidden p-5"
+            className="flex w-full max-w-full flex-col gap-0 rounded-t-2xl max-h-[85dvh] overflow-hidden p-0"
           >
-            <SheetHeader className="p-0 text-left border-b border-border pb-3">
+            <SheetHeader className="shrink-0 border-b border-border px-5 py-3.5 pr-12 text-left">
               <SheetTitle className="text-base font-semibold text-foreground">
                 {t('common.filter')}
               </SheetTitle>
             </SheetHeader>
 
-            <div className="w-full min-w-0 space-y-3.5 text-xs">
+            <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-5 py-4 space-y-3.5 text-xs">
               <div className="grid w-full grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div className="w-full min-w-0 space-y-1">
                   <label htmlFor="adv-mobile-status" className="font-semibold text-muted-foreground">
@@ -396,7 +396,7 @@ export function FilterBar({
               />
             </div>
 
-            <div className="flex items-center gap-3 pt-3 border-t border-border">
+            <div className="flex shrink-0 items-center gap-3 border-t border-border bg-background px-5 py-3">
               <Button
                 type="button"
                 variant="outline"

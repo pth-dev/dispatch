@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Pencil, PlusCircle, Save } from 'lucide-react'
+import { ArrowLeft, Pencil, PlusCircle, Save } from 'lucide-react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import {
@@ -140,6 +140,17 @@ export function LessonEditorPanel({
 
   return (
     <form onSubmit={handleSubmit(onValidSubmit)} className="space-y-4" noValidate>
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        onClick={handleRequestCancel}
+        className="lg:hidden"
+      >
+        <ArrowLeft className="size-4" aria-hidden="true" />
+        <span>{t('lessons.actions.backToList')}</span>
+      </Button>
+
       <div className="flex items-center gap-2">
         {isEdit ? (
           <Pencil className="size-5 text-primary" aria-hidden="true" />

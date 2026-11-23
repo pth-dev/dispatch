@@ -115,13 +115,15 @@ export function TaskHistoryCloneDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>{t('tasks.clonePicker.title')}</DialogTitle>
+      <DialogContent className="p-4 sm:p-6 sm:max-w-2xl overflow-hidden">
+        <DialogHeader className="min-w-0 pr-8 text-left">
+          <DialogTitle className="text-base sm:text-lg leading-snug">
+            {t('tasks.clonePicker.title')}
+          </DialogTitle>
           <DialogDescription>{t('tasks.clonePicker.description')}</DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-3">
+        <div className="min-w-0 space-y-3">
           <div className="relative">
             <Search
               className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
