@@ -1,27 +1,21 @@
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { Eye, Lock } from 'lucide-react'
 import type { ColumnDef } from '@/components/ui/data-table'
-import { LessonRuleBadge, type LessonMarqueeHit } from '@/components/ui/lesson-marquee-banner'
-import { StatusText } from '@/components/ui/status-text'
-import { Button } from '@/components/ui/button'
+import type { LessonMarqueeHit } from '@/components/ui/lesson-marquee-banner'
 import type { RawTask } from '@/schemas/task'
 import { APP_ROUTES } from '@/constants/app-routes'
-import {
-  deriveTaskStatus,
-  getTaskLevelCode,
-  isTaskPaused,
-  isUrgentLevel,
-  parseReqDepts,
-  parseSites,
-} from '@/utils/task-domain'
+import { parseReqDepts, parseSites } from '@/utils/task-domain'
 import { getSiteDisplayName } from '../api/meta'
 import { useMetaSites } from '../api/queries'
 import {
-  formatTaskDueDate,
-  getWorkItemsSummary,
-  parseLastReportSummary,
-} from '../utils/task-display'
+  TaskActionCell,
+  TaskLastReportCell,
+  TaskLevelCell,
+  TaskStatusCell,
+  TaskTitleCell,
+  TaskWorkItemsCell,
+} from '../components/TaskTableCells'
+import { formatTaskDueDate } from '../utils/task-display'
 import { useDeptNameResolver } from './use-dept-name-resolver'
 import { useUserDisplayResolver } from './use-user-display-resolver'
 import type { TaskColumnId } from './use-task-view-prefs'
@@ -93,9 +87,7 @@ export function useTaskColumns(
   }
 
   const useFixedWidths = options?.useFixedWidths ?? true
-  const sizingFor = (
-    id: TaskColumnId,
-  ): Pick<ColumnDef<RawTask>, 'width' | 'minWidth' | 'maxWidth'> =>
+  const sizingFor = (id: TaskColumnId) =>
     useFixedWidths
       ? { width: DEFAULT_WIDTH_PERCENT[id] }
       : { minWidth: COLUMN_MIN_WIDTH_PX[id], maxWidth: COLUMN_MAX_WIDTH_PX[id] }
@@ -115,11 +107,13 @@ export function useTaskColumns(
     stt: {
       id: 'stt',
       header: t('tasks.columns.stt'),
-      ...sizingFor('stt'),
-      sticky: orderedIds[0] === 'stt' ? 'left' : undefined,
-      align: 'center',
-      cell: (_, index) => {
-        const serial = (page - 1) * pageSize + index + 1
+      meta: {
+        ...sizingFor('stt'),
+        sticky: orderedIds[0] === 'stt' ? 'left' : undefined,
+        align: 'center',
+      },
+      cell: ({ row }) => {
+        const serial = (page - 1) * pageSize + row.index + 1
         return (
           <span className="text-xs text-muted-foreground">
             {serial.toString().padStart(2, '0')}
@@ -130,51 +124,36 @@ export function useTaskColumns(
     code: {
       id: 'code',
       header: t('tasks.columns.code'),
-      ...sizingFor('code'),
-      cell: (task) => (
+      meta: sizingFor('code'),
+      cell: ({ row }) => (
         <Link
-          to={APP_ROUTES.TASK_DETAIL(task.id)}
+          to={APP_ROUTES.TASK_DETAIL(row.original.id)}
           onClick={(e) => e.stopPropagation()}
           className="font-medium text-primary hover:underline hover:text-primary-hover"
         >
-          #{task.id}
+          #{row.original.id}
         </Link>
       ),
     },
     title: {
       id: 'title',
       header: t('tasks.columns.title'),
-      ...sizingFor('title'),
-      cell: (task) => {
-        const lessonHits = options?.lessonHitsByTaskId?.get(task.id) ?? []
-        return (
-          <div className="flex min-w-0 items-center gap-1.5">
-            {isUrgentLevel(task.level) && (
-              <span className="inline-flex shrink-0 items-center" title={t('status.urgent')}>
-                <span className="size-1.5 rounded-full bg-status-urgent" aria-hidden="true" />
-                <span className="sr-only">{t('status.urgent')}</span>
-              </span>
-            )}
-            {task.confidential > 0 && (
-              <span className="inline-flex shrink-0 items-center" title={t('tasks.confidential.label')}>
-                <Lock className="size-3.5 text-warning" aria-hidden="true" />
-                <span className="sr-only">{t('tasks.confidential.label')}</span>
-              </span>
-            )}
-            <span className="min-w-0 truncate font-medium text-foreground" title={task.title}>
-              {task.title}
-            </span>
-            {lessonHits.length > 0 && <LessonRuleBadge hits={lessonHits} />}
-          </div>
-        )
-      },
+      meta: sizingFor('title'),
+      cell: ({ row }) => (
+        <TaskTitleCell
+          task={row.original}
+          lessonHits={options?.lessonHitsByTaskId?.get(row.original.id) ?? []}
+          urgentLabel={t('status.urgent')}
+          confidentialLabel={t('tasks.confidential.label')}
+        />
+      ),
     },
     department: {
       id: 'department',
       header: t('tasks.columns.department'),
-      ...sizingFor('department'),
-      cell: (task) => {
-        const deptLabel = resolveDeptName(task.assigned_unit)
+      meta: sizingFor('department'),
+      cell: ({ row }) => {
+        const deptLabel = resolveDeptName(row.original.assigned_unit)
         return (
           <span className="truncate text-muted-foreground" title={deptLabel}>
             {deptLabel}
@@ -185,9 +164,9 @@ export function useTaskColumns(
     assignee: {
       id: 'assignee',
       header: t('tasks.columns.assignee'),
-      ...sizingFor('assignee'),
-      cell: (task) => {
-        const label = resolveAssignees(task.assign_person) || '-'
+      meta: sizingFor('assignee'),
+      cell: ({ row }) => {
+        const label = resolveAssignees(row.original.assign_person) || '-'
         return (
           <span className="truncate text-foreground" title={label}>
             {label}
@@ -198,53 +177,31 @@ export function useTaskColumns(
     dueDate: {
       id: 'dueDate',
       header: t('tasks.columns.dueDate'),
-      ...sizingFor('dueDate'),
-      cell: (task) => (
+      meta: sizingFor('dueDate'),
+      cell: ({ row }) => (
         <span className="whitespace-nowrap text-muted-foreground">
-          {formatTaskDueDate(task.due_date)}
+          {formatTaskDueDate(row.original.due_date)}
         </span>
       ),
     },
     status: {
       id: 'status',
       header: t('tasks.columns.status'),
-      ...sizingFor('status'),
-      cell: (task) => {
-        const derived = deriveTaskStatus(task)
-        const paused = isTaskPaused(task)
-        return (
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <StatusText status={paused ? 'paused' : derived} />
-            <span className="text-xs text-muted-foreground">{task.progress}%</span>
-          </div>
-        )
-      },
+      meta: sizingFor('status'),
+      cell: ({ row }) => <TaskStatusCell task={row.original} />,
     },
     lastReport: {
       id: 'lastReport',
       header: t('tasks.columns.lastReport'),
-      ...sizingFor('lastReport'),
-      cell: (task) => {
-        const summary = parseLastReportSummary(task)
-        if (!summary) {
-          return <span className="text-muted-foreground">-</span>
-        }
-        const tooltip = [summary.at, summary.who, summary.progress, summary.text]
-          .filter(Boolean)
-          .join(' • ')
-        return (
-          <span className="block truncate text-foreground" title={tooltip}>
-            {summary.text || summary.at}
-          </span>
-        )
-      },
+      meta: sizingFor('lastReport'),
+      cell: ({ row }) => <TaskLastReportCell task={row.original} />,
     },
     taskType: {
       id: 'taskType',
       header: t('tasks.columns.taskType'),
-      ...sizingFor('taskType'),
-      cell: (task) => {
-        const label = task.task_type?.trim() || '-'
+      meta: sizingFor('taskType'),
+      cell: ({ row }) => {
+        const label = row.original.task_type?.trim() || '-'
         return (
           <span className="block truncate text-muted-foreground" title={label}>
             {label}
@@ -255,25 +212,22 @@ export function useTaskColumns(
     workItems: {
       id: 'workItems',
       header: t('tasks.columns.workItems'),
-      ...sizingFor('workItems'),
-      cell: (task) => {
-        const summary = getWorkItemsSummary(task)
-        if (!summary) return <span className="text-muted-foreground">-</span>
-        const label = t('tasks.card.workItemsCount', { count: summary.count })
-        const detail = summary.firstTopic ? `${label} • ${summary.firstTopic}` : label
-        return (
-          <span className="block truncate text-foreground" title={detail}>
-            {detail}
-          </span>
-        )
-      },
+      meta: sizingFor('workItems'),
+      cell: ({ row }) => (
+        <TaskWorkItemsCell
+          task={row.original}
+          formatCount={(count) => t('tasks.card.workItemsCount', { count })}
+        />
+      ),
     },
     reqDept: {
       id: 'reqDept',
       header: t('tasks.columns.reqDept'),
-      ...sizingFor('reqDept'),
-      cell: (task) => {
-        const list = parseReqDepts(task.req_depts, task.req_dept).map(resolveDeptName)
+      meta: sizingFor('reqDept'),
+      cell: ({ row }) => {
+        const list = parseReqDepts(row.original.req_depts, row.original.req_dept).map(
+          resolveDeptName,
+        )
         const label = list.length > 0 ? list.join(', ') : '-'
         return (
           <span className="block truncate text-muted-foreground" title={label}>
@@ -285,9 +239,9 @@ export function useTaskColumns(
     site: {
       id: 'site',
       header: t('tasks.columns.site'),
-      ...sizingFor('site'),
-      cell: (task) => {
-        const list = parseSites(task.site).map(resolveSiteLabel)
+      meta: sizingFor('site'),
+      cell: ({ row }) => {
+        const list = parseSites(row.original.site).map(resolveSiteLabel)
         const label = list.length > 0 ? list.join(', ') : '-'
         return (
           <span className="block truncate text-muted-foreground" title={label}>
@@ -299,30 +253,24 @@ export function useTaskColumns(
     level: {
       id: 'level',
       header: t('tasks.columns.level'),
-      ...sizingFor('level'),
-      cell: (task) => {
-        const code = getTaskLevelCode(task.level)
-        const label =
-          code === 'critical'
-            ? t('tasks.filter.levelCritical')
-            : code === 'urgent'
-              ? t('tasks.filter.levelUrgent')
-              : t('tasks.filter.levelNormal')
-        const toneClass =
-          code === 'critical'
-            ? 'text-status-urgent font-semibold'
-            : code === 'urgent'
-              ? 'text-warning font-semibold'
-              : 'text-muted-foreground'
-        return <span className={toneClass}>{label}</span>
-      },
+      meta: sizingFor('level'),
+      cell: ({ row }) => (
+        <TaskLevelCell
+          level={row.original.level}
+          labels={{
+            critical: t('tasks.filter.levelCritical'),
+            urgent: t('tasks.filter.levelUrgent'),
+            normal: t('tasks.filter.levelNormal'),
+          }}
+        />
+      ),
     },
     reporter: {
       id: 'reporter',
       header: t('tasks.columns.reporter'),
-      ...sizingFor('reporter'),
-      cell: (task) => {
-        const label = resolveUser(task.reporter, task.reporter_name) || '-'
+      meta: sizingFor('reporter'),
+      cell: ({ row }) => {
+        const label = resolveUser(row.original.reporter, row.original.reporter_name) || '-'
         return (
           <span className="block truncate text-muted-foreground" title={label}>
             {label}
@@ -333,21 +281,15 @@ export function useTaskColumns(
     actions: {
       id: 'actions',
       header: t('tasks.columns.actions'),
-      ...sizingFor('actions'),
-      align: 'right',
-      cell: (task) => (
-        <Button
-          asChild
-          variant="ghost"
-          size="icon"
-          className="size-7 hover:bg-muted"
-          onClick={(e) => e.stopPropagation()}
-          aria-label={t('tasks.actions.view', { id: String(task.id) })}
-        >
-          <Link to={APP_ROUTES.TASK_DETAIL(task.id)}>
-            <Eye className="size-4.5 text-muted-foreground" aria-hidden="true" />
-          </Link>
-        </Button>
+      meta: {
+        ...sizingFor('actions'),
+        align: 'right',
+      },
+      cell: ({ row }) => (
+        <TaskActionCell
+          taskId={row.original.id}
+          ariaLabel={t('tasks.actions.view', { id: String(row.original.id) })}
+        />
       ),
     },
   }

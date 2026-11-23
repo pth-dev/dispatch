@@ -1,8 +1,10 @@
 import type * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Card } from '@/components/ui/card'
+import { DataTable } from '@/components/ui/data-table'
 import { cn } from '@/utils/cn'
-import { parseLocalDateTime, parseReqDepts } from '@/utils/task-domain'
+import { parseLocalDateTime } from '@/utils/task-domain'
+import { useKpiBriefFinishedColumns } from '../hooks/use-kpi-brief-finished-columns'
 import {
   BRIEF_FINISHED_LIMIT,
   type BriefCaseRow,
@@ -11,7 +13,7 @@ import {
 import { formatShortDateTime } from '../utils/kpi-export'
 import { KpiBriefStatusBadge } from './KpiBriefStatusBadge'
 
-export interface KpiBriefFinishedSectionProps {
+export type KpiBriefFinishedSectionProps = {
   sectionRef?: React.RefObject<HTMLDivElement | null>
   cases: readonly BriefCaseRow[]
   totalCount: number
@@ -21,6 +23,30 @@ export interface KpiBriefFinishedSectionProps {
   resolveDeptLabel: (raw: string) => string
   onFinFilterChange: (filter: BriefFinishedFilter) => void
   onOpenFinishedDetail: (item: BriefCaseRow) => void
+}
+
+function FinishedCaseMobileCard({
+  item,
+  overdueText,
+}: {
+  item: BriefCaseRow
+  overdueText?: string
+}): React.ReactElement {
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-start justify-between gap-2">
+        <span className="text-sm font-semibold text-foreground">
+          <span className="text-success">#{item.task.id}</span> {item.task.title}
+        </span>
+        <KpiBriefStatusBadge status={item.status} className="shrink-0" />
+      </div>
+      <p className="text-xs text-muted-foreground">{item.names.join(', ')}</p>
+      <p className="text-xs tabular-nums text-muted-foreground">
+        {formatShortDateTime(parseLocalDateTime(item.task.finish_date)) || '-'}
+        {overdueText && <span className="ml-2 font-semibold text-warning">{overdueText}</span>}
+      </p>
+    </div>
+  )
 }
 
 export function KpiBriefFinishedSection({
@@ -33,9 +59,10 @@ export function KpiBriefFinishedSection({
   resolveDeptLabel,
   onFinFilterChange,
   onOpenFinishedDetail,
-}: KpiBriefFinishedSectionProps) {
+}: KpiBriefFinishedSectionProps): React.ReactElement {
   const { t } = useTranslation()
   const displayed = cases.slice(0, BRIEF_FINISHED_LIMIT)
+  const columns = useKpiBriefFinishedColumns({ resolveDeptLabel, onOpenFinishedDetail })
 
   const filterButtons: { key: BriefFinishedFilter; label: string }[] = [
     { key: '', label: `${t('kpiBrief.finished.all')} ${totalCount}` },
@@ -83,119 +110,27 @@ export function KpiBriefFinishedSection({
             {t('kpiBrief.finished.empty')}
           </p>
         ) : (
-          <>
-            {/* Mobile cards */}
-            <div className="divide-y divide-border md:hidden">
-              {displayed.map((c) => (
-                <button
-                  key={c.tkey}
-                  type="button"
-                  onClick={() => onOpenFinishedDetail(c)}
-                  className="w-full space-y-1.5 py-3 text-left hover:bg-muted/30"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-sm font-semibold text-foreground">
-                      <span className="text-success">#{c.task.id}</span> {c.task.title}
-                    </span>
-                    <KpiBriefStatusBadge status={c.status} className="shrink-0" />
-                  </div>
-                  <p className="text-xs text-muted-foreground">{c.names.join(', ')}</p>
-                  <p className="text-xs tabular-nums text-muted-foreground">
-                    {formatShortDateTime(parseLocalDateTime(c.task.finish_date)) || '-'}
-                    {c.lateDays != null && (
-                      <span className="ml-2 font-semibold text-warning">
-                        {t('kpiBrief.cases.overdueDaysShort', { days: c.lateDays })}
-                      </span>
-                    )}
-                  </p>
-                </button>
-              ))}
-            </div>
-
-            {/* Desktop table */}
-            <div className="hidden overflow-x-auto md:block">
-              <table className="w-full min-w-[920px] text-left text-xs">
-                <thead className="border-b border-border bg-muted/30 text-[11px] font-medium text-muted-foreground">
-                  <tr>
-                    <th className="px-2 py-2">{t('kpiBrief.cases.id')}</th>
-                    <th className="px-2 py-2">{t('kpiBrief.cases.title')}</th>
-                    <th className="px-2 py-2">{t('kpiBrief.cases.assignee')}</th>
-                    <th className="px-2 py-2">{t('kpiBrief.cases.status')}</th>
-                    <th className="px-2 py-2">{t('kpiBrief.cases.planDate')}</th>
-                    <th className="px-2 py-2">{t('kpiBrief.cases.finishDate')}</th>
-                    <th className="px-2 py-2 text-right">{t('kpiBrief.cases.overdueDays')}</th>
-                    <th className="px-2 py-2">{t('kpiBrief.cases.reqDept')}</th>
-                    <th className="w-[24%] px-2 py-2">{t('kpiBrief.cases.lastReport')}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {displayed.map((c) => {
-                    const reqDepts = parseReqDepts(c.task.req_depts, c.task.req_dept)
-                      .map(resolveDeptLabel)
-                      .join(', ')
-                    const lastRep =
-                      typeof c.task.last_report === 'string' && c.task.last_report.trim()
-                        ? c.task.last_report.trim().slice(0, 140)
-                        : t('kpiBrief.cases.noReport')
-                    return (
-                      <tr key={c.tkey} className="align-top transition-colors hover:bg-muted/40">
-                        <td className="whitespace-nowrap px-2 py-2.5 font-semibold tabular-nums">
-                          <button
-                            type="button"
-                            onClick={() => onOpenFinishedDetail(c)}
-                            className="text-success hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
-                          >
-                            #{c.task.id}
-                          </button>
-                        </td>
-                        <td className="min-w-[180px] px-2 py-2.5 font-medium text-foreground">
-                          <button
-                            type="button"
-                            onClick={() => onOpenFinishedDetail(c)}
-                            className="text-left hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
-                          >
-                            {c.task.title}
-                          </button>
-                          {c.task.task_type && (
-                            <span className="block text-[10px] text-muted-foreground">
-                              {c.task.task_type}
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-2 py-2.5 text-foreground">{c.names.join(', ')}</td>
-                        <td className="px-2 py-2.5">
-                          <KpiBriefStatusBadge status={c.status} />
-                        </td>
-                        <td className="whitespace-nowrap px-2 py-2.5 tabular-nums text-muted-foreground">
-                          {formatShortDateTime(c.plan)}
-                        </td>
-                        <td
-                          className={cn(
-                            'whitespace-nowrap px-2 py-2.5 font-medium tabular-nums',
-                            c.status === 'late' ? 'text-warning' : 'text-success',
-                          )}
-                        >
-                          {formatShortDateTime(parseLocalDateTime(c.task.finish_date)) || '-'}
-                        </td>
-                        <td
-                          className={cn(
-                            'px-2 py-2.5 text-right font-semibold tabular-nums',
-                            c.lateDays ? 'text-warning' : 'text-muted-foreground',
-                          )}
-                        >
-                          {c.lateDays ?? '-'}
-                        </td>
-                        <td className="px-2 py-2.5 text-muted-foreground">{reqDepts || '-'}</td>
-                        <td className="px-2 py-2.5 text-muted-foreground whitespace-pre-wrap break-words">
-                          {lastRep}
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </>
+          <DataTable
+            variant="embedded"
+            data={displayed}
+            columns={columns}
+            keyExtractor={(c) => c.tkey}
+            mobileBreakpoint="md"
+            onRowClick={onOpenFinishedDetail}
+            mobileItemClassName={() => 'px-0 py-3 hover:bg-muted/30'}
+            tableClassName="min-w-[920px]"
+            rowClassName={() => 'align-top hover:bg-muted/40'}
+            renderMobileCard={(c) => (
+              <FinishedCaseMobileCard
+                item={c}
+                overdueText={
+                  c.lateDays != null
+                    ? t('kpiBrief.cases.overdueDaysShort', { days: c.lateDays })
+                    : undefined
+                }
+              />
+            )}
+          />
         )}
       </Card>
     </div>

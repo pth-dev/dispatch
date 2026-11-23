@@ -1,6 +1,8 @@
+import type * as React from 'react'
 import { Link } from 'react-router'
 import { Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { DataTable, type ColumnDef } from '@/components/ui/data-table'
 import { APP_ROUTES } from '@/constants/app-routes'
 import type { DirectoryUser } from '@/schemas/auth'
 import { cn } from '@/utils/cn'
@@ -8,11 +10,10 @@ import {
   buildTaskDrilldownUrl,
   buildUserDirectoryLookup,
   resolveAssigneeIdentity,
-  type AssigneeIdentity,
   type DeptMemberStatusRow,
 } from '../utils/dashboard-charts'
 
-interface DeptMemberStatusMatrixProps {
+type DeptMemberStatusMatrixProps = {
   selectedDept: string
   memberRows: readonly DeptMemberStatusRow[]
   directoryUsers?: readonly DirectoryUser[]
@@ -26,7 +27,7 @@ function MatrixCellLink({
   count: number
   href: string
   toneClass?: string
-}) {
+}): React.ReactElement {
   if (count <= 0) {
     return <span className="text-muted-foreground/40 tabular-nums">0</span>
   }
@@ -43,66 +44,144 @@ function MatrixCellLink({
   )
 }
 
-function MemberStatusTr({
-  row,
-  identity,
-  department,
-}: {
-  row: DeptMemberStatusRow
-  identity: AssigneeIdentity
-  department?: string
-}) {
-  const cellUrl = (status?: string) =>
-    buildTaskDrilldownUrl(APP_ROUTES.TASKS, {
-      scope: 'all',
-      department,
-      search: row.name,
-      status,
-    })
-
-  return (
-    <tr className="hover:bg-secondary/40">
-      <td className="px-3 py-1.5 font-medium text-foreground whitespace-nowrap">
-        <Link to={cellUrl()} className="inline-flex items-baseline gap-1.5 hover:text-primary hover:underline">
-          <span>{identity.name}</span>
-          {identity.code && (
-            <span className="text-[11px] font-normal text-muted-foreground tabular-nums">
-              {identity.code}
-            </span>
-          )}
-        </Link>
-      </td>
-      <td className="px-2 py-1.5 text-right">
-        <MatrixCellLink count={row.overdue} toneClass="text-destructive" href={cellUrl('delayed_pending')} />
-      </td>
-      <td className="px-2 py-1.5 text-right">
-        <MatrixCellLink count={row.inProgress} toneClass="text-primary" href={cellUrl('in_progress')} />
-      </td>
-      <td className="px-2 py-1.5 text-right">
-        <MatrixCellLink count={row.notStarted} href={cellUrl('not_started')} />
-      </td>
-      <td className="px-2 py-1.5 text-right">
-        <MatrixCellLink count={row.paused} toneClass="text-muted-foreground" href={cellUrl('paused')} />
-      </td>
-      <td className="px-2 py-1.5 text-right">
-        <MatrixCellLink count={row.completed} toneClass="text-success" href={cellUrl('completed')} />
-      </td>
-      <td className="px-3 py-1.5 text-right">
-        <MatrixCellLink count={row.open} href={cellUrl('incomplete')} />
-      </td>
-    </tr>
-  )
-}
-
 export function DeptMemberStatusMatrix({
   selectedDept,
   memberRows,
   directoryUsers = [],
-}: DeptMemberStatusMatrixProps) {
+}: DeptMemberStatusMatrixProps): React.ReactElement {
   const { t } = useTranslation()
   const visibleMembers = memberRows.slice(0, 12)
   const department = selectedDept || undefined
   const lookup = buildUserDirectoryLookup(directoryUsers)
+
+  const cellUrl = (name: string, status?: string): string =>
+    buildTaskDrilldownUrl(APP_ROUTES.TASKS, {
+      scope: 'all',
+      department,
+      search: name,
+      status,
+    })
+
+  const columns: ColumnDef<DeptMemberStatusRow>[] = [
+    {
+      id: 'person',
+      header: t('dashboard.posts.cols.person'),
+      meta: {
+        headerClassName: 'px-3 py-2 font-semibold',
+        cellClassName: 'px-3 py-1.5 font-medium text-foreground whitespace-nowrap',
+      },
+      cell: ({ row }) => {
+        const identity = resolveAssigneeIdentity(row.original.name, lookup)
+        return (
+          <Link
+            to={cellUrl(row.original.name)}
+            className="inline-flex items-baseline gap-1.5 hover:text-primary hover:underline"
+          >
+            <span>{identity.name}</span>
+            {identity.code && (
+              <span className="text-[11px] font-normal text-muted-foreground tabular-nums">
+                {identity.code}
+              </span>
+            )}
+          </Link>
+        )
+      },
+    },
+    {
+      id: 'overdue',
+      header: t('dashboard.dept.metrics.delayed'),
+      meta: {
+        align: 'right',
+        headerClassName: 'px-2 py-2 font-semibold text-destructive',
+        cellClassName: 'px-2 py-1.5',
+      },
+      cell: ({ row }) => (
+        <MatrixCellLink
+          count={row.original.overdue}
+          toneClass="text-destructive"
+          href={cellUrl(row.original.name, 'delayed_pending')}
+        />
+      ),
+    },
+    {
+      id: 'inProgress',
+      header: t('dashboard.dept.metrics.progress'),
+      meta: {
+        align: 'right',
+        headerClassName: 'px-2 py-2 font-semibold text-primary',
+        cellClassName: 'px-2 py-1.5',
+      },
+      cell: ({ row }) => (
+        <MatrixCellLink
+          count={row.original.inProgress}
+          toneClass="text-primary"
+          href={cellUrl(row.original.name, 'in_progress')}
+        />
+      ),
+    },
+    {
+      id: 'notStarted',
+      header: t('dashboard.dept.metrics.notStarted'),
+      meta: {
+        align: 'right',
+        headerClassName: 'px-2 py-2 font-semibold',
+        cellClassName: 'px-2 py-1.5',
+      },
+      cell: ({ row }) => (
+        <MatrixCellLink
+          count={row.original.notStarted}
+          href={cellUrl(row.original.name, 'not_started')}
+        />
+      ),
+    },
+    {
+      id: 'paused',
+      header: t('dashboard.dept.metrics.paused'),
+      meta: {
+        align: 'right',
+        headerClassName: 'px-2 py-2 font-semibold',
+        cellClassName: 'px-2 py-1.5',
+      },
+      cell: ({ row }) => (
+        <MatrixCellLink
+          count={row.original.paused}
+          toneClass="text-muted-foreground"
+          href={cellUrl(row.original.name, 'paused')}
+        />
+      ),
+    },
+    {
+      id: 'completed',
+      header: t('dashboard.dept.metrics.completed'),
+      meta: {
+        align: 'right',
+        headerClassName: 'px-2 py-2 font-semibold text-success',
+        cellClassName: 'px-2 py-1.5',
+      },
+      cell: ({ row }) => (
+        <MatrixCellLink
+          count={row.original.completed}
+          toneClass="text-success"
+          href={cellUrl(row.original.name, 'completed')}
+        />
+      ),
+    },
+    {
+      id: 'open',
+      header: t('dashboard.dept.metrics.openTotal'),
+      meta: {
+        align: 'right',
+        headerClassName: 'px-3 py-2 font-semibold',
+        cellClassName: 'px-3 py-1.5',
+      },
+      cell: ({ row }) => (
+        <MatrixCellLink
+          count={row.original.open}
+          href={cellUrl(row.original.name, 'incomplete')}
+        />
+      ),
+    },
+  ]
 
   return (
     <div className="space-y-2">
@@ -124,37 +203,15 @@ export function DeptMemberStatusMatrix({
           {t('dashboard.dept.peopleLoadEmpty')}
         </p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-border">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b border-border bg-secondary/60 text-muted-foreground">
-                <th className="px-3 py-2 text-left font-semibold">{t('dashboard.posts.cols.person')}</th>
-                <th className="px-2 py-2 text-right font-semibold text-destructive">
-                  {t('dashboard.dept.metrics.delayed')}
-                </th>
-                <th className="px-2 py-2 text-right font-semibold text-primary">
-                  {t('dashboard.dept.metrics.progress')}
-                </th>
-                <th className="px-2 py-2 text-right font-semibold">{t('dashboard.dept.metrics.notStarted')}</th>
-                <th className="px-2 py-2 text-right font-semibold">{t('dashboard.dept.metrics.paused')}</th>
-                <th className="px-2 py-2 text-right font-semibold text-success">
-                  {t('dashboard.dept.metrics.completed')}
-                </th>
-                <th className="px-3 py-2 text-right font-semibold">{t('dashboard.dept.metrics.openTotal')}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {visibleMembers.map((row) => (
-                <MemberStatusTr
-                  key={row.name}
-                  row={row}
-                  identity={resolveAssigneeIdentity(row.name, lookup)}
-                  department={department}
-                />
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          variant="embedded"
+          data={visibleMembers}
+          columns={columns}
+          keyExtractor={(row) => row.name}
+          containerClassName="rounded-lg border border-border"
+          headerClassName="bg-secondary/60 text-xs"
+          rowClassName={() => 'hover:bg-secondary/40'}
+        />
       )}
     </div>
   )

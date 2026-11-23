@@ -1,13 +1,14 @@
 import * as React from 'react'
 import { Grid3X3, Search } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { DataTable, type ColumnDef } from '@/components/ui/data-table'
 import { Input } from '@/components/ui/input'
 import { Sparkline } from '@/components/ui/sparkline'
 import type { PostStatsResponse, PostStatsSeries } from '@/schemas/dashboard'
 import { cn } from '@/utils/cn'
 import { formatPostBucketLabel } from '../utils/dashboard-domain'
 
-interface DeptPeopleHeatmapTableProps {
+type DeptPeopleHeatmapTableProps = {
   data: PostStatsResponse | undefined
 }
 
@@ -20,63 +21,107 @@ function heatCellClass(value: number, maxVal: number): string {
   return 'bg-primary-soft text-primary'
 }
 
-function HeatmapPersonRow({
-  series,
-  labels,
-  maxVal,
-}: {
-  series: PostStatsSeries
-  labels: readonly string[]
-  maxVal: number
-}) {
-  const n = labels.length
-  const last = series.data[n - 1] ?? 0
-  const prev = n > 1 ? (series.data[n - 2] ?? 0) : 0
-  const diff = last - prev
-  const avg = n > 0 ? Math.round((series.total / n) * 10) / 10 : 0
+function buildHeatmapColumns(
+  data: PostStatsResponse,
+  maxVal: number,
+  t: (key: string) => string,
+): ColumnDef<PostStatsSeries>[] {
+  const n = data.labels.length
 
-  return (
-    <tr className="hover:bg-secondary/40">
-      <td className="sticky left-0 z-10 bg-card px-2.5 py-1.5 font-medium text-foreground whitespace-nowrap">
-        {series.label}
-      </td>
-      <td className="px-2 py-1.5 text-right font-semibold text-primary tabular-nums">
-        {series.total}
-      </td>
-      <td className="px-2 py-1.5 text-right text-muted-foreground tabular-nums">{avg}</td>
-      <td
-        className={cn(
-          'px-2 py-1.5 text-right font-medium tabular-nums whitespace-nowrap',
-          diff > 0 ? 'text-success' : diff < 0 ? 'text-destructive' : 'text-muted-foreground',
-        )}
-      >
-        {last}
-        {diff !== 0 ? (diff > 0 ? ` ▲${diff}` : ` ▼${Math.abs(diff)}`) : ''}
-      </td>
-      <td className="px-2 py-1.5">
-        <Sparkline data={series.data} />
-      </td>
-      {labels.map((label, i) => {
-        const val = series.data[i] ?? 0
+  const fixedColumns: ColumnDef<PostStatsSeries>[] = [
+    {
+      id: 'person',
+      header: t('dashboard.posts.cols.person'),
+      meta: {
+        sticky: 'left',
+        headerClassName: 'bg-secondary px-2.5 py-2 font-semibold whitespace-nowrap',
+        cellClassName: 'bg-card px-2.5 py-1.5 font-medium text-foreground whitespace-nowrap',
+      },
+      cell: ({ row }) => row.original.label,
+    },
+    {
+      id: 'total',
+      header: t('dashboard.dept.heatmapCols.total'),
+      meta: {
+        align: 'right',
+        headerClassName: 'px-2 py-2 font-semibold whitespace-nowrap',
+        cellClassName: 'px-2 py-1.5 font-semibold text-primary tabular-nums',
+      },
+      cell: ({ row }) => row.original.total,
+    },
+    {
+      id: 'avg',
+      header: t('dashboard.dept.heatmapCols.avg'),
+      meta: {
+        align: 'right',
+        headerClassName: 'px-2 py-2 font-semibold whitespace-nowrap',
+        cellClassName: 'px-2 py-1.5 text-muted-foreground tabular-nums',
+      },
+      cell: ({ row }) => (n > 0 ? Math.round((row.original.total / n) * 10) / 10 : 0),
+    },
+    {
+      id: 'latest',
+      header: t('dashboard.dept.heatmapCols.latest'),
+      meta: {
+        align: 'right',
+        headerClassName: 'px-2 py-2 font-semibold whitespace-nowrap',
+        cellClassName: 'px-2 py-1.5 font-medium tabular-nums whitespace-nowrap',
+      },
+      cell: ({ row }) => {
+        const last = row.original.data[n - 1] ?? 0
+        const prev = n > 1 ? (row.original.data[n - 2] ?? 0) : 0
+        const diff = last - prev
+        const tone =
+          diff > 0 ? 'text-success' : diff < 0 ? 'text-destructive' : 'text-muted-foreground'
         return (
-          <td key={`${label}-${i}`} className="px-0.5 py-1 text-center">
-            <span
-              title={`${series.label} · ${label}: ${val}`}
-              className={cn(
-                'inline-block min-w-6 rounded px-1 py-0.5 text-[11px] font-medium tabular-nums',
-                heatCellClass(val, maxVal),
-              )}
-            >
-              {val}
-            </span>
-          </td>
+          <span className={tone}>
+            {last}
+            {diff !== 0 ? (diff > 0 ? ` ▲${diff}` : ` ▼${Math.abs(diff)}`) : ''}
+          </span>
         )
-      })}
-    </tr>
-  )
+      },
+    },
+    {
+      id: 'trend',
+      header: t('dashboard.dept.heatmapCols.trend'),
+      meta: {
+        headerClassName: 'px-2 py-2 font-semibold whitespace-nowrap',
+        cellClassName: 'px-2 py-1.5',
+      },
+      cell: ({ row }) => <Sparkline data={row.original.data} />,
+    },
+  ]
+
+  const bucketColumns: ColumnDef<PostStatsSeries>[] = data.labels.map((label, i) => ({
+    id: `bucket-${label}-${i}`,
+    header: formatPostBucketLabel(label, data.gran),
+    meta: {
+      align: 'center',
+      headerClassName: 'px-1.5 py-2 font-semibold whitespace-nowrap',
+      cellClassName: 'px-0.5 py-1',
+    },
+    cell: ({ row }) => {
+      const val = row.original.data[i] ?? 0
+      return (
+        <span
+          title={`${row.original.label} · ${label}: ${val}`}
+          className={cn(
+            'inline-block min-w-6 rounded px-1 py-0.5 text-[11px] font-medium tabular-nums',
+            heatCellClass(val, maxVal),
+          )}
+        >
+          {val}
+        </span>
+      )
+    },
+  }))
+
+  return [...fixedColumns, ...bucketColumns]
 }
 
-export function DeptPeopleHeatmapTable({ data }: DeptPeopleHeatmapTableProps) {
+export function DeptPeopleHeatmapTable({
+  data,
+}: DeptPeopleHeatmapTableProps): React.ReactElement | null {
   const { t } = useTranslation()
   const [filterInput, setFilterInput] = React.useState('')
   const deferredFilter = React.useDeferredValue(filterInput.trim().toLowerCase())
@@ -97,6 +142,8 @@ export function DeptPeopleHeatmapTable({ data }: DeptPeopleHeatmapTableProps) {
       if (v > maxVal) maxVal = v
     }
   }
+
+  const columns = buildHeatmapColumns(data, maxVal, t)
 
   return (
     <section className="rounded-xl border border-border bg-card p-4 space-y-3">
@@ -132,52 +179,18 @@ export function DeptPeopleHeatmapTable({ data }: DeptPeopleHeatmapTableProps) {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-border">
-        <table className="w-max min-w-full text-xs">
-          <thead>
-            <tr className="border-b border-border bg-secondary text-muted-foreground">
-              <th className="sticky left-0 z-10 bg-secondary px-2.5 py-2 text-left font-semibold whitespace-nowrap">
-                {t('dashboard.posts.cols.person')}
-              </th>
-              <th className="px-2 py-2 text-right font-semibold whitespace-nowrap">
-                {t('dashboard.dept.heatmapCols.total')}
-              </th>
-              <th className="px-2 py-2 text-right font-semibold whitespace-nowrap">
-                {t('dashboard.dept.heatmapCols.avg')}
-              </th>
-              <th className="px-2 py-2 text-right font-semibold whitespace-nowrap">
-                {t('dashboard.dept.heatmapCols.latest')}
-              </th>
-              <th className="px-2 py-2 text-left font-semibold whitespace-nowrap">
-                {t('dashboard.dept.heatmapCols.trend')}
-              </th>
-              {data.labels.map((label, i) => (
-                <th key={`${label}-${i}`} className="px-1.5 py-2 text-center font-semibold whitespace-nowrap">
-                  {formatPostBucketLabel(label, data.gran)}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {rows.length === 0 ? (
-              <tr>
-                <td colSpan={data.labels.length + 5} className="px-4 py-6 text-center text-muted-foreground">
-                  {t('dashboard.dept.heatmapEmpty')}
-                </td>
-              </tr>
-            ) : (
-              rows.map((row) => (
-                <HeatmapPersonRow
-                  key={row.username || row.label}
-                  series={row}
-                  labels={data.labels}
-                  maxVal={maxVal}
-                />
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      <DataTable
+        variant="embedded"
+        data={rows}
+        columns={columns}
+        keyExtractor={(row) => row.username || row.label}
+        emptyMessage={t('dashboard.dept.heatmapEmpty')}
+        emptyClassName="px-4 py-6 text-xs"
+        containerClassName="rounded-lg border border-border"
+        tableClassName="w-max min-w-full text-xs"
+        headerClassName="bg-secondary text-xs"
+        rowClassName={() => 'hover:bg-secondary/40'}
+      />
     </section>
   )
 }

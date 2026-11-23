@@ -29,6 +29,10 @@ export const KPI_WEIGHTS = { final: 60, ontime: 40 } as const
 export const KPI_RESPONSE_THRESHOLD_MINS = 60
 const DEFAULT_RECUR_TIME = '17:30'
 
+export function formatKpiPct(value: number, total: number): string {
+  return total > 0 ? `${value}%` : 'N/A'
+}
+
 export interface PeopleKpiRow {
   key: string
   username: string

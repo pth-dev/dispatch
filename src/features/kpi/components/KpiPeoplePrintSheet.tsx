@@ -1,11 +1,13 @@
+import type * as React from 'react'
 import { useTranslation } from 'react-i18next'
+import { DataTable, type ColumnDef } from '@/components/ui/data-table'
 import type { SessionUser } from '@/schemas/auth'
 import type { RawTask } from '@/schemas/task'
 import { formatShortDateTime } from '../utils/kpi-export'
-import type { KpiBasis, PeopleKpiRow } from '../utils/kpi-people-domain'
+import { formatKpiPct, type KpiBasis, type PeopleKpiRow } from '../utils/kpi-people-domain'
 import { KpiPersonTaskDetails } from './KpiPersonTaskDetails'
 
-export interface KpiPeoplePrintSheetProps {
+export type KpiPeoplePrintSheetProps = {
   rows: readonly PeopleKpiRow[]
   taskMap: ReadonlyMap<string, RawTask>
   basis: KpiBasis
@@ -18,8 +20,86 @@ export interface KpiPeoplePrintSheetProps {
   resolveDeptLabel: (raw: string) => string
 }
 
-function fmtPct(value: number, total: number): string {
-  return total > 0 ? `${value}%` : 'N/A'
+function buildPrintColumns(
+  resolveDeptLabel: (raw: string) => string,
+  t: (key: string) => string,
+): ColumnDef<PeopleKpiRow>[] {
+  return [
+    { id: 'rank', header: '#', cell: ({ row }) => row.index + 1 },
+    { id: 'username', header: t('kpi.table.username'), cell: ({ row }) => row.original.username },
+    {
+      id: 'fullname',
+      header: t('kpi.table.fullname'),
+      cell: ({ row }) =>
+        row.original.isUnregistered ? t('kpi.unregistered') : row.original.fullname || '-',
+    },
+    {
+      id: 'dept',
+      header: t('kpi.table.dept'),
+      cell: ({ row }) => (row.original.deptRaw ? resolveDeptLabel(row.original.deptRaw) : '-'),
+    },
+    {
+      id: 'total',
+      header: t('kpi.table.total'),
+      meta: { align: 'right' },
+      cell: ({ row }) => row.original.total,
+    },
+    {
+      id: 'completed',
+      header: t('kpi.table.completed'),
+      meta: { align: 'right' },
+      cell: ({ row }) => row.original.completed,
+    },
+    {
+      id: 'completionRate',
+      header: t('kpi.table.completionRate'),
+      meta: { align: 'right' },
+      cell: ({ row }) => formatKpiPct(row.original.completionRate, row.original.total),
+    },
+    {
+      id: 'ontime',
+      header: t('kpi.table.ontime'),
+      meta: { align: 'right' },
+      cell: ({ row }) => row.original.ontime,
+    },
+    {
+      id: 'ontimeRate',
+      header: t('kpi.table.ontimeRate'),
+      meta: { align: 'right' },
+      cell: ({ row }) => formatKpiPct(row.original.ontimeRate, row.original.total),
+    },
+    {
+      id: 'late',
+      header: t('kpi.table.late'),
+      meta: { align: 'right' },
+      cell: ({ row }) =>
+        `${row.original.late} (${formatKpiPct(row.original.lateRate, row.original.total)})`,
+    },
+    {
+      id: 'overdue',
+      header: t('kpi.table.overdue'),
+      meta: { align: 'right' },
+      cell: ({ row }) => row.original.overdue,
+    },
+    {
+      id: 'paused',
+      header: t('kpi.table.paused'),
+      meta: { align: 'right' },
+      cell: ({ row }) => row.original.paused,
+    },
+    {
+      id: 'score',
+      header: t('kpi.table.score'),
+      meta: { align: 'right', cellClassName: 'font-bold' },
+      cell: ({ row }) => (row.original.score === null ? '-' : row.original.score),
+    },
+    {
+      id: 'grade',
+      header: t('kpi.table.grade'),
+      cell: ({ row }) =>
+        `${row.original.grade.code} ${t(`kpi.grade.${row.original.grade.code}`)}`,
+    },
+  ]
 }
 
 export function KpiPeoplePrintSheet({
@@ -33,9 +113,11 @@ export function KpiPeoplePrintSheet({
   withDetail,
   user,
   resolveDeptLabel,
-}: KpiPeoplePrintSheetProps) {
+}: KpiPeoplePrintSheetProps): React.ReactElement | null {
   const { t } = useTranslation()
   if (rows.length === 0) return null
+
+  const columns = buildPrintColumns(resolveDeptLabel, t)
 
   return (
     <section className="hidden space-y-4 print:block">
@@ -61,60 +143,12 @@ export function KpiPeoplePrintSheet({
 
       <p className="text-[11px] text-muted-foreground">{t('kpi.formulaBanner')}</p>
 
-      <table className="w-full border-collapse text-[11px]">
-        <thead>
-          <tr className="border-b border-border bg-muted/40">
-            <th className="border border-border px-1.5 py-1 text-left">#</th>
-            <th className="border border-border px-1.5 py-1 text-left">{t('kpi.table.username')}</th>
-            <th className="border border-border px-1.5 py-1 text-left">{t('kpi.table.fullname')}</th>
-            <th className="border border-border px-1.5 py-1 text-left">{t('kpi.table.dept')}</th>
-            <th className="border border-border px-1.5 py-1 text-right">{t('kpi.table.total')}</th>
-            <th className="border border-border px-1.5 py-1 text-right">{t('kpi.table.completed')}</th>
-            <th className="border border-border px-1.5 py-1 text-right">{t('kpi.table.completionRate')}</th>
-            <th className="border border-border px-1.5 py-1 text-right">{t('kpi.table.ontime')}</th>
-            <th className="border border-border px-1.5 py-1 text-right">{t('kpi.table.ontimeRate')}</th>
-            <th className="border border-border px-1.5 py-1 text-right">{t('kpi.table.late')}</th>
-            <th className="border border-border px-1.5 py-1 text-right">{t('kpi.table.overdue')}</th>
-            <th className="border border-border px-1.5 py-1 text-right">{t('kpi.table.paused')}</th>
-            <th className="border border-border px-1.5 py-1 text-right">{t('kpi.table.score')}</th>
-            <th className="border border-border px-1.5 py-1 text-left">{t('kpi.table.grade')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r, i) => (
-            <tr key={r.key}>
-              <td className="border border-border px-1.5 py-1">{i + 1}</td>
-              <td className="border border-border px-1.5 py-1">{r.username}</td>
-              <td className="border border-border px-1.5 py-1">
-                {r.isUnregistered ? t('kpi.unregistered') : r.fullname || '-'}
-              </td>
-              <td className="border border-border px-1.5 py-1">
-                {r.deptRaw ? resolveDeptLabel(r.deptRaw) : '-'}
-              </td>
-              <td className="border border-border px-1.5 py-1 text-right">{r.total}</td>
-              <td className="border border-border px-1.5 py-1 text-right">{r.completed}</td>
-              <td className="border border-border px-1.5 py-1 text-right">
-                {fmtPct(r.completionRate, r.total)}
-              </td>
-              <td className="border border-border px-1.5 py-1 text-right">{r.ontime}</td>
-              <td className="border border-border px-1.5 py-1 text-right">
-                {fmtPct(r.ontimeRate, r.total)}
-              </td>
-              <td className="border border-border px-1.5 py-1 text-right">
-                {r.late} ({fmtPct(r.lateRate, r.total)})
-              </td>
-              <td className="border border-border px-1.5 py-1 text-right">{r.overdue}</td>
-              <td className="border border-border px-1.5 py-1 text-right">{r.paused}</td>
-              <td className="border border-border px-1.5 py-1 text-right font-bold">
-                {r.score === null ? '-' : r.score}
-              </td>
-              <td className="border border-border px-1.5 py-1">
-                {r.grade.code} {t(`kpi.grade.${r.grade.code}`)}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <DataTable
+        variant="print"
+        data={rows}
+        columns={columns}
+        keyExtractor={(r) => r.key}
+      />
 
       {withDetail &&
         rows.map((r) => (
