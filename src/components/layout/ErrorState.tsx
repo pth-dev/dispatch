@@ -21,7 +21,6 @@ export { RootRouteErrorBoundary } from './RootRouteErrorBoundary'
 
 type ErrorStateProps = {
   status?: ErrorStatusCode
-  technicalDetails?: string
   referenceCode?: string
   onRetry?: () => void
 }
@@ -32,7 +31,6 @@ type ErrorStateProps = {
  */
 export function ErrorState({
   status = '500',
-  technicalDetails,
   referenceCode,
   onRetry,
 }: ErrorStateProps) {
@@ -140,13 +138,6 @@ export function ErrorState({
                   )}
                 </button>
               </div>
-            </div>
-          )}
-
-          {import.meta.env.DEV && technicalDetails && (
-            <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-[11px] font-mono text-destructive space-y-1">
-              <div className="font-semibold">{t('errors.technicalDetails')}</div>
-              <pre className="overflow-x-auto whitespace-pre-wrap">{technicalDetails}</pre>
             </div>
           )}
 

@@ -11,19 +11,15 @@ const CHUNK_LOAD_ERROR =
 export function RootRouteErrorBoundary() {
   const error = useRouteError()
 
-  let technical = ''
-
-  if (typeof error === 'object' && error !== null && 'message' in error) {
-    technical = String((error as { message: unknown }).message)
-  }
-  if (typeof error === 'object' && error !== null && 'stack' in error) {
-    technical += `\n${String((error as { stack: unknown }).stack)}`
-  }
+  const errorMessage =
+    typeof error === 'object' && error !== null && 'message' in error
+      ? String((error as { message: unknown }).message)
+      : ''
 
   // Lazy-chunk load failures are network failures (brief §5.12).
-  const status: ErrorStatusCode = CHUNK_LOAD_ERROR.test(technical)
+  const status: ErrorStatusCode = CHUNK_LOAD_ERROR.test(errorMessage)
     ? 'network'
     : toErrorStatus(error)
 
-  return <ErrorState status={status} technicalDetails={technical} />
+  return <ErrorState status={status} />
 }

@@ -12,7 +12,6 @@ type AppErrorBoundaryProps = {
 type AppErrorBoundaryState = {
   hasError: boolean
   referenceCode: string
-  technicalDetails: string
 }
 
 /**
@@ -28,19 +27,13 @@ export class AppErrorBoundary extends React.Component<
     this.state = {
       hasError: false,
       referenceCode: '',
-      technicalDetails: '',
     }
   }
 
-  static getDerivedStateFromError(error: unknown): AppErrorBoundaryState {
-    const details =
-      error instanceof Error
-        ? `${error.message}${error.stack ? `\n${error.stack}` : ''}`
-        : String(error)
+  static getDerivedStateFromError(): AppErrorBoundaryState {
     return {
       hasError: true,
       referenceCode: createReferenceCode(),
-      technicalDetails: details,
     }
   }
 
@@ -80,11 +73,6 @@ export class AppErrorBoundary extends React.Component<
             <p className="font-mono text-xs text-muted-foreground">
               {t('errors.referenceCode', { code: this.state.referenceCode })}
             </p>
-            {import.meta.env.DEV && this.state.technicalDetails && (
-              <pre className="overflow-x-auto whitespace-pre-wrap rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-[11px] font-mono text-destructive">
-                {this.state.technicalDetails}
-              </pre>
-            )}
           </div>
         </main>
       </div>

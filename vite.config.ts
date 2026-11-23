@@ -6,6 +6,20 @@ import { fileURLToPath, URL } from 'node:url'
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const proxyTarget = env.VITE_PROXY_TARGET?.trim()
+  const proxyConfig = proxyTarget
+    ? {
+        '/api': {
+          target: proxyTarget,
+          changeOrigin: true,
+          secure: false,
+        },
+        '/uploads': {
+          target: proxyTarget,
+          changeOrigin: true,
+          secure: false,
+        },
+      }
+    : undefined
 
   return {
     plugins: [react({ compiler: { logDiagnostics: true } }), tailwindcss()],
@@ -14,31 +28,31 @@ export default defineConfig(({ mode }) => {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
       },
     },
-    ...(proxyTarget
+    ...(proxyConfig
       ? {
-          server: {
-            proxy: {
-              '/api': {
-                target: proxyTarget,
-                changeOrigin: true,
-                secure: false,
-              },
-              '/uploads': {
-                target: proxyTarget,
-                changeOrigin: true,
-                secure: false,
-              },
-            },
-          },
+          server: { proxy: proxyConfig },
+          preview: { proxy: proxyConfig },
         }
       : {}),
     build: {
+      // Never emit source maps so original TypeScript/JSX source is not exposed in DevTools.
+      sourcemap: false,
       // `public/` only holds the MSW service worker, which must never ship to
       // production. It stays served by the dev server because Vite reads
       // `publicDir` regardless of this flag.
       copyPublicDir: false,
       rolldownOptions: {
         output: {
+          entryFileNames: 'assets/[hash].js',
+          chunkFileNames: 'assets/[hash].js',
+          assetFileNames: 'assets/[hash][extname]',
+          minify: {
+            compress: {
+              dropConsole: true,
+              dropDebugger: true,
+            },
+            mangle: true,
+          },
           codeSplitting: {
             groups: [
               {
