@@ -1,13 +1,13 @@
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { CheckCircle2, ChevronDown, ChevronRight, Clock } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import type { LessonMarqueeHit } from '@/components/ui/lesson-marquee-banner'
 import { useLessons } from '@/hooks/use-lessons'
 import type { RawTask } from '@/schemas/task'
 import { cn } from '@/utils'
 import { buildTaskLessonHitsMap } from '@/utils/lesson-match'
 import { useDeptNameResolver } from '../hooks/use-dept-name-resolver'
+import { useInfiniteSentinel } from '../hooks/use-infinite-sentinel'
 import { useSiteNameResolver } from '../hooks/use-site-name-resolver'
 import { useUserDisplayResolver } from '../hooks/use-user-display-resolver'
 import { mapTaskToCardViewModel, type TaskCardResolvers } from '../utils/task-card-mapper'
@@ -36,8 +36,8 @@ function TaskMobileTypeGroup({
   })
 
   return (
-    <div className={cn(!isIncomplete && 'opacity-90')}>
-      <div className="flex items-center justify-between gap-2 border-b border-border bg-secondary/60 px-4 py-1.5">
+    <div className={cn('group mt-2 first:mt-0', !isIncomplete && 'opacity-90')}>
+      <div className="flex items-center justify-between gap-2 border-y border-border group-first:border-t-0 bg-secondary px-4 py-2">
         <h3
           className={cn(
             'truncate text-xs font-semibold',
@@ -86,6 +86,12 @@ export function TaskMobileSection({
     : t('tasks.card.completedSection')
 
   const visibleTasks = tasks.slice(0, limit)
+  const hasMore = visibleTasks.length < tasks.length
+  const sentinelRef = useInfiniteSentinel({
+    enabled: expanded && hasMore,
+    onLoadMore: onShowMore,
+    reobserveKey: visibleTasks.length,
+  })
   const lessonHitsByTaskId = buildTaskLessonHitsMap(visibleTasks, lessons)
   const groups = groupTasksByType(visibleTasks, tasks, t('tasks.card.uncategorized'))
   const resolvers: TaskCardResolvers = {
@@ -136,11 +142,15 @@ export function TaskMobileSection({
             />
           ))}
 
-          {visibleTasks.length < tasks.length && (
-            <div className="flex justify-center bg-card px-4 py-3">
-              <Button type="button" variant="outline" onClick={onShowMore} className="h-11 px-4 text-xs">
-                {t('tasks.card.showMore', { shown: visibleTasks.length, total: tasks.length })}
-              </Button>
+          {hasMore && (
+            <div
+              ref={sentinelRef}
+              role="status"
+              data-testid={`infinite-sentinel-${variant}`}
+              className="flex items-center justify-center bg-card px-4 py-3 text-xs text-muted-foreground"
+              aria-live="polite"
+            >
+              {t('tasks.mobile.loadingMore')}
             </div>
           )}
         </div>

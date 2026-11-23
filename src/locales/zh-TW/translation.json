@@ -218,7 +218,8 @@
     "mobile": {
       "dueDate": "截止 {{date}}",
       "report": "回報",
-      "createShort": "新增"
+      "createShort": "新增",
+      "loadingMore": "正在載入更多..."
     },
     "detail": {
       "title": "任務詳情",

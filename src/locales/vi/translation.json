@@ -218,7 +218,8 @@
     "mobile": {
       "dueDate": "Hạn {{date}}",
       "report": "Báo cáo",
-      "createShort": "Thêm"
+      "createShort": "Thêm",
+      "loadingMore": "Đang tải thêm..."
     },
     "detail": {
       "title": "Chi tiết nhiệm vụ",

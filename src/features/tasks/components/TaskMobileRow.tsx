@@ -33,7 +33,7 @@ export function TaskMobileRow({ vm }: TaskMobileRowProps) {
   return (
     <article
       data-testid="task-mobile-row"
-      className="relative bg-card px-4 py-2.5 transition-colors active:bg-secondary/50 focus-within:bg-secondary/30"
+      className="relative bg-card px-4 py-3.5 transition-colors active:bg-secondary/50 focus-within:bg-secondary/30"
     >
       {/* 1. Meta row: code, site, urgent marker, status */}
       <div className="flex items-center justify-between gap-2 text-xs leading-4">
@@ -66,19 +66,20 @@ export function TaskMobileRow({ vm }: TaskMobileRowProps) {
         />
       </div>
 
-      {/* 2. Title row (auto 1–2 lines, stretched-link to detail) */}
-      <h4 className="mt-1 m-0">
+      {/* 2. Title row (auto 1–2 lines, relaxed line-height for CJK + Vietnamese, stretched-link to detail) */}
+      <h4 className="mt-1.5">
         <Link
           to={detailPath}
-          className="block line-clamp-2 wrap-anywhere text-sm font-semibold leading-5 text-foreground after:absolute after:inset-0 focus-visible:outline-none focus-visible:underline"
+          className="block line-clamp-2 wrap-anywhere text-sm font-semibold leading-normal text-foreground after:absolute after:inset-0 focus-visible:outline-none focus-visible:underline"
         >
           {vm.title}
         </Link>
       </h4>
 
       {/* 3. Summary & quick report row (fixed-width due + % columns keep progress vertically aligned) */}
-      <div className="mt-1.5 flex items-center gap-2 text-xs">
+      <div className="mt-2.5 flex items-center gap-2.5 text-xs">
         <span
+          title={hasDue ? vm.dueAt : undefined}
           className={cn(
             'inline-flex w-14 shrink-0 items-center gap-1 tabular-nums',
             hasDue ? DUE_TONE_CLASS[vm.dueTone] : 'text-muted-foreground/60',

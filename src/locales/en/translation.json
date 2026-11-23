@@ -218,7 +218,8 @@
     "mobile": {
       "dueDate": "Due {{date}}",
       "report": "Report",
-      "createShort": "New"
+      "createShort": "New",
+      "loadingMore": "Loading more..."
     },
     "detail": {
       "title": "Task details",
