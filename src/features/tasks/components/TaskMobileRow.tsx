@@ -76,31 +76,38 @@ export function TaskMobileRow({ vm }: TaskMobileRowProps) {
         </Link>
       </h4>
 
-      {/* 3. Summary & quick report row */}
-      <div className="mt-1.5 flex items-center justify-between gap-2 text-xs">
-        <div className="flex min-w-0 flex-1 items-center gap-2.5 text-muted-foreground">
-          {hasDue && (
-            <span className={cn('inline-flex shrink-0 items-center gap-1 tabular-nums', DUE_TONE_CLASS[vm.dueTone])}>
-              <CalendarDays className="size-3.5 shrink-0" aria-hidden="true" />
-              <span>{vm.dueShortAt}</span>
-            </span>
+      {/* 3. Summary & quick report row (fixed-width due + % columns keep progress vertically aligned) */}
+      <div className="mt-1.5 flex items-center gap-2 text-xs">
+        <span
+          className={cn(
+            'inline-flex w-14 shrink-0 items-center gap-1 tabular-nums',
+            hasDue ? DUE_TONE_CLASS[vm.dueTone] : 'text-muted-foreground/60',
           )}
+        >
+          <CalendarDays className="size-3.5 shrink-0" aria-hidden="true" />
+          <span className="truncate">{vm.dueShortAt}</span>
+        </span>
 
+        <span
+          className={cn(
+            'w-9 shrink-0 text-right tabular-nums font-semibold',
+            vm.progressPercent >= 100
+              ? 'text-success'
+              : vm.progressPercent > 0
+                ? 'text-foreground'
+                : 'text-muted-foreground',
+          )}
+        >
+          {vm.progressPercent}%
+        </span>
+
+        <div className="flex min-w-0 flex-1 items-center gap-1.5 text-muted-foreground">
           {hasAssignee && (
             <span className="inline-flex min-w-0 items-center gap-1" title={vm.assigneeDisplay}>
               <UserCheck className="size-3.5 shrink-0" aria-hidden="true" />
               <span className="truncate">{vm.assigneeShortDisplay}</span>
             </span>
           )}
-
-          <span
-            className={cn(
-              'shrink-0 tabular-nums font-medium',
-              vm.progressPercent >= 100 ? 'text-success' : 'text-foreground',
-            )}
-          >
-            {vm.progressPercent}%
-          </span>
 
           {hasLessons && vm.lessonHits && (
             <span className="relative z-10 shrink-0">

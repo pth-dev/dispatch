@@ -107,6 +107,7 @@
     "close": "關閉",
     "copy": "複製",
     "copied": "已複製",
+    "scrollToTop": "返回頂部",
     "pagination": {
       "display": "顯示第 {{from}} 至 {{to}} 筆，共 {{total}} 筆結果，每頁 {{size}} 筆",
       "page": "第 {{page}}/{{totalPages}} 頁",

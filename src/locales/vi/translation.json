@@ -107,6 +107,7 @@
     "close": "Đóng",
     "copy": "Sao chép",
     "copied": "Đã sao chép",
+    "scrollToTop": "Lên đầu trang",
     "pagination": {
       "display": "Hiển thị {{size}} từ {{from}} đến {{to}} của {{total}} kết quả",
       "page": "Trang {{page}}/{{totalPages}}",

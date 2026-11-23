@@ -107,6 +107,7 @@
     "close": "Close",
     "copy": "Copy",
     "copied": "Copied",
+    "scrollToTop": "Back to top",
     "pagination": {
       "display": "Showing {{size}} from {{from}} to {{to}} of {{total}} results",
       "page": "Page {{page}}/{{totalPages}}",

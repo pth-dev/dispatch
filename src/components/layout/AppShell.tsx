@@ -4,6 +4,7 @@ import { Outlet } from 'react-router'
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
 import { ErrorState } from './ErrorState'
+import { ScrollToTopButton } from './ScrollToTopButton'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useMainScrollRestoration } from '@/hooks/use-main-scroll-restoration'
@@ -77,6 +78,8 @@ export function AppShell() {
             <Outlet />
           </React.Suspense>
         </main>
+
+        <ScrollToTopButton scrollContainerRef={mainRef} />
       </div>
     </div>
   )
