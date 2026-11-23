@@ -139,17 +139,23 @@ export function LessonEditorPanel({
   }
 
   return (
-    <form onSubmit={handleSubmit(onValidSubmit)} className="space-y-4" noValidate>
-      <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        onClick={handleRequestCancel}
-        className="lg:hidden"
-      >
-        <ArrowLeft className="size-4" aria-hidden="true" />
-        <span>{t('lessons.actions.backToList')}</span>
-      </Button>
+    <form onSubmit={handleSubmit(onValidSubmit)} className="space-y-3 sm:space-y-4" noValidate>
+      <div className="flex items-center gap-2 text-xs text-muted-foreground select-none lg:hidden">
+        <button
+          type="button"
+          onClick={handleRequestCancel}
+          className="inline-flex min-h-9 items-center gap-1.5 font-medium text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md pr-1 cursor-pointer"
+        >
+          <ArrowLeft className="size-3.5 shrink-0" aria-hidden="true" />
+          <span>{t('nav.lessons')}</span>
+        </button>
+        <span aria-hidden="true">›</span>
+        <span className="font-semibold text-foreground">
+          {isEdit && lesson
+            ? t('lessons.editor.editTitle', { id: lesson.id })
+            : t('lessons.editor.createTitle')}
+        </span>
+      </div>
 
       <div className="flex items-center gap-2">
         {isEdit ? (

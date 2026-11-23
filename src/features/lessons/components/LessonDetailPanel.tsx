@@ -14,6 +14,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { RawLesson } from '@/schemas/lesson'
+import { splitTextWithLinks } from '@/utils/linkify'
 import { resolveFileUrl } from '@/utils/task-domain'
 import {
   formatLessonAuthor,
@@ -80,18 +81,20 @@ export function LessonDetailPanel({
   }
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-3 sm:space-y-4">
       {onBackToList && (
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={onBackToList}
-          className="lg:hidden"
-        >
-          <ArrowLeft className="size-4" aria-hidden="true" />
-          <span>{t('lessons.actions.backToList')}</span>
-        </Button>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground select-none lg:hidden">
+          <button
+            type="button"
+            onClick={onBackToList}
+            className="inline-flex min-h-9 items-center gap-1.5 font-medium text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md pr-1 cursor-pointer"
+          >
+            <ArrowLeft className="size-3.5 shrink-0" aria-hidden="true" />
+            <span>{t('nav.lessons')}</span>
+          </button>
+          <span aria-hidden="true">›</span>
+          <span className="font-semibold text-primary">#{lesson.id}</span>
+        </div>
       )}
 
       {actionError && (
@@ -103,61 +106,61 @@ export function LessonDetailPanel({
         </p>
       )}
 
-      <div className="space-y-4 rounded-xl border border-border bg-card p-5">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div className="min-w-0 flex-1 space-y-1.5">
-            <span className="inline-flex rounded bg-secondary px-2 py-0.5 text-xs font-semibold text-foreground">
+      <div className="space-y-3 rounded-xl border border-border bg-card p-4 sm:space-y-4 sm:p-5">
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between gap-2">
+            <span className="inline-flex rounded bg-secondary px-2 py-0.5 text-xs font-semibold text-primary">
               #{lesson.id}
             </span>
-            <h2 className="text-xl font-semibold text-foreground break-words">
-              {lesson.topic}
-            </h2>
-            <p className="text-xs text-muted-foreground">
-              {t('lessons.detail.createdMeta', {
-                author: formatLessonAuthor(lesson.created_name, lesson.created_by),
-                dept: lesson.dept || '-',
-                time: formatLessonDateTime(lesson.createdAt),
-              })}
-              {hasUpdatedInfo && (
-                <>
-                  {' · '}
-                  {t('lessons.detail.updatedMeta', {
-                    author: lesson.updated_by || '-',
-                    time: formatLessonDateTime(lesson.updatedAt),
-                  })}
-                </>
-              )}
-            </p>
+            {canEdit && (
+              <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-8 px-2.5 text-xs sm:h-9 sm:px-3"
+                  onClick={() => onEdit(lesson.id)}
+                >
+                  <Pencil className="size-3.5" aria-hidden="true" />
+                  <span>{t('common.edit')}</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={isDeleting}
+                  onClick={() => setConfirmDeleteOpen(true)}
+                  className="h-8 px-2.5 text-xs border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive sm:h-9 sm:px-3"
+                >
+                  <Trash2 className="size-3.5" aria-hidden="true" />
+                  <span>{t('common.delete')}</span>
+                </Button>
+              </div>
+            )}
           </div>
-
-          {canEdit && (
-            <div className="flex shrink-0 items-center gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => onEdit(lesson.id)}
-              >
-                <Pencil className="size-3.5" aria-hidden="true" />
-                <span>{t('common.edit')}</span>
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                disabled={isDeleting}
-                onClick={() => setConfirmDeleteOpen(true)}
-                className="border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive"
-              >
-                <Trash2 className="size-3.5" aria-hidden="true" />
-                <span>{t('common.delete')}</span>
-              </Button>
-            </div>
-          )}
+          <h2 className="text-lg sm:text-xl font-semibold text-foreground break-words leading-snug">
+            {lesson.topic}
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            {t('lessons.detail.createdMeta', {
+              author: formatLessonAuthor(lesson.created_name, lesson.created_by),
+              dept: lesson.dept || '-',
+              time: formatLessonDateTime(lesson.createdAt),
+            })}
+            {hasUpdatedInfo && (
+              <>
+                {' · '}
+                {t('lessons.detail.updatedMeta', {
+                  author: lesson.updated_by || '-',
+                  time: formatLessonDateTime(lesson.updatedAt),
+                })}
+              </>
+            )}
+          </p>
         </div>
 
         <div className="space-y-1.5">
-          <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+          <h3 className="hidden text-xs font-semibold tracking-wide text-muted-foreground uppercase sm:block">
             {t('lessons.fields.keywords')}
           </h3>
           <div className="flex flex-wrap gap-1.5">
@@ -172,7 +175,7 @@ export function LessonDetailPanel({
           </div>
         </div>
 
-        <div className="space-y-1.5">
+        <div className="hidden space-y-1.5 sm:block">
           <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
             {t('lessons.preview.label')}
           </h3>
@@ -201,9 +204,23 @@ export function LessonDetailPanel({
         </TabsList>
 
         <TabsContent value="content" className="space-y-4">
-          <div className="rounded-xl border border-border bg-card p-5 text-sm leading-relaxed whitespace-pre-wrap text-foreground">
+          <div className="rounded-xl border border-border bg-card p-4 sm:p-5 text-sm leading-relaxed whitespace-pre-wrap break-words text-foreground">
             {lesson.content.trim() ? (
-              lesson.content
+              splitTextWithLinks(lesson.content).map((segment, index) =>
+                segment.type === 'link' ? (
+                  <a
+                    key={`${segment.href}-${index}`}
+                    href={segment.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary underline-offset-2 hover:underline break-all"
+                  >
+                    {segment.value}
+                  </a>
+                ) : (
+                  <span key={index}>{segment.value}</span>
+                ),
+              )
             ) : (
               <span className="text-muted-foreground">{t('lessons.detail.noContent')}</span>
             )}

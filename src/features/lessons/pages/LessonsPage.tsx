@@ -102,7 +102,7 @@ export function LessonsPage() {
           : 'empty'
         : panelMode
 
-  const isRightPanelActiveOnMobile = effectiveMode !== 'empty'
+  const isRightPanelActiveOnMobile = !isError && effectiveMode !== 'empty'
 
   const handleRefresh = () => {
     void refetch()
@@ -154,7 +154,7 @@ export function LessonsPage() {
   return (
     <PageContainer>
       <PageHeader
-        className="items-start"
+        className={isRightPanelActiveOnMobile ? 'hidden lg:flex items-start' : 'items-start'}
         title={t('nav.lessons')}
         badge={
           !isLoading && !isError ? (
@@ -183,7 +183,6 @@ export function LessonsPage() {
               <Button
                 type="button"
                 disabled={isError}
-                className={isRightPanelActiveOnMobile ? 'hidden lg:inline-flex' : undefined}
                 onClick={() => {
                   clearActionError()
                   openCreate()
