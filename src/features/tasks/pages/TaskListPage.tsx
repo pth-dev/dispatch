@@ -198,8 +198,8 @@ export function TaskListPage() {
             aria-hidden={filterHidden}
             inert={filterHidden}
           >
-            <div className="overflow-hidden">
-              <div className="pt-2 lg:pt-2.5">
+            <div className="overflow-hidden -mx-1 -mb-1">
+              <div className="px-1 pb-1 pt-2 lg:pt-2.5">
                 <FilterBar
                   params={params}
                   activeFilterCount={activeFilterCount}

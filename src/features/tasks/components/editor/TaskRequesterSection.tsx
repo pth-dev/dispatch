@@ -46,7 +46,8 @@ export function TaskRequesterSection({
 
       <div className="space-y-1.5">
         <label htmlFor="task-contact" className="block text-xs font-semibold text-foreground">
-          {t('tasks.fields.reqContact')} *
+          {t('tasks.fields.reqContact')}{' '}
+          <span aria-hidden="true" className="text-destructive">*</span>
         </label>
         <Input
           id="task-contact"
@@ -68,7 +69,8 @@ export function TaskRequesterSection({
 
       <div className="space-y-1.5">
         <span className="block text-xs font-semibold text-foreground">
-          {t('tasks.fields.reqDepts')} *
+          {t('tasks.fields.reqDepts')}{' '}
+          <span aria-hidden="true" className="text-destructive">*</span>
         </span>
         <div className="relative max-h-36 overflow-y-auto rounded-lg border border-border p-2.5 space-y-1.5 text-xs">
           {depts.map((dept) => (
@@ -88,7 +90,8 @@ export function TaskRequesterSection({
 
       <div className="space-y-1.5">
         <span className="block text-xs font-semibold text-foreground">
-          {t('tasks.fields.site')} *
+          {t('tasks.fields.site')}{' '}
+          <span aria-hidden="true" className="text-destructive">*</span>
         </span>
         <div className="relative max-h-36 overflow-y-auto rounded-lg border border-border p-2.5 grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs">
           {sites.map((site) => (

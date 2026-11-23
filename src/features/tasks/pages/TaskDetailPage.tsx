@@ -88,7 +88,7 @@ export function TaskDetailPage() {
   return (
     <PageContainer>
       {task && !isLoading && !isError ? (
-        <div className="shrink-0">
+        <div className="shrink-0 space-y-3">
           <TaskDetailHeader
             task={task}
             allowEdit={allowEdit}

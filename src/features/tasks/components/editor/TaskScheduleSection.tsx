@@ -59,7 +59,8 @@ export function TaskScheduleSection({
 
       <div className="space-y-1.5">
         <label htmlFor="task-assigned-unit" className="block text-xs font-semibold text-foreground">
-          {t('common.department')} *
+          {t('common.department')}{' '}
+          <span aria-hidden="true" className="text-destructive">*</span>
         </label>
         <select
           id="task-assigned-unit"
@@ -149,7 +150,8 @@ export function TaskScheduleSection({
       {compact || recurType === 'once' ? (
         <div className="space-y-1.5">
           <label htmlFor="task-due-date" className="block text-xs font-semibold text-foreground">
-            {t('common.dueDate')} *
+            {t('common.dueDate')}{' '}
+            <span aria-hidden="true" className="text-destructive">*</span>
           </label>
           <Input
             id="task-due-date"
@@ -173,7 +175,8 @@ export function TaskScheduleSection({
           {recurType === 'weekly' && (
             <div className="space-y-1.5">
               <span className="block text-xs font-semibold text-foreground">
-                {t('tasks.fields.recurWeekdays')} *
+                {t('tasks.fields.recurWeekdays')}{' '}
+                <span aria-hidden="true" className="text-destructive">*</span>
               </span>
               <div className="flex flex-wrap gap-1.5" role="group" aria-label={t('tasks.fields.recurWeekdays')}>
                 {WEEKDAYS.map((day) => {
@@ -205,7 +208,8 @@ export function TaskScheduleSection({
           {recurType === 'monthly' && (
             <div className="space-y-1.5">
               <span className="block text-xs font-semibold text-foreground">
-                {t('tasks.fields.recurMonthdays')} *
+                {t('tasks.fields.recurMonthdays')}{' '}
+                <span aria-hidden="true" className="text-destructive">*</span>
               </span>
               <div className="grid grid-cols-7 gap-1" role="group" aria-label={t('tasks.fields.recurMonthdays')}>
                 {MONTHDAYS.map((day) => {

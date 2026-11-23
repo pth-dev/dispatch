@@ -75,7 +75,8 @@ export function TaskBasicInfoSection({
       <div className="space-y-4">
         <div className="space-y-1.5">
           <label htmlFor="task-title" className="block text-xs font-semibold text-foreground">
-            {t('tasks.createForm.taskName')} *
+            {t('tasks.createForm.taskName')}{' '}
+            <span aria-hidden="true" className="text-destructive">*</span>
           </label>
           <Input
             id="task-title"
@@ -90,7 +91,8 @@ export function TaskBasicInfoSection({
 
         <div className="space-y-2">
           <label htmlFor="task-type-select" className="block text-xs font-semibold text-foreground">
-            {t('tasks.fields.taskType')} *
+            {t('tasks.fields.taskType')}{' '}
+            <span aria-hidden="true" className="text-destructive">*</span>
           </label>
           <select
             id="task-type-select"
