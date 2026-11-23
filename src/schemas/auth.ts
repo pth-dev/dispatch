@@ -26,6 +26,8 @@ export const MENU_PERM_KEYS = [
   'kpi_brief',
   'account',
   'ad',
+  'dash_total',
+  'dash_dept',
 ] as const
 
 export const MenuPermKeySchema = z.enum(MENU_PERM_KEYS)
@@ -54,6 +56,31 @@ export const MenuPermsRawSchema = z
     return value
   })
 
+const ExtraDeptsRawSchema = z
+  .union([z.array(z.string()), z.string(), z.null()])
+  .transform((value): string[] => {
+    if (value == null || value === '') return []
+    if (Array.isArray(value)) {
+      return value.map((item) => item.trim()).filter(Boolean)
+    }
+    try {
+      const parsed = JSON.parse(value) as unknown
+      if (Array.isArray(parsed)) {
+        return parsed
+          .filter((item): item is string => typeof item === 'string')
+          .map((item) => item.trim())
+          .filter(Boolean)
+      }
+    } catch {
+      // Fallback for comma/pipe delimited legacy strings
+    }
+    return value
+      .split(/[,，、|;]+/)
+      .map((item) => item.trim())
+      .filter(Boolean)
+  })
+  .optional()
+
 export const SessionUserSchema = z.object({
   id: z.coerce.number().optional(),
   username: z.string().min(1),
@@ -65,6 +92,7 @@ export const SessionUserSchema = z.object({
     .string()
     .nullish()
     .transform((v) => v ?? ''),
+  extra_depts: ExtraDeptsRawSchema,
   site: z
     .string()
     .nullish()

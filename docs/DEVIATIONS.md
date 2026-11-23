@@ -116,6 +116,28 @@ The rebuild replaces the UI only; the existing Node backend (`Dispatch.js`) and 
    - `GET /api/tasks/:id/reports` → bare `Report[]` newest-first (`id`, `task_id`, `username`, `fullname`, `content`, `attachments` JSON string, `km_link`, `createdAt`, `progress`, `updatedAt`, `pause_action`, `work_topics`, `split_assignee`, `split_seq`).
    - `GET /api/meta/depts` & `GET /api/meta/sites` → return `depts`/`allDepts`, `sites`/`allSites`, plus `roles`, `secrecy`, `secrecy_order`, `dispatch_nature`, `levels`, `legacy`, `otherValue`.
 
+---
+
+## 10. Legacy V16.11.0-r29 Full Parity Roadmap Decisions (2026-11-23, Approved)
+
+Recorded here so **every future session** has persistent context without relying on chat history:
+
+1. **Q1 — Export / Import Spreadsheet Strategy:**
+   - **Phases 0–4:** Use zero-dependency UTF-8 BOM CSV export (`src/utils/export-table.ts`, with CSV formula-injection neutralization) plus TSV clipboard copy and `@media print` views for simple tabular exports (KPI, Brief Board, Accounts, Worklog).
+   - **Phases 5–6:** Install `xlsx` (SheetJS) and load it strictly via **lazy dynamic `import()`** only when needed for true multi-sheet `.xlsx` generation and Project `work_items` Excel template download / upload.
+2. **Q2 — Unified `/account` Module (replacing 3 `/admin/*` stubs):**
+   - Consolidate `AdminUsersPage`, `AdminRolesPage`, and `AdminDepartmentsPage` into a single `/account` feature aligned with legacy `Dispatch-account.html` (`r27–r29`).
+   - All authenticated users can access `/account` to inspect their own profile, `extra_depts`, OU hierarchy, and visible scope (`GET /api/account/scope`, `GET /api/account/org`).
+   - Admin-only tabs (Account review & CRUD, 16-feature `menu_perms` editor, `view-depts` OU viewer picker, `extra_depts` multi-dept editor, AD Import/Sync/Diagnose, Site Manager, OU Naming Rule preview/apply, and 1-Click Archive for `superadmin`/`exec_*`) render inside `/account` based on role/permissions.
+3. **Q3 — Phased Rollout Order (Reusable-First):**
+   - **Phase 0:** `r29` auth/permission updates (`dash_total`, `dash_dept`, `extra_depts`, `電腦室 = 資訊部` dept alias), shared domain calculators (`kpi-domain.ts`), CSV/clipboard/print helpers (`export-table.ts`), chart CSS tokens (`--color-chart-6..10`), and reusable responsive UI primitives (`MetricCard`, `HorizontalBarRow`, `TrendLineChart`, `DonutChart`, `Sparkline`, `ResponsiveModal`).
+   - **Phase 1:** Self-registration + Offline session recovery on Login, and public `/account` scope + Org OU tree.
+   - **Phase 2:** Company Dashboard (`/dashboard` + 3 drill-down modals + `dash_total` post trends) & Department Dashboard (`/dashboard/department`, `dash_dept`, heatmap).
+   - **Phase 3:** KPI People Table (`/kpi`, replacing `SlaPage` stub) & KPI Brief / Supervisor Board (`/kpi/brief`).
+   - **Phase 4:** Full Admin tabs inside `/account` (Users, 16-item `menu_perms`, `view-depts`, `extra_depts`, AD, Sites, OU rule, Archive) and removal of legacy `/admin/*` stubs.
+   - **Phase 5:** Project `work_items` create/edit + Excel template/upload, Integrated Board & Gantt, `work_topics` reporting, AI report generation, rich paste, and 3-minute idle-aware auto-refresh.
+   - **Phase 6:** Personal Worklog (`/worklog`) & 4-tab Report Center (`/reports`: PDF, Periodic KPI, Excel/Word/WebReport, Server Archive).
+
 
 
 

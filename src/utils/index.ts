@@ -1,3 +1,5 @@
 export * from './cn'
+export * from './export-table'
+export * from './kpi-domain'
 export * from './permissions'
 export * from './task-domain'

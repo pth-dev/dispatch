@@ -86,11 +86,25 @@ export function normalizeT2S(input: string): string {
   return out
 }
 
+/**
+ * V16.11.0-r29: 电脑室 = 资讯部 alias normalization so stats & dept permissions
+ * treat all IT department variants identically.
+ */
+const IT_DEPT_ALIAS_KEYS = new Set([
+  '资讯部',
+  '电脑室',
+  '信息部',
+  '资讯室',
+  '电脑部',
+  '信息室',
+])
+
 export function normalizeDeptKey(value: string | null | undefined): string {
   if (!value) return ''
-  return normalizeT2S(value.normalize('NFKC'))
+  const key = normalizeT2S(value.normalize('NFKC'))
     .replace(/\s+/g, '')
     .toLowerCase()
+  return IT_DEPT_ALIAS_KEYS.has(key) ? '资讯部' : key
 }
 
 export function sameDept(a: string | null | undefined, b: string | null | undefined): boolean {

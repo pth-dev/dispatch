@@ -1,6 +1,8 @@
 export const APP_ROUTES = {
   HOME: '/',
   LOGIN: '/login',
+  DASHBOARD: '/dashboard',
+  DASHBOARD_DEPT: '/dashboard/department',
   TASKS: '/tasks',
   TASK_NEW: '/tasks/new',
   TASK_DETAIL: (id: string | number = ':id') => `/tasks/${id}`,
@@ -8,5 +10,10 @@ export const APP_ROUTES = {
   TODO: '/todo',
   LESSONS: '/lessons',
   MESSAGES: '/messages',
+  KPI: '/kpi',
+  KPI_BRIEF: '/kpi/brief',
+  WORKLOG: '/worklog',
+  REPORTS: '/reports',
+  ACCOUNT: '/account',
   PROFILE: '/profile',
 } as const

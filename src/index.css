@@ -88,12 +88,17 @@
   --sidebar-width: 260px;
   --sidebar-width-icon: 48px;
 
-  /* ── Chart placeholder colors ── */
+  /* ── Chart semantic palette (SVG & data visualization) ── */
   --color-chart-1: #1F6FEB;
   --color-chart-2: #15803D;
   --color-chart-3: #B45309;
   --color-chart-4: #D32F2F;
   --color-chart-5: #6B7280;
+  --color-chart-6: #7C3AED;
+  --color-chart-7: #0891B2;
+  --color-chart-8: #DB2777;
+  --color-chart-9: #4D7C0F;
+  --color-chart-10: #EA580C;
 }
 
 /*
@@ -186,4 +191,29 @@ body {
 .lesson-marquee-root--pausable:hover .lesson-marquee-track,
 .lesson-marquee-root--pausable:focus-within .lesson-marquee-track {
   animation-play-state: paused;
+}
+
+/* ── Shared print utilities for KPI & Report printing ── */
+.print-only {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 14mm;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .avoid-page-break {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
 }

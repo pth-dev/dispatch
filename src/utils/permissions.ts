@@ -20,6 +20,7 @@ export type MenuPermFlags = {
 
 type UserIdentity = Pick<SessionUser, 'username' | 'role' | 'dept' | 'menu_perms'> & {
   fullname?: string
+  extra_depts?: readonly string[] | null
 }
 
 type TaskPermissionTarget = Pick<
@@ -114,12 +115,43 @@ export function isCrossViewer(
   return includesUser(viewers, user.username)
 }
 
-function userMatchesAnyTaskDept(userDept: string, task: TaskPermissionTarget): boolean {
-  if (!userDept) return false
-  if (sameDept(userDept, task.assigned_unit)) return true
-  if (sameDept(userDept, task.reporter_dept)) return true
+/**
+ * V16.11.0-r29 (`DU_myDepts`): returns the user's primary department plus any
+ * assigned concurrent departments (`extra_depts`), deduplicated via `sameDept`.
+ */
+export function getUserDepts(
+  user: Pick<UserIdentity, 'dept' | 'extra_depts'> | null | undefined,
+): string[] {
+  if (!user) return []
+  const raw: string[] = []
+  if (user.dept?.trim()) raw.push(user.dept.trim())
+  if (Array.isArray(user.extra_depts)) {
+    for (const d of user.extra_depts) {
+      if (typeof d === 'string' && d.trim()) raw.push(d.trim())
+    }
+  }
+  const unique: string[] = []
+  for (const dept of raw) {
+    if (!unique.some((existing) => sameDept(existing, dept))) {
+      unique.push(dept)
+    }
+  }
+  return unique
+}
+
+function userMatchesAnyTaskDept(
+  user: Pick<UserIdentity, 'dept' | 'extra_depts'>,
+  task: TaskPermissionTarget,
+): boolean {
+  const userDepts = getUserDepts(user)
+  if (userDepts.length === 0) return false
   const reqDepts = parseReqDepts(task.req_depts, task.req_dept)
-  return reqDepts.some((dept) => sameDept(userDept, dept))
+  return userDepts.some(
+    (userDept) =>
+      sameDept(userDept, task.assigned_unit) ||
+      sameDept(userDept, task.reporter_dept) ||
+      reqDepts.some((dept) => sameDept(userDept, dept)),
+  )
 }
 
 function sameUser(a: string | null | undefined, b: string | null | undefined): boolean {
@@ -160,7 +192,7 @@ export function isReaderOnly(
   if (sameUser(task.reporter, user.username)) return false
   if (includesUser(parseAssigneeList(task.assign_person), user.username)) return false
   if (isCrossViewer(user, task)) return false
-  if (userMatchesAnyTaskDept(user.dept, task)) return false
+  if (userMatchesAnyTaskDept(user, task)) return false
 
   return true
 }
@@ -177,16 +209,16 @@ export function canEditTask(
   if (sameUser(task.reporter, user.username)) return true
 
   if (user.role === 'admin') {
-    return userMatchesAnyTaskDept(user.dept, task)
+    return userMatchesAnyTaskDept(user, task)
   }
 
   return false
 }
 
 /**
- * Matches legacy `DU_canDeleteTask`:
+ * Matches legacy `DU_canDeleteTask` (V16.11.0-r29 multi-dept):
  * Unlike `canEditTask`, department `admin` only matches `reporter_dept` or `req_depts`
- * (NOT `assigned_unit`).
+ * (NOT `assigned_unit`), across any department in `getUserDepts(user)`.
  */
 export function canDeleteTask(
   user: UserIdentity | null | undefined,
@@ -197,10 +229,15 @@ export function canDeleteTask(
   if (isSuperLike(user)) return true
   if (sameUser(task.reporter, user.username)) return true
 
-  if (user.role === 'admin' && user.dept) {
-    if (sameDept(user.dept, task.reporter_dept)) return true
+  if (user.role === 'admin') {
+    const userDepts = getUserDepts(user)
+    if (userDepts.length === 0) return false
     const reqDepts = parseReqDepts(task.req_depts, task.req_dept)
-    return reqDepts.some((dept) => sameDept(user.dept, dept))
+    return userDepts.some(
+      (userDept) =>
+        sameDept(userDept, task.reporter_dept) ||
+        reqDepts.some((dept) => sameDept(userDept, dept)),
+    )
   }
 
   return false
@@ -220,7 +257,7 @@ export function canSetCross(user: Pick<SessionUser, 'role'> | null | undefined):
 }
 
 /**
- * Matches legacy `DU_canDeleteReportAtt`:
+ * Matches legacy `DU_canDeleteReportAtt` (V16.11.0-r29 multi-dept):
  * `exec_*`, report author, task creator, or same-dept `admin` (`superadmin` excluded unless author/creator).
  */
 export function canDeleteReportAttachment(
@@ -234,7 +271,7 @@ export function canDeleteReportAttachment(
   if (sameUser(task.reporter, user.username)) return true
 
   if (user.role === 'admin') {
-    return userMatchesAnyTaskDept(user.dept, task)
+    return userMatchesAnyTaskDept(user, task)
   }
 
   return false
@@ -279,7 +316,10 @@ export function canEditLesson(
   if (!canWriteMenu(user, 'learnknow')) return false
   if (isSuperLike(user)) return true
   if (sameUser(lesson.created_by, user.username)) return true
-  return user.role === 'admin' && sameDept(lesson.dept, user.dept)
+  if (user.role === 'admin') {
+    return getUserDepts(user).some((userDept) => sameDept(lesson.dept, userDept))
+  }
+  return false
 }
 
 const COMPUTER_ROOM_PATTERN = /电脑|電腦/

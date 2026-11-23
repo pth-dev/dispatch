@@ -16,6 +16,7 @@ import {
   canWriteMenu,
   getDefaultTaskScope,
   getMenuPermFlags,
+  getUserDepts,
   isCrossViewer,
   isExec,
   isReaderOnly,
@@ -27,6 +28,7 @@ function buildUser(overrides: Partial<SessionUser> = {}): SessionUser {
     username: 'staff1',
     fullname: 'Staff One',
     dept: '資訊部',
+    extra_depts: [],
     site: 'YS',
     role: 'user',
     auth_source: 'local',
@@ -249,5 +251,31 @@ describe('task-level permission helpers', () => {
         lesson,
       ),
     ).toBe(false)
+  })
+
+  it('supports r29 multi-dept extra_depts, IT alias (电脑室 = 资讯部), and dash_total/dash_dept perms', () => {
+    const multiAdmin = buildUser({
+      username: 'dualadmin',
+      role: 'admin',
+      dept: '电脑室',
+      extra_depts: ['品質部', '資訊部'],
+      menu_perms: { dash_total: 's', dash_dept: 'sr' },
+    })
+
+    expect(getUserDepts(multiAdmin)).toEqual(['电脑室', '品質部'])
+    expect(canShowMenu(multiAdmin, 'dash_total')).toBe(true)
+    expect(canReadMenu(multiAdmin, 'dash_total')).toBe(false)
+    expect(canReadMenu(multiAdmin, 'dash_dept')).toBe(true)
+
+    const qaTask = buildTask({
+      reporter: 'other',
+      reporter_dept: '品質部',
+      req_depts: '品質部',
+      assigned_unit: '製造部',
+    })
+    expect(canEditTask(multiAdmin, qaTask)).toBe(true)
+    expect(canDeleteTask(multiAdmin, qaTask)).toBe(true)
+    expect(canEditLesson(multiAdmin, { created_by: 'someone', dept: '資訊部' })).toBe(true)
+    expect(canEditLesson(multiAdmin, { created_by: 'someone', dept: '品質部' })).toBe(true)
   })
 })
