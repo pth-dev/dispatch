@@ -144,5 +144,18 @@ export function useSessionLifecycle(): { retryVerify: () => void } {
     setVerifyAttempt((n) => n + 1)
   }
 
+  // Auto-reconnect immediately when browser network comes back online
+  React.useEffect(() => {
+    if (authStatus !== 'offline') return
+    const handleOnline = () => {
+      useAppStore.getState().setAuthStatus('checking')
+      setVerifyAttempt((n) => n + 1)
+    }
+    window.addEventListener('online', handleOnline)
+    return () => {
+      window.removeEventListener('online', handleOnline)
+    }
+  }, [authStatus])
+
   return { retryVerify }
 }

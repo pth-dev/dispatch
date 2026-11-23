@@ -1,3 +1,4 @@
+export * from './account'
 export * from './auth'
 export * from './lesson'
 export * from './message'

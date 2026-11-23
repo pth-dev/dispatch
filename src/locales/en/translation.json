@@ -15,6 +15,7 @@
     "users": "Users",
     "roles": "Roles & permissions",
     "departments": "Departments",
+    "account": "Account & OU scope",
     "profile": "Personal settings",
     "logout": "Sign out"
   },
@@ -825,6 +826,70 @@
       "progress": "Progress",
       "dueDate": "Due date",
       "reqDept": "Requesting dept"
+    }
+  },
+  "register": {
+    "title": "Register account",
+    "subtitle": "Request a local account (requires administrator approval)",
+    "openLink": "Need an account? Register",
+    "backToLogin": "Back to sign in",
+    "account": "Username",
+    "accountPlaceholder": "Enter username",
+    "password": "Password",
+    "passwordPlaceholder": "Enter password",
+    "fullname": "Full name",
+    "fullnamePlaceholder": "Enter your full name",
+    "department": "Department",
+    "site": "Site / Plant",
+    "siteOtherOption": "Other (specify site name)",
+    "siteOtherLabel": "Other site name",
+    "siteOtherPlaceholder": "Enter new site name",
+    "siteOtherHint": "A new site will be created automatically on submission.",
+    "submit": "Submit registration",
+    "submitting": "Submitting...",
+    "successPending": "Registration submitted. Please wait for administrator approval.",
+    "validation": {
+      "fullnameRequired": "Please enter your full name",
+      "deptRequired": "Please select a department",
+      "siteRequired": "Please select a site",
+      "siteOtherRequired": "Please enter the other site name",
+      "siteOtherMax": "Site name must be 40 characters or fewer",
+      "siteOtherInvalid": "Site name cannot contain , ; / |"
+    }
+  },
+  "account": {
+    "title": "Account & OU Scope",
+    "subtitle": "Your account details, visible scope, and organizational OU tree",
+    "authSourceAd": "AD Account (synced every 30 minutes)",
+    "deptSourceAd": "Follows AD OU",
+    "deptSourceLocal": "Local department",
+    "emptyAdminAssigned": "Not set (assigned by admin)",
+    "ouRuleValue": "Level {{level}} → {{dept}}",
+    "superlikeScopeNote": "Full visibility across all departments.",
+    "visibleScopeDesc": "Includes your current level, all descendant OUs, and additional OUs granted by an administrator.",
+    "confidentialRuleNote": "Confidential, private, and top-secret tasks remain governed by their own access rules.",
+    "cards": {
+      "myAccount": "My account",
+      "myOu": "My OU",
+      "visibleScope": "Standard task visibility"
+    },
+    "fields": {
+      "extraDepts": "Concurrent depts",
+      "ownOu": "Current OU",
+      "adDn": "AD DN",
+      "namingRule": "Naming rule",
+      "subOus": "Subordinate OUs",
+      "viewDepts": "Extra viewable OUs"
+    },
+    "orgTree": {
+      "title": "OU Organization Tree",
+      "ruleHint": "Department names derive from OU level {{level}} above each user.",
+      "searchPlaceholder": "Search department or OU path...",
+      "legendMine": "My department",
+      "legendVisible": "Viewable",
+      "legendOther": "Outside scope",
+      "membersCount": "{{count}} members",
+      "empty": "No matching departments or OUs found."
     }
   }
 }

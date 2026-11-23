@@ -131,7 +131,7 @@ Recorded here so **every future session** has persistent context without relying
    - Admin-only tabs (Account review & CRUD, 16-feature `menu_perms` editor, `view-depts` OU viewer picker, `extra_depts` multi-dept editor, AD Import/Sync/Diagnose, Site Manager, OU Naming Rule preview/apply, and 1-Click Archive for `superadmin`/`exec_*`) render inside `/account` based on role/permissions.
 3. **Q3 — Phased Rollout Order (Reusable-First):**
    - **Phase 0:** `r29` auth/permission updates (`dash_total`, `dash_dept`, `extra_depts`, `電腦室 = 資訊部` dept alias), shared domain calculators (`kpi-domain.ts`), CSV/clipboard/print helpers (`export-table.ts`), chart CSS tokens (`--color-chart-6..10`), and reusable responsive UI primitives (`MetricCard`, `HorizontalBarRow`, `TrendLineChart`, `DonutChart`, `Sparkline`, `ResponsiveModal`).
-   - **Phase 1:** Self-registration + Offline session recovery on Login, and public `/account` scope + Org OU tree.
+   - **Phase 1:** Account registration form (unauthenticated on `/login`) + Offline session recovery, and authenticated `/account` page (inside `AppShell`, accessible to all signed-in users including regular `user` role) showing own scope + Org OU tree.
    - **Phase 2:** Company Dashboard (`/dashboard` + 3 drill-down modals + `dash_total` post trends) & Department Dashboard (`/dashboard/department`, `dash_dept`, heatmap).
    - **Phase 3:** KPI People Table (`/kpi`, replacing `SlaPage` stub) & KPI Brief / Supervisor Board (`/kpi/brief`).
    - **Phase 4:** Full Admin tabs inside `/account` (Users, 16-item `menu_perms`, `view-depts`, `extra_depts`, AD, Sites, OU rule, Archive) and removal of legacy `/admin/*` stubs.

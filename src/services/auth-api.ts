@@ -1,10 +1,18 @@
 import {
   LoginResponseSchema,
+  SITE_OTHER_VALUE,
   SessionVerifyResponseSchema,
   SimpleMutationResponseSchema,
   type LoginFormValues,
+  type RegisterFormValues,
   type SessionUser,
 } from '@/schemas/auth'
+import {
+  MetaDeptsResponseSchema,
+  MetaSitesResponseSchema,
+  type DeptItem,
+  type SiteItem,
+} from '@/schemas/meta'
 import { http, type ApiError } from './http'
 import {
   broadcastLogout,
@@ -114,4 +122,53 @@ export async function updateLocalPassword(payload: {
     }
     throw err
   }
+}
+
+export async function registerAccount(values: RegisterFormValues): Promise<string | undefined> {
+  const payload: Record<string, string> = {
+    username: values.username.trim(),
+    password: values.password,
+    fullname: values.fullname.trim(),
+    dept: values.dept,
+    site: values.site,
+  }
+  if (values.site === SITE_OTHER_VALUE && values.siteOther.trim()) {
+    payload.site_other = values.siteOther.trim()
+  }
+
+  const raw = await http<unknown>('/register', {
+    method: 'POST',
+    skipAuth: true,
+    body: JSON.stringify(payload),
+  })
+  const parsed = SimpleMutationResponseSchema.parse(raw)
+  if (parsed.success === false) {
+    const err: ApiError = {
+      status: 400,
+      message: parsed.message || 'Request failed',
+      kind: 'business',
+    }
+    throw err
+  }
+  return parsed.message
+}
+
+export async function fetchPublicMetaDepts(signal?: AbortSignal): Promise<DeptItem[]> {
+  const raw = await http<unknown>('/meta/depts', {
+    method: 'GET',
+    skipAuth: true,
+    signal,
+  })
+  const parsed = MetaDeptsResponseSchema.safeParse(raw)
+  return parsed.success ? parsed.data.depts : []
+}
+
+export async function fetchPublicMetaSites(signal?: AbortSignal): Promise<SiteItem[]> {
+  const raw = await http<unknown>('/meta/sites', {
+    method: 'GET',
+    skipAuth: true,
+    signal,
+  })
+  const parsed = MetaSitesResponseSchema.safeParse(raw)
+  return parsed.success ? parsed.data.sites : []
 }

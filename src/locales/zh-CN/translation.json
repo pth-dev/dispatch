@@ -15,6 +15,7 @@
     "users": "用户",
     "roles": "角色与权限",
     "departments": "部门",
+    "account": "账号与权限范围",
     "profile": "个人设置",
     "logout": "退出登录"
   },
@@ -825,6 +826,70 @@
       "progress": "目前进度",
       "dueDate": "完工期限",
       "reqDept": "需求单位"
+    }
+  },
+  "register": {
+    "title": "注册申请",
+    "subtitle": "提交本地账号申请（需管理员审核后生效）",
+    "openLink": "没有账号？注册申请",
+    "backToLogin": "返回登录",
+    "account": "设置账号",
+    "accountPlaceholder": "请输入账号",
+    "password": "设置密码",
+    "passwordPlaceholder": "请输入密码",
+    "fullname": "真实姓名",
+    "fullnamePlaceholder": "请输入真实姓名",
+    "department": "注册部门",
+    "site": "注册厂区",
+    "siteOtherOption": "其他（填写厂区名称）",
+    "siteOtherLabel": "其他厂区名称",
+    "siteOtherPlaceholder": "请输入其他厂区名称",
+    "siteOtherHint": "提交后将自动建立此厂区（名称相同时沿用）。",
+    "submit": "提交申请",
+    "submitting": "正在提交...",
+    "successPending": "申请成功，请等待管理员审核。",
+    "validation": {
+      "fullnameRequired": "请输入真实姓名",
+      "deptRequired": "请选择注册部门",
+      "siteRequired": "请选择注册厂区",
+      "siteOtherRequired": "选择“其他”时请填写厂区名称",
+      "siteOtherMax": "厂区名称最多 40 个字符",
+      "siteOtherInvalid": "厂区名称不可包含 , ; / |"
+    }
+  },
+  "account": {
+    "title": "账号与权限范围",
+    "subtitle": "查看本人账号资料、可观看范围与 OU 组织树",
+    "authSourceAd": "AD 账号（每 30 分钟同步）",
+    "deptSourceAd": "跟随 AD OU",
+    "deptSourceLocal": "本地部门",
+    "emptyAdminAssigned": "未设置（由管理员配置）",
+    "ouRuleValue": "第 {{level}} 层 → {{dept}}",
+    "superlikeScopeNote": "可观看全公司所有部门。",
+    "visibleScopeDesc": "包含本层部门、全部下层 OU 以及管理员额外勾选的可观看 OU。",
+    "confidentialRuleNote": "机密性 / 私有 / 最高机密案件仍按原保密规则控制。",
+    "cards": {
+      "myAccount": "我的账号",
+      "myOu": "我的 OU",
+      "visibleScope": "一般性帖子可观看范围"
+    },
+    "fields": {
+      "extraDepts": "部门复选",
+      "ownOu": "所在 OU",
+      "adDn": "AD DN",
+      "namingRule": "命名规则",
+      "subOus": "下层 OU",
+      "viewDepts": "复选可看 OU"
+    },
+    "orgTree": {
+      "title": "OU 组织树",
+      "ruleHint": "部门命名取自 AD 组织自使用者往上第 {{level}} 层 OU。",
+      "searchPlaceholder": "搜索部门或 OU 路径...",
+      "legendMine": "我的部门",
+      "legendVisible": "我可观看",
+      "legendOther": "其他范围",
+      "membersCount": "{{count}} 人",
+      "empty": "没有符合的部门或 OU。"
     }
   }
 }

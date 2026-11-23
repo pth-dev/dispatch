@@ -15,6 +15,7 @@
     "users": "Người dùng",
     "roles": "Vai trò và phân quyền",
     "departments": "Phòng ban",
+    "account": "Tài khoản & Phạm vi OU",
     "profile": "Cài đặt cá nhân",
     "logout": "Đăng xuất"
   },
@@ -825,6 +826,70 @@
       "progress": "Tiến độ",
       "dueDate": "Hạn chót",
       "reqDept": "BP Yêu cầu"
+    }
+  },
+  "register": {
+    "title": "Đăng ký tài khoản",
+    "subtitle": "Gửi yêu cầu cấp tài khoản nội bộ (chờ quản trị viên duyệt)",
+    "openLink": "Chưa có tài khoản? Đăng ký ngay",
+    "backToLogin": "Quay lại đăng nhập",
+    "account": "Tài khoản",
+    "accountPlaceholder": "Nhập tên tài khoản",
+    "password": "Mật khẩu",
+    "passwordPlaceholder": "Nhập mật khẩu",
+    "fullname": "Họ và tên",
+    "fullnamePlaceholder": "Nhập họ tên đầy đủ",
+    "department": "Bộ phận đăng ký",
+    "site": "Khu vực / Nhà xưởng",
+    "siteOtherOption": "Khác (nhập tên khu vực)",
+    "siteOtherLabel": "Tên khu vực khác",
+    "siteOtherPlaceholder": "Nhập tên khu vực mới",
+    "siteOtherHint": "Khu vực mới sẽ được tạo tự động khi gửi yêu cầu.",
+    "submit": "Gửi yêu cầu đăng ký",
+    "submitting": "Đang gửi yêu cầu...",
+    "successPending": "Đăng ký thành công, vui lòng chờ quản trị viên phê duyệt.",
+    "validation": {
+      "fullnameRequired": "Vui lòng nhập họ và tên",
+      "deptRequired": "Vui lòng chọn bộ phận",
+      "siteRequired": "Vui lòng chọn khu vực",
+      "siteOtherRequired": "Vui lòng nhập tên khu vực khác",
+      "siteOtherMax": "Tên khu vực tối đa 40 ký tự",
+      "siteOtherInvalid": "Tên khu vực không được chứa các ký tự , ; / |"
+    }
+  },
+  "account": {
+    "title": "Tài khoản & Phạm vi OU",
+    "subtitle": "Thông tin tài khoản, phạm vi xem bài đăng và cây tổ chức OU",
+    "authSourceAd": "Tài khoản AD (đồng bộ định kỳ 30 phút)",
+    "deptSourceAd": "Theo AD OU",
+    "deptSourceLocal": "Bộ phận nội bộ",
+    "emptyAdminAssigned": "Chưa thiết lập (do quản trị viên cấp)",
+    "ouRuleValue": "Cấp {{level}} → {{dept}}",
+    "superlikeScopeNote": "Toàn quyền xem mọi bộ phận trong hệ thống.",
+    "visibleScopeDesc": "Bao gồm cấp bộ phận hiện tại, các OU cấp dưới và các OU được quản trị viên cấp thêm.",
+    "confidentialRuleNote": "Bài đăng bảo mật / riêng tư / tối mật vẫn tuân theo quy tắc bảo mật riêng.",
+    "cards": {
+      "myAccount": "Tài khoản của tôi",
+      "myOu": "OU của tôi",
+      "visibleScope": "Phạm vi xem bài thông thường"
+    },
+    "fields": {
+      "extraDepts": "Bộ phận kiêm nhiệm",
+      "ownOu": "OU hiện tại",
+      "adDn": "AD DN",
+      "namingRule": "Quy tắc tên BP",
+      "subOus": "OU cấp dưới",
+      "viewDepts": "OU được cấp thêm"
+    },
+    "orgTree": {
+      "title": "Cây tổ chức OU",
+      "ruleHint": "Tên bộ phận lấy theo tầng OU thứ {{level}} tính từ tài khoản người dùng.",
+      "searchPlaceholder": "Tìm bộ phận hoặc đường dẫn OU...",
+      "legendMine": "Bộ phận của tôi",
+      "legendVisible": "Tôi được xem",
+      "legendOther": "Ngoài phạm vi",
+      "membersCount": "{{count}} người",
+      "empty": "Không tìm thấy bộ phận hoặc OU phù hợp."
     }
   }
 }

@@ -125,6 +125,39 @@ export const LoginFormSchema = z.object({
 
 export type LoginFormValues = z.infer<typeof LoginFormSchema>
 
+export const SITE_OTHER_VALUE = '__OTHER__'
+const INVALID_SITE_OTHER_CHARS = /[,，;、|/]/
+
+export const RegisterFormSchema = z
+  .object({
+    username: z.string().trim().min(1, 'login.validation.usernameRequired'),
+    password: z.string().min(1, 'login.validation.passwordRequired'),
+    fullname: z.string().trim().min(1, 'register.validation.fullnameRequired'),
+    dept: z.string().trim().min(1, 'register.validation.deptRequired'),
+    site: z.string().trim().min(1, 'register.validation.siteRequired'),
+    siteOther: z.string().trim().max(40, 'register.validation.siteOtherMax'),
+  })
+  .superRefine((data, ctx) => {
+    if (data.site !== SITE_OTHER_VALUE) return
+    if (!data.siteOther) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['siteOther'],
+        message: 'register.validation.siteOtherRequired',
+      })
+      return
+    }
+    if (INVALID_SITE_OTHER_CHARS.test(data.siteOther)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['siteOther'],
+        message: 'register.validation.siteOtherInvalid',
+      })
+    }
+  })
+
+export type RegisterFormValues = z.infer<typeof RegisterFormSchema>
+
 export const LoginResponseSchema = z.object({
   success: z.boolean(),
   user: SessionUserSchema.optional(),

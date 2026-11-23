@@ -1,3 +1,4 @@
+import { QueryClientProvider } from '@tanstack/react-query'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router'
@@ -148,6 +149,51 @@ describe('LoginPage', () => {
 
     expect(await screen.findByText('Todo Landing')).toBeInTheDocument()
     expect(queryClient.getQueryData(['tasks', 'all'])).toBeUndefined()
+  })
+
+  it('switches to registration mode, validates other site, submits POST /api/register, and returns to login', async () => {
+    const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input)
+      if (url.includes('/meta/depts')) {
+        return jsonResponse({ depts: [{ value: '資訊部', vn: 'BP. IT' }] })
+      }
+      if (url.includes('/meta/sites')) {
+        return jsonResponse({ sites: [{ value: 'YS', vn: 'Vĩnh Thịnh' }] })
+      }
+      if (url.includes('/register') && init?.method === 'POST') {
+        const body = JSON.parse(String(init.body)) as Record<string, string>
+        expect(body.username).toBe('newuser')
+        expect(body.site).toBe('__OTHER__')
+        expect(body.site_other).toBe('Plant9')
+        return jsonResponse({ success: true })
+      }
+      return jsonResponse({}, 404)
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const user = userEvent.setup()
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={['/login']}>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
+    )
+
+    await user.click(await screen.findByRole('button', { name: /đăng ký ngay/i }))
+    await user.type(screen.getByLabelText(/^tài khoản$/i), 'newuser')
+    await user.type(screen.getByLabelText(/^mật khẩu$/i), 'pass1234')
+    await user.type(screen.getByLabelText(/họ và tên/i), 'Trần Văn B')
+    await user.selectOptions(screen.getByLabelText(/khu vực/i), '__OTHER__')
+    await user.type(screen.getByLabelText(/tên khu vực khác/i), 'Plant9')
+    await user.click(screen.getByRole('button', { name: /gửi yêu cầu đăng ký/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('status')).toHaveTextContent(/chờ quản trị viên phê duyệt/i)
+    })
+    expect(screen.getByRole('button', { name: /^đăng nhập$/i })).toBeInTheDocument()
   })
 })
 

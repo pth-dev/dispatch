@@ -58,12 +58,12 @@ describe('getDefaultLandingRoute', () => {
     expect(route).toBe(APP_ROUTES.TODO)
   })
 
-  it('falls back to profile when user has no readable menu items', () => {
+  it('falls back to account when user has no readable permission-gated menu items', () => {
     const route = getDefaultLandingRoute({
       username: 'staff2',
       role: 'user',
       menu_perms: { list: 's', todo: '', messages: '', learnknow: '' },
     })
-    expect(route).toBe(APP_ROUTES.PROFILE)
+    expect(route).toBe(APP_ROUTES.ACCOUNT)
   })
 })

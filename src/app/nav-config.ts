@@ -3,6 +3,7 @@ import {
   GraduationCap,
   ListChecks,
   MessagesSquare,
+  UserCog,
   type LucideIcon,
 } from 'lucide-react'
 import { APP_ROUTES } from '@/constants/app-routes'
@@ -57,6 +58,12 @@ export const MAIN_NAV_ITEMS: NavItemConfig[] = [
     href: APP_ROUTES.LESSONS,
     icon: GraduationCap,
     menuPermKey: 'learnknow',
+  },
+  {
+    id: 'account',
+    titleKey: 'nav.account',
+    href: APP_ROUTES.ACCOUNT,
+    icon: UserCog,
   },
 ]
 
