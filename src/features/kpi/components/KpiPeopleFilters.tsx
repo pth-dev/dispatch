@@ -85,7 +85,7 @@ export function KpiPeopleFilters({
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
             placeholder={t('kpi.filters.personPlaceholder')}
-            className="h-9"
+            className="bg-card"
           />
           <datalist id="kpi-people-datalist">
             {scopedPeople.slice(0, 500).map((u) => (
@@ -124,7 +124,7 @@ export function KpiPeopleFilters({
             type="date"
             value={startStr}
             onChange={(e) => onStartChange(e.target.value)}
-            className="h-9"
+            className="bg-card"
           />
         </div>
 
@@ -137,7 +137,7 @@ export function KpiPeopleFilters({
             type="date"
             value={endStr}
             onChange={(e) => onEndChange(e.target.value)}
-            className="h-9"
+            className="bg-card"
           />
         </div>
 

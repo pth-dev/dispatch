@@ -1281,7 +1281,12 @@
       "monthShort": "{{month}}月",
       "monthCount": "{{count}} 件",
       "people": "人员：",
-      "allPeople": "全部"
+      "allPeople": "全部",
+      "allPeopleLabel": "全部人员（{{count}} 人）",
+      "searchPersonPlaceholder": "搜索姓名或账号...",
+      "hasUnfinished": "有未完成",
+      "noPersonMatch": "未找到匹配人员",
+      "hotspots": "待办最多："
     },
     "status": {
       "ontime": "如期完成",

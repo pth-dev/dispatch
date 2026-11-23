@@ -1281,7 +1281,12 @@
       "monthShort": "M{{month}}",
       "monthCount": "{{count}} tasks",
       "people": "People:",
-      "allPeople": "All"
+      "allPeople": "All",
+      "allPeopleLabel": "All people ({{count}})",
+      "searchPersonPlaceholder": "Search name or username...",
+      "hasUnfinished": "Has unfinished",
+      "noPersonMatch": "No matching person found",
+      "hotspots": "Top open:"
     },
     "status": {
       "ontime": "On-time",

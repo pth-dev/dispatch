@@ -1281,7 +1281,12 @@
       "monthShort": "T{{month}}",
       "monthCount": "{{count}} việc",
       "people": "Nhân viên:",
-      "allPeople": "Tất cả"
+      "allPeople": "Tất cả",
+      "allPeopleLabel": "Tất cả nhân viên ({{count}})",
+      "searchPersonPlaceholder": "Tìm tên hoặc mã nhân viên...",
+      "hasUnfinished": "Có việc chưa xong",
+      "noPersonMatch": "Không tìm thấy nhân viên phù hợp",
+      "hotspots": "Tồn nhiều nhất:"
     },
     "status": {
       "ontime": "Đúng hạn",

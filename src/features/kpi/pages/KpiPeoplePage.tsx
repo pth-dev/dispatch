@@ -3,7 +3,7 @@ import { Award, Copy, Download, LayoutPanelTop, Printer, RefreshCw } from 'lucid
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router'
 import { useAppStore } from '@/app/store'
-import { InlineError, PageHeader } from '@/components/layout'
+import { InlineError, PageContainer, PageContainerBody, PageHeader } from '@/components/layout'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -215,7 +215,7 @@ export default function KpiPeoplePage() {
   const activeDeptLabel = activeDept ? resolveDeptLabel(activeDept) : t('kpi.filters.allDepts')
 
   return (
-    <div className="space-y-4">
+    <PageContainer className="print:block print:overflow-visible">
       <div className="print:hidden">
         <PageHeader
           title={t('kpi.title')}
@@ -274,82 +274,84 @@ export default function KpiPeoplePage() {
         />
       </div>
 
-      {notice && (
-        <div
-          role="status"
-          aria-live="polite"
-          className={cn(
-            'rounded-lg border px-3.5 py-2 text-xs font-medium print:hidden',
-            notice.tone === 'error'
-              ? 'border-destructive/30 bg-destructive/10 text-destructive'
-              : 'border-success/30 bg-success/10 text-success',
-          )}
-        >
-          {notice.message}
-        </div>
-      )}
+      <PageContainerBody className="space-y-4 print:overflow-visible">
+        {notice && (
+          <div
+            role="status"
+            aria-live="polite"
+            className={cn(
+              'rounded-lg border px-3.5 py-2 text-xs font-medium print:hidden',
+              notice.tone === 'error'
+                ? 'border-destructive/30 bg-destructive/10 text-destructive'
+                : 'border-success/30 bg-success/10 text-success',
+            )}
+          >
+            {notice.message}
+          </div>
+        )}
 
-      <KpiPeopleFilters
-        query={query}
-        dept={activeDept}
-        startStr={startStr}
-        endStr={endStr}
-        basis={basis}
-        sort={sort}
-        showEmpty={showEmpty}
-        printWithDetail={printWithDetail}
-        depts={depts}
-        scopedPeople={scopedPeople}
-        onQueryChange={setQuery}
-        onDeptChange={setDeptOverride}
-        onStartChange={setStartStr}
-        onEndChange={setEndStr}
-        onBasisChange={setBasis}
-        onSortChange={setSort}
-        onQuickRange={handleQuickRange}
-        onShowEmptyChange={setShowEmpty}
-        onPrintWithDetailChange={setPrintWithDetail}
-        onReset={handleReset}
-      />
+        <KpiPeopleFilters
+          query={query}
+          dept={activeDept}
+          startStr={startStr}
+          endStr={endStr}
+          basis={basis}
+          sort={sort}
+          showEmpty={showEmpty}
+          printWithDetail={printWithDetail}
+          depts={depts}
+          scopedPeople={scopedPeople}
+          onQueryChange={setQuery}
+          onDeptChange={setDeptOverride}
+          onStartChange={setStartStr}
+          onEndChange={setEndStr}
+          onBasisChange={setBasis}
+          onSortChange={setSort}
+          onQuickRange={handleQuickRange}
+          onShowEmptyChange={setShowEmpty}
+          onPrintWithDetailChange={setPrintWithDetail}
+          onReset={handleReset}
+        />
 
-      {isRangeInvalid ? (
-        <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm font-medium text-destructive">
-          {t('kpi.toast.invalidRange')}
-        </div>
-      ) : tasksQuery.isError ? (
-        <InlineError status="500" onRetry={() => void tasksQuery.refetch()} />
-      ) : tasksQuery.isLoading ? (
-        <div className="flex justify-center py-12">
-          <LoadingSpinner size="lg" />
-        </div>
-      ) : (
-        <>
-          <KpiPeopleSummaryCards summary={summary} />
-          <KpiPeopleTable
-            rows={visibleRows}
-            taskMap={taskMap}
-            basis={basis}
-            selectedKeys={selectedKeys}
-            expandedKeys={expandedKeys}
-            resolveDeptLabel={resolveDeptLabel}
-            onToggleSelect={handleToggleSelect}
-            onSelectAllVisible={handleSelectAllVisible}
-            onToggleExpand={handleToggleExpand}
-          />
-          <KpiPeoplePrintSheet
-            rows={selectedRows}
-            taskMap={taskMap}
-            basis={basis}
-            startStr={startStr}
-            endStr={endStr}
-            deptLabel={activeDeptLabel}
-            query={deferredQuery}
-            withDetail={printWithDetail}
-            user={user}
-            resolveDeptLabel={resolveDeptLabel}
-          />
-        </>
-      )}
-    </div>
+        {isRangeInvalid ? (
+          <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm font-medium text-destructive">
+            {t('kpi.toast.invalidRange')}
+          </div>
+        ) : tasksQuery.isError ? (
+          <InlineError status="500" onRetry={() => void tasksQuery.refetch()} />
+        ) : tasksQuery.isLoading ? (
+          <div className="flex justify-center py-12">
+            <LoadingSpinner size="lg" />
+          </div>
+        ) : (
+          <>
+            <KpiPeopleSummaryCards summary={summary} />
+            <KpiPeopleTable
+              rows={visibleRows}
+              taskMap={taskMap}
+              basis={basis}
+              selectedKeys={selectedKeys}
+              expandedKeys={expandedKeys}
+              resolveDeptLabel={resolveDeptLabel}
+              onToggleSelect={handleToggleSelect}
+              onSelectAllVisible={handleSelectAllVisible}
+              onToggleExpand={handleToggleExpand}
+            />
+            <KpiPeoplePrintSheet
+              rows={selectedRows}
+              taskMap={taskMap}
+              basis={basis}
+              startStr={startStr}
+              endStr={endStr}
+              deptLabel={activeDeptLabel}
+              query={deferredQuery}
+              withDetail={printWithDetail}
+              user={user}
+              resolveDeptLabel={resolveDeptLabel}
+            />
+          </>
+        )}
+      </PageContainerBody>
+    </PageContainer>
   )
 }
