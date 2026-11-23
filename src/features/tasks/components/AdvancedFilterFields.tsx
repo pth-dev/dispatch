@@ -81,11 +81,11 @@ export function AdvancedFilterFields({
   }
 
   return (
-    <div className="space-y-3.5 text-xs">
+    <div className="w-full min-w-0 space-y-3.5 text-xs">
       {/* Thời gian */}
-      <div className="space-y-1.5">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          <div className="min-w-0 space-y-1">
+      <div className="w-full min-w-0 space-y-1.5">
+        <div className="grid w-full grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div className="w-full min-w-0 space-y-1">
             <label htmlFor={`${idPrefix}-from`} className="font-semibold text-muted-foreground">
               {t('tasks.filter.fromDate')}
             </label>
@@ -94,10 +94,10 @@ export function AdvancedFilterFields({
               type="date"
               value={params.fromDate ?? ''}
               onChange={(e) => onDateChange('fromDate', e.target.value)}
-              className="h-10 text-xs"
+              className="flex w-full max-w-full min-w-0 items-center box-border appearance-none h-11 lg:h-10 text-base lg:text-xs [&::-webkit-date-and-time-value]:text-left"
             />
           </div>
-          <div className="min-w-0 space-y-1">
+          <div className="w-full min-w-0 space-y-1">
             <label htmlFor={`${idPrefix}-to`} className="font-semibold text-muted-foreground">
               {t('tasks.filter.toDate')}
             </label>
@@ -106,7 +106,7 @@ export function AdvancedFilterFields({
               type="date"
               value={params.toDate ?? ''}
               onChange={(e) => onDateChange('toDate', e.target.value)}
-              className="h-10 text-xs"
+              className="flex w-full max-w-full min-w-0 items-center box-border appearance-none h-11 lg:h-10 text-base lg:text-xs [&::-webkit-date-and-time-value]:text-left"
             />
           </div>
         </div>
@@ -118,8 +118,8 @@ export function AdvancedFilterFields({
       </div>
 
       {/* Phân loại: Cơ sở + Cấp độ */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-        <div className="min-w-0 space-y-1">
+      <div className="grid w-full grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <div className="w-full min-w-0 space-y-1">
           <label htmlFor={`${idPrefix}-site`} className="font-semibold text-muted-foreground">
             {t('tasks.filter.site')}
           </label>
@@ -127,7 +127,7 @@ export function AdvancedFilterFields({
             value={params.site ?? 'all'}
             onValueChange={(v) => onPatch({ site: v === 'all' ? undefined : v })}
           >
-            <SelectTrigger id={`${idPrefix}-site`} className="w-full h-10 text-xs">
+            <SelectTrigger id={`${idPrefix}-site`} className="w-full max-w-full min-w-0 h-11 lg:h-10 text-xs">
               <SelectValue placeholder={t('tasks.filter.siteAll')} />
             </SelectTrigger>
             <SelectContent>
@@ -146,7 +146,7 @@ export function AdvancedFilterFields({
           </Select>
         </div>
 
-        <div className="min-w-0 space-y-1">
+        <div className="w-full min-w-0 space-y-1">
           <label htmlFor={`${idPrefix}-level`} className="font-semibold text-muted-foreground">
             {t('tasks.filter.level')}
           </label>
@@ -154,7 +154,7 @@ export function AdvancedFilterFields({
             value={params.level ?? 'all'}
             onValueChange={(v) => onPatch({ level: v === 'all' ? undefined : v })}
           >
-            <SelectTrigger id={`${idPrefix}-level`} className="w-full h-10 text-xs">
+            <SelectTrigger id={`${idPrefix}-level`} className="w-full max-w-full min-w-0 h-11 lg:h-10 text-xs">
               <SelectValue placeholder={t('tasks.filter.levelAll')} />
             </SelectTrigger>
             <SelectContent>
@@ -176,8 +176,8 @@ export function AdvancedFilterFields({
       </div>
 
       {/* Loại nhiệm vụ + Độ mật */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-        <div className="min-w-0 space-y-1">
+      <div className="grid w-full grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <div className="w-full min-w-0 space-y-1">
           <label htmlFor={`${idPrefix}-type`} className="font-semibold text-muted-foreground">
             {t('tasks.filter.taskType')}
           </label>
@@ -185,7 +185,7 @@ export function AdvancedFilterFields({
             value={params.taskType ?? 'all'}
             onValueChange={(v) => onPatch({ taskType: v === 'all' ? undefined : v })}
           >
-            <SelectTrigger id={`${idPrefix}-type`} className="w-full h-10 text-xs">
+            <SelectTrigger id={`${idPrefix}-type`} className="w-full max-w-full min-w-0 h-11 lg:h-10 text-xs">
               <SelectValue placeholder={t('tasks.filter.taskTypeAll')} />
             </SelectTrigger>
             <SelectContent>
@@ -201,7 +201,7 @@ export function AdvancedFilterFields({
           </Select>
         </div>
 
-        <div className="min-w-0 space-y-1">
+        <div className="w-full min-w-0 space-y-1">
           <label htmlFor={`${idPrefix}-conf`} className="font-semibold text-muted-foreground">
             {t('tasks.confidential.label')}
           </label>
@@ -209,7 +209,7 @@ export function AdvancedFilterFields({
             value={params.confidential ?? 'all'}
             onValueChange={(v) => onPatch({ confidential: v === 'all' ? undefined : v })}
           >
-            <SelectTrigger id={`${idPrefix}-conf`} className="w-full h-10 text-xs">
+            <SelectTrigger id={`${idPrefix}-conf`} className="w-full max-w-full min-w-0 h-11 lg:h-10 text-xs">
               <SelectValue placeholder={t('tasks.filter.confidentialAll')} />
             </SelectTrigger>
             <SelectContent>

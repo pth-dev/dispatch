@@ -352,22 +352,25 @@ export function FilterBar({
               )}
             </Button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="rounded-t-2xl max-h-[85vh] overflow-y-auto p-5 space-y-4">
-            <SheetHeader className="text-left border-b border-border pb-3">
+          <SheetContent
+            side="bottom"
+            className="w-full max-w-full rounded-t-2xl max-h-[85dvh] overflow-y-auto overflow-x-hidden p-5"
+          >
+            <SheetHeader className="p-0 text-left border-b border-border pb-3">
               <SheetTitle className="text-base font-semibold text-foreground">
                 {t('common.filter')}
               </SheetTitle>
             </SheetHeader>
 
-            <div className="space-y-3.5 text-xs">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <div className="min-w-0 space-y-1">
+            <div className="w-full min-w-0 space-y-3.5 text-xs">
+              <div className="grid w-full grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="w-full min-w-0 space-y-1">
                   <label htmlFor="adv-mobile-status" className="font-semibold text-muted-foreground">
                     {t('common.status')}
                   </label>
                   {renderStatusSelect('adv-mobile-status')}
                 </div>
-                <div className="min-w-0 space-y-1">
+                <div className="w-full min-w-0 space-y-1">
                   <label htmlFor="adv-mobile-dept" className="font-semibold text-muted-foreground">
                     {t('common.department')}
                   </label>
@@ -375,7 +378,7 @@ export function FilterBar({
                 </div>
               </div>
 
-              <div className="space-y-1">
+              <div className="w-full min-w-0 space-y-1">
                 <label htmlFor="adv-mobile-sort" className="font-semibold text-muted-foreground">
                   {t('tasks.sort.label')}
                 </label>

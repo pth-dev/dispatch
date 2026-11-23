@@ -279,17 +279,17 @@ export function LessonEditorPanel({
         )}
       </div>
 
-      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+      <div className="flex items-center gap-2 sm:justify-end">
         <Button
           type="button"
           variant="outline"
           disabled={isSaving}
           onClick={handleRequestCancel}
-          className="h-11 lg:h-10"
+          className="h-11 lg:h-10 flex-1 sm:flex-none"
         >
           {t('common.cancel')}
         </Button>
-        <Button type="submit" disabled={isSaving} className="h-11 lg:h-10">
+        <Button type="submit" disabled={isSaving} className="h-11 lg:h-10 flex-1 sm:flex-none">
           <Save className="size-4" aria-hidden="true" />
           <span>
             {isSaving

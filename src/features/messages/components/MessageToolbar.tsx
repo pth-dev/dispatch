@@ -36,7 +36,7 @@ export function MessageToolbar({
       >
         <TabsList
           aria-label={t('messages.scope.ariaLabel')}
-          className="h-auto rounded-full border border-border bg-card p-1 gap-1"
+          className="h-auto group-data-[orientation=horizontal]/tabs:h-auto rounded-full border border-border bg-card p-1 gap-1"
         >
           {tabs.map((tab) => (
             <TabsTrigger
