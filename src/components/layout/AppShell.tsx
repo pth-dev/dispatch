@@ -6,6 +6,7 @@ import { Header } from './Header'
 import { ErrorState } from './ErrorState'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { useMainScrollRestoration } from '@/hooks/use-main-scroll-restoration'
 import { useSessionLifecycle } from '@/hooks/use-session-lifecycle'
 import { useAppStore } from '@/app/store'
 
@@ -14,9 +15,11 @@ export function AppShell() {
   const isMobile = useIsMobile()
   const authStatus = useAppStore((s) => s.authStatus)
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
+  const mainRef = React.useRef<HTMLElement>(null)
   const isDrawerOpen = isMobile && mobileMenuOpen
 
   const { retryVerify } = useSessionLifecycle()
+  useMainScrollRestoration(mainRef, authStatus === 'authenticated')
 
   if (authStatus === 'checking') {
     return (
@@ -57,7 +60,10 @@ export function AppShell() {
         <Header onOpenMobileMenu={() => setMobileMenuOpen(true)} />
 
         {/* Fixed-height scroll area on desktop (inner PageContainer scrolls); short desktop & mobile scroll on <main> when needed. */}
-        <main className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto bg-background px-4 py-4 lg:overflow-hidden lg:short:overflow-y-auto lg:px-6 short:py-3">
+        <main
+          ref={mainRef}
+          className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto bg-background px-4 py-4 lg:overflow-hidden lg:short:overflow-y-auto lg:px-6 short:py-3"
+        >
           <React.Suspense
             fallback={
               <div
