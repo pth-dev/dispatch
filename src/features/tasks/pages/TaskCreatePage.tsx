@@ -39,7 +39,7 @@ export function TaskCreatePage() {
   } = useTaskCreatePage()
 
   return (
-    <PageContainer width="narrow">
+    <PageContainer>
       <div className="shrink-0 space-y-3">
         <div className="flex items-center gap-2 text-xs text-muted-foreground select-none">
           <Link
@@ -75,9 +75,9 @@ export function TaskCreatePage() {
           <div role="status" className="space-y-4 animate-pulse">
             <span className="sr-only">{t('common.loading')}</span>
             <div className="h-4 w-48 rounded bg-muted" />
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-              <div className="lg:col-span-8 h-80 rounded-xl bg-muted" />
-              <div className="lg:col-span-4 h-80 rounded-xl bg-muted" />
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+              <div className="lg:col-span-7 xl:col-span-8 h-80 rounded-xl bg-muted" />
+              <div className="lg:col-span-5 xl:col-span-4 h-80 rounded-xl bg-muted" />
             </div>
           </div>
         ) : sourceId > 0 && hasSourceError ? (

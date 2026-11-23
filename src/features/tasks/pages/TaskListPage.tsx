@@ -165,14 +165,14 @@ export function TaskListPage() {
         className="max-lg:-mx-4 max-lg:rounded-none max-lg:border-x-0"
       >
         <div className="shrink-0 flex flex-col gap-2 px-4 pt-1 pb-2.5 lg:gap-3 lg:short:gap-2 lg:p-4 lg:short:p-3 lg:pb-3 border-b border-border bg-card">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
             <TaskScopeTabs
               activeScope={params.scope}
               counts={counts}
               onScopeChange={setScope}
               className="min-w-0 xl:shrink-0 border-b-0 -mb-1 lg:mb-0"
             />
-            <LegendStrip className="hidden xl:flex shrink-0" />
+            <LegendStrip className="hidden xl:flex max-w-full" />
           </div>
 
           <FilterBar

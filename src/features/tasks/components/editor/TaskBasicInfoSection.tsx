@@ -72,8 +72,8 @@ export function TaskBasicInfoSection({
         {t('tasks.createForm.infoSection')}
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="md:col-span-2 space-y-1.5">
+      <div className="space-y-4">
+        <div className="space-y-1.5">
           <label htmlFor="task-title" className="block text-xs font-semibold text-foreground">
             {t('tasks.createForm.taskName')} *
           </label>
@@ -88,7 +88,7 @@ export function TaskBasicInfoSection({
           )}
         </div>
 
-        <div className="md:col-span-2 space-y-2">
+        <div className="space-y-2">
           <label htmlFor="task-type-select" className="block text-xs font-semibold text-foreground">
             {t('tasks.fields.taskType')} *
           </label>
@@ -133,7 +133,7 @@ export function TaskBasicInfoSection({
           )}
         </div>
 
-        <div className="md:col-span-2 space-y-1.5">
+        <div className="space-y-1.5">
           <label htmlFor="task-content" className="block text-xs font-semibold text-foreground">
             {t('tasks.createForm.description')}
           </label>
@@ -145,7 +145,7 @@ export function TaskBasicInfoSection({
           />
         </div>
 
-        <div className="md:col-span-2 space-y-1.5">
+        <div className="space-y-1.5">
           <label htmlFor="task-precautions" className="block text-xs font-semibold text-foreground">
             {t('tasks.fields.precautions')}
           </label>
@@ -161,7 +161,7 @@ export function TaskBasicInfoSection({
               <Input id="task-kmlink" placeholder="https://..." {...register('km_link')} />
             </div>
 
-            <div className="md:col-span-2 space-y-1.5">
+            <div className="space-y-1.5">
               <label htmlFor="task-files" className="block text-xs font-semibold text-foreground">
                 {t('tasks.detail.attachments')}
               </label>

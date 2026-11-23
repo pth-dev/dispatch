@@ -30,13 +30,13 @@ export { formatTaskDueDate }
 
 const DEFAULT_WIDTH_PERCENT: Partial<Record<TaskColumnId, string>> = {
   stt: '5%',
-  code: '9%',
-  title: '28%',
-  department: '14%',
+  code: '7%',
+  title: '29%',
+  department: '12%',
   assignee: '14%',
-  dueDate: '10%',
-  status: '14%',
-  actions: '6%',
+  dueDate: '9%',
+  status: '17%',
+  actions: '7%',
 }
 
 const COLUMN_MIN_WIDTH_PX: Record<TaskColumnId, string> = {

@@ -254,8 +254,8 @@ export function TaskEditorForm({
         className="space-y-4"
         noValidate
       >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
-          <div className="lg:col-span-8 space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+          <div className="lg:col-span-7 xl:col-span-8 space-y-4">
             <TaskBasicInfoSection
               control={control}
               register={register}
@@ -280,7 +280,7 @@ export function TaskEditorForm({
             />
           </div>
 
-          <div className="lg:col-span-4 space-y-4">
+          <div className="lg:col-span-5 xl:col-span-4 space-y-4">
             <TaskScheduleSection
               control={control}
               register={register}

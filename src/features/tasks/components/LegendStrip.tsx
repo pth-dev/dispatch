@@ -13,7 +13,7 @@ export function LegendStrip({ className }: LegendStripProps) {
     <div
       role="group"
       className={cn(
-        'flex items-center gap-3 text-xs text-muted-foreground select-none whitespace-nowrap',
+        'flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground select-none',
         className,
       )}
       aria-label={t('common.status')}
