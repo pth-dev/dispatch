@@ -1,9 +1,11 @@
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { CheckCircle2, ChevronDown, ChevronRight, Clock } from 'lucide-react'
+import { useAppStore } from '@/app/store'
 import type { LessonMarqueeHit } from '@/components/ui/lesson-marquee-banner'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { useLessons } from '@/hooks/use-lessons'
+import type { SessionUser } from '@/schemas/auth'
 import type { RawTask } from '@/schemas/task'
 import { cn } from '@/utils'
 import { buildTaskLessonHitsMap } from '@/utils/lesson-match'
@@ -19,6 +21,7 @@ type TaskMobileTypeGroupProps = {
   group: TaskGroup
   variant: 'incomplete' | 'completed'
   resolvers: TaskCardResolvers
+  currentUser: SessionUser | null
   lessonHitsByTaskId?: ReadonlyMap<number, LessonMarqueeHit[]>
 }
 
@@ -26,12 +29,13 @@ function TaskMobileTypeGroup({
   group,
   variant,
   resolvers,
+  currentUser,
   lessonHitsByTaskId,
 }: TaskMobileTypeGroupProps) {
   const { t } = useTranslation()
   const isIncomplete = variant === 'incomplete'
   const items = group.tasks.map((task) => {
-    const vm = mapTaskToCardViewModel(task, resolvers)
+    const vm = mapTaskToCardViewModel(task, resolvers, undefined, currentUser)
     const hits = lessonHitsByTaskId?.get(task.id)
     return hits && hits.length > 0 ? { ...vm, lessonHits: hits } : vm
   })
@@ -75,6 +79,7 @@ export function TaskMobileSection({
   onShowMore,
 }: TaskMobileSectionProps) {
   const { t } = useTranslation()
+  const user = useAppStore((s) => s.user)
   const { data: lessons = [] } = useLessons()
   const resolveDeptName = useDeptNameResolver()
   const resolveSiteName = useSiteNameResolver()
@@ -139,6 +144,7 @@ export function TaskMobileSection({
               group={group}
               variant={variant}
               resolvers={resolvers}
+              currentUser={user}
               lessonHitsByTaskId={lessonHitsByTaskId}
             />
           ))}

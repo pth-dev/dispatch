@@ -1,6 +1,8 @@
 import type { LessonMarqueeHit } from '@/components/ui/lesson-marquee-banner'
 import type { StatusKey } from '@/components/ui/status-text'
+import type { SessionUser } from '@/schemas/auth'
 import type { RawTask } from '@/schemas/task'
+import { canSubmitReport } from '@/utils/permissions'
 import {
   deriveTaskStatus,
   isRecurNeedsReportToday,
@@ -90,21 +92,24 @@ export function mapTaskToCardViewModel(
   task: RawTask,
   resolvers: TaskCardResolvers,
   now: Date = new Date(),
+  currentUser: SessionUser | null = null,
 ): TaskCardViewModel {
   const progressPercent = Math.min(100, Math.max(0, Math.round(task.progress)))
   const paused = isTaskPaused(task)
   const derived = deriveTaskStatus(task, now)
   const dueToday = isDueToday(task.due_date, now)
   const recurNeedsToday = isRecurNeedsReportToday(task, now)
-  const needsReportToday =
+  const isDueForReportToday =
     recurNeedsToday || (!paused && progressPercent < 100 && dueToday)
+  const needsReportToday =
+    isDueForReportToday && canSubmitReport(currentUser, task)
 
   const status: StatusKey = paused ? 'paused' : derived
 
   let dueTone: TaskCardDueTone = 'default'
   if (progressPercent < 100) {
     if (derived === 'delayed_pending') dueTone = 'destructive'
-    else if (dueToday || needsReportToday) dueTone = 'warning'
+    else if (dueToday || isDueForReportToday) dueTone = 'warning'
   }
 
   const sites = parseSites(task.site).map(resolvers.resolveSiteName)

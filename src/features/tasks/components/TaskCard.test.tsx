@@ -2,6 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
 import { describe, expect, it } from 'vitest'
+import type { SessionUser } from '@/schemas/auth'
 import type { RawTask } from '@/schemas/task'
 import { createTaskCardFixtures } from '../utils/task-card-fixtures'
 import { EMPTY_DISPLAY_VALUE, mapTaskToCardViewModel } from '../utils/task-card-mapper'
@@ -12,6 +13,23 @@ const RESOLVERS = {
   resolveDeptName: (v: string | null | undefined) => v ?? '-',
   resolveSiteName: (c: string) => c,
 }
+const ASSIGNEE_USER: SessionUser = {
+  id: 1,
+  username: '20160',
+  fullname: 'Phan Trung Hiếu',
+  dept: '資訊部',
+  site: 'VT',
+  role: 'user',
+  auth_source: 'local',
+  menu_perms: null,
+  is_computer_room: false,
+}
+const OTHER_USER: SessionUser = {
+  ...ASSIGNEE_USER,
+  id: 2,
+  username: '99999',
+  fullname: 'Người Dùng Khác',
+}
 
 function fixture(id: number): RawTask {
   const task = createTaskCardFixtures(NOW).find((t) => t.id === id)
@@ -19,8 +37,8 @@ function fixture(id: number): RawTask {
   return task
 }
 
-function renderCard(task: RawTask) {
-  const vm = mapTaskToCardViewModel(task, RESOLVERS, NOW)
+function renderCard(task: RawTask, currentUser: SessionUser | null = ASSIGNEE_USER) {
+  const vm = mapTaskToCardViewModel(task, RESOLVERS, NOW, currentUser)
   return render(
     <MemoryRouter>
       <TaskCard vm={vm} />
@@ -61,11 +79,27 @@ describe('TaskCard', () => {
     expect(vm.dispatcherDisplay).toBe('Phan Trung Hiếu (20160) • BP. Sản xuất')
   })
 
-  it('switches the action label by needsReportToday', () => {
-    const { unmount } = renderCard(fixture(405))
+  it('shows "Báo cáo ngay" only when due today, incomplete, and current user is the assignee', () => {
+    const dueTodayTask = fixture(405)
+
+    // 1. Assignee sees "Báo cáo ngay"
+    const first = renderCard(dueTodayTask, ASSIGNEE_USER)
     expect(screen.getByRole('link', { name: 'Báo cáo ngay' })).toBeInTheDocument()
-    unmount()
-    renderCard(fixture(409))
+    first.unmount()
+
+    // 2. Non-assignee sees "Xem chi tiết" even when task is due today
+    const second = renderCard(dueTodayTask, OTHER_USER)
+    expect(screen.getByRole('link', { name: 'Xem chi tiết' })).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Báo cáo ngay' })).not.toBeInTheDocument()
+    second.unmount()
+
+    // 3. Assignee sees "Xem chi tiết" when task progress is 100%
+    const third = renderCard({ ...dueTodayTask, progress: 100 }, ASSIGNEE_USER)
+    expect(screen.getByRole('link', { name: 'Xem chi tiết' })).toBeInTheDocument()
+    third.unmount()
+
+    // 4. Completed task (409) shows "Xem chi tiết"
+    renderCard(fixture(409), ASSIGNEE_USER)
     expect(screen.getByRole('link', { name: 'Xem chi tiết' })).toBeInTheDocument()
   })
 

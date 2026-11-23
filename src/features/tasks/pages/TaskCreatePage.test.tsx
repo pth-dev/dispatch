@@ -1,9 +1,10 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { cleanup, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter, Route, Routes } from 'react-router'
+import { createMemoryRouter, MemoryRouter, Route, RouterProvider, Routes } from 'react-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useAppStore } from '@/app/store'
+import { RootRouteErrorBoundary } from '@/components/layout/RootRouteErrorBoundary'
 import type { SessionUser } from '@/schemas/auth'
 import { clearAllAuthStorage, setStoredSession } from '@/services'
 import { DAILY_REPAIR_PRECAUTIONS, DAILY_REPAIR_TITLE } from '../api/build-task-form-data'
@@ -102,15 +103,16 @@ function renderTaskCreate(initialEntry: string) {
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   })
 
-  return render(
-    <QueryClientProvider client={queryClient}>
-      <MemoryRouter initialEntries={[initialEntry]}>
-        <Routes>
-          <Route path="/tasks/new" element={<TaskCreatePage />} />
-        </Routes>
-      </MemoryRouter>
-    </QueryClientProvider>,
-  )
+    return render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={[initialEntry]}>
+          <Routes>
+            <Route path="/tasks/new" element={<TaskCreatePage />} />
+            <Route path="/tasks/:id/edit" element={<TaskCreatePage />} />
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
+    )
 }
 
 describe('TaskCreatePage', () => {
@@ -238,5 +240,51 @@ describe('TaskCreatePage', () => {
     await user.click(retryBtn)
 
     expect(await screen.findByDisplayValue('Kiểm tra hệ thống định kỳ')).toBeInTheDocument()
+  })
+
+  it('blocks editing a task whose progress is 100% with a 403 error', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input) => {
+        const url = String(input)
+        if (url.includes('/meta/depts')) {
+          return jsonResponse({ depts: [], allDepts: [] })
+        }
+        if (url.includes('/meta/sites')) {
+          return jsonResponse({ sites: [], allSites: [] })
+        }
+        if (url.includes('/users/directory')) {
+          return jsonResponse([])
+        }
+        if (url.includes('/pocket/task-types')) {
+          return jsonResponse({ items: [] })
+        }
+        return jsonResponse([HISTORY_TASK])
+      }),
+    )
+
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    })
+    const router = createMemoryRouter(
+      [
+        {
+          path: '/tasks/:id/edit',
+          element: <TaskCreatePage />,
+          errorElement: <RootRouteErrorBoundary />,
+        },
+      ],
+      { initialEntries: ['/tasks/412/edit'] },
+    )
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>,
+    )
+
+    expect(await screen.findByText(/403/)).toBeInTheDocument()
+    consoleErrorSpy.mockRestore()
   })
 })

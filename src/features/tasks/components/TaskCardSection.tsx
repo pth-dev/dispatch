@@ -1,9 +1,11 @@
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { CheckCircle2, ChevronDown, ChevronRight, Clock } from 'lucide-react'
+import { useAppStore } from '@/app/store'
 import { Button } from '@/components/ui/button'
 import type { LessonMarqueeHit } from '@/components/ui/lesson-marquee-banner'
 import { useLessons } from '@/hooks/use-lessons'
+import type { SessionUser } from '@/schemas/auth'
 import type { RawTask } from '@/schemas/task'
 import { cn } from '@/utils'
 import { buildTaskLessonHitsMap } from '@/utils/lesson-match'
@@ -18,6 +20,7 @@ type TaskCardTypeGroupProps = {
   group: TaskGroup
   variant: 'incomplete' | 'completed'
   resolvers: TaskCardResolvers
+  currentUser: SessionUser | null
   lessonHitsByTaskId?: ReadonlyMap<number, LessonMarqueeHit[]>
 }
 
@@ -25,6 +28,7 @@ function TaskCardTypeGroup({
   group,
   variant,
   resolvers,
+  currentUser,
   lessonHitsByTaskId,
 }: TaskCardTypeGroupProps) {
   const { t } = useTranslation()
@@ -62,7 +66,7 @@ function TaskCardTypeGroup({
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-3"
       >
         {group.tasks.map((task) => {
-          const vm = mapTaskToCardViewModel(task, resolvers)
+          const vm = mapTaskToCardViewModel(task, resolvers, undefined, currentUser)
           const hits = lessonHitsByTaskId?.get(task.id)
           return (
             <TaskCard
@@ -90,6 +94,7 @@ export function TaskCardSection({
   onShowMore,
 }: TaskCardSectionProps) {
   const { t } = useTranslation()
+  const user = useAppStore((s) => s.user)
   const { data: lessons = [] } = useLessons()
   const resolveDeptName = useDeptNameResolver()
   const resolveSiteName = useSiteNameResolver()
@@ -153,6 +158,7 @@ export function TaskCardSection({
               group={group}
               variant={variant}
               resolvers={resolvers}
+              currentUser={user}
               lessonHitsByTaskId={lessonHitsByTaskId}
             />
           ))}

@@ -1,6 +1,12 @@
 import type { MenuPermKey, SessionUser } from '@/schemas/auth'
 import type { RawReport, RawTask } from '@/schemas/task'
-import { parseAssigneeList, parseReqDepts, sameDept } from './task-domain'
+import {
+  isAssignedToUser,
+  isTaskCompleted,
+  parseAssigneeList,
+  parseReqDepts,
+  sameDept,
+} from './task-domain'
 
 export const PROTECTED_USERNAME = 'admin'
 export const READERS_MAX = 100
@@ -12,7 +18,9 @@ export type MenuPermFlags = {
   w: boolean
 }
 
-type UserIdentity = Pick<SessionUser, 'username' | 'role' | 'dept' | 'menu_perms'>
+type UserIdentity = Pick<SessionUser, 'username' | 'role' | 'dept' | 'menu_perms'> & {
+  fullname?: string
+}
 
 type TaskPermissionTarget = Pick<
   RawTask,
@@ -27,6 +35,8 @@ type TaskPermissionTarget = Pick<
   | 'cross_viewers'
   | 'confidential'
 >
+
+type TaskProgressPermissionTarget = TaskPermissionTarget & Pick<RawTask, 'progress'>
 
 function includesUser(list: string[], username: string): boolean {
   const target = username.trim().toLowerCase()
@@ -157,9 +167,10 @@ export function isReaderOnly(
 
 export function canEditTask(
   user: UserIdentity | null | undefined,
-  task: TaskPermissionTarget,
+  task: TaskProgressPermissionTarget,
 ): boolean {
   if (!user) return false
+  if (isTaskCompleted(task)) return false
   if (!canWriteMenu(user, 'dashboard')) return false
   if (isReaderOnly(user, task)) return false
   if (isSuperLike(user)) return true
@@ -240,10 +251,15 @@ export function canCloneTask(
 
 export function canSubmitReport(
   user: UserIdentity | null | undefined,
-  task: TaskPermissionTarget,
+  task: TaskProgressPermissionTarget,
 ): boolean {
   if (!user) return false
-  return canWriteMenu(user, 'list') && !isReaderOnly(user, task)
+  if (isTaskCompleted(task)) return false
+  if (!canWriteMenu(user, 'list')) return false
+  return isAssignedToUser(task, {
+    username: user.username,
+    fullname: user.fullname ?? '',
+  })
 }
 
 type LessonPermissionTarget = {

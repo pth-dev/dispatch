@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import { describe, expect, it } from 'vitest'
+import type { SessionUser } from '@/schemas/auth'
 import type { RawTask } from '@/schemas/task'
 import { createTaskCardFixtures } from '../utils/task-card-fixtures'
 import { mapTaskToCardViewModel } from '../utils/task-card-mapper'
@@ -11,6 +12,23 @@ const RESOLVERS = {
   resolveDeptName: (v: string | null | undefined) => v ?? '-',
   resolveSiteName: (c: string) => c,
 }
+const ASSIGNEE_USER: SessionUser = {
+  id: 1,
+  username: '20160',
+  fullname: 'Phan Trung Hiếu',
+  dept: '資訊部',
+  site: 'VT',
+  role: 'user',
+  auth_source: 'local',
+  menu_perms: null,
+  is_computer_room: false,
+}
+const OTHER_USER: SessionUser = {
+  ...ASSIGNEE_USER,
+  id: 2,
+  username: '99999',
+  fullname: 'Người Dùng Khác',
+}
 
 function fixture(id: number): RawTask {
   const task = createTaskCardFixtures(NOW).find((t) => t.id === id)
@@ -18,8 +36,12 @@ function fixture(id: number): RawTask {
   return task
 }
 
-function renderRow(task: RawTask, withLessonHits = false) {
-  const baseVm = mapTaskToCardViewModel(task, RESOLVERS, NOW)
+function renderRow(
+  task: RawTask,
+  withLessonHits = false,
+  currentUser: SessionUser | null = ASSIGNEE_USER,
+) {
+  const baseVm = mapTaskToCardViewModel(task, RESOLVERS, NOW, currentUser)
   const vm = withLessonHits
     ? {
         ...baseVm,
@@ -65,6 +87,12 @@ describe('TaskMobileRow', () => {
     expect(screen.queryByRole('link', { name: 'Báo cáo' })).not.toBeInTheDocument()
     expect(screen.queryByRole('link', { name: 'Xem chi tiết' })).not.toBeInTheDocument()
     expect(screen.getByText('100%')).toBeInTheDocument()
+  })
+
+  it('omits quick report link when due today but current user is not the assignee', () => {
+    renderRow(fixture(405), false, OTHER_USER)
+
+    expect(screen.queryByRole('link', { name: 'Báo cáo' })).not.toBeInTheDocument()
   })
 
   it('shows urgent marker and compact lesson badge when present', () => {

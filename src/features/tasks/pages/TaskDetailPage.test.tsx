@@ -39,7 +39,7 @@ const RECURRING_TASK = {
   recur_weekdays: '1,5',
   recur_time: '17:00',
   recur_end: '2027-01-31',
-  progress: 100,
+  progress: 50,
   paused: 0,
   confidential: 0,
   cross_dept: 0,
@@ -110,6 +110,10 @@ describe('TaskDetailPage', () => {
 
     const user = userEvent.setup()
     const progressInput = screen.getByLabelText(/tiến độ/i) as HTMLInputElement
+    expect(progressInput.value).toBe('50')
+
+    await user.clear(progressInput)
+    await user.type(progressInput, '100')
     expect(progressInput.value).toBe('100')
 
     await user.selectOptions(screen.getByLabelText(/trạng thái thực hiện/i), 'paused')
@@ -122,6 +126,72 @@ describe('TaskDetailPage', () => {
       expect.stringContaining('/tasks/205/reports'),
       expect.objectContaining({ method: 'POST' }),
     )
+  })
+
+  it('hides report composer and edit button when task progress is 100%', async () => {
+    const completedTask = { ...RECURRING_TASK, progress: 100 }
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: RequestInfo | URL) => {
+        const url = String(input)
+        if (url.includes('/meta/depts')) return jsonResponse({ depts: [], allDepts: [] })
+        if (url.includes('/meta/sites')) return jsonResponse({ sites: [], allSites: [] })
+        if (url.includes('/users/directory')) return jsonResponse([])
+        if (url.endsWith('/tasks/205/reports')) return jsonResponse([])
+        return jsonResponse([completedTask])
+      }),
+    )
+
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    })
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={['/tasks/205']}>
+          <Routes>
+            <Route path="/tasks/:id" element={<TaskDetailPage />} />
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
+    )
+
+    expect(await screen.findByText('Sao lưu máy chủ hàng tuần')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /gửi báo cáo/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: /chỉnh sửa/i })).not.toBeInTheDocument()
+  })
+
+  it('hides report composer for non-assignee while keeping edit button for creator', async () => {
+    const otherAssigneeTask = { ...RECURRING_TASK, assign_person: 'other_user', progress: 40 }
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: RequestInfo | URL) => {
+        const url = String(input)
+        if (url.includes('/meta/depts')) return jsonResponse({ depts: [], allDepts: [] })
+        if (url.includes('/meta/sites')) return jsonResponse({ sites: [], allSites: [] })
+        if (url.includes('/users/directory')) return jsonResponse([])
+        if (url.endsWith('/tasks/205/reports')) return jsonResponse([])
+        return jsonResponse([otherAssigneeTask])
+      }),
+    )
+
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    })
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={['/tasks/205']}>
+          <Routes>
+            <Route path="/tasks/:id" element={<TaskDetailPage />} />
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
+    )
+
+    expect(await screen.findByText('Sao lưu máy chủ hàng tuần')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /gửi báo cáo/i })).not.toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /chỉnh sửa/i })).toBeInTheDocument()
   })
 
   it('keeps static page header visible while loading and when rendering 5xx InlineError with retry', async () => {

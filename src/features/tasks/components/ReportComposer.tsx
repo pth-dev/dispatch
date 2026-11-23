@@ -14,7 +14,7 @@ import {
   type TaskReportFormValues,
 } from '@/schemas/task'
 import type { SessionUser } from '@/schemas/auth'
-import { isTaskPaused } from '@/utils/task-domain'
+import { isAssignedToUser, isTaskPaused } from '@/utils/task-domain'
 import { resolveApiErrorMessage } from '@/services'
 import { SELECT_FIELD_CLASS } from '../api/task-catalog'
 import { useSubmitReport } from '../api/queries'
@@ -33,8 +33,8 @@ export function ReportComposer({ task, user, splitMembers }: ReportComposerProps
   const [files, setFiles] = React.useState<File[]>([])
   const [submitError, setSubmitError] = React.useState<string | null>(null)
 
-  const selfSplitMember = splitMembers.find(
-    (m) => m.assignee.trim().toLowerCase() === user.username.trim().toLowerCase(),
+  const selfSplitMember = splitMembers.find((m) =>
+    isAssignedToUser({ assign_person: m.assignee }, user),
   )
   const defaultTargetId = selfSplitMember?.id ?? task.id
 
@@ -103,7 +103,7 @@ export function ReportComposer({ task, user, splitMembers }: ReportComposerProps
   }
 
   return (
-    <section className="rounded-xl border border-border bg-card p-4 space-y-3">
+    <section id="report" className="rounded-xl border border-border bg-card p-4 space-y-3">
       <h2 className="text-sm font-semibold text-foreground">{t('tasks.report.composerTitle')}</h2>
 
       {submitError && (

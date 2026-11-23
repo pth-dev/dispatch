@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { useAppStore } from '@/app/store'
 import { TaskCard } from '../components/TaskCard'
 import { TaskCardSkeleton } from '../components/TaskCardSkeleton'
 import { createTaskCardFixtures } from '../utils/task-card-fixtures'
@@ -25,6 +26,7 @@ const PREVIEW_RESOLVERS = {
 
 export function TaskCardFixturePreviewPage() {
   const { t } = useTranslation()
+  const user = useAppStore((s) => s.user)
   const fixtures = createTaskCardFixtures()
 
   return (
@@ -40,7 +42,7 @@ export function TaskCardFixturePreviewPage() {
         {fixtures.map((task) => (
           <TaskCard
             key={task.id}
-            vm={mapTaskToCardViewModel(task, PREVIEW_RESOLVERS)}
+            vm={mapTaskToCardViewModel(task, PREVIEW_RESOLVERS, undefined, user)}
           />
         ))}
         <TaskCardSkeleton />

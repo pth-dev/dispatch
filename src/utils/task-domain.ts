@@ -133,11 +133,15 @@ export function toLocalDateString(date: Date): string {
   return `${y}-${m}-${d}`
 }
 
+export function isTaskCompleted(task: { progress?: number | null }): boolean {
+  return Number(task.progress ?? 0) >= 100
+}
+
 export function isTaskPaused(task: {
   paused?: number | boolean | null
   progress?: number | null
 }): boolean {
-  return Number(task.paused ?? 0) === 1 && Number(task.progress ?? 0) !== 100
+  return Number(task.paused ?? 0) === 1 && !isTaskCompleted(task)
 }
 
 /**

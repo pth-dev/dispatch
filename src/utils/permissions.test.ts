@@ -129,12 +129,14 @@ describe('task-level permission helpers', () => {
     expect(canSetCross(buildUser({ role: 'exec_assistant' }))).toBe(true)
   })
 
-  it('distinguishes reader-only vs cross-viewer and report submission rights', () => {
+  it('distinguishes reader-only vs cross-viewer and enforces assignee-only report submission', () => {
     const task = buildTask({
       readers: 'viewer1',
       cross_dept: 1,
       cross_viewers: 'cross1',
       confidential: 1,
+      assign_person: 'staff1',
+      progress: 40,
     })
 
     const viewer = buildUser({ username: 'viewer1', dept: '業務部' })
@@ -145,10 +147,47 @@ describe('task-level permission helpers', () => {
     const cross = buildUser({ username: 'cross1', dept: '業務部' })
     expect(isCrossViewer(cross, task)).toBe(true)
     expect(isReaderOnly(cross, task)).toBe(false)
-    expect(canSubmitReport(cross, task)).toBe(true)
+    expect(canSubmitReport(cross, task)).toBe(false)
+
+    // Non-assignee creator, dept admin, and superadmin cannot submit report
+    expect(canSubmitReport(buildUser({ username: 'creator1', role: 'user' }), task)).toBe(false)
+    expect(canSubmitReport(buildUser({ username: 'itadmin', role: 'admin', dept: '資訊部' }), task)).toBe(false)
+    expect(canSubmitReport(buildUser({ username: 'sup', role: 'superadmin' }), task)).toBe(false)
+
+    // Assignee can submit report (by username or fullname) when list write perm is granted
+    const assignee = buildUser({ username: 'staff1', fullname: 'Staff One' })
+    expect(canSubmitReport(assignee, task)).toBe(true)
+    expect(
+      canSubmitReport(
+        buildUser({ username: 'other', fullname: 'Staff One' }),
+        { ...task, assign_person: 'Staff One' },
+      ),
+    ).toBe(true)
+    expect(
+      canSubmitReport(buildUser({ username: 'staff1', menu_perms: { list: 'sr' } }), task),
+    ).toBe(false)
 
     // Cross-viewer blocked when confidential >= 2
     expect(isCrossViewer(cross, { ...task, confidential: 2 })).toBe(false)
+  })
+
+  it('blocks both reporting and editing when task progress reaches 100%', () => {
+    const completedTask = buildTask({
+      reporter: 'creator1',
+      assign_person: 'staff1',
+      assigned_unit: '資訊部',
+      progress: 100,
+    })
+
+    const assignee = buildUser({ username: 'staff1', role: 'user' })
+    const creator = buildUser({ username: 'creator1', role: 'user' })
+    const deptAdmin = buildUser({ username: 'itadmin', role: 'admin', dept: '資訊部' })
+    const superAdmin = buildUser({ username: 'sup', role: 'superadmin' })
+
+    expect(canSubmitReport(assignee, completedTask)).toBe(false)
+    expect(canEditTask(creator, completedTask)).toBe(false)
+    expect(canEditTask(deptAdmin, completedTask)).toBe(false)
+    expect(canEditTask(superAdmin, completedTask)).toBe(false)
   })
 
   it('evaluates canDeleteReportAttachment (superadmin excluded unless author/creator)', () => {
