@@ -135,6 +135,7 @@ describe('DepartmentDashboardPage', () => {
     )
 
     expect(await screen.findByText(/1 \/ 2 nhiệm vụ liên quan/i)).toBeInTheDocument()
+    expect(screen.getByText(/ma trận trạng thái theo nhân viên/i)).toBeInTheDocument()
     expect(screen.getByText(/ma trận bài đăng theo nhân viên \(2\)/i)).toBeInTheDocument()
 
     const heatmapSearch = screen.getByPlaceholderText(/tìm tên hoặc tài khoản nhân viên/i)

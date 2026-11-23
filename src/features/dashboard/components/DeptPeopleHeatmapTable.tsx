@@ -101,10 +101,20 @@ export function DeptPeopleHeatmapTable({ data }: DeptPeopleHeatmapTableProps) {
   return (
     <section className="rounded-xl border border-border bg-card p-4 space-y-3">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
-          <Grid3X3 className="size-4 text-primary" aria-hidden="true" />
-          <span>{t('dashboard.dept.heatmapTitle', { count: rows.length })}</span>
-        </h2>
+        <div className="space-y-1">
+          <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+            <Grid3X3 className="size-4 text-primary" aria-hidden="true" />
+            <span>{t('dashboard.dept.heatmapTitle', { count: rows.length })}</span>
+          </h2>
+          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+            <span>{t('dashboard.dept.heatmapLegendLow')}</span>
+            <span className="size-3 rounded-xs bg-primary-soft" aria-hidden="true" />
+            <span className="size-3 rounded-xs bg-primary/30" aria-hidden="true" />
+            <span className="size-3 rounded-xs bg-primary/70" aria-hidden="true" />
+            <span className="size-3 rounded-xs bg-primary" aria-hidden="true" />
+            <span>{t('dashboard.dept.heatmapLegendHigh')}</span>
+          </div>
+        </div>
 
         <div className="relative w-full sm:w-64">
           <Search

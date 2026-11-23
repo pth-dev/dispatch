@@ -7,13 +7,21 @@ import { ResponsiveModal } from '@/components/ui/responsive-modal'
 import { APP_ROUTES } from '@/constants/app-routes'
 import type { RawTask } from '@/schemas/task'
 import { cn } from '@/utils/cn'
-import type { PeriodFlowStats, Response1hStats } from '../utils/dashboard-domain'
+import type { FlowTrendPoint, OverdueAgingBucket } from '../utils/dashboard-charts'
+import type { DashboardPeriod, PeriodFlowStats, Response1hStats } from '../utils/dashboard-domain'
 
-export type DashboardModalType = 'period' | 'my_pending' | 'response_1h' | null
+export type DashboardModalState =
+  | { type: 'period'; initialTab: 'created' | 'completed' }
+  | { type: 'my_pending' }
+  | { type: 'response_1h' }
+  | { type: 'trend_bucket'; point: FlowTrendPoint }
+  | { type: 'aging_bucket'; bucket: OverdueAgingBucket }
+  | null
 
 interface DashboardDrilldownModalsProps {
-  activeModal: DashboardModalType
+  modalState: DashboardModalState
   onClose: () => void
+  period: DashboardPeriod
   periodFlow: PeriodFlowStats
   myPendingTasks: readonly RawTask[]
   response1h: Response1hStats
@@ -43,10 +51,18 @@ function ModalTaskRow({ task, trailing }: { task: RawTask; trailing?: React.Reac
   )
 }
 
-function PeriodModalBody({ periodFlow }: { periodFlow: PeriodFlowStats }) {
+function FlowPairModalBody({
+  createdTasks,
+  completedTasks,
+  initialTab,
+}: {
+  createdTasks: readonly RawTask[]
+  completedTasks: readonly RawTask[]
+  initialTab: 'created' | 'completed'
+}) {
   const { t } = useTranslation()
-  const [tab, setTab] = React.useState<'created' | 'completed'>('created')
-  const list = tab === 'created' ? periodFlow.createdTasks : periodFlow.completedTasks
+  const [tab, setTab] = React.useState<'created' | 'completed'>(initialTab)
+  const list = tab === 'created' ? createdTasks : completedTasks
 
   return (
     <div className="space-y-3">
@@ -66,7 +82,7 @@ function PeriodModalBody({ periodFlow }: { periodFlow: PeriodFlowStats }) {
             )}
           >
             {t(`dashboard.modals.period.${key}`)} (
-            {key === 'created' ? periodFlow.createdTasks.length : periodFlow.completedTasks.length})
+            {key === 'created' ? createdTasks.length : completedTasks.length})
           </button>
         ))}
       </div>
@@ -94,24 +110,9 @@ function Response1hModalBody({ stats }: { stats: Response1hStats }) {
     toneClass: string
     tasks: readonly RawTask[]
   }> = [
-    {
-      id: 'fail',
-      label: t('dashboard.modals.response1h.fail'),
-      toneClass: 'text-destructive',
-      tasks: stats.failTasks,
-    },
-    {
-      id: 'none',
-      label: t('dashboard.modals.response1h.none'),
-      toneClass: 'text-muted-foreground',
-      tasks: stats.noResponseTasks,
-    },
-    {
-      id: 'pass',
-      label: t('dashboard.modals.response1h.pass'),
-      toneClass: 'text-success',
-      tasks: stats.passTasks,
-    },
+    { id: 'fail', label: t('dashboard.modals.response1h.fail'), toneClass: 'text-destructive', tasks: stats.failTasks },
+    { id: 'none', label: t('dashboard.modals.response1h.none'), toneClass: 'text-muted-foreground', tasks: stats.noResponseTasks },
+    { id: 'pass', label: t('dashboard.modals.response1h.pass'), toneClass: 'text-success', tasks: stats.passTasks },
   ]
 
   return (
@@ -122,15 +123,11 @@ function Response1hModalBody({ stats }: { stats: Response1hStats }) {
           <p className="text-[11px] text-muted-foreground">{t('dashboard.modals.response1h.pass')}</p>
         </div>
         <div className="rounded-lg border border-border bg-secondary/40 p-2.5">
-          <p className="text-lg font-semibold text-destructive tabular-nums">
-            {stats.failTasks.length}
-          </p>
+          <p className="text-lg font-semibold text-destructive tabular-nums">{stats.failTasks.length}</p>
           <p className="text-[11px] text-muted-foreground">{t('dashboard.modals.response1h.fail')}</p>
         </div>
         <div className="rounded-lg border border-border bg-secondary/40 p-2.5">
-          <p className="text-lg font-semibold text-foreground tabular-nums">
-            {stats.noResponseTasks.length}
-          </p>
+          <p className="text-lg font-semibold text-foreground tabular-nums">{stats.noResponseTasks.length}</p>
           <p className="text-[11px] text-muted-foreground">{t('dashboard.modals.response1h.none')}</p>
         </div>
       </div>
@@ -168,34 +165,50 @@ function Response1hModalBody({ stats }: { stats: Response1hStats }) {
 }
 
 export function DashboardDrilldownModals({
-  activeModal,
+  modalState,
   onClose,
+  period,
   periodFlow,
   myPendingTasks,
   response1h,
 }: DashboardDrilldownModalsProps) {
   const { t } = useTranslation()
 
-  const titleMap: Record<Exclude<DashboardModalType, null>, string> = {
-    period: t('dashboard.modals.period.title', {
+  let title = ''
+  if (modalState?.type === 'period') {
+    title = t('dashboard.modals.period.title', {
       start: periodFlow.range.startDateStr,
       end: periodFlow.range.endDateStr,
-    }),
-    my_pending: t('dashboard.modals.myPending.title', { count: myPendingTasks.length }),
-    response_1h: t('dashboard.modals.response1h.title'),
+    })
+  } else if (modalState?.type === 'my_pending') {
+    title = t('dashboard.modals.myPending.title', { count: myPendingTasks.length })
+  } else if (modalState?.type === 'response_1h') {
+    title = t('dashboard.modals.response1h.titleWithPeriod', {
+      period: t(`dashboard.period.${period}`),
+    })
+  } else if (modalState?.type === 'trend_bucket') {
+    title = t('dashboard.modals.period.title', {
+      start: modalState.point.startDateStr,
+      end: modalState.point.endDateStr,
+    })
+  } else if (modalState?.type === 'aging_bucket') {
+    title = t('dashboard.modals.aging.title', {
+      bucket: t(`dashboard.aging.buckets.${modalState.bucket.key}`),
+      count: modalState.bucket.count,
+    })
   }
 
   return (
     <ResponsiveModal
-      open={activeModal !== null}
+      open={modalState !== null}
       onOpenChange={(open) => {
         if (!open) onClose()
       }}
-      title={activeModal ? titleMap[activeModal] : ''}
+      title={title}
       size="lg"
       footer={
         <div className="flex w-full flex-wrap items-center justify-end gap-2">
-          {activeModal === 'my_pending' && (
+          {modalState?.type === 'my_pending' && (
             <Button asChild variant="outline" onClick={onClose}>
               <Link to={APP_ROUTES.TODO}>{t('dashboard.today.openTodo')}</Link>
             </Button>
@@ -206,9 +219,36 @@ export function DashboardDrilldownModals({
         </div>
       }
     >
-      {activeModal === 'period' && <PeriodModalBody periodFlow={periodFlow} />}
-      {activeModal === 'response_1h' && <Response1hModalBody stats={response1h} />}
-      {activeModal === 'my_pending' &&
+      {modalState?.type === 'period' && (
+        <FlowPairModalBody
+          key={`period-${modalState.initialTab}`}
+          createdTasks={periodFlow.createdTasks}
+          completedTasks={periodFlow.completedTasks}
+          initialTab={modalState.initialTab}
+        />
+      )}
+      {modalState?.type === 'trend_bucket' && (
+        <FlowPairModalBody
+          key={`trend-${modalState.point.key}`}
+          createdTasks={modalState.point.createdTasks}
+          completedTasks={modalState.point.completedTasks}
+          initialTab="created"
+        />
+      )}
+      {modalState?.type === 'aging_bucket' &&
+        (modalState.bucket.tasks.length === 0 ? (
+          <p className="py-8 text-center text-xs text-muted-foreground">
+            {t('dashboard.modals.empty')}
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {modalState.bucket.tasks.map((task) => (
+              <ModalTaskRow key={task.id} task={task} />
+            ))}
+          </div>
+        ))}
+      {modalState?.type === 'response_1h' && <Response1hModalBody stats={response1h} />}
+      {modalState?.type === 'my_pending' &&
         (myPendingTasks.length === 0 ? (
           <p className="py-8 text-center text-xs text-muted-foreground">
             {t('dashboard.modals.myPending.empty')}

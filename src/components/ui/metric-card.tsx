@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, Info } from 'lucide-react'
 import { cn } from '@/utils/cn'
 
 export type MetricCardTone = 'default' | 'primary' | 'success' | 'warning' | 'destructive'
@@ -16,6 +16,8 @@ export interface MetricCardProps {
   label: string
   value: React.ReactNode
   subtext?: React.ReactNode
+  badge?: React.ReactNode
+  tooltip?: string
   tone?: MetricCardTone
   icon?: React.ReactNode
   onClick?: () => void
@@ -27,6 +29,8 @@ export function MetricCard({
   label,
   value,
   subtext,
+  badge,
+  tooltip,
   tone = 'default',
   icon,
   onClick,
@@ -45,16 +49,24 @@ export function MetricCard({
   const content = (
     <>
       <div className="flex items-start justify-between gap-2">
-        <span className="text-xs font-medium text-muted-foreground leading-snug line-clamp-2">
-          {label}
-        </span>
-        {icon ? (
-          <span className="shrink-0 text-muted-foreground" aria-hidden="true">
-            {icon}
+        <div className="min-w-0 flex items-center gap-1.5 flex-wrap">
+          <span className="text-xs font-medium text-muted-foreground leading-snug line-clamp-2">
+            {label}
           </span>
-        ) : onClick ? (
-          <ChevronRight className="size-3.5 shrink-0 text-muted-foreground mt-0.5" aria-hidden="true" />
-        ) : null}
+          {badge}
+        </div>
+        <div className="flex shrink-0 items-center gap-1 text-muted-foreground">
+          {tooltip && (
+            <span title={tooltip} aria-label={tooltip} className="inline-flex items-center">
+              <Info className="size-3.5" aria-hidden="true" />
+            </span>
+          )}
+          {icon ? (
+            <span aria-hidden="true">{icon}</span>
+          ) : onClick ? (
+            <ChevronRight className="size-3.5 mt-0.5" aria-hidden="true" />
+          ) : null}
+        </div>
       </div>
 
       <div className={cn('text-2xl font-semibold tracking-tight tabular-nums leading-none', VALUE_TONE_CLASS[tone])}>
@@ -62,7 +74,9 @@ export function MetricCard({
       </div>
 
       {subtext != null && (
-        <div className="text-xs text-muted-foreground leading-snug truncate">{subtext}</div>
+        <div className="text-xs text-muted-foreground leading-snug truncate" title={typeof subtext === 'string' ? subtext : undefined}>
+          {subtext}
+        </div>
       )}
     </>
   )

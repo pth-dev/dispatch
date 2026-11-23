@@ -1,6 +1,8 @@
+import * as React from 'react'
 import { Lock, TrendingUp } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { InlineError, toErrorStatus } from '@/components/layout'
+import { Button } from '@/components/ui/button'
 import { TrendLineChart, type TrendSeries } from '@/components/ui/trend-line-chart'
 import type { PostGranularity, PostKpiPeriod, PostStatsResponse } from '@/schemas/dashboard'
 import { cn } from '@/utils/cn'
@@ -27,6 +29,7 @@ interface DashboardPostTrendSectionProps {
 
 const GRAN_OPTIONS: readonly PostGranularity[] = ['day', 'week', 'month']
 const KPI_OPTIONS: readonly PostKpiPeriod[] = ['month', 'quarter', 'year']
+const DEFAULT_VISIBLE_SERIES = 4
 
 export function DashboardPostTrendSection({
   title,
@@ -46,6 +49,7 @@ export function DashboardPostTrendSection({
   rankLimit = 20,
 }: DashboardPostTrendSectionProps) {
   const { t } = useTranslation()
+  const [showAllSeries, setShowAllSeries] = React.useState(false)
 
   if (!canRead) {
     return (
@@ -55,6 +59,10 @@ export function DashboardPostTrendSection({
       </section>
     )
   }
+
+  const nonZeroSeries = data ? data.series.filter((item) => item.total > 0).slice(0, maxSeries) : []
+  const effectiveLimit = showAllSeries ? maxSeries : Math.min(DEFAULT_VISIBLE_SERIES, maxSeries)
+  const hasMoreSeries = nonZeroSeries.length > DEFAULT_VISIBLE_SERIES
 
   const chartSeries: TrendSeries[] = []
   if (data) {
@@ -67,7 +75,7 @@ export function DashboardPostTrendSection({
         dashed: true,
       })
     }
-    for (const s of data.series.filter((item) => item.total > 0).slice(0, maxSeries)) {
+    for (const s of nonZeroSeries.slice(0, effectiveLimit)) {
       chartSeries.push({
         id: s.username || s.label,
         label: s.label,
@@ -92,28 +100,42 @@ export function DashboardPostTrendSection({
             </p>
           </div>
 
-          <div
-            role="group"
-            aria-label={t('dashboard.period.label')}
-            className="inline-flex w-fit rounded-lg border border-border bg-secondary/40 p-1"
-          >
-            {GRAN_OPTIONS.map((opt) => (
-              <button
-                key={opt}
+          <div className="flex flex-wrap items-center gap-2">
+            {hasMoreSeries && (
+              <Button
                 type="button"
-                aria-pressed={gran === opt}
-                onClick={() => onGranChange(opt)}
-                className={cn(
-                  'min-h-11 lg:min-h-8 rounded-md px-2.5 text-xs font-medium transition-colors cursor-pointer',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                  gran === opt
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:text-foreground',
-                )}
+                variant="outline"
+                size="sm"
+                onClick={() => setShowAllSeries((v) => !v)}
               >
-                {t(`dashboard.posts.gran.${opt}`)}
-              </button>
-            ))}
+                {showAllSeries
+                  ? t('dashboard.posts.showTopSeries')
+                  : t('dashboard.posts.showAllSeries', { count: nonZeroSeries.length })}
+              </Button>
+            )}
+            <div
+              role="group"
+              aria-label={t('dashboard.period.label')}
+              className="inline-flex w-fit rounded-lg border border-border bg-secondary/40 p-1"
+            >
+              {GRAN_OPTIONS.map((opt) => (
+                <button
+                  key={opt}
+                  type="button"
+                  aria-pressed={gran === opt}
+                  onClick={() => onGranChange(opt)}
+                  className={cn(
+                    'min-h-11 lg:min-h-8 rounded-md px-2.5 text-xs font-medium transition-colors cursor-pointer',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                    gran === opt
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-muted-foreground hover:text-foreground',
+                  )}
+                >
+                  {t(`dashboard.posts.gran.${opt}`)}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 

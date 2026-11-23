@@ -227,9 +227,9 @@ export function computeSnapshotMetrics(
 export function computeResponse1hStats(
   tasks: readonly RawTask[],
   now: Date = new Date(),
+  period: DashboardPeriod = 'month',
 ): Response1hStats {
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
-  const nextMonthStart = new Date(now.getFullYear(), now.getMonth() + 1, 1)
+  const range = getPeriodRange(period, now)
 
   const passTasks: RawTask[] = []
   const failTasks: RawTask[] = []
@@ -237,7 +237,7 @@ export function computeResponse1hStats(
 
   for (const task of tasks) {
     const created = parseLocalDateTime(task.createdAt)
-    if (!created || created < monthStart || created >= nextMonthStart) continue
+    if (!created || created < range.start || created > range.end) continue
     const mins = task.first_response_mins
     if (mins == null || !Number.isFinite(Number(mins))) {
       noResponseTasks.push(task)

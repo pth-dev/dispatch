@@ -1,13 +1,12 @@
 import { Link } from 'react-router'
-import { Building2, Users } from 'lucide-react'
+import { Building2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import { HorizontalBarRow } from '@/components/ui/horizontal-bar-row'
-import { MetricCard } from '@/components/ui/metric-card'
 import { APP_ROUTES } from '@/constants/app-routes'
 import type { PostDeptOption } from '@/schemas/dashboard'
-import type { DeptTaskSummary } from '@/utils/kpi-domain'
+import type { DeptMemberStatusRow } from '../utils/dashboard-charts'
+import { DeptMemberStatusMatrix } from './DeptMemberStatusMatrix'
 
 interface DeptScopeHeaderProps {
   deptLabel: string
@@ -17,7 +16,7 @@ interface DeptScopeHeaderProps {
   totalVisibleCount: number
   deptTaskCount: number
   deptSetSize: number
-  summary: DeptTaskSummary
+  memberRows: readonly DeptMemberStatusRow[]
   onDeptChange: (dept: string) => void
   onIncludeSubChange: (checked: boolean) => void
 }
@@ -33,13 +32,11 @@ export function DeptScopeHeader({
   totalVisibleCount,
   deptTaskCount,
   deptSetSize,
-  summary,
+  memberRows,
   onDeptChange,
   onIncludeSubChange,
 }: DeptScopeHeaderProps) {
   const { t } = useTranslation()
-  const topPeople = summary.people.slice(0, 10)
-  const maxOpen = Math.max(1, ...topPeople.map((p) => p.open))
 
   return (
     <section className="rounded-xl border border-border bg-card p-4 space-y-4">
@@ -88,48 +85,7 @@ export function DeptScopeHeader({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 lg:col-span-2">
-          <MetricCard label={t('dashboard.dept.metrics.total')} value={summary.total} />
-          <MetricCard label={t('dashboard.dept.metrics.progress')} value={summary.progress} tone="primary" />
-          <MetricCard label={t('dashboard.dept.metrics.notStarted')} value={summary.notStarted} />
-          <MetricCard
-            label={t('dashboard.dept.metrics.delayed')}
-            value={summary.delayed}
-            tone={summary.delayed > 0 ? 'destructive' : 'success'}
-          />
-          <MetricCard label={t('dashboard.dept.metrics.ontime')} value={summary.ontime} tone="success" />
-          <MetricCard label={t('dashboard.dept.metrics.late')} value={summary.late} tone="warning" />
-          <MetricCard label={t('dashboard.dept.metrics.dueToday')} value={summary.dueToday} tone="warning" />
-          <MetricCard label={t('dashboard.dept.metrics.paused')} value={summary.paused} />
-        </div>
-
-        <div className="rounded-lg border border-border p-3 space-y-2">
-          <h3 className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-            <Users className="size-3.5 text-primary" aria-hidden="true" />
-            <span>{t('dashboard.dept.peopleLoadTitle')}</span>
-          </h3>
-          {topPeople.length === 0 ? (
-            <p className="py-4 text-center text-xs text-muted-foreground">
-              {t('dashboard.dept.peopleLoadEmpty')}
-            </p>
-          ) : (
-            <div className="max-h-56 overflow-y-auto space-y-1">
-              {topPeople.map((person) => (
-                <HorizontalBarRow
-                  key={person.name}
-                  label={person.name}
-                  percent={Math.round((person.delayed / maxOpen) * 100)}
-                  tone="destructive"
-                  secondaryPercent={Math.round(((person.open - person.delayed) / maxOpen) * 100)}
-                  secondaryTone="primary"
-                  valueText={`${person.open}/${person.total}`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+      <DeptMemberStatusMatrix selectedDept={selectedDept} memberRows={memberRows} />
     </section>
   )
 }

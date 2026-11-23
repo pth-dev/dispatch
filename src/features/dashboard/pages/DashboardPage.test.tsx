@@ -132,15 +132,17 @@ describe('DashboardPage', () => {
 
     renderDashboard()
 
-    expect(await screen.findByText('Fix core switch')).toBeInTheDocument()
+    expect((await screen.findAllByText('Fix core switch')).length).toBeGreaterThanOrEqual(1)
     expect(screen.getByRole('img', { name: /xu hướng đăng bài theo bộ phận/i })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: /xu hướng mới tạo & hoàn thành/i })).toBeInTheDocument()
+    expect(screen.getByText(/quá hạn & tuổi việc tồn/i)).toBeInTheDocument()
 
     // Switch bottleneck tab to Site
     await user.click(screen.getByRole('tab', { name: /nhà xưởng/i }))
     expect(screen.getByRole('button', { name: /YS/i })).toBeInTheDocument()
 
-    // Open Period drill-down modal
-    await user.click(screen.getByRole('button', { name: /vào \/ ra kỳ này/i }))
+    // Open Period drill-down modal via Created button in Work flow card
+    await user.click(screen.getByRole('button', { name: /mới tạo/i }))
     expect(await screen.findByText(/chi tiết nhiệm vụ trong kỳ/i)).toBeInTheDocument()
     const closeButtons = screen.getAllByRole('button', { name: /^đóng$/i })
     await user.click(closeButtons[closeButtons.length - 1]!)

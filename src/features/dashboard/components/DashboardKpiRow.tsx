@@ -1,14 +1,15 @@
-import { AlertCircle, CalendarClock, Clock, FolderOpen, Timer } from 'lucide-react'
+import { AlertCircle, CalendarClock, FolderOpen, Timer } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { MetricCard, type MetricCardTone } from '@/components/ui/metric-card'
 import { cn } from '@/utils/cn'
+import type { PeriodFlowComparison } from '../utils/dashboard-charts'
 import type {
   DashboardPeriod,
   DashboardScopeMode,
-  PeriodFlowStats,
   Response1hStats,
   SnapshotMetrics,
 } from '../utils/dashboard-domain'
+import { DashboardFlowKpiCard } from './DashboardFlowKpiCard'
 
 interface DashboardKpiRowProps {
   scopeMode: DashboardScopeMode
@@ -16,12 +17,12 @@ interface DashboardKpiRowProps {
   period: DashboardPeriod
   onPeriodChange: (period: DashboardPeriod) => void
   snapshot: SnapshotMetrics
-  periodFlow: PeriodFlowStats
+  periodComparison: PeriodFlowComparison
   response1h: Response1hStats
   onClickOpen: () => void
   onClickOverdue: () => void
   onClickDueToday: () => void
-  onClickPeriod: () => void
+  onClickPeriodTab: (tab: 'created' | 'completed') => void
   onClickResponse1h: () => void
 }
 
@@ -40,25 +41,27 @@ export function DashboardKpiRow({
   period,
   onPeriodChange,
   snapshot,
-  periodFlow,
+  periodComparison,
   response1h,
   onClickOpen,
   onClickOverdue,
   onClickDueToday,
-  onClickPeriod,
+  onClickPeriodTab,
   onClickResponse1h,
 }: DashboardKpiRowProps) {
   const { t } = useTranslation()
+  const periodFlow = periodComparison.current
 
-  const delta = periodFlow.backlogDelta
-  const deltaText =
-    delta > 0
-      ? t('dashboard.kpi.backlogUp', { count: delta })
-      : delta < 0
-        ? t('dashboard.kpi.backlogDown', { count: Math.abs(delta) })
-        : t('dashboard.kpi.backlogFlat')
-
-  const periodTone: MetricCardTone = delta > 0 ? 'warning' : delta < 0 ? 'success' : 'primary'
+  const liveBadge = (
+    <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+      {t('dashboard.scopeBadge.live')}
+    </span>
+  )
+  const periodBadge = (
+    <span className="rounded bg-primary-soft px-1.5 py-0.5 text-[10px] font-medium text-primary">
+      {t(`dashboard.period.${period}`)}
+    </span>
+  )
 
   return (
     <section className="space-y-3">
@@ -117,9 +120,11 @@ export function DashboardKpiRow({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-6">
         <MetricCard
           label={t('dashboard.kpi.open')}
+          badge={liveBadge}
+          tooltip={t('dashboard.tooltips.open')}
           value={snapshot.open}
           subtext={t('dashboard.kpi.openSub', {
             paused: snapshot.paused,
@@ -132,10 +137,15 @@ export function DashboardKpiRow({
 
         <MetricCard
           label={t('dashboard.kpi.overdue')}
+          badge={liveBadge}
+          tooltip={t('dashboard.tooltips.overdue')}
           value={snapshot.overdue}
           subtext={
             snapshot.ontimeRate != null
-              ? t('dashboard.kpi.ontimeSub', { rate: snapshot.ontimeRate })
+              ? t('dashboard.kpi.ontimeSubWithBase', {
+                  rate: snapshot.ontimeRate,
+                  done: snapshot.completed,
+                })
               : t('dashboard.kpi.noCompleted')
           }
           tone={snapshot.overdue > 0 ? 'destructive' : 'success'}
@@ -145,6 +155,8 @@ export function DashboardKpiRow({
 
         <MetricCard
           label={t('dashboard.kpi.dueToday')}
+          badge={liveBadge}
+          tooltip={t('dashboard.tooltips.dueToday')}
           value={snapshot.dueToday}
           subtext={t('dashboard.kpi.completedSub', {
             done: snapshot.completed,
@@ -155,26 +167,27 @@ export function DashboardKpiRow({
           onClick={onClickDueToday}
         />
 
-        <MetricCard
-          label={t('dashboard.kpi.periodFlow')}
-          value={`${periodFlow.createdTasks.length} / ${periodFlow.completedTasks.length}`}
-          subtext={deltaText}
-          tone={periodTone}
-          icon={<Clock className="size-4" />}
-          onClick={onClickPeriod}
+        <DashboardFlowKpiCard
+          period={period}
+          comparison={periodComparison}
+          onClickTab={onClickPeriodTab}
+          className="col-span-2 order-5 lg:order-4 lg:col-span-2"
         />
 
         <MetricCard
           label={t('dashboard.kpi.response1h')}
+          badge={periodBadge}
+          tooltip={t('dashboard.tooltips.response1h')}
           value={response1h.passRate != null ? `${response1h.passRate}%` : '—'}
-          subtext={t('dashboard.kpi.response1hSub', {
+          subtext={t('dashboard.kpi.response1hSubFull', {
             pass: response1h.passTasks.length,
             total: response1h.respondedCount,
+            none: response1h.noResponseTasks.length,
           })}
           tone={responseTone(response1h.passRate)}
           icon={<Timer className="size-4" />}
           onClick={onClickResponse1h}
-          className="col-span-2 lg:col-span-1"
+          className="order-4 lg:order-5 lg:col-span-1"
         />
       </div>
     </section>

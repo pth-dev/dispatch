@@ -16,19 +16,22 @@ import { Button } from '@/components/ui/button'
 import { APP_ROUTES } from '@/constants/app-routes'
 import { useAllTasks } from '@/hooks/use-tasks'
 import type { PostGranularity, PostKpiPeriod } from '@/schemas/dashboard'
-import { computeDeptTaskSummary } from '@/utils/kpi-domain'
+import { toLocalDateString } from '@/utils/task-domain'
 import { usePostStats } from '../api/queries'
 import { DashboardBottleneckTabs } from '../components/DashboardBottleneckTabs'
 import {
   DashboardDrilldownModals,
-  type DashboardModalType,
+  type DashboardModalState,
 } from '../components/DashboardDrilldownModals'
+import { DashboardFlowTrendChart } from '../components/DashboardFlowTrendChart'
 import { DashboardKpiRow } from '../components/DashboardKpiRow'
 import { DashboardLeaderboard } from '../components/DashboardLeaderboard'
+import { DashboardOverdueAgingCard } from '../components/DashboardOverdueAgingCard'
 import { DashboardPostTrendSection } from '../components/DashboardPostTrendSection'
 import { DeptPeopleHeatmapTable } from '../components/DeptPeopleHeatmapTable'
 import { DeptScopeHeader } from '../components/DeptScopeHeader'
 import { useDashboardComputations } from '../hooks/use-dashboard-data'
+import { buildTaskDrilldownUrl, type FlowTrendGranularity } from '../utils/dashboard-charts'
 import {
   filterTasksByDeptSet,
   readStoredPostGranularity,
@@ -49,12 +52,14 @@ export function DepartmentDashboardPage() {
 
   const [scopeMode, setScopeMode] = React.useState<DashboardScopeMode>('all')
   const [period, setPeriod] = React.useState<DashboardPeriod>('month')
-  const [activeModal, setActiveModal] = React.useState<DashboardModalType>(null)
+  const [flowTrendGran, setFlowTrendGran] = React.useState<FlowTrendGranularity>('week')
+  const [modalState, setModalState] = React.useState<DashboardModalState>(null)
   const [postGran, setPostGran] = React.useState<PostGranularity>(() =>
     readStoredPostGranularity(DEPT_GRAN_KEY),
   )
   const [postKpi, setPostKpi] = React.useState<PostKpiPeriod>('month')
 
+  const todayStr = toLocalDateString(new Date())
   const tasksQuery = useAllTasks()
   const postStatsQuery = usePostStats({
     level: 'dept',
@@ -78,13 +83,14 @@ export function DepartmentDashboardPage() {
         ? [selectedDept]
         : []
   const deptTasks = filterTasksByDeptSet(allTasks, deptSet)
-  const deptSummary = computeDeptTaskSummary(deptTasks)
+  const effectiveDept = postStatsQuery.data?.dept || selectedDept
 
   const computed = useDashboardComputations({
     tasks: deptTasks,
     user,
     scopeMode,
     period,
+    flowTrendGran,
     emptyLabel: t('dashboard.bottleneck.unassigned'),
   })
 
@@ -100,7 +106,7 @@ export function DepartmentDashboardPage() {
   const handleGranChange = (next: PostGranularity) => {
     setPostGran(next)
     try {
-      localStorage.setItem('dispatch.deptPostGran', next)
+      localStorage.setItem(DEPT_GRAN_KEY, next)
     } catch {
       // ignore storage errors
     }
@@ -112,6 +118,37 @@ export function DepartmentDashboardPage() {
   }
 
   const isFetching = tasksQuery.isFetching || postStatsQuery.isFetching
+  const overdueHref = buildTaskDrilldownUrl(APP_ROUTES.TASKS, {
+    scope: scopeMode,
+    department: effectiveDept || undefined,
+    status: 'delayed_pending',
+  })
+
+  const handleClickOpen = () => {
+    if (scopeMode === 'mine') {
+      setModalState({ type: 'my_pending' })
+      return
+    }
+    navigate(
+      buildTaskDrilldownUrl(APP_ROUTES.TASKS, {
+        scope: 'all',
+        department: effectiveDept || undefined,
+        status: 'incomplete',
+      }),
+    )
+  }
+
+  const handleClickDueToday = () => {
+    navigate(
+      buildTaskDrilldownUrl(APP_ROUTES.TASKS, {
+        scope: scopeMode,
+        department: effectiveDept || undefined,
+        status: 'incomplete',
+        fromDate: todayStr,
+        toDate: todayStr,
+      }),
+    )
+  }
 
   return (
     <PageContainer>
@@ -150,13 +187,13 @@ export function DepartmentDashboardPage() {
           <>
             <DeptScopeHeader
               deptLabel={postStatsQuery.data?.dept_label || selectedDept}
-              selectedDept={postStatsQuery.data?.dept || selectedDept}
+              selectedDept={effectiveDept}
               deptOptions={postStatsQuery.data?.dept_options ?? []}
               includeSub={includeSub}
               totalVisibleCount={allTasks.length}
               deptTaskCount={deptTasks.length}
               deptSetSize={Math.max(1, deptSet.length)}
-              summary={deptSummary}
+              memberRows={computed.memberStatusMatrix}
               onDeptChange={(dept) => updateDeptParams(dept, includeSub)}
               onIncludeSubChange={(checked) => updateDeptParams(selectedDept, checked)}
             />
@@ -167,22 +204,40 @@ export function DepartmentDashboardPage() {
               period={period}
               onPeriodChange={setPeriod}
               snapshot={computed.snapshot}
-              periodFlow={computed.periodFlow}
+              periodComparison={computed.periodComparison}
               response1h={computed.response1h}
-              onClickOpen={() =>
-                scopeMode === 'mine'
-                  ? setActiveModal('my_pending')
-                  : navigate(`${APP_ROUTES.TASKS}?status=incomplete`)
-              }
-              onClickOverdue={() => navigate(`${APP_ROUTES.TASKS}?status=delayed_pending`)}
-              onClickDueToday={() => navigate(`${APP_ROUTES.TASKS}?flag=recur_today`)}
-              onClickPeriod={() => setActiveModal('period')}
-              onClickResponse1h={() => setActiveModal('response_1h')}
+              onClickOpen={handleClickOpen}
+              onClickOverdue={() => navigate(overdueHref)}
+              onClickDueToday={handleClickDueToday}
+              onClickPeriodTab={(initialTab) => setModalState({ type: 'period', initialTab })}
+              onClickResponse1h={() => setModalState({ type: 'response_1h' })}
             />
 
-            <DashboardBottleneckTabs breakdowns={computed.breakdowns} />
+            <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+              <DashboardFlowTrendChart
+                summary={computed.flowTrend}
+                gran={flowTrendGran}
+                onGranChange={setFlowTrendGran}
+                onSelectPoint={(point) => setModalState({ type: 'trend_bucket', point })}
+              />
+              <DashboardOverdueAgingCard
+                stats={computed.overdueAging}
+                viewAllHref={overdueHref}
+                onSelectBucket={(bucket) => setModalState({ type: 'aging_bucket', bucket })}
+              />
+            </div>
 
-            <DashboardLeaderboard rows={computed.ranking} />
+            <DashboardBottleneckTabs
+              breakdowns={computed.breakdowns}
+              scopeMode={scopeMode}
+              department={effectiveDept || undefined}
+            />
+
+            <DashboardLeaderboard
+              rows={computed.ranking}
+              period={period}
+              department={effectiveDept || undefined}
+            />
 
             <DashboardPostTrendSection
               title={t('dashboard.posts.deptTitle')}
@@ -208,8 +263,9 @@ export function DepartmentDashboardPage() {
       </PageContainerBody>
 
       <DashboardDrilldownModals
-        activeModal={activeModal}
-        onClose={() => setActiveModal(null)}
+        modalState={modalState}
+        onClose={() => setModalState(null)}
+        period={period}
         periodFlow={computed.periodFlow}
         myPendingTasks={computed.myPendingTasks}
         response1h={computed.response1h}

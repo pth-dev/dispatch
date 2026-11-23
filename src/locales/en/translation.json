@@ -910,20 +910,68 @@
       "quarter": "This quarter",
       "year": "This year"
     },
+    "scopeBadge": {
+      "live": "Live"
+    },
+    "tooltips": {
+      "open": "Total incomplete tasks right now (including paused tasks).",
+      "overdue": "Incomplete tasks past due date, excluding paused tasks. On-time rate = on-time completed / total completed.",
+      "dueToday": "Incomplete tasks due today (excluding paused tasks).",
+      "periodFlow": "Tasks created and completed within the selected period ({{start}} ~ {{end}}). Net backlog = Created − Completed.",
+      "response1h": "Share of tasks created in the selected period with first response ≤ 60 minutes (over responded tasks)."
+    },
     "kpi": {
       "open": "Open tasks",
       "openSub": "Paused: {{paused}} · Total: {{total}}",
       "overdue": "Overdue open",
       "ontimeSub": "On-time: {{rate}}%",
+      "ontimeSubWithBase": "On-time: {{rate}}% ({{done}} done)",
       "noCompleted": "No completed tasks yet",
       "dueToday": "Due today",
       "completedSub": "Done: {{done}} (late {{late}})",
-      "periodFlow": "In / Out this period",
-      "backlogUp": "Backlog grew +{{count}}",
-      "backlogDown": "Backlog shrank -{{count}}",
+      "periodFlow": "Work flow",
+      "createdLabel": "Created",
+      "completedLabel": "Completed",
+      "clearanceLabel": "Clearance",
+      "prevDeltaShort": "Prev {{diff}}",
+      "backlogUp": "Backlog +{{count}}",
+      "backlogDown": "Backlog -{{count}}",
       "backlogFlat": "Backlog steady",
       "response1h": "1H response rate",
-      "response1hSub": "This month: {{pass}}/{{total}}"
+      "response1hSub": "This month: {{pass}}/{{total}}",
+      "response1hSubFull": "{{pass}}/{{total}} met · {{none}} pending"
+    },
+    "flowTrend": {
+      "title": "Created vs. completed trend",
+      "tooltip": "Compares newly created and completed tasks by week or month. Numbers in parentheses show net backlog change (Created − Completed).",
+      "clickHint": "· Click a column to inspect tasks",
+      "granLabel": "Flow trend granularity",
+      "gran": {
+        "week": "8 weeks",
+        "month": "6 months"
+      },
+      "empty": "No task flow data in this range.",
+      "summaryLine": "Avg created {{avgCreated}} · Avg done {{avgCompleted}} / period",
+      "totalDelta": "Net backlog delta: {{diff}}"
+    },
+    "aging": {
+      "title": "Overdue & open age",
+      "tooltip": "Overdue tasks grouped by days late (excluding paused) and average open age from creation date to today.",
+      "pausedExcluded": "Excludes {{count}} paused tasks",
+      "overdueTotal": "Overdue now",
+      "avgOpenAge": "Avg open age",
+      "maxOverdue": "Oldest overdue",
+      "daysValue": "{{count}}d",
+      "allClear": "Great! No overdue tasks right now.",
+      "buckets": {
+        "1_3": "1–3 days late",
+        "4_7": "4–7 days late",
+        "8_14": "8–14 days late",
+        "over_14": "> 14 days late"
+      },
+      "longestTitle": "Longest overdue tasks to unblock",
+      "viewAll": "View all ({{count}})",
+      "lateDaysBadge": "{{count}}d late"
     },
     "today": {
       "title": "Action needed today ({{count}})",
@@ -943,7 +991,9 @@
     },
     "bottleneck": {
       "title": "Bottleneck analysis",
-      "subtitle": "Sorted by overdue and open count — click any row to filter tasks",
+      "subtitle": "Sorted by overdue and open count — click any row to filter open tasks",
+      "legendOverdue": "Overdue",
+      "legendOpenOnTrack": "Open (on track)",
       "unassigned": "Unassigned",
       "tabs": {
         "dept": "Department",
@@ -956,19 +1006,22 @@
     },
     "leaderboard": {
       "title": "Efficiency leaderboard",
-      "subtitle": "Ranked by on-time completion rate (paused tasks excluded)",
+      "subtitle": "On-time / completed tasks in selected period (click a row to view tasks)",
+      "tooltip": "Calculated over tasks completed in the selected period, excluding paused tasks. Formula: On-time completed / Total completed.",
       "filterPlaceholder": "Filter assignees (comma-separated)...",
-      "empty": "No matching assignees."
+      "empty": "No assignees completed tasks in this period."
     },
     "posts": {
       "companyTitle": "Posting trends by department",
       "companySubtitle": "Grouped by reporter department (auto-split tasks counted once)",
       "companyRankingTitle": "Top 20 posters (with KPI score)",
       "deptTitle": "Posting trends by member",
-      "deptSubtitle": "Top 12 department members (dashed line = department total)",
+      "deptSubtitle": "Top department members (dashed line = department total)",
       "deptRankingTitle": "Department posting ranking (with KPI score)",
       "totalLine": "Total",
       "totalPosts": "{{count}} posts total",
+      "showTopSeries": "Top 4 only",
+      "showAllSeries": "Show all ({{count}})",
       "noPermission": "You do not have permission to view posting trend analytics.",
       "emptyChart": "No posting data in this period.",
       "emptyRanking": "No ranking data available.",
@@ -1006,21 +1059,27 @@
       },
       "response1h": {
         "title": "1-hour response details (this month)",
+        "titleWithPeriod": "1-hour response details ({{period}})",
         "pass": "Passed (≤ 60m)",
         "fail": "Missed (> 60m)",
         "none": "No response yet",
         "mins": "{{mins}}m"
+      },
+      "aging": {
+        "title": "Tasks {{bucket}} ({{count}})"
       }
     },
     "dept": {
       "title": "Department Dashboard",
-      "subtitle": "Department workload, member capacity, and posting heatmap",
+      "subtitle": "Department workload, member status matrix, and posting heatmap",
       "selectLabel": "Select department",
       "includeSub": "Include child OUs",
       "viewScopeLink": "View scope",
       "scopeSummary": "{{depts}} dept(s) · {{matched}} / {{total}} related tasks",
       "peopleLoadTitle": "Open workload by member",
       "peopleLoadEmpty": "No member workload data.",
+      "statusMatrixTitle": "Member status matrix",
+      "statusMatrixHint": "Click a member or count to open matching tasks",
       "metrics": {
         "total": "Total",
         "progress": "In progress",
@@ -1029,11 +1088,15 @@
         "ontime": "On-time",
         "late": "Late done",
         "dueToday": "Due today",
-        "paused": "Paused"
+        "paused": "Paused",
+        "completed": "Done",
+        "openTotal": "Open"
       },
       "heatmapTitle": "Member posting heatmap ({{count}})",
       "heatmapFilterPlaceholder": "Search member name or username...",
       "heatmapEmpty": "No matching members.",
+      "heatmapLegendLow": "Low",
+      "heatmapLegendHigh": "High",
       "heatmapCols": {
         "total": "Total",
         "avg": "Avg",

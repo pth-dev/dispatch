@@ -910,20 +910,68 @@
       "quarter": "Quý này",
       "year": "Năm nay"
     },
+    "scopeBadge": {
+      "live": "Hiện tại"
+    },
+    "tooltips": {
+      "open": "Tổng nhiệm vụ chưa hoàn thành tại thời điểm hiện tại (bao gồm nhiệm vụ đang tạm dừng).",
+      "overdue": "Nhiệm vụ chưa hoàn thành đã quá hạn chót, loại trừ nhiệm vụ tạm dừng. Tỷ lệ đúng hạn = hoàn thành đúng hạn / tổng đã hoàn thành.",
+      "dueToday": "Nhiệm vụ chưa hoàn thành có hạn chót trong ngày hôm nay (loại trừ tạm dừng).",
+      "periodFlow": "Số nhiệm vụ mới tạo và đã hoàn thành trong kỳ ({{start}} ~ {{end}}). Tồn đọng ròng = Mới tạo − Hoàn thành.",
+      "response1h": "Tỷ lệ nhiệm vụ tạo trong kỳ được phản hồi đầu tiên trong ≤ 60 phút (chia trên số việc đã có phản hồi)."
+    },
     "kpi": {
       "open": "Đang mở",
       "openSub": "Tạm dừng: {{paused}} · Tổng: {{total}}",
       "overdue": "Quá hạn chưa xong",
       "ontimeSub": "Đúng hạn: {{rate}}%",
+      "ontimeSubWithBase": "Đúng hạn: {{rate}}% ({{done}} xong)",
       "noCompleted": "Chưa có việc hoàn thành",
       "dueToday": "Đến hạn hôm nay",
       "completedSub": "Đã xong: {{done}} (trễ {{late}})",
-      "periodFlow": "Vào / Ra kỳ này",
-      "backlogUp": "Tồn đọng tăng +{{count}}",
-      "backlogDown": "Tồn đọng giảm -{{count}}",
-      "backlogFlat": "Tồn đọng ổn định",
+      "periodFlow": "Lưu lượng công việc",
+      "createdLabel": "Mới tạo",
+      "completedLabel": "Hoàn thành",
+      "clearanceLabel": "Xả việc",
+      "prevDeltaShort": "Kỳ trước {{diff}}",
+      "backlogUp": "Tồn tăng +{{count}}",
+      "backlogDown": "Tồn giảm -{{count}}",
+      "backlogFlat": "Tồn ổn định",
       "response1h": "Phản hồi ≤ 1 giờ",
-      "response1hSub": "Tháng này: {{pass}}/{{total}}"
+      "response1hSub": "Tháng này: {{pass}}/{{total}}",
+      "response1hSubFull": "Đạt {{pass}}/{{total}} · {{none}} chưa PH"
+    },
+    "flowTrend": {
+      "title": "Xu hướng mới tạo & hoàn thành",
+      "tooltip": "So sánh số nhiệm vụ mới tạo và đã hoàn thành theo từng tuần/tháng. Số trong ngoặc là chênh lệch tồn đọng ròng (Mới tạo − Hoàn thành).",
+      "clickHint": "· Nhấp cột để xem danh sách việc",
+      "granLabel": "Độ mịn xu hướng lưu lượng",
+      "gran": {
+        "week": "8 tuần",
+        "month": "6 tháng"
+      },
+      "empty": "Chưa có dữ liệu lưu lượng trong khoảng thời gian này.",
+      "summaryLine": "TB tạo {{avgCreated}} · TB xong {{avgCompleted}} / kỳ",
+      "totalDelta": "Chênh lệch tồn ròng: {{diff}}"
+    },
+    "aging": {
+      "title": "Quá hạn & Tuổi việc tồn",
+      "tooltip": "Phân tầng các nhiệm vụ đang quá hạn theo số ngày trễ (loại trừ tạm dừng) và tuổi mở trung bình từ ngày tạo đến hôm nay.",
+      "pausedExcluded": "Không bao gồm {{count}} nhiệm vụ đang tạm dừng",
+      "overdueTotal": "Đang quá hạn",
+      "avgOpenAge": "Tuổi mở TB",
+      "maxOverdue": "Trễ lâu nhất",
+      "daysValue": "{{count}} ngày",
+      "allClear": "Tuyệt vời! Hiện không có nhiệm vụ nào bị quá hạn.",
+      "buckets": {
+        "1_3": "Trễ 1–3 ngày",
+        "4_7": "Trễ 4–7 ngày",
+        "8_14": "Trễ 8–14 ngày",
+        "over_14": "Trễ > 14 ngày"
+      },
+      "longestTitle": "Việc quá hạn lâu nhất cần gỡ tắc",
+      "viewAll": "Xem tất cả ({{count}})",
+      "lateDaysBadge": "Trễ {{count}} ngày"
     },
     "today": {
       "title": "Việc cần xử lý hôm nay ({{count}})",
@@ -943,7 +991,9 @@
     },
     "bottleneck": {
       "title": "Phân tích điểm nghẽn",
-      "subtitle": "Sắp xếp ưu tiên theo số việc quá hạn và đang mở — nhấp để lọc danh sách",
+      "subtitle": "Sắp xếp ưu tiên theo quá hạn & đang mở — nhấp để lọc việc chưa xong",
+      "legendOverdue": "Quá hạn",
+      "legendOpenOnTrack": "Đang mở (trong hạn)",
       "unassigned": "Chưa phân loại",
       "tabs": {
         "dept": "Bộ phận",
@@ -956,19 +1006,22 @@
     },
     "leaderboard": {
       "title": "Bảng xếp hạng hiệu suất",
-      "subtitle": "Xếp theo tỷ lệ hoàn thành đúng hạn (loại trừ nhiệm vụ tạm dừng)",
+      "subtitle": "Tỷ lệ hoàn thành đúng hạn / số việc đã xong trong kỳ (nhấp tên để xem việc)",
+      "tooltip": "Tính trên các nhiệm vụ đã hoàn thành trong kỳ đang chọn, loại trừ nhiệm vụ tạm dừng. Công thức: Hoàn thành đúng hạn / Tổng đã hoàn thành.",
       "filterPlaceholder": "Lọc nhân viên (phân cách bằng dấu phẩy)...",
-      "empty": "Không có nhân viên phù hợp."
+      "empty": "Chưa có nhân viên hoàn thành nhiệm vụ trong kỳ này."
     },
     "posts": {
       "companyTitle": "Xu hướng đăng bài theo bộ phận",
       "companySubtitle": "Tính theo bộ phận người đăng (bài tự tách chỉ tính 1 lần)",
       "companyRankingTitle": "Top 20 nhân viên đăng bài (kèm điểm KPI)",
       "deptTitle": "Xu hướng đăng bài theo nhân viên",
-      "deptSubtitle": "Top 12 nhân viên trong bộ phận (đường nét đứt = tổng bộ phận)",
+      "deptSubtitle": "Top nhân viên trong bộ phận (đường nét đứt = tổng bộ phận)",
       "deptRankingTitle": "Xếp hạng bài đăng bộ phận (kèm điểm KPI)",
       "totalLine": "Tổng cộng",
       "totalPosts": "Tổng {{count}} bài",
+      "showTopSeries": "Thu gọn Top 4",
+      "showAllSeries": "Hiện tất cả ({{count}})",
       "noPermission": "Bạn chưa được cấp quyền đọc biểu đồ xu hướng bài đăng.",
       "emptyChart": "Chưa có dữ liệu bài đăng trong kỳ này.",
       "emptyRanking": "Chưa có dữ liệu xếp hạng.",
@@ -1006,21 +1059,27 @@
       },
       "response1h": {
         "title": "Chi tiết phản hồi trong 1 giờ (tháng này)",
+        "titleWithPeriod": "Chi tiết phản hồi trong 1 giờ ({{period}})",
         "pass": "Đạt (≤ 60 phút)",
         "fail": "Không đạt (> 60 phút)",
         "none": "Chưa phản hồi",
         "mins": "{{mins}} phút"
+      },
+      "aging": {
+        "title": "Nhiệm vụ {{bucket}} ({{count}})"
       }
     },
     "dept": {
       "title": "Dashboard bộ phận",
-      "subtitle": "Tổng quan thực trạng, tải nhân viên và ma trận bài đăng theo bộ phận",
+      "subtitle": "Tổng quan thực trạng, ma trận tải nhân viên và bài đăng theo bộ phận",
       "selectLabel": "Chọn bộ phận",
       "includeSub": "Gồm OU cấp dưới",
       "viewScopeLink": "Phạm vi xem",
       "scopeSummary": "{{depts}} bộ phận · {{matched}} / {{total}} nhiệm vụ liên quan",
       "peopleLoadTitle": "Tải việc đang mở theo nhân viên",
       "peopleLoadEmpty": "Chưa có dữ liệu nhân viên.",
+      "statusMatrixTitle": "Ma trận trạng thái theo nhân viên",
+      "statusMatrixHint": "Nhấp tên hoặc số để mở danh sách khớp bộ phận",
       "metrics": {
         "total": "Tổng NV",
         "progress": "Đang xử lý",
@@ -1029,11 +1088,15 @@
         "ontime": "Đúng hạn",
         "late": "HT trễ",
         "dueToday": "Hạn hôm nay",
-        "paused": "Tạm dừng"
+        "paused": "Tạm dừng",
+        "completed": "Đã xong",
+        "openTotal": "Tổng mở"
       },
       "heatmapTitle": "Ma trận bài đăng theo nhân viên ({{count}})",
       "heatmapFilterPlaceholder": "Tìm tên hoặc tài khoản nhân viên...",
       "heatmapEmpty": "Không có nhân viên phù hợp.",
+      "heatmapLegendLow": "Ít",
+      "heatmapLegendHigh": "Nhiều",
       "heatmapCols": {
         "total": "Tổng",
         "avg": "TB",

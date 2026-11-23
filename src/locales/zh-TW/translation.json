@@ -910,20 +910,68 @@
       "quarter": "本季",
       "year": "本年"
     },
+    "scopeBadge": {
+      "live": "即時"
+    },
+    "tooltips": {
+      "open": "目前尚未結案的任務總數（含暫停任務）。",
+      "overdue": "目前已逾期且未結案的任務數（不含暫停）。如期率 = 如期結案 / 已結案總數。",
+      "dueToday": "今日到期且未結案的任務數（不含暫停）。",
+      "periodFlow": "所選週期（{{start}} ~ {{end}}）內新增與結案的任務數。淨積壓 = 新增 − 結案。",
+      "response1h": "所選週期內新增任務在 60 分鐘內首次響應的達標率（分母為已響應任務數）。"
+    },
     "kpi": {
       "open": "處理中",
       "openSub": "暫停: {{paused}} · 總計: {{total}}",
       "overdue": "逾期未結",
       "ontimeSub": "如期率: {{rate}}%",
+      "ontimeSubWithBase": "如期率: {{rate}}%（{{done}} 件已結）",
       "noCompleted": "尚無已結案",
       "dueToday": "今日到期",
       "completedSub": "已結: {{done}}（逾期 {{late}}）",
-      "periodFlow": "本期新增 / 結案",
-      "backlogUp": "積壓增加 +{{count}}",
-      "backlogDown": "積壓減少 -{{count}}",
+      "periodFlow": "工作流量",
+      "createdLabel": "新增",
+      "completedLabel": "結案",
+      "clearanceLabel": "清結率",
+      "prevDeltaShort": "上期 {{diff}}",
+      "backlogUp": "積壓 +{{count}}",
+      "backlogDown": "積壓 -{{count}}",
       "backlogFlat": "積壓持平",
       "response1h": "1H 響應率",
-      "response1hSub": "本月: {{pass}}/{{total}}"
+      "response1hSub": "本月: {{pass}}/{{total}}",
+      "response1hSubFull": "達標 {{pass}}/{{total}} · {{none}} 未響應"
+    },
+    "flowTrend": {
+      "title": "新增與結案趨勢",
+      "tooltip": "按週或按月對比新增與結案任務數。括號內為淨積壓變化（新增 − 結案）。",
+      "clickHint": "· 點擊柱體檢視任務明細",
+      "granLabel": "流量趨勢粒度",
+      "gran": {
+        "week": "近 8 週",
+        "month": "近 6 月"
+      },
+      "empty": "此期間暫無流量資料。",
+      "summaryLine": "期均新增 {{avgCreated}} · 期均結案 {{avgCompleted}}",
+      "totalDelta": "淨積壓變化：{{diff}}"
+    },
+    "aging": {
+      "title": "逾期分布與任務帳齡",
+      "tooltip": "按逾期天數分層統計未結逾期任務（不含暫停），並計算目前未結任務的平均開啟天數。",
+      "pausedExcluded": "不含 {{count}} 件暫停任務",
+      "overdueTotal": "目前逾期",
+      "avgOpenAge": "平均帳齡",
+      "maxOverdue": "最長逾期",
+      "daysValue": "{{count}} 天",
+      "allClear": "太棒了！目前沒有逾期未結任務。",
+      "buckets": {
+        "1_3": "逾期 1–3 天",
+        "4_7": "逾期 4–7 天",
+        "8_14": "逾期 8–14 天",
+        "over_14": "逾期 > 14 天"
+      },
+      "longestTitle": "逾期最久待處理任務",
+      "viewAll": "檢視全部（{{count}}）",
+      "lateDaysBadge": "逾期 {{count}} 天"
     },
     "today": {
       "title": "今日待辦事項（{{count}}）",
@@ -943,7 +991,9 @@
     },
     "bottleneck": {
       "title": "瓶頸分布分析",
-      "subtitle": "優先依逾期與未結案件排序 — 點擊直接篩選清單",
+      "subtitle": "優先依逾期與未結案件排序 — 點擊直接篩選未結清單",
+      "legendOverdue": "逾期未結",
+      "legendOpenOnTrack": "未結（未逾期）",
       "unassigned": "未分類",
       "tabs": {
         "dept": "部門",
@@ -956,19 +1006,22 @@
     },
     "leaderboard": {
       "title": "人員效率排行榜",
-      "subtitle": "依如期完成率由高至低排序（不含暫停案件）",
+      "subtitle": "依本期已結案如期率排序（點擊人員檢視任務）",
+      "tooltip": "僅統計所選週期內已結案任務（不含暫停）。公式：如期結案 / 本期已結案總數。",
       "filterPlaceholder": "篩選人員（多位以逗號分隔）...",
-      "empty": "無符合條件的人員。"
+      "empty": "本期暫無已結案人員。"
     },
     "posts": {
       "companyTitle": "各部門發帖數量趨勢",
       "companySubtitle": "依發帖人部門統計（自動拆分案件僅算一帖）",
       "companyRankingTitle": "發帖數量前 20 名（附 KPI 分數）",
       "deptTitle": "部門每人發帖趨勢",
-      "deptSubtitle": "顯示前 12 位成員（虛線為部門合計）",
+      "deptSubtitle": "部門成員發帖趨勢（虛線為部門合計）",
       "deptRankingTitle": "部門人員發帖排行（附 KPI 分數）",
       "totalLine": "合計",
       "totalPosts": "共 {{count}} 帖",
+      "showTopSeries": "收合前 4 名",
+      "showAllSeries": "顯示全部（{{count}}）",
       "noPermission": "您沒有檢視發帖趨勢的讀取權限。",
       "emptyChart": "此期間尚無發帖資料。",
       "emptyRanking": "尚無排行資料。",
@@ -1006,21 +1059,27 @@
       },
       "response1h": {
         "title": "本月 1 小時響應明細",
+        "titleWithPeriod": "1 小時響應明細（{{period}}）",
         "pass": "達標（≤ 60 分鐘）",
         "fail": "未達標（> 60 分鐘）",
         "none": "尚未響應",
         "mins": "{{mins}} 分鐘"
+      },
+      "aging": {
+        "title": "{{bucket}}任務（{{count}}）"
       }
     },
     "dept": {
       "title": "部門儀表板",
-      "subtitle": "部門案件概況、人員負載與每人發帖熱度矩陣",
+      "subtitle": "部門案件概況、人員狀態矩陣與發帖熱度表",
       "selectLabel": "選擇部門",
       "includeSub": "含下層 OU",
       "viewScopeLink": "可觀看範圍",
       "scopeSummary": "涵蓋 {{depts}} 個部門 · 相關 {{matched}} / {{total}} 件",
       "peopleLoadTitle": "人員未結負載",
       "peopleLoadEmpty": "暫無受理人資料。",
+      "statusMatrixTitle": "人員狀態矩陣",
+      "statusMatrixHint": "點擊人員或數字即可篩選對應清單",
       "metrics": {
         "total": "總數",
         "progress": "處理中",
@@ -1029,11 +1088,15 @@
         "ontime": "如期結案",
         "late": "逾期完成",
         "dueToday": "今日到期",
-        "paused": "暫停"
+        "paused": "暫停",
+        "completed": "已結案",
+        "openTotal": "未結總計"
       },
       "heatmapTitle": "部門每人發帖熱度表（{{count}}）",
       "heatmapFilterPlaceholder": "搜尋人員姓名或帳號...",
       "heatmapEmpty": "無符合人員。",
+      "heatmapLegendLow": "少",
+      "heatmapLegendHigh": "多",
       "heatmapCols": {
         "total": "合計",
         "avg": "平均",

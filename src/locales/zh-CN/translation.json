@@ -910,20 +910,68 @@
       "quarter": "本季",
       "year": "本年"
     },
+    "scopeBadge": {
+      "live": "实时"
+    },
+    "tooltips": {
+      "open": "当前尚未结案的任务总数（含暂停任务）。",
+      "overdue": "当前已逾期且未结案的任务数（不含暂停）。如期率 = 如期结案 / 已结案总数。",
+      "dueToday": "今日到期且未结案的任务数（不含暂停）。",
+      "periodFlow": "所选周期（{{start}} ~ {{end}}）内新增与结案的任务数。净积压 = 新增 − 结案。",
+      "response1h": "所选周期内新增任务在 60 分钟内首次响应的达标率（分母为已响应任务数）。"
+    },
     "kpi": {
       "open": "处理中",
       "openSub": "暂停: {{paused}} · 总计: {{total}}",
       "overdue": "逾期未结",
       "ontimeSub": "如期率: {{rate}}%",
+      "ontimeSubWithBase": "如期率: {{rate}}%（{{done}} 件已结）",
       "noCompleted": "尚无已结案",
       "dueToday": "今日到期",
       "completedSub": "已结: {{done}}（逾期 {{late}}）",
-      "periodFlow": "本期新增 / 结案",
-      "backlogUp": "积压增加 +{{count}}",
-      "backlogDown": "积压减少 -{{count}}",
+      "periodFlow": "工作流量",
+      "createdLabel": "新增",
+      "completedLabel": "结案",
+      "clearanceLabel": "清结率",
+      "prevDeltaShort": "上期 {{diff}}",
+      "backlogUp": "积压 +{{count}}",
+      "backlogDown": "积压 -{{count}}",
       "backlogFlat": "积压持平",
       "response1h": "1H 响应率",
-      "response1hSub": "本月: {{pass}}/{{total}}"
+      "response1hSub": "本月: {{pass}}/{{total}}",
+      "response1hSubFull": "达标 {{pass}}/{{total}} · {{none}} 未响应"
+    },
+    "flowTrend": {
+      "title": "新增与结案趋势",
+      "tooltip": "按周或按月对比新增与结案任务数。括号内为净积压变化（新增 − 结案）。",
+      "clickHint": "· 点击柱体查看任务明细",
+      "granLabel": "流量趋势粒度",
+      "gran": {
+        "week": "近 8 周",
+        "month": "近 6 月"
+      },
+      "empty": "此期间暂无流量数据。",
+      "summaryLine": "期均新增 {{avgCreated}} · 期均结案 {{avgCompleted}}",
+      "totalDelta": "净积压变化：{{diff}}"
+    },
+    "aging": {
+      "title": "逾期分布与任务账龄",
+      "tooltip": "按逾期天数分层统计未结逾期任务（不含暂停），并计算当前未结任务的平均开启天数。",
+      "pausedExcluded": "不含 {{count}} 件暂停任务",
+      "overdueTotal": "当前逾期",
+      "avgOpenAge": "平均账龄",
+      "maxOverdue": "最长逾期",
+      "daysValue": "{{count}} 天",
+      "allClear": "太棒了！当前没有逾期未结任务。",
+      "buckets": {
+        "1_3": "逾期 1–3 天",
+        "4_7": "逾期 4–7 天",
+        "8_14": "逾期 8–14 天",
+        "over_14": "逾期 > 14 天"
+      },
+      "longestTitle": "逾期最久待处理任务",
+      "viewAll": "查看全部（{{count}}）",
+      "lateDaysBadge": "逾期 {{count}} 天"
     },
     "today": {
       "title": "今日待办事项（{{count}}）",
@@ -943,7 +991,9 @@
     },
     "bottleneck": {
       "title": "瓶颈分布分析",
-      "subtitle": "优先按逾期与未结案件排序 — 点击直接筛选清单",
+      "subtitle": "优先按逾期与未结案件排序 — 点击直接筛选未结清单",
+      "legendOverdue": "逾期未结",
+      "legendOpenOnTrack": "未结（未逾期）",
       "unassigned": "未分类",
       "tabs": {
         "dept": "部门",
@@ -956,19 +1006,22 @@
     },
     "leaderboard": {
       "title": "人员效率排行榜",
-      "subtitle": "按如期完成率由高至低排序（不含暂停案件）",
+      "subtitle": "按本期已结案如期率排序（点击人员查看任务）",
+      "tooltip": "仅统计所选周期内已结案任务（不含暂停）。公式：如期结案 / 本期已结案总数。",
       "filterPlaceholder": "筛选人员（多位用逗号分隔）...",
-      "empty": "无符合条件的人员。"
+      "empty": "本期暂无已结案人员。"
     },
     "posts": {
       "companyTitle": "各部门发帖数量趋势",
       "companySubtitle": "按发帖人部门统计（自动拆分案件仅算一帖）",
       "companyRankingTitle": "发帖数量前 20 名（附 KPI 分数）",
       "deptTitle": "部门每人发帖趋势",
-      "deptSubtitle": "显示前 12 位成员（虚线为部门合计）",
+      "deptSubtitle": "部门成员发帖趋势（虚线为部门合计）",
       "deptRankingTitle": "部门人员发帖排行（附 KPI 分数）",
       "totalLine": "合计",
       "totalPosts": "共 {{count}} 帖",
+      "showTopSeries": "收合前 4 名",
+      "showAllSeries": "显示全部（{{count}}）",
       "noPermission": "您没有查看发帖趋势的读取权限。",
       "emptyChart": "此期间尚无发帖数据。",
       "emptyRanking": "尚无排行数据。",
@@ -1006,21 +1059,27 @@
       },
       "response1h": {
         "title": "本月 1 小时响应明细",
+        "titleWithPeriod": "1 小时响应明细（{{period}}）",
         "pass": "达标（≤ 60 分钟）",
         "fail": "未达标（> 60 分钟）",
         "none": "尚未响应",
         "mins": "{{mins}} 分钟"
+      },
+      "aging": {
+        "title": "{{bucket}}任务（{{count}}）"
       }
     },
     "dept": {
       "title": "部门仪表板",
-      "subtitle": "部门案件概况、人员负载与每人发帖热度矩阵",
+      "subtitle": "部门案件概况、人员状态矩阵与发帖热度表",
       "selectLabel": "选择部门",
       "includeSub": "含下层 OU",
       "viewScopeLink": "可观看范围",
       "scopeSummary": "涵盖 {{depts}} 个部门 · 相关 {{matched}} / {{total}} 件",
       "peopleLoadTitle": "人员未结负载",
       "peopleLoadEmpty": "暂无受理人数据。",
+      "statusMatrixTitle": "人员状态矩阵",
+      "statusMatrixHint": "点击人员或数字即可筛选对应清单",
       "metrics": {
         "total": "总数",
         "progress": "处理中",
@@ -1029,11 +1088,15 @@
         "ontime": "如期结案",
         "late": "逾期完成",
         "dueToday": "今日到期",
-        "paused": "暂停"
+        "paused": "暂停",
+        "completed": "已结案",
+        "openTotal": "未结总计"
       },
       "heatmapTitle": "部门每人发帖热度表（{{count}}）",
       "heatmapFilterPlaceholder": "搜索人员姓名或账号...",
       "heatmapEmpty": "无符合人员。",
+      "heatmapLegendLow": "少",
+      "heatmapLegendHigh": "多",
       "heatmapCols": {
         "total": "合计",
         "avg": "平均",

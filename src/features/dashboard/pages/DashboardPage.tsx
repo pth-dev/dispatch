@@ -25,13 +25,16 @@ import { usePostStats } from '../api/queries'
 import { DashboardBottleneckTabs } from '../components/DashboardBottleneckTabs'
 import {
   DashboardDrilldownModals,
-  type DashboardModalType,
+  type DashboardModalState,
 } from '../components/DashboardDrilldownModals'
+import { DashboardFlowTrendChart } from '../components/DashboardFlowTrendChart'
 import { DashboardKpiRow } from '../components/DashboardKpiRow'
 import { DashboardLeaderboard } from '../components/DashboardLeaderboard'
+import { DashboardOverdueAgingCard } from '../components/DashboardOverdueAgingCard'
 import { DashboardPostTrendSection } from '../components/DashboardPostTrendSection'
 import { DashboardTodayTodoCard } from '../components/DashboardTodayTodoCard'
 import { useDashboardComputations } from '../hooks/use-dashboard-data'
+import { buildTaskDrilldownUrl, type FlowTrendGranularity } from '../utils/dashboard-charts'
 import {
   readStoredPostGranularity,
   type DashboardPeriod,
@@ -47,8 +50,9 @@ export function DashboardPage() {
 
   const [scopeMode, setScopeMode] = React.useState<DashboardScopeMode>('all')
   const [period, setPeriod] = React.useState<DashboardPeriod>('month')
+  const [flowTrendGran, setFlowTrendGran] = React.useState<FlowTrendGranularity>('week')
   const [includeAllToday, setIncludeAllToday] = React.useState(false)
-  const [activeModal, setActiveModal] = React.useState<DashboardModalType>(null)
+  const [modalState, setModalState] = React.useState<DashboardModalState>(null)
   const [postGran, setPostGran] = React.useState<PostGranularity>(() =>
     readStoredPostGranularity(COMPANY_GRAN_KEY),
   )
@@ -83,6 +87,7 @@ export function DashboardPage() {
     user,
     scopeMode,
     period,
+    flowTrendGran,
     includeAllToday,
     emptyLabel: t('dashboard.bottleneck.unassigned'),
   })
@@ -90,7 +95,7 @@ export function DashboardPage() {
   const handleGranChange = (next: PostGranularity) => {
     setPostGran(next)
     try {
-      localStorage.setItem('dispatch.postGran', next)
+      localStorage.setItem(COMPANY_GRAN_KEY, next)
     } catch {
       // ignore storage errors
     }
@@ -103,6 +108,29 @@ export function DashboardPage() {
   }
 
   const isFetching = tasksQuery.isFetching || postStatsQuery.isFetching
+  const overdueHref = buildTaskDrilldownUrl(APP_ROUTES.TASKS, {
+    scope: scopeMode,
+    status: 'delayed_pending',
+  })
+
+  const handleClickOpen = () => {
+    if (scopeMode === 'mine') {
+      setModalState({ type: 'my_pending' })
+      return
+    }
+    navigate(buildTaskDrilldownUrl(APP_ROUTES.TASKS, { scope: 'all', status: 'incomplete' }))
+  }
+
+  const handleClickDueToday = () => {
+    navigate(
+      buildTaskDrilldownUrl(APP_ROUTES.TASKS, {
+        scope: scopeMode,
+        status: 'incomplete',
+        fromDate: todayStr,
+        toDate: todayStr,
+      }),
+    )
+  }
 
   return (
     <PageContainer>
@@ -134,7 +162,7 @@ export function DashboardPage() {
         {tasksQuery.isLoading ? (
           <div role="status" className="space-y-4">
             <span className="sr-only">{t('common.loading')}</span>
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-6">
               {Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className="h-24 motion-safe:animate-pulse rounded-xl border border-border bg-card" />
               ))}
@@ -153,18 +181,28 @@ export function DashboardPage() {
               period={period}
               onPeriodChange={setPeriod}
               snapshot={computed.snapshot}
-              periodFlow={computed.periodFlow}
+              periodComparison={computed.periodComparison}
               response1h={computed.response1h}
-              onClickOpen={() =>
-                scopeMode === 'mine'
-                  ? setActiveModal('my_pending')
-                  : navigate(`${APP_ROUTES.TASKS}?status=incomplete`)
-              }
-              onClickOverdue={() => navigate(`${APP_ROUTES.TASKS}?status=delayed_pending`)}
-              onClickDueToday={() => navigate(`${APP_ROUTES.TASKS}?flag=recur_today`)}
-              onClickPeriod={() => setActiveModal('period')}
-              onClickResponse1h={() => setActiveModal('response_1h')}
+              onClickOpen={handleClickOpen}
+              onClickOverdue={() => navigate(overdueHref)}
+              onClickDueToday={handleClickDueToday}
+              onClickPeriodTab={(initialTab) => setModalState({ type: 'period', initialTab })}
+              onClickResponse1h={() => setModalState({ type: 'response_1h' })}
             />
+
+            <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+              <DashboardFlowTrendChart
+                summary={computed.flowTrend}
+                gran={flowTrendGran}
+                onGranChange={setFlowTrendGran}
+                onSelectPoint={(point) => setModalState({ type: 'trend_bucket', point })}
+              />
+              <DashboardOverdueAgingCard
+                stats={computed.overdueAging}
+                viewAllHref={overdueHref}
+                onSelectBucket={(bucket) => setModalState({ type: 'aging_bucket', bucket })}
+              />
+            </div>
 
             <DashboardTodayTodoCard
               groups={computed.todayGroups}
@@ -173,9 +211,9 @@ export function DashboardPage() {
               onToggleIncludeAll={() => setIncludeAllToday((v) => !v)}
             />
 
-            <DashboardBottleneckTabs breakdowns={computed.breakdowns} />
+            <DashboardBottleneckTabs breakdowns={computed.breakdowns} scopeMode={scopeMode} />
 
-            <DashboardLeaderboard rows={computed.ranking} />
+            <DashboardLeaderboard rows={computed.ranking} period={period} />
 
             <DashboardPostTrendSection
               title={t('dashboard.posts.companyTitle')}
@@ -197,8 +235,9 @@ export function DashboardPage() {
       </PageContainerBody>
 
       <DashboardDrilldownModals
-        activeModal={activeModal}
-        onClose={() => setActiveModal(null)}
+        modalState={modalState}
+        onClose={() => setModalState(null)}
+        period={period}
         periodFlow={computed.periodFlow}
         myPendingTasks={computed.myPendingTasks}
         response1h={computed.response1h}

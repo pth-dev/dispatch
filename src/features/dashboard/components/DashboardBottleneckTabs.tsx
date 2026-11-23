@@ -5,22 +5,36 @@ import { useTranslation } from 'react-i18next'
 import { HorizontalBarRow } from '@/components/ui/horizontal-bar-row'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { APP_ROUTES } from '@/constants/app-routes'
-import type { BottleneckBreakdowns, BottleneckRow, BottleneckTabKey } from '../utils/dashboard-domain'
+import { buildTaskDrilldownUrl } from '../utils/dashboard-charts'
+import type {
+  BottleneckBreakdowns,
+  BottleneckRow,
+  BottleneckTabKey,
+  DashboardScopeMode,
+} from '../utils/dashboard-domain'
 
 interface DashboardBottleneckTabsProps {
   breakdowns: BottleneckBreakdowns
+  scopeMode: DashboardScopeMode
+  department?: string
 }
 
 const TAB_KEYS: readonly BottleneckTabKey[] = ['dept', 'site', 'level', 'type']
 
-function buildFilterUrl(tab: BottleneckTabKey, row: BottleneckRow): string {
-  const qs = new URLSearchParams()
-  if (tab === 'dept' && row.filterValue) qs.set('dept', row.filterValue)
-  if (tab === 'site' && row.filterValue) qs.set('site', row.filterValue)
-  if (tab === 'level' && row.filterValue) qs.set('level', row.filterValue)
-  if (tab === 'type' && row.filterValue) qs.set('type', row.filterValue)
-  const query = qs.toString()
-  return query ? `${APP_ROUTES.TASKS}?${query}` : APP_ROUTES.TASKS
+function buildRowUrl(
+  tab: BottleneckTabKey,
+  row: BottleneckRow,
+  scopeMode: DashboardScopeMode,
+  department?: string,
+): string {
+  return buildTaskDrilldownUrl(APP_ROUTES.TASKS, {
+    scope: scopeMode,
+    department: tab === 'dept' ? row.filterValue || department : department,
+    site: tab === 'site' ? row.filterValue : undefined,
+    levelRaw: tab === 'level' ? row.filterValue : undefined,
+    taskType: tab === 'type' ? row.filterValue : undefined,
+    status: row.open > 0 ? 'incomplete' : undefined,
+  })
 }
 
 function BottleneckList({
@@ -59,7 +73,11 @@ function BottleneckList({
   )
 }
 
-export function DashboardBottleneckTabs({ breakdowns }: DashboardBottleneckTabsProps) {
+export function DashboardBottleneckTabs({
+  breakdowns,
+  scopeMode,
+  department,
+}: DashboardBottleneckTabsProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = React.useState<BottleneckTabKey>('dept')
@@ -72,21 +90,32 @@ export function DashboardBottleneckTabs({ breakdowns }: DashboardBottleneckTabsP
         className="space-y-3"
       >
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div className="space-y-0.5">
-            <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+          <div className="space-y-1">
+            <div className="flex flex-wrap items-center gap-1.5">
               <Flame className="size-4 text-warning" aria-hidden="true" />
-              <span>{t('dashboard.bottleneck.title')}</span>
-            </h2>
-            <p className="text-xs text-muted-foreground">{t('dashboard.bottleneck.subtitle')}</p>
+              <h2 className="text-sm font-semibold text-foreground">
+                {t('dashboard.bottleneck.title')}
+              </h2>
+              <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                {t('dashboard.scopeBadge.live')}
+              </span>
+            </div>
+            <div className="flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <span className="size-2.5 rounded-xs bg-destructive" aria-hidden="true" />
+                <span>{t('dashboard.bottleneck.legendOverdue')}</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="size-2.5 rounded-xs bg-primary" aria-hidden="true" />
+                <span>{t('dashboard.bottleneck.legendOpenOnTrack')}</span>
+              </span>
+              <span>{t('dashboard.bottleneck.subtitle')}</span>
+            </div>
           </div>
 
           <TabsList className="h-auto flex-wrap gap-1 p-1">
             {TAB_KEYS.map((key) => (
-              <TabsTrigger
-                key={key}
-                value={key}
-                className="min-h-11 lg:min-h-8 px-2.5 text-xs"
-              >
+              <TabsTrigger key={key} value={key} className="min-h-11 lg:min-h-8 px-2.5 text-xs">
                 {t(`dashboard.bottleneck.tabs.${key}`)} ({breakdowns[key].length})
               </TabsTrigger>
             ))}
@@ -106,7 +135,9 @@ export function DashboardBottleneckTabs({ breakdowns }: DashboardBottleneckTabsP
                   total: row.total,
                 })
               }
-              onSelectRow={(tabKey, row) => navigate(buildFilterUrl(tabKey, row))}
+              onSelectRow={(tabKey, row) =>
+                navigate(buildRowUrl(tabKey, row, scopeMode, department))
+              }
             />
           </TabsContent>
         ))}
