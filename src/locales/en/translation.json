@@ -18,7 +18,9 @@
     "departments": "Departments",
     "account": "Account & OU scope",
     "profile": "Personal settings",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "kpi": "People KPI Table",
+    "kpiBrief": "Supervisor KPI Board"
   },
   "role": {
     "user": "Member",
@@ -1103,6 +1105,259 @@
         "latest": "Latest",
         "trend": "Trend"
       }
+    }
+  },
+  "kpi": {
+    "title": "People KPI Table",
+    "scopeAll": "Scope: All departments (Superadmin / Executives)",
+    "scopeDept": "Scope: Tasks related to {{dept}}",
+    "unregistered": "(Unregistered)",
+    "formulaBanner": "KPI Score (0–100) = (Final Completion Rate × 60%) + (On-time Rate × 40%). Denominator excludes paused tasks (On-time = 100, Late = 60, Incomplete = 0; 1H Response & Late Rate are reference-only). Month/Quarter/Year use Final Completion Date. Recurring tasks are counted per cycle; paused tasks are excluded. Grades: A ≥ 90, B ≥ 80, C ≥ 60, D < 60.",
+    "actions": {
+      "refresh": "Recalculate",
+      "print": "Print Selected",
+      "export": "Export",
+      "exportSummaryCsv": "Export KPI Summary CSV",
+      "exportDetailsCsv": "Export Task Details CSV",
+      "copyTsv": "Copy Table (TSV)",
+      "openBrief": "Supervisor Board"
+    },
+    "filters": {
+      "personLabel": "Username / Name (comma-separated)",
+      "personPlaceholder": "e.g. tom, Nguyen Van A",
+      "deptLabel": "Department",
+      "allDepts": "All departments",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "basisLabel": "Calculation Basis",
+      "sortLabel": "Sort By",
+      "quickRange": "Quick Range:",
+      "showEmpty": "Show people with no tasks",
+      "printWithDetail": "Include task details when printing",
+      "reset": "Reset"
+    },
+    "basis": {
+      "final": "Final Completion Date (default)",
+      "created": "Created Date (legacy)"
+    },
+    "quickRange": {
+      "month": "This Month",
+      "quarter": "This Quarter",
+      "year": "This Year"
+    },
+    "sort": {
+      "score": "KPI Score (High → Low)",
+      "total": "Total Tasks (High → Low)",
+      "completion": "Completion Rate (High → Low)",
+      "ontime": "On-time Rate (High → Low)",
+      "overdue": "Overdue Open (High → Low)",
+      "late": "Late Completed Rate (High → Low)",
+      "response": "1H Response Rate (High → Low)",
+      "username": "Username (A → Z)"
+    },
+    "summary": {
+      "people": "People",
+      "total": "Total Tasks (Person-Tasks)",
+      "completionRate": "Final Completion ×60%",
+      "ontimeRate": "On-time Rate ×40%",
+      "lateRate": "Late Rate (Ref)",
+      "response1h": "1H Response (Ref)",
+      "paused": "Paused (Excluded)",
+      "avgScore": "Average KPI Score"
+    },
+    "table": {
+      "heading": "People KPI Summary",
+      "selectedCount": "Selected {{selected}} / {{total}}",
+      "selectAll": "Select All",
+      "deselectAll": "Clear Selection",
+      "rank": "Rank",
+      "username": "Username",
+      "fullname": "Full Name",
+      "dept": "Dept",
+      "total": "Total",
+      "completed": "Done",
+      "completionRate": "Completion ×60%",
+      "finalPart": "Completion Pts (×60%)",
+      "ontime": "On-time",
+      "ontimeRate": "On-time ×40%",
+      "ontimePart": "On-time Pts (×40%)",
+      "late": "Late Done",
+      "lateRate": "Late Rate",
+      "pending": "In Progress",
+      "overdue": "Overdue",
+      "response1h": "1H Resp (Ref)",
+      "paused": "Paused",
+      "score": "KPI Score",
+      "grade": "Grade",
+      "detail": "Details",
+      "expand": "Expand",
+      "collapse": "Collapse",
+      "empty": "No matching people found"
+    },
+    "grade": {
+      "A": "Excellent",
+      "B": "Good",
+      "C": "Pass",
+      "D": "Needs Improvement",
+      "-": "No Tasks"
+    },
+    "taskState": {
+      "paused": "Paused (Excluded)",
+      "ontime": "On-time",
+      "late": "Late Done",
+      "overdue": "Overdue",
+      "progress": "In Progress"
+    },
+    "detail": {
+      "empty": "No tasks in this date range",
+      "taskId": "Task ID",
+      "title": "Title",
+      "nature": "Type",
+      "oneTime": "One-time",
+      "recurringCycle": "Recurring Cycle {{no}} {{date}}",
+      "cycleTag": "Cycle {{no}} {{date}}",
+      "created": "Created",
+      "due": "Due Date",
+      "finalDue": "Expected Final Due",
+      "unlimited": "Unlimited",
+      "overdueTag": "Overdue",
+      "finish": "Finished",
+      "basisDate": "KPI Date",
+      "progress": "Progress",
+      "status": "Status",
+      "paused": "Paused",
+      "pausedYes": "Yes (Excluded)",
+      "pausedNo": "No",
+      "points": "Points",
+      "firstResponse": "First Response (mins)"
+    },
+    "print": {
+      "filterLine": "Range: {{start}} ~ {{end}} | Basis: {{basis}} | Dept: {{dept}}{{query}}",
+      "metaLine": "Printed by: {{printer}} | Time: {{time}} | Count: {{count}}",
+      "signPrepared": "Prepared by",
+      "signReviewed": "Reviewed by",
+      "signApproved": "Approved by"
+    },
+    "toast": {
+      "invalidRange": "Start date cannot be later than end date",
+      "selectToPrint": "Select at least one person to print",
+      "noData": "No data to export",
+      "exported": "CSV exported",
+      "copied": "Copied table ({{count}} people) to clipboard",
+      "copyFailed": "Failed to copy to clipboard",
+      "refreshed": "Data refreshed"
+    }
+  },
+  "kpiBrief": {
+    "title": "Supervisor KPI Board",
+    "subtitle": "Track monthly completion rates, overdue items, and assignee reports",
+    "meTag": "Me",
+    "lowSample": "Low sample",
+    "unassigned": "Unassigned",
+    "empty": "No tasks in this period",
+    "clearFilter": "Clear filter",
+    "syncedAt": "Synced: {{time}} · Auto-refresh every 3 min",
+    "views": {
+      "label": "View",
+      "dept": "My Department",
+      "deptWithName": "My Dept · {{dept}}",
+      "me": "Personal",
+      "all": "All Departments"
+    },
+    "actions": {
+      "copyTable": "Copy Table",
+      "exportPeopleCsv": "Export People Completion CSV",
+      "exportUnfinishedCsv": "Export Unfinished Tasks CSV",
+      "openFullKpi": "Full KPI Table",
+      "newTask": "New Task",
+      "jumpUnfinished": "View Unfinished",
+      "jumpFinished": "View Completed"
+    },
+    "filters": {
+      "year": "Year",
+      "yearItem": "Year {{year}}",
+      "allYears": "All Years",
+      "allMonths": "All",
+      "monthShort": "M{{month}}",
+      "monthCount": "{{count}} tasks",
+      "people": "People:",
+      "allPeople": "All"
+    },
+    "status": {
+      "ontime": "On-time",
+      "late": "Late Done",
+      "overdue": "Overdue Open",
+      "progress": "In Progress",
+      "paused": "Paused (Timer Stopped)"
+    },
+    "cards": {
+      "total": "Total Tasks",
+      "completionRate": "Completion Rate",
+      "doneSub": "Done {{done}} / {{total}}",
+      "ontimeRate": "On-time Rate",
+      "ontimeSub": "On-time {{count}} tasks",
+      "late": "Late Completed",
+      "lateSub": "Completed after planned due date",
+      "unfinished": "Unfinished",
+      "unfinishedSub": "Overdue {{overdue}} · Paused {{paused}} · In progress {{progress}}"
+    },
+    "donut": {
+      "title": "Task Status Distribution",
+      "subtitle": "Grouped by planned due month. Click an unfinished slice to filter below."
+    },
+    "people": {
+      "title": "Completion Rate by Person",
+      "subtitle": "Green = on-time, Orange = late done. Under 3 tasks marked \"Low sample\". Click a person to filter.",
+      "mobileStats": "Total {{total}} · On-time {{ontime}} · Late {{late}} · Overdue {{overdue}} · On-time {{ontimeRate}}%"
+    },
+    "table": {
+      "person": "Assignee",
+      "total": "Tasks",
+      "completionRate": "Completion",
+      "ontimeRate": "On-time",
+      "note": "Note"
+    },
+    "unfinished": {
+      "title": "Unfinished Tasks",
+      "count": "{{count}} unfinished",
+      "empty": "No unfinished tasks in this selection"
+    },
+    "finished": {
+      "title": "Completed Tasks",
+      "all": "All",
+      "count": "{{count}} completed",
+      "countLimited": "{{count}} completed (showing latest {{limit}})",
+      "hint": "Click a task to inspect details and assignee-only progress reports (system messages filtered out).",
+      "empty": "No completed tasks in this period"
+    },
+    "cases": {
+      "id": "ID",
+      "title": "Title",
+      "assignee": "Assignee",
+      "status": "Status",
+      "planDate": "Planned Due",
+      "finishDate": "Actual Finish",
+      "overdueDays": "Days Late",
+      "overdueDaysShort": "{{days}}d late",
+      "progress": "Progress",
+      "reqDept": "Req Dept",
+      "lastReport": "Latest Assignee Report",
+      "archivedCycle": "Archived cycle",
+      "noReport": "No assignee report yet"
+    },
+    "modal": {
+      "assignedUnit": "Assigned Unit",
+      "reporter": "Reporter",
+      "taskType": "Task Type",
+      "precautions": "Purpose / Efficiency / Precautions",
+      "content": "Task Details",
+      "emptyContent": "(No content)",
+      "reportsTitle": "Assignee Reports Summary",
+      "reportsCount": "{{kept}} reports ({{total}} total, {{filtered}} filtered)",
+      "reportsHint": "System messages and non-assignee comments have been filtered out, ordered chronologically.",
+      "reportsError": "Failed to load reports",
+      "reportsEmpty": "No assignee reports found",
+      "openOriginal": "Open Original Task"
     }
   }
 }

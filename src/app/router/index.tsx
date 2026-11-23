@@ -19,6 +19,8 @@ const TaskCreatePage = React.lazy(() => import('@/features/tasks/pages/TaskCreat
 const MessagesPage = React.lazy(() => import('@/features/messages/pages/MessagesPage'))
 const LessonsPage = React.lazy(() => import('@/features/lessons/pages/LessonsPage'))
 const TodoPage = React.lazy(() => import('@/features/todo/pages/TodoPage'))
+const KpiPeoplePage = React.lazy(() => import('@/features/kpi/pages/KpiPeoplePage'))
+const KpiBriefPage = React.lazy(() => import('@/features/kpi/pages/KpiBriefPage'))
 const AccountPage = React.lazy(() => import('@/features/account/pages/AccountPage'))
 const ProfilePage = React.lazy(() => import('@/features/profile/pages/ProfilePage'))
 const TaskCardFixturePreviewPage = import.meta.env.DEV
@@ -137,6 +139,26 @@ export const router = createBrowserRouter([
             <LessonsPage />
           </RequireMenuPerm>
         ),
+      },
+      {
+        path: APP_ROUTES.KPI,
+        element: (
+          <RequireMenuPerm perm="kpi_people" level="r">
+            <KpiPeoplePage />
+          </RequireMenuPerm>
+        ),
+      },
+      {
+        path: APP_ROUTES.KPI_BRIEF,
+        element: (
+          <RequireMenuPerm perm="kpi_brief" level="r">
+            <KpiBriefPage />
+          </RequireMenuPerm>
+        ),
+      },
+      {
+        path: '/sla',
+        element: <Navigate to={APP_ROUTES.KPI} replace />,
       },
       {
         path: APP_ROUTES.ACCOUNT,

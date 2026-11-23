@@ -18,7 +18,9 @@
     "departments": "部門",
     "account": "帳號與權限範圍",
     "profile": "個人設定",
-    "logout": "登出"
+    "logout": "登出",
+    "kpi": "人員KPI 一覽表",
+    "kpiBrief": "主管看板 (KPI 精簡版)"
   },
   "role": {
     "user": "一般成員",
@@ -1103,6 +1105,259 @@
         "latest": "最近一期",
         "trend": "趨勢"
       }
+    }
+  },
+  "kpi": {
+    "title": "人員KPI 一覽表",
+    "scopeAll": "統計範圍：全部部門單位（超級管理員 / 公司高層）",
+    "scopeDept": "統計範圍：{{dept}} 單位相關任務",
+    "unregistered": "(未註冊)",
+    "formulaBanner": "綜合 KPI 總分（0–100）=（最終完成率 × 60%）+（如期率 × 40%）。分母為不含暫停之任務總數（如期 = 100 分、逾期完成 = 60 分、未完成 = 0 分；1H 響應率與逾期完成率僅供參考）。本月 / 本季 / 本年自動以案件最終完成日計算；固定週期逐期計算；暫停中任務不計入 KPI。等級：A ≥ 90、B ≥ 80、C ≥ 60、D < 60。",
+    "actions": {
+      "refresh": "重新統計",
+      "print": "列印所選",
+      "export": "匯出資料",
+      "exportSummaryCsv": "匯出 KPI 彙總 CSV",
+      "exportDetailsCsv": "匯出任務明細 CSV",
+      "copyTsv": "複製表格 (TSV)",
+      "openBrief": "精簡版 (主管看板)"
+    },
+    "filters": {
+      "personLabel": "人員 ID / 姓名（多個以逗號分隔）",
+      "personPlaceholder": "例：tom, 阮文安",
+      "deptLabel": "部門",
+      "allDepts": "全部部門",
+      "startDate": "起始日期",
+      "endDate": "結束日期",
+      "basisLabel": "統計基準",
+      "sortLabel": "排序",
+      "quickRange": "快速區間：",
+      "showEmpty": "顯示無任務人員",
+      "printWithDetail": "列印含任務明細",
+      "reset": "重設篩選"
+    },
+    "basis": {
+      "final": "案件最終完成日（預設）",
+      "created": "建立時間（原規則）"
+    },
+    "quickRange": {
+      "month": "本月",
+      "quarter": "本季",
+      "year": "本年"
+    },
+    "sort": {
+      "score": "KPI 分數（高→低）",
+      "total": "任務總數（多→少）",
+      "completion": "最終完成率（高→低）",
+      "ontime": "如期完成率（高→低）",
+      "overdue": "逾期未結（多→少）",
+      "late": "逾期完成率（高→低）",
+      "response": "1H 響應率（高→低）",
+      "username": "帳號（A→Z）"
+    },
+    "summary": {
+      "people": "統計人數",
+      "total": "任務總數（人次）",
+      "completionRate": "最終完成率 ×60%",
+      "ontimeRate": "如期率 ×40%",
+      "lateRate": "逾期完成率（參考）",
+      "response1h": "1H 響應率（參考）",
+      "paused": "暫停（不計 KPI）",
+      "avgScore": "平均 KPI 分數"
+    },
+    "table": {
+      "heading": "人員 KPI 一覽表",
+      "selectedCount": "已選 {{selected}} / {{total}} 人",
+      "selectAll": "全選",
+      "deselectAll": "取消全選",
+      "rank": "名次",
+      "username": "帳號",
+      "fullname": "姓名",
+      "dept": "部門",
+      "total": "任務總數",
+      "completed": "已完成",
+      "completionRate": "最終完成率 ×60%",
+      "finalPart": "最終完成得分 (×60%)",
+      "ontime": "如期",
+      "ontimeRate": "如期率 ×40%",
+      "ontimePart": "如期得分 (×40%)",
+      "late": "逾期完成",
+      "lateRate": "逾期完成率",
+      "pending": "處理中",
+      "overdue": "逾期未結",
+      "response1h": "1H 響應(參考)",
+      "paused": "暫停(不計)",
+      "score": "KPI 分數",
+      "grade": "等級",
+      "detail": "明細",
+      "expand": "展開",
+      "collapse": "收合",
+      "empty": "沒有符合條件的人員"
+    },
+    "grade": {
+      "A": "優秀",
+      "B": "良好",
+      "C": "合格",
+      "D": "待改進",
+      "-": "無任務"
+    },
+    "taskState": {
+      "paused": "暫停（不計）",
+      "ontime": "如期結案",
+      "late": "逾期完成",
+      "overdue": "逾期未結",
+      "progress": "處理中"
+    },
+    "detail": {
+      "empty": "區間內無任務",
+      "taskId": "任務編號",
+      "title": "標題",
+      "nature": "派案定性",
+      "oneTime": "一次性",
+      "recurringCycle": "固定週期 第 {{no}} 期 {{date}}",
+      "cycleTag": "第 {{no}} 期 {{date}}",
+      "created": "建立",
+      "due": "期限",
+      "finalDue": "預計最終完成日",
+      "unlimited": "不限期",
+      "overdueTag": "逾期",
+      "finish": "完工",
+      "basisDate": "KPI 計入日",
+      "progress": "進度",
+      "status": "狀態",
+      "paused": "暫停",
+      "pausedYes": "是（不計 KPI）",
+      "pausedNo": "否",
+      "points": "單件得分",
+      "firstResponse": "首次響應(分)"
+    },
+    "print": {
+      "filterLine": "統計區間：{{start}} ~ {{end}} ｜ 統計基準：{{basis}} ｜ 部門：{{dept}}{{query}}",
+      "metaLine": "列印人：{{printer}} ｜ 列印時間：{{time}} ｜ 人數：{{count}}",
+      "signPrepared": "製表",
+      "signReviewed": "審核",
+      "signApproved": "核准"
+    },
+    "toast": {
+      "invalidRange": "起始日期不可晚於結束日期",
+      "selectToPrint": "請先勾選要列印的人員",
+      "noData": "沒有可匯出的資料",
+      "exported": "已匯出 CSV 檔案",
+      "copied": "已複製 {{count}} 位人員表格，可直接貼到 Excel",
+      "copyFailed": "複製失敗",
+      "refreshed": "已重新統計"
+    }
+  },
+  "kpiBrief": {
+    "title": "人員KPI 精簡版（主管看板）",
+    "subtitle": "依計畫完成月份追蹤部門完成率、逾期案件與受理人動態回報",
+    "meTag": "我",
+    "lowSample": "樣本少",
+    "unassigned": "未指定受理人",
+    "empty": "此區間沒有案件",
+    "clearFilter": "清除篩選",
+    "syncedAt": "資料同步：{{time}} · 每 3 分鐘自動更新",
+    "views": {
+      "label": "視角",
+      "dept": "部門主管（我）",
+      "deptWithName": "部門主管（我）· {{dept}}",
+      "me": "我個人",
+      "all": "全部部門"
+    },
+    "actions": {
+      "copyTable": "複製表格",
+      "exportPeopleCsv": "匯出人員完成率 CSV",
+      "exportUnfinishedCsv": "匯出未完成案件 CSV",
+      "openFullKpi": "人員 KPI 完整版",
+      "newTask": "新建派案",
+      "jumpUnfinished": "查看未完成案件",
+      "jumpFinished": "查看已完成案件"
+    },
+    "filters": {
+      "year": "年度",
+      "yearItem": "{{year}} 年",
+      "allYears": "全部年度",
+      "allMonths": "全部",
+      "monthShort": "{{month}}月",
+      "monthCount": "{{count}} 件",
+      "people": "人員：",
+      "allPeople": "全部"
+    },
+    "status": {
+      "ontime": "如期完成",
+      "late": "逾期完成",
+      "overdue": "逾期未結",
+      "progress": "進行中（未到期）",
+      "paused": "擱置中（暫停計時）"
+    },
+    "cards": {
+      "total": "案件數",
+      "completionRate": "完成率",
+      "doneSub": "已完成 {{done}} / {{total}}",
+      "ontimeRate": "如期完成率",
+      "ontimeSub": "如期 {{count}} 件",
+      "late": "逾期完成",
+      "lateSub": "已完成但超過計畫日期",
+      "unfinished": "未完成",
+      "unfinishedSub": "逾期 {{overdue}} · 擱置 {{paused}} · 進行中 {{progress}}"
+    },
+    "donut": {
+      "title": "案件狀態分布",
+      "subtitle": "按計畫完成日期所在月份統計；點擊未完成色塊可篩選下方清單。"
+    },
+    "people": {
+      "title": "人員完成率",
+      "subtitle": "綠色為如期完成、橙色為逾期完成；少於 3 件標「樣本少」。點擊人員可篩選整個看板。",
+      "mobileStats": "案件 {{total}} · 如期 {{ontime}} · 逾期完成 {{late}} · 逾期未結 {{overdue}} · 如期率 {{ontimeRate}}%"
+    },
+    "table": {
+      "person": "負責人",
+      "total": "案件數",
+      "completionRate": "完成率",
+      "ontimeRate": "如期率",
+      "note": "備註"
+    },
+    "unfinished": {
+      "title": "未完成案件清單",
+      "count": "共 {{count}} 筆未完成",
+      "empty": "沒有未完成案件"
+    },
+    "finished": {
+      "title": "已完成案件清單",
+      "all": "全部",
+      "count": "共 {{count}} 筆已完成",
+      "countLimited": "共 {{count}} 筆已完成（顯示最新 {{limit}} 筆）",
+      "hint": "點擊案件查看詳細內容與受理人本人之動態回報彙整（已汰除系統訊息）。",
+      "empty": "此區間尚無已完成案件"
+    },
+    "cases": {
+      "id": "編號",
+      "title": "標題",
+      "assignee": "負責人",
+      "status": "狀態",
+      "planDate": "計畫完成日",
+      "finishDate": "實際完成日",
+      "overdueDays": "逾期天數",
+      "overdueDaysShort": "逾期 {{days}} 天",
+      "progress": "進度",
+      "reqDept": "需求單位",
+      "lastReport": "最近一筆動態回報（受理人）",
+      "archivedCycle": "已封存之期別",
+      "noReport": "尚無受理人回報"
+    },
+    "modal": {
+      "assignedUnit": "受理單位",
+      "reporter": "發布人",
+      "taskType": "案件類型",
+      "precautions": "目的／效率／應注意事項",
+      "content": "派案詳細內容",
+      "emptyContent": "（無內容）",
+      "reportsTitle": "動態回報彙整（受理人本人）",
+      "reportsCount": "{{kept}} 筆（全部 {{total}}，已汰除 {{filtered}}）",
+      "reportsHint": "已汰除系統訊息及非受理人之留言，依時間先後整合。",
+      "reportsError": "動態回報讀取失敗",
+      "reportsEmpty": "尚無受理人本人之動態回報",
+      "openOriginal": "開啟原帖子"
     }
   }
 }

@@ -60,6 +60,8 @@ describe('getDefaultLandingRoute', () => {
         todo: 'sr',
         messages: '',
         learnknow: '',
+        kpi_people: '',
+        kpi_brief: '',
       },
     })
     expect(route).toBe(APP_ROUTES.TODO)
@@ -76,6 +78,8 @@ describe('getDefaultLandingRoute', () => {
         todo: '',
         messages: '',
         learnknow: '',
+        kpi_people: '',
+        kpi_brief: '',
       },
     })
     expect(route).toBe(APP_ROUTES.ACCOUNT)

@@ -1,8 +1,10 @@
 import {
+  Award,
   Building2,
   CalendarCheck2,
   GraduationCap,
   LayoutDashboard,
+  LayoutPanelTop,
   ListChecks,
   MessagesSquare,
   UserCog,
@@ -74,6 +76,20 @@ export const MAIN_NAV_ITEMS: NavItemConfig[] = [
     href: APP_ROUTES.LESSONS,
     icon: GraduationCap,
     menuPermKey: 'learnknow',
+  },
+  {
+    id: 'kpi',
+    titleKey: 'nav.kpi',
+    href: APP_ROUTES.KPI,
+    icon: Award,
+    menuPermKey: 'kpi_people',
+  },
+  {
+    id: 'kpi-brief',
+    titleKey: 'nav.kpiBrief',
+    href: APP_ROUTES.KPI_BRIEF,
+    icon: LayoutPanelTop,
+    menuPermKey: 'kpi_brief',
   },
   {
     id: 'account',

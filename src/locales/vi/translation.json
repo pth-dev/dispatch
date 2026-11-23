@@ -18,7 +18,9 @@
     "departments": "Phòng ban",
     "account": "Tài khoản & Phạm vi OU",
     "profile": "Cài đặt cá nhân",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "kpi": "Bảng KPI nhân viên",
+    "kpiBrief": "Bảng quản lý KPI"
   },
   "role": {
     "user": "Thành viên",
@@ -1103,6 +1105,259 @@
         "latest": "Kỳ gần nhất",
         "trend": "Xu hướng"
       }
+    }
+  },
+  "kpi": {
+    "title": "Bảng KPI nhân viên",
+    "scopeAll": "Phạm vi thống kê: Tất cả phòng ban (Siêu quản trị / Ban lãnh đạo)",
+    "scopeDept": "Phạm vi thống kê: Nhiệm vụ liên quan phòng ban {{dept}}",
+    "unregistered": "(Chưa có tài khoản)",
+    "formulaBanner": "Điểm KPI (0–100) = (Tỷ lệ HT cuối × 60%) + (Tỷ lệ đúng hạn × 40%). Mẫu số là tổng NV không tạm dừng (HT đúng hạn = 100, HT trễ = 60, chưa HT = 0; Phản hồi 1H & HT trễ chỉ tham khảo). Tháng/Quý/Năm tự động tính theo ngày HT cuối của NV. NV định kỳ tính từng kỳ; NV tạm dừng không tính KPI. Xếp loại: A ≥ 90, B ≥ 80, C ≥ 60, D < 60.",
+    "actions": {
+      "refresh": "Thống kê lại",
+      "print": "In mục đã chọn",
+      "export": "Xuất dữ liệu",
+      "exportSummaryCsv": "Xuất CSV tổng hợp KPI",
+      "exportDetailsCsv": "Xuất CSV chi tiết nhiệm vụ",
+      "copyTsv": "Sao chép bảng (TSV)",
+      "openBrief": "Bản rút gọn (Quản lý)"
+    },
+    "filters": {
+      "personLabel": "Tài khoản / Họ tên (cách bằng dấu phẩy)",
+      "personPlaceholder": "VD: tom, Nguyễn Văn A",
+      "deptLabel": "Phòng ban",
+      "allDepts": "Tất cả phòng ban",
+      "startDate": "Từ ngày",
+      "endDate": "Đến ngày",
+      "basisLabel": "Cơ sở thống kê",
+      "sortLabel": "Sắp xếp",
+      "quickRange": "Khoảng nhanh:",
+      "showEmpty": "Hiện người không có NV",
+      "printWithDetail": "In kèm chi tiết NV",
+      "reset": "Đặt lại"
+    },
+    "basis": {
+      "final": "Ngày HT cuối của NV (mặc định)",
+      "created": "Ngày tạo (quy tắc cũ)"
+    },
+    "quickRange": {
+      "month": "Tháng này",
+      "quarter": "Quý này",
+      "year": "Năm nay"
+    },
+    "sort": {
+      "score": "Điểm KPI (Cao → Thấp)",
+      "total": "Tổng NV (Nhiều → Ít)",
+      "completion": "Tỷ lệ HT cuối (Cao → Thấp)",
+      "ontime": "Tỷ lệ đúng hạn (Cao → Thấp)",
+      "overdue": "Quá hạn chưa HT (Nhiều → Ít)",
+      "late": "Tỷ lệ HT trễ (Cao → Thấp)",
+      "response": "Phản hồi 1H (Cao → Thấp)",
+      "username": "Tài khoản (A → Z)"
+    },
+    "summary": {
+      "people": "Số nhân sự",
+      "total": "Tổng NV (lượt người)",
+      "completionRate": "Tỷ lệ HT cuối ×60%",
+      "ontimeRate": "Tỷ lệ đúng hạn ×40%",
+      "lateRate": "Tỷ lệ HT trễ (tham khảo)",
+      "response1h": "Phản hồi 1H (tham khảo)",
+      "paused": "Tạm dừng (không tính)",
+      "avgScore": "Điểm KPI TB"
+    },
+    "table": {
+      "heading": "Bảng tổng hợp KPI nhân sự",
+      "selectedCount": "Đã chọn {{selected}} / {{total}} người",
+      "selectAll": "Chọn tất cả",
+      "deselectAll": "Bỏ chọn",
+      "rank": "Hạng",
+      "username": "Tài khoản",
+      "fullname": "Họ tên",
+      "dept": "Bộ phận",
+      "total": "Tổng NV",
+      "completed": "Đã HT",
+      "completionRate": "HT cuối ×60%",
+      "finalPart": "Điểm HT cuối (×60%)",
+      "ontime": "Đúng hạn",
+      "ontimeRate": "Đúng hạn ×40%",
+      "ontimePart": "Điểm đúng hạn (×40%)",
+      "late": "HT trễ",
+      "lateRate": "Tỷ lệ HT trễ",
+      "pending": "Đang XL",
+      "overdue": "Quá hạn",
+      "response1h": "PH 1H (TK)",
+      "paused": "Tạm dừng",
+      "score": "Điểm KPI",
+      "grade": "Xếp loại",
+      "detail": "Chi tiết",
+      "expand": "Mở",
+      "collapse": "Thu gọn",
+      "empty": "Không có nhân sự phù hợp với điều kiện lọc"
+    },
+    "grade": {
+      "A": "Xuất sắc",
+      "B": "Tốt",
+      "C": "Đạt",
+      "D": "Cần cải thiện",
+      "-": "Không có NV"
+    },
+    "taskState": {
+      "paused": "Tạm dừng (không tính)",
+      "ontime": "HT đúng hạn",
+      "late": "HT trễ",
+      "overdue": "Quá hạn",
+      "progress": "Đang XL"
+    },
+    "detail": {
+      "empty": "Không có nhiệm vụ trong khoảng thời gian này",
+      "taskId": "Mã NV",
+      "title": "Tiêu đề",
+      "nature": "Tính chất",
+      "oneTime": "Một lần",
+      "recurringCycle": "Định kỳ Kỳ {{no}} {{date}}",
+      "cycleTag": "Kỳ {{no}} {{date}}",
+      "created": "Ngày tạo",
+      "due": "Hạn chót",
+      "finalDue": "Ngày HT cuối dự kiến",
+      "unlimited": "Không giới hạn",
+      "overdueTag": "Quá hạn",
+      "finish": "Ngày HT",
+      "basisDate": "Ngày tính KPI",
+      "progress": "Tiến độ",
+      "status": "Trạng thái",
+      "paused": "Tạm dừng",
+      "pausedYes": "Có (không tính KPI)",
+      "pausedNo": "Không",
+      "points": "Điểm đơn lẻ",
+      "firstResponse": "Phản hồi đầu (phút)"
+    },
+    "print": {
+      "filterLine": "Khoảng thời gian: {{start}} ~ {{end}} | Cơ sở: {{basis}} | BP: {{dept}}{{query}}",
+      "metaLine": "Người in: {{printer}} | Thời gian in: {{time}} | Số người: {{count}}",
+      "signPrepared": "Lập bảng",
+      "signReviewed": "Duyệt",
+      "signApproved": "Phê duyệt"
+    },
+    "toast": {
+      "invalidRange": "Ngày bắt đầu không được sau ngày kết thúc",
+      "selectToPrint": "Vui lòng chọn ít nhất 1 nhân sự để in",
+      "noData": "Không có dữ liệu để xuất",
+      "exported": "Đã xuất file CSV",
+      "copied": "Đã sao chép bảng ({{count}} nhân sự), có thể dán vào Excel",
+      "copyFailed": "Không thể sao chép vào bộ nhớ tạm",
+      "refreshed": "Đã cập nhật dữ liệu mới nhất"
+    }
+  },
+  "kpiBrief": {
+    "title": "Bảng quản lý KPI (Bản rút gọn)",
+    "subtitle": "Theo dõi tỷ lệ hoàn thành theo tháng kế hoạch, việc quá hạn và báo cáo gần nhất",
+    "meTag": "Tôi",
+    "lowSample": "Mẫu ít",
+    "unassigned": "Chưa có người nhận",
+    "empty": "Không có nhiệm vụ trong khoảng này",
+    "clearFilter": "Xóa bộ lọc",
+    "syncedAt": "Đồng bộ: {{time}} · Tự cập nhật mỗi 3 phút",
+    "views": {
+      "label": "Góc nhìn",
+      "dept": "Trưởng BP (tôi)",
+      "deptWithName": "Trưởng BP (tôi) · {{dept}}",
+      "me": "Cá nhân tôi",
+      "all": "Tất cả phòng ban"
+    },
+    "actions": {
+      "copyTable": "Sao chép bảng",
+      "exportPeopleCsv": "Xuất CSV tỷ lệ HT nhân viên",
+      "exportUnfinishedCsv": "Xuất CSV việc chưa xong",
+      "openFullKpi": "Bảng KPI đầy đủ",
+      "newTask": "Tạo nhiệm vụ",
+      "jumpUnfinished": "Xem việc chưa xong",
+      "jumpFinished": "Xem việc đã xong"
+    },
+    "filters": {
+      "year": "Năm",
+      "yearItem": "Năm {{year}}",
+      "allYears": "Tất cả các năm",
+      "allMonths": "Tất cả",
+      "monthShort": "T{{month}}",
+      "monthCount": "{{count}} việc",
+      "people": "Nhân viên:",
+      "allPeople": "Tất cả"
+    },
+    "status": {
+      "ontime": "Đúng hạn",
+      "late": "Trễ đã xong",
+      "overdue": "Quá hạn chưa xong",
+      "progress": "Đang làm (chưa đến hạn)",
+      "paused": "Tạm dừng (ngưng tính giờ)"
+    },
+    "cards": {
+      "total": "Tổng số việc",
+      "completionRate": "Tỷ lệ hoàn thành",
+      "doneSub": "Đã xong {{done}} / {{total}}",
+      "ontimeRate": "Tỷ lệ đúng hạn",
+      "ontimeSub": "Đúng hạn {{count}} việc",
+      "late": "Trễ đã xong",
+      "lateSub": "Đã hoàn thành nhưng quá ngày dự kiến",
+      "unfinished": "Chưa xong",
+      "unfinishedSub": "Quá hạn {{overdue}} · Tạm dừng {{paused}} · Đang làm {{progress}}"
+    },
+    "donut": {
+      "title": "Phân bổ trạng thái nhiệm vụ",
+      "subtitle": "Thống kê theo tháng của ngày HT dự kiến. Bấm mảng chưa xong để lọc danh sách bên dưới."
+    },
+    "people": {
+      "title": "Tỷ lệ hoàn thành theo nhân viên",
+      "subtitle": "Xanh lá = đúng hạn, Cam = trễ đã xong. Dưới 3 việc gắn nhãn \"Mẫu ít\". Bấm nhân viên để lọc toàn bảng.",
+      "mobileStats": "Tổng {{total}} · Đúng hạn {{ontime}} · Trễ {{late}} · Quá hạn {{overdue}} · Đúng hạn {{ontimeRate}}%"
+    },
+    "table": {
+      "person": "Người phụ trách",
+      "total": "Số việc",
+      "completionRate": "Tỷ lệ HT",
+      "ontimeRate": "Tỷ lệ đúng hạn",
+      "note": "Ghi chú"
+    },
+    "unfinished": {
+      "title": "Danh sách việc chưa hoàn thành",
+      "count": "Tổng {{count}} việc chưa xong",
+      "empty": "Không có việc chưa hoàn thành trong phạm vi đang chọn"
+    },
+    "finished": {
+      "title": "Danh sách việc đã hoàn thành",
+      "all": "Tất cả",
+      "count": "Tổng {{count}} việc đã xong",
+      "countLimited": "Tổng {{count}} việc đã xong (hiển thị {{limit}} mới nhất)",
+      "hint": "Bấm vào nhiệm vụ để xem nội dung chi tiết và tổng hợp báo cáo của chính người nhận (đã lọc tin hệ thống).",
+      "empty": "Chưa có nhiệm vụ đã hoàn thành trong khoảng này"
+    },
+    "cases": {
+      "id": "Mã",
+      "title": "Tiêu đề",
+      "assignee": "Phụ trách",
+      "status": "Trạng thái",
+      "planDate": "Ngày HT dự kiến",
+      "finishDate": "Ngày HT thực tế",
+      "overdueDays": "Số ngày trễ",
+      "overdueDaysShort": "Trễ {{days}} ngày",
+      "progress": "Tiến độ",
+      "reqDept": "BP yêu cầu",
+      "lastReport": "Báo cáo gần nhất (người nhận)",
+      "archivedCycle": "Kỳ định kỳ đã lưu trữ",
+      "noReport": "Chưa có báo cáo của người nhận"
+    },
+    "modal": {
+      "assignedUnit": "BP tiếp nhận",
+      "reporter": "Người giao",
+      "taskType": "Loại nhiệm vụ",
+      "precautions": "Mục đích / Hiệu quả / Lưu ý",
+      "content": "Nội dung chi tiết nhiệm vụ",
+      "emptyContent": "(Không có nội dung)",
+      "reportsTitle": "Tổng hợp báo cáo của người nhận việc",
+      "reportsCount": "{{kept}} báo cáo (tổng {{total}}, đã lọc {{filtered}})",
+      "reportsHint": "Đã tự động loại bỏ tin hệ thống và bình luận không phải của người nhận việc, sắp xếp theo thời gian.",
+      "reportsError": "Không tải được danh sách báo cáo",
+      "reportsEmpty": "Chưa có báo cáo nào từ người nhận việc",
+      "openOriginal": "Mở bài gốc"
     }
   }
 }
