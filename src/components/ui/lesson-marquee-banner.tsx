@@ -117,6 +117,16 @@ export function LessonMarqueeBanner({
   const maxLength =
     maxExcerptLength ?? (compact ? COMPACT_EXCERPT_MAX : DEFAULT_EXCERPT_MAX)
 
+  const totalChars = hits.reduce((sum, hit) => {
+    const topicLen = hit.topic.trim().length
+    const kwLen = hit.matchedKeywords.join(', ').length
+    const excerptLen = buildExcerpt(hit.content, maxLength).length
+    return sum + topicLen + kwLen + excerptLen + 24
+  }, 0)
+  const durationSeconds = compact
+    ? Math.max(28, Math.round(totalChars / 9))
+    : Math.max(42, Math.round(totalChars / 7))
+
   return (
     <div
       data-testid="lesson-marquee"
@@ -141,6 +151,7 @@ export function LessonMarqueeBanner({
 
       <div className="min-w-0 flex-1 overflow-hidden whitespace-nowrap">
         <div
+          style={{ animationDuration: `${durationSeconds}s` }}
           className={cn(
             'lesson-marquee-track font-medium',
             compact && 'lesson-marquee-track--compact',

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { APP_ROUTES } from '@/constants/app-routes'
+import type { DirectoryUser } from '@/schemas/auth'
 import type { PostDeptOption } from '@/schemas/dashboard'
 import type { DeptMemberStatusRow } from '../utils/dashboard-charts'
 import { DeptMemberStatusMatrix } from './DeptMemberStatusMatrix'
@@ -17,6 +18,7 @@ interface DeptScopeHeaderProps {
   deptTaskCount: number
   deptSetSize: number
   memberRows: readonly DeptMemberStatusRow[]
+  directoryUsers?: readonly DirectoryUser[]
   onDeptChange: (dept: string) => void
   onIncludeSubChange: (checked: boolean) => void
 }
@@ -33,6 +35,7 @@ export function DeptScopeHeader({
   deptTaskCount,
   deptSetSize,
   memberRows,
+  directoryUsers,
   onDeptChange,
   onIncludeSubChange,
 }: DeptScopeHeaderProps) {
@@ -85,7 +88,11 @@ export function DeptScopeHeader({
         </div>
       </div>
 
-      <DeptMemberStatusMatrix selectedDept={selectedDept} memberRows={memberRows} />
+      <DeptMemberStatusMatrix
+        selectedDept={selectedDept}
+        memberRows={memberRows}
+        directoryUsers={directoryUsers}
+      />
     </section>
   )
 }

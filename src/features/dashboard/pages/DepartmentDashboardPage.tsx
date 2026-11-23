@@ -14,6 +14,7 @@ import {
 } from '@/components/layout'
 import { Button } from '@/components/ui/button'
 import { APP_ROUTES } from '@/constants/app-routes'
+import { useUserDirectory } from '@/features/tasks/api/queries'
 import { useAllTasks } from '@/hooks/use-tasks'
 import type { PostGranularity, PostKpiPeriod } from '@/schemas/dashboard'
 import { toLocalDateString } from '@/utils/task-domain'
@@ -61,6 +62,7 @@ export function DepartmentDashboardPage() {
 
   const todayStr = toLocalDateString(new Date())
   const tasksQuery = useAllTasks()
+  const directoryQuery = useUserDirectory()
   const postStatsQuery = usePostStats({
     level: 'dept',
     dept: selectedDept,
@@ -194,6 +196,7 @@ export function DepartmentDashboardPage() {
               deptTaskCount={deptTasks.length}
               deptSetSize={Math.max(1, deptSet.length)}
               memberRows={computed.memberStatusMatrix}
+              directoryUsers={directoryQuery.data}
               onDeptChange={(dept) => updateDeptParams(dept, includeSub)}
               onIncludeSubChange={(checked) => updateDeptParams(selectedDept, checked)}
             />
@@ -237,6 +240,7 @@ export function DepartmentDashboardPage() {
               rows={computed.ranking}
               period={period}
               department={effectiveDept || undefined}
+              directoryUsers={directoryQuery.data}
             />
 
             <DashboardPostTrendSection

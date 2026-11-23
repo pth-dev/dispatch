@@ -28,14 +28,10 @@ export function DashboardFlowKpiCard({
   const completed = current.completedTasks.length
   const delta = current.backlogDelta
   const prevDelta = previous.backlogDelta
-  const barPct = created > 0 ? Math.min(100, Math.round((completed / created) * 100)) : completed > 0 ? 100 : 0
+  const barPct =
+    created > 0 ? Math.min(100, Math.round((completed / created) * 100)) : completed > 0 ? 100 : 0
 
-  const deltaTone =
-    delta > 0
-      ? 'bg-warning/15 text-warning'
-      : delta < 0
-        ? 'bg-success/15 text-success'
-        : 'bg-secondary text-muted-foreground'
+  const deltaTone = delta > 0 ? 'text-destructive' : 'text-muted-foreground'
 
   const deltaLabel =
     delta > 0
@@ -61,7 +57,7 @@ export function DashboardFlowKpiCard({
           <span className="text-xs font-medium text-muted-foreground">
             {t('dashboard.kpi.periodFlow')}
           </span>
-          <span className="rounded bg-primary-soft px-1.5 py-0.5 text-[10px] font-medium text-primary">
+          <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
             {t(`dashboard.period.${period}`)}
           </span>
         </div>
@@ -70,13 +66,15 @@ export function DashboardFlowKpiCard({
         </span>
       </div>
 
-      <div className="grid grid-cols-3 gap-1.5">
+      <div className="grid grid-cols-3 gap-1">
         <button
           type="button"
           onClick={() => onClickTab('created')}
-          className="rounded-lg border border-transparent px-1.5 py-1 text-left transition-colors hover:border-primary/40 hover:bg-secondary/60 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="rounded-md px-1.5 py-1 text-left transition-colors hover:bg-secondary/60 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <span className="block text-[10px] text-muted-foreground">{t('dashboard.kpi.createdLabel')}</span>
+          <span className="block text-[10px] text-muted-foreground">
+            {t('dashboard.kpi.createdLabel')}
+          </span>
           <span className="block text-lg font-semibold leading-tight text-foreground tabular-nums">
             {created}
           </span>
@@ -88,10 +86,12 @@ export function DashboardFlowKpiCard({
         <button
           type="button"
           onClick={() => onClickTab('completed')}
-          className="rounded-lg border border-transparent px-1.5 py-1 text-left transition-colors hover:border-primary/40 hover:bg-secondary/60 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="rounded-md px-1.5 py-1 text-left transition-colors hover:bg-secondary/60 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <span className="block text-[10px] text-muted-foreground">{t('dashboard.kpi.completedLabel')}</span>
-          <span className="block text-lg font-semibold leading-tight text-success tabular-nums">
+          <span className="block text-[10px] text-muted-foreground">
+            {t('dashboard.kpi.completedLabel')}
+          </span>
+          <span className="block text-lg font-semibold leading-tight text-foreground tabular-nums">
             {completed}
           </span>
           <span className="block text-[10px] text-muted-foreground tabular-nums">
@@ -100,8 +100,10 @@ export function DashboardFlowKpiCard({
         </button>
 
         <div className="px-1.5 py-1 text-right">
-          <span className="block text-[10px] text-muted-foreground">{t('dashboard.kpi.clearanceLabel')}</span>
-          <span className="block text-lg font-semibold leading-tight text-primary tabular-nums">
+          <span className="block text-[10px] text-muted-foreground">
+            {t('dashboard.kpi.clearanceLabel')}
+          </span>
+          <span className="block text-lg font-semibold leading-tight text-foreground tabular-nums">
             {clearanceRate != null ? `${clearanceRate}%` : '—'}
           </span>
           <span className="block text-[10px] text-muted-foreground tabular-nums">
@@ -112,12 +114,7 @@ export function DashboardFlowKpiCard({
 
       <div className="space-y-1.5">
         <div className="flex items-center justify-between gap-2">
-          <span
-            className={cn(
-              'inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-medium tabular-nums',
-              deltaTone,
-            )}
-          >
+          <span className={cn('inline-flex items-center gap-1 text-[11px] font-medium tabular-nums', deltaTone)}>
             {delta > 0 ? (
               <ArrowUpRight className="size-3" aria-hidden="true" />
             ) : delta < 0 ? (
@@ -128,8 +125,8 @@ export function DashboardFlowKpiCard({
             <span>{deltaLabel}</span>
           </span>
         </div>
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-secondary" aria-hidden="true">
-          <div className="h-full rounded-full bg-success transition-all" style={{ width: `${barPct}%` }} />
+        <div className="h-1 w-full overflow-hidden rounded-full bg-secondary" aria-hidden="true">
+          <div className="h-full rounded-full bg-foreground/70 transition-all" style={{ width: `${barPct}%` }} />
         </div>
       </div>
     </div>

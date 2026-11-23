@@ -6,27 +6,35 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { APP_ROUTES } from '@/constants/app-routes'
 import { useIsMobile } from '@/hooks/use-mobile'
+import type { DirectoryUser } from '@/schemas/auth'
 import { cn } from '@/utils/cn'
-import { buildTaskDrilldownUrl, type PeriodAssigneeRankRow } from '../utils/dashboard-charts'
+import {
+  buildTaskDrilldownUrl,
+  buildUserDirectoryLookup,
+  resolveAssigneeIdentity,
+  type AssigneeIdentity,
+  type PeriodAssigneeRankRow,
+} from '../utils/dashboard-charts'
 import type { DashboardPeriod } from '../utils/dashboard-domain'
 
 interface DashboardLeaderboardProps {
   rows: readonly PeriodAssigneeRankRow[]
   period: DashboardPeriod
   department?: string
+  directoryUsers?: readonly DirectoryUser[]
 }
 
 interface RankedRow extends PeriodAssigneeRankRow {
   rank: number
+  identity: AssigneeIdentity
 }
 
 function LeaderboardRow({ row, href }: { row: RankedRow; href: string }) {
   const rateTone =
-    row.ontimeRate >= 90
-      ? 'text-success'
-      : row.ontimeRate >= 70
-        ? 'text-warning'
-        : 'text-destructive'
+    row.ontimeRate < 70 ? 'text-destructive' : 'text-foreground'
+  const fullTitle = row.identity.code
+    ? `${row.identity.name} (${row.identity.code})`
+    : row.identity.name
 
   return (
     <Link
@@ -36,13 +44,18 @@ function LeaderboardRow({ row, href }: { row: RankedRow; href: string }) {
       <span
         className={cn(
           'w-6 shrink-0 text-center font-semibold tabular-nums',
-          row.rank <= 3 ? 'text-warning' : 'text-muted-foreground',
+          row.rank <= 3 ? 'text-foreground' : 'text-muted-foreground',
         )}
       >
         {row.rank}
       </span>
-      <span className="min-w-0 flex-1 truncate font-medium text-foreground" title={row.assignee}>
-        {row.assignee}
+      <span className="min-w-0 flex-1 flex items-baseline gap-1.5 truncate" title={fullTitle}>
+        <span className="truncate font-medium text-foreground">{row.identity.name}</span>
+        {row.identity.code && (
+          <span className="shrink-0 text-[11px] text-muted-foreground tabular-nums">
+            {row.identity.code}
+          </span>
+        )}
       </span>
       <span className="shrink-0 text-[11px] text-muted-foreground tabular-nums">
         {row.ontime}/{row.completed}
@@ -54,14 +67,25 @@ function LeaderboardRow({ row, href }: { row: RankedRow; href: string }) {
   )
 }
 
-export function DashboardLeaderboard({ rows, period, department }: DashboardLeaderboardProps) {
+export function DashboardLeaderboard({
+  rows,
+  period,
+  department,
+  directoryUsers = [],
+}: DashboardLeaderboardProps) {
   const { t } = useTranslation()
   const isMobile = useIsMobile()
   const [filterInput, setFilterInput] = React.useState('')
   const [page, setPage] = React.useState(0)
   const deferredFilter = React.useDeferredValue(filterInput.trim().toLowerCase())
 
-  const ranked: RankedRow[] = rows.map((row, idx) => ({ ...row, rank: idx + 1 }))
+  const lookup = buildUserDirectoryLookup(directoryUsers)
+  const ranked: RankedRow[] = rows.map((row, idx) => ({
+    ...row,
+    rank: idx + 1,
+    identity: resolveAssigneeIdentity(row.assignee, lookup),
+  }))
+
   const tokens = deferredFilter
     ? deferredFilter
         .split(/[,，、;；]+/)
@@ -72,7 +96,9 @@ export function DashboardLeaderboard({ rows, period, department }: DashboardLead
   const filtered =
     tokens.length === 0
       ? ranked
-      : ranked.filter((row) => tokens.some((tok) => row.assignee.toLowerCase().includes(tok)))
+      : ranked.filter((row) =>
+          tokens.some((tok) => row.identity.searchText.includes(tok)),
+        )
 
   const pageSize = isMobile ? 10 : 30
   const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize))
@@ -92,11 +118,11 @@ export function DashboardLeaderboard({ rows, period, department }: DashboardLead
       <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-0.5">
           <div className="flex flex-wrap items-center gap-1.5">
-            <Award className="size-4 text-primary" aria-hidden="true" />
+            <Award className="size-4 text-muted-foreground" aria-hidden="true" />
             <h2 className="text-sm font-semibold text-foreground">
               {t('dashboard.leaderboard.title')}
             </h2>
-            <span className="rounded bg-primary-soft px-1.5 py-0.5 text-[10px] font-medium text-primary">
+            <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
               {t(`dashboard.period.${period}`)}
             </span>
             <span title={tooltip} aria-label={tooltip} className="text-muted-foreground">

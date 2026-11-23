@@ -56,12 +56,11 @@ export function MetricCard({
           {badge}
         </div>
         <div className="flex shrink-0 items-center gap-1 text-muted-foreground">
-          {tooltip && (
+          {tooltip ? (
             <span title={tooltip} aria-label={tooltip} className="inline-flex items-center">
               <Info className="size-3.5" aria-hidden="true" />
             </span>
-          )}
-          {icon ? (
+          ) : icon ? (
             <span aria-hidden="true">{icon}</span>
           ) : onClick ? (
             <ChevronRight className="size-3.5 mt-0.5" aria-hidden="true" />

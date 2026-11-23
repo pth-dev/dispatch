@@ -123,6 +123,15 @@ describe('DashboardPage', () => {
         if (url.includes('/tasks')) return new Response(JSON.stringify(MOCK_TASKS), { status: 200 })
         if (url.includes('/lessons')) return new Response(JSON.stringify({ list: [] }), { status: 200 })
         if (url.includes('/todos')) return new Response(JSON.stringify({ task_data: [] }), { status: 200 })
+        if (url.includes('/users/directory')) {
+          return new Response(
+            JSON.stringify([
+              { username: 'alice', fullname: 'Alice Nguyen', dept: '資訊部', site: 'YS' },
+              { username: 'bob', fullname: 'Bob Tran', dept: '品質部', site: 'YA' },
+            ]),
+            { status: 200 },
+          )
+        }
         if (url.includes('/stats/posts')) {
           return new Response(JSON.stringify(MOCK_POST_STATS), { status: 200 })
         }
@@ -160,6 +169,7 @@ describe('DashboardPage', () => {
         if (url.includes('/tasks')) return new Response(JSON.stringify(MOCK_TASKS), { status: 200 })
         if (url.includes('/lessons')) return new Response(JSON.stringify({ list: [] }), { status: 200 })
         if (url.includes('/todos')) return new Response(JSON.stringify({ task_data: [] }), { status: 200 })
+        if (url.includes('/users/directory')) return new Response(JSON.stringify([]), { status: 200 })
         return new Response(JSON.stringify({}), { status: 404 })
       }),
     )

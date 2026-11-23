@@ -15,6 +15,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { LessonMarqueeBanner } from '@/components/ui/lesson-marquee-banner'
 import { APP_ROUTES } from '@/constants/app-routes'
+import { useUserDirectory } from '@/features/tasks/api/queries'
 import { useTodosByDate } from '@/features/todo/api/queries'
 import { useLessons } from '@/hooks/use-lessons'
 import { useAllTasks } from '@/hooks/use-tasks'
@@ -66,6 +67,7 @@ export function DashboardPage() {
   const tasksQuery = useAllTasks()
   const lessonsQuery = useLessons()
   const todosQuery = useTodosByDate(todayStr)
+  const directoryQuery = useUserDirectory()
   const postStatsQuery = usePostStats(
     { level: 'company', gran: postGran, kpi: postKpi, top: 20 },
     canReadTotalPosts,
@@ -213,7 +215,11 @@ export function DashboardPage() {
 
             <DashboardBottleneckTabs breakdowns={computed.breakdowns} scopeMode={scopeMode} />
 
-            <DashboardLeaderboard rows={computed.ranking} period={period} />
+            <DashboardLeaderboard
+              rows={computed.ranking}
+              period={period}
+              directoryUsers={directoryQuery.data}
+            />
 
             <DashboardPostTrendSection
               title={t('dashboard.posts.companyTitle')}

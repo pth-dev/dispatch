@@ -1,4 +1,3 @@
-import { AlertCircle, CalendarClock, FolderOpen, Timer } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { MetricCard, type MetricCardTone } from '@/components/ui/metric-card'
 import { cn } from '@/utils/cn'
@@ -29,10 +28,8 @@ interface DashboardKpiRowProps {
 const PERIOD_OPTIONS: readonly DashboardPeriod[] = ['week', 'month', 'quarter', 'year']
 
 function responseTone(rate: number | null): MetricCardTone {
-  if (rate == null) return 'default'
-  if (rate >= 80) return 'success'
-  if (rate >= 50) return 'warning'
-  return 'destructive'
+  if (rate != null && rate < 50) return 'destructive'
+  return 'default'
 }
 
 export function DashboardKpiRow({
@@ -58,7 +55,7 @@ export function DashboardKpiRow({
     </span>
   )
   const periodBadge = (
-    <span className="rounded bg-primary-soft px-1.5 py-0.5 text-[10px] font-medium text-primary">
+    <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
       {t(`dashboard.period.${period}`)}
     </span>
   )
@@ -109,7 +106,7 @@ export function DashboardKpiRow({
                   'min-h-11 lg:min-h-8 rounded-md px-2.5 text-xs font-medium transition-colors cursor-pointer',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                   period === opt
-                    ? 'bg-primary-soft text-primary'
+                    ? 'bg-secondary text-foreground'
                     : 'text-muted-foreground hover:text-foreground',
                 )}
               >
@@ -130,8 +127,7 @@ export function DashboardKpiRow({
             paused: snapshot.paused,
             total: snapshot.total,
           })}
-          tone="primary"
-          icon={<FolderOpen className="size-4" />}
+          tone="default"
           onClick={onClickOpen}
         />
 
@@ -148,8 +144,7 @@ export function DashboardKpiRow({
                 })
               : t('dashboard.kpi.noCompleted')
           }
-          tone={snapshot.overdue > 0 ? 'destructive' : 'success'}
-          icon={<AlertCircle className="size-4" />}
+          tone={snapshot.overdue > 0 ? 'destructive' : 'default'}
           onClick={onClickOverdue}
         />
 
@@ -162,8 +157,7 @@ export function DashboardKpiRow({
             done: snapshot.completed,
             late: snapshot.late,
           })}
-          tone={snapshot.dueToday > 0 ? 'warning' : 'default'}
-          icon={<CalendarClock className="size-4" />}
+          tone="default"
           onClick={onClickDueToday}
         />
 
@@ -185,7 +179,6 @@ export function DashboardKpiRow({
             none: response1h.noResponseTasks.length,
           })}
           tone={responseTone(response1h.passRate)}
-          icon={<Timer className="size-4" />}
           onClick={onClickResponse1h}
           className="order-4 lg:order-5 lg:col-span-1"
         />

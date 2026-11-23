@@ -2,12 +2,20 @@ import { Link } from 'react-router'
 import { Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { APP_ROUTES } from '@/constants/app-routes'
+import type { DirectoryUser } from '@/schemas/auth'
 import { cn } from '@/utils/cn'
-import { buildTaskDrilldownUrl, type DeptMemberStatusRow } from '../utils/dashboard-charts'
+import {
+  buildTaskDrilldownUrl,
+  buildUserDirectoryLookup,
+  resolveAssigneeIdentity,
+  type AssigneeIdentity,
+  type DeptMemberStatusRow,
+} from '../utils/dashboard-charts'
 
 interface DeptMemberStatusMatrixProps {
   selectedDept: string
   memberRows: readonly DeptMemberStatusRow[]
+  directoryUsers?: readonly DirectoryUser[]
 }
 
 function MatrixCellLink({
@@ -37,9 +45,11 @@ function MatrixCellLink({
 
 function MemberStatusTr({
   row,
+  identity,
   department,
 }: {
   row: DeptMemberStatusRow
+  identity: AssigneeIdentity
   department?: string
 }) {
   const cellUrl = (status?: string) =>
@@ -53,8 +63,13 @@ function MemberStatusTr({
   return (
     <tr className="hover:bg-secondary/40">
       <td className="px-3 py-1.5 font-medium text-foreground whitespace-nowrap">
-        <Link to={cellUrl()} className="hover:text-primary hover:underline">
-          {row.name}
+        <Link to={cellUrl()} className="inline-flex items-baseline gap-1.5 hover:text-primary hover:underline">
+          <span>{identity.name}</span>
+          {identity.code && (
+            <span className="text-[11px] font-normal text-muted-foreground tabular-nums">
+              {identity.code}
+            </span>
+          )}
         </Link>
       </td>
       <td className="px-2 py-1.5 text-right">
@@ -79,10 +94,15 @@ function MemberStatusTr({
   )
 }
 
-export function DeptMemberStatusMatrix({ selectedDept, memberRows }: DeptMemberStatusMatrixProps) {
+export function DeptMemberStatusMatrix({
+  selectedDept,
+  memberRows,
+  directoryUsers = [],
+}: DeptMemberStatusMatrixProps) {
   const { t } = useTranslation()
   const visibleMembers = memberRows.slice(0, 12)
   const department = selectedDept || undefined
+  const lookup = buildUserDirectoryLookup(directoryUsers)
 
   return (
     <div className="space-y-2">
@@ -125,7 +145,12 @@ export function DeptMemberStatusMatrix({ selectedDept, memberRows }: DeptMemberS
             </thead>
             <tbody className="divide-y divide-border">
               {visibleMembers.map((row) => (
-                <MemberStatusTr key={row.name} row={row} department={department} />
+                <MemberStatusTr
+                  key={row.name}
+                  row={row}
+                  identity={resolveAssigneeIdentity(row.name, lookup)}
+                  department={department}
+                />
               ))}
             </tbody>
           </table>

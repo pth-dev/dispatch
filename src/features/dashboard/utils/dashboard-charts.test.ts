@@ -2,11 +2,13 @@ import { describe, expect, it } from 'vitest'
 import type { RawTask } from '@/schemas/task'
 import {
   buildTaskDrilldownUrl,
+  buildUserDirectoryLookup,
   computeCreatedVsResolvedSeries,
   computeDeptPeopleStatusMatrix,
   computeOverdueAgingStats,
   computePeriodAssigneeRanking,
   computePeriodFlowComparison,
+  resolveAssigneeIdentity,
 } from './dashboard-charts'
 
 const NOW = new Date(2026, 10, 23, 12, 0, 0)
@@ -170,5 +172,21 @@ describe('dashboard-charts', () => {
     expect(url).toContain('taskType=%E7%B3%BB%E7%B5%B1%E9%A1%9E')
     expect(url).toContain('fromDate=2026-11-23')
     expect(url).toContain('toDate=2026-11-23')
+  })
+
+  it('resolves assignee full name and employee code from user directory', () => {
+    const lookup = buildUserDirectoryLookup([
+      { username: '15569', fullname: 'Nguyen Van A', dept: '資訊部', site: 'YS' },
+    ])
+    expect(resolveAssigneeIdentity('15569', lookup)).toEqual({
+      name: 'Nguyen Van A',
+      code: '15569',
+      searchText: 'nguyen van a 15569',
+    })
+    expect(resolveAssigneeIdentity('unknown_id', lookup)).toEqual({
+      name: 'unknown_id',
+      code: null,
+      searchText: 'unknown_id',
+    })
   })
 })

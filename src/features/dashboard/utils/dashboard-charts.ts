@@ -1,3 +1,4 @@
+import type { DirectoryUser } from '@/schemas/auth'
 import type { RawTask } from '@/schemas/task'
 import {
   deriveTaskStatus,
@@ -429,4 +430,47 @@ export function buildTaskDrilldownUrl(baseRoute: string, query: TaskDrilldownQue
   if (query.search) qs.set('search', query.search)
   const str = qs.toString()
   return str ? `${baseRoute}?${str}` : baseRoute
+}
+
+export interface AssigneeIdentity {
+  name: string
+  code: string | null
+  searchText: string
+}
+
+export function buildUserDirectoryLookup(
+  users: readonly DirectoryUser[],
+): Map<string, { username: string; fullname: string }> {
+  const map = new Map<string, { username: string; fullname: string }>()
+  for (const u of users) {
+    const username = u.username.trim()
+    const fullname = u.fullname.trim()
+    if (!username) continue
+    const record = { username, fullname }
+    map.set(username.toLowerCase(), record)
+    if (fullname) {
+      map.set(fullname.toLowerCase(), record)
+    }
+  }
+  return map
+}
+
+export function resolveAssigneeIdentity(
+  rawAssignee: string,
+  lookup: ReadonlyMap<string, { username: string; fullname: string }>,
+): AssigneeIdentity {
+  const trimmed = rawAssignee.trim()
+  const hit = lookup.get(trimmed.toLowerCase())
+  if (!hit) {
+    return { name: trimmed, code: null, searchText: trimmed.toLowerCase() }
+  }
+  const displayName = hit.fullname || hit.username
+  const code = hit.fullname && hit.fullname.toLowerCase() !== hit.username.toLowerCase()
+    ? hit.username
+    : null
+  return {
+    name: displayName,
+    code,
+    searchText: `${displayName} ${hit.username}`.toLowerCase(),
+  }
 }
