@@ -67,14 +67,14 @@ export class AppErrorBoundary extends React.Component<
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
               <Button
                 variant="default"
-                className="min-h-[44px]"
+                className="min-h-11"
                 onClick={() => window.location.reload()}
               >
                 <RotateCcw className="size-4 mr-2" aria-hidden="true" />
                 {t('errors.reloadPage')}
               </Button>
-              <Button asChild variant="outline" className="min-h-[44px]">
-                <a href={APP_ROUTES.TASKS}>{t('errors.goHome')}</a>
+              <Button asChild variant="outline" className="min-h-11">
+                <a href={APP_ROUTES.HOME}>{t('errors.goHome')}</a>
               </Button>
             </div>
             <p className="font-mono text-xs text-muted-foreground">

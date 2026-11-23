@@ -31,7 +31,7 @@ export function SidebarNavItem({
             aria-current={active ? 'page' : undefined}
             data-active={active}
             className={cn(
-              'group relative flex min-h-[44px] items-center gap-3 px-3 py-1.5 rounded-none text-sm font-medium transition-colors select-none outline-none',
+              'group relative flex min-h-11 items-center gap-3 px-3 py-1.5 rounded-none text-sm font-medium transition-colors select-none outline-none',
               'hover:bg-secondary hover:text-foreground',
               'focus-visible:ring-1 focus-visible:ring-primary',
               active
@@ -40,6 +40,7 @@ export function SidebarNavItem({
             )}
           >
             <Icon
+              aria-hidden="true"
               className={cn(
                 'size-5 shrink-0 transition-colors',
                 active ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground',
@@ -56,9 +57,9 @@ export function SidebarNavItem({
           <button
             type="button"
             aria-disabled="true"
-            className="flex w-full min-h-[44px] items-center gap-3 px-3 py-1.5 text-left text-sm font-medium text-muted-foreground opacity-50 cursor-not-allowed select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="flex w-full min-h-11 items-center gap-3 px-3 py-1.5 text-left text-sm font-medium text-muted-foreground opacity-50 cursor-not-allowed select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
-            <Icon className="size-5 shrink-0 text-muted-foreground" />
+            <Icon aria-hidden="true" className="size-5 shrink-0 text-muted-foreground" />
             <span className="flex-1 line-clamp-2 leading-tight">{title}</span>
           </button>
         )}

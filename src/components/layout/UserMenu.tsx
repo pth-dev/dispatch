@@ -37,7 +37,7 @@ export function UserMenu() {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="flex min-h-[44px] min-w-[44px] lg:min-h-0 lg:min-w-0 items-center justify-center gap-2.5 rounded-full p-0.5 outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-primary select-none cursor-pointer"
+          className="flex min-h-11 min-w-11 lg:min-h-0 lg:min-w-0 items-center justify-center gap-2.5 rounded-full p-0.5 outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-primary select-none cursor-pointer"
           aria-label={t('header.userMenu')}
         >
           <Avatar className="size-8 border border-border">
@@ -55,7 +55,7 @@ export function UserMenu() {
             </span>
           </div>
 
-          <ChevronDown className="hidden lg:block size-3.5 text-muted-foreground" />
+          <ChevronDown className="hidden lg:block size-3.5 text-muted-foreground" aria-hidden="true" />
         </button>
       </DropdownMenuTrigger>
 
@@ -73,7 +73,7 @@ export function UserMenu() {
 
         <DropdownMenuItem asChild>
           <Link to={APP_ROUTES.PROFILE} className="flex items-center gap-2">
-            <User className="size-3.5 text-muted-foreground" />
+            <User className="size-3.5 text-muted-foreground" aria-hidden="true" />
             <span>{t('nav.profile')}</span>
           </Link>
         </DropdownMenuItem>
@@ -83,7 +83,7 @@ export function UserMenu() {
           onClick={() => void handleLogout()}
           className="text-destructive flex items-center gap-2"
         >
-          <LogOut className="size-3.5" />
+          <LogOut className="size-3.5" aria-hidden="true" />
           <span>{t('nav.logout')}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

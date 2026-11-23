@@ -101,16 +101,23 @@ describe('session storage & headers', () => {
     expect(isLoggingOut()).toBe(false)
     setLoggingOut(true)
     expect(isLoggingOut()).toBe(true)
+    setLoggingOut(false)
+    expect(isLoggingOut()).toBe(false)
   })
 })
 
 describe('BroadcastChannel auth sync', () => {
+  beforeEach(() => {
+    setLoggingOut(false)
+  })
+
   afterEach(() => {
     vi.unstubAllGlobals()
   })
 
-  it('notifies subscribers when logout is broadcast', () => {
+  it('ignores same-tab logout broadcast and notifies subscribers on cross-tab logout', () => {
     const listeners: Array<(ev: MessageEvent) => void> = []
+    const posted: unknown[] = []
     class FakeBroadcastChannel {
       name: string
       constructor(name: string) {
@@ -124,6 +131,7 @@ describe('BroadcastChannel auth sync', () => {
         if (idx >= 0) listeners.splice(idx, 1)
       }
       postMessage(data: unknown) {
+        posted.push(data)
         for (const cb of listeners) {
           cb({ data } as MessageEvent)
         }
@@ -137,11 +145,18 @@ describe('BroadcastChannel auth sync', () => {
     const unsubscribe = subscribeAuthBroadcast(onLogout)
     expect(AUTH_BROADCAST_CHANNEL).toBe('dispatch-auth-v15')
 
+    // Same-tab broadcastLogout is ignored to prevent duplicate logout/navigate
     broadcastLogout()
+    expect(posted).toHaveLength(1)
+    expect(onLogout).not.toHaveBeenCalled()
+
+    // Cross-tab logout message notifies subscriber
+    const otherTabChannel = new FakeBroadcastChannel(AUTH_BROADCAST_CHANNEL)
+    otherTabChannel.postMessage({ type: 'logout', senderId: 'other-tab', at: Date.now() })
     expect(onLogout).toHaveBeenCalledTimes(1)
 
     unsubscribe()
-    broadcastLogout()
+    otherTabChannel.postMessage({ type: 'logout', senderId: 'other-tab', at: Date.now() })
     expect(onLogout).toHaveBeenCalledTimes(1)
   })
 })

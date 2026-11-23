@@ -25,12 +25,12 @@ export function LanguageSwitcher() {
         <Button
           variant="ghost"
           size="sm"
-          className="flex items-center gap-1.5 min-h-[44px] lg:min-h-0 lg:h-8 px-2 text-xs text-muted-foreground hover:text-foreground"
+          className="flex items-center gap-1.5 min-h-11 lg:min-h-0 lg:h-8 px-2 text-xs text-muted-foreground hover:text-foreground"
           aria-label={t('header.changeLanguage')}
         >
-          <Globe className="size-3.5" />
+          <Globe className="size-3.5" aria-hidden="true" />
           <span className="uppercase font-semibold text-[11px]">{i18n.language}</span>
-          <ChevronDown className="size-3 opacity-60" />
+          <ChevronDown className="size-3 opacity-60" aria-hidden="true" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="text-xs">

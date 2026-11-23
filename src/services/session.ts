@@ -187,11 +187,16 @@ export function notifySessionResumed(
   }
 }
 
+const TAB_ID =
+  typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+    ? crypto.randomUUID()
+    : `tab-${Math.random().toString(36).slice(2)}-${Date.now()}`
+
 export function broadcastLogout(): void {
   if (typeof BroadcastChannel === 'undefined') return
   try {
     const channel = new BroadcastChannel(AUTH_BROADCAST_CHANNEL)
-    channel.postMessage({ type: 'logout', at: Date.now() })
+    channel.postMessage({ type: 'logout', senderId: TAB_ID, at: Date.now() })
     channel.close()
   } catch {
     // Ignore in environments where BroadcastChannel is restricted
@@ -211,6 +216,11 @@ export function subscribeAuthBroadcast(onLogout: () => void): () => void {
         'type' in event.data &&
         (event.data as { type: unknown }).type === 'logout'
       ) {
+        const senderId =
+          'senderId' in event.data ? (event.data as { senderId: unknown }).senderId : undefined
+        if (senderId === TAB_ID || isLoggingOut()) {
+          return
+        }
         onLogout()
       }
     }

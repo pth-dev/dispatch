@@ -2,6 +2,8 @@ import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { createBrowserRouter, Navigate } from 'react-router'
 import { APP_ROUTES } from '@/constants/app-routes'
+import { getDefaultLandingRoute } from '@/app/nav-config'
+import { useAppStore } from '@/app/store'
 import { AppShell, RootRouteErrorBoundary, ErrorState } from '@/components/layout'
 import { RequireMenuPerm } from './RequireMenuPerm'
 
@@ -22,10 +24,18 @@ function RouteFallback() {
   const { t } = useTranslation()
 
   return (
-    <div className="flex min-h-dvh items-center justify-center text-xs text-muted-foreground">
+    <div
+      role="status"
+      className="flex min-h-dvh items-center justify-center text-xs text-muted-foreground"
+    >
       {t('common.loading')}
     </div>
   )
+}
+
+function HomeRedirect() {
+  const user = useAppStore((s) => s.user)
+  return <Navigate to={getDefaultLandingRoute(user)} replace />
 }
 
 export const router = createBrowserRouter([
@@ -58,10 +68,10 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to={APP_ROUTES.TASKS} replace />,
+        element: <HomeRedirect />,
       },
       {
-        path: 'tasks',
+        path: APP_ROUTES.TASKS,
         element: (
           <RequireMenuPerm perm="list" level="r">
             <TaskListPage />
@@ -69,7 +79,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'tasks/new',
+        path: APP_ROUTES.TASK_NEW,
         element: (
           <RequireMenuPerm perm="dashboard" level="w">
             <TaskCreatePage />
@@ -77,7 +87,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'tasks/:id/edit',
+        path: APP_ROUTES.TASK_EDIT(),
         element: (
           <RequireMenuPerm perm="dashboard" level="w">
             <TaskCreatePage />
@@ -85,7 +95,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'tasks/:id',
+        path: APP_ROUTES.TASK_DETAIL(),
         element: (
           <RequireMenuPerm perm="list" level="r">
             <TaskDetailPage />
@@ -93,7 +103,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'todo',
+        path: APP_ROUTES.TODO,
         element: (
           <RequireMenuPerm perm="todo" level="r">
             <TodoPage />
@@ -101,7 +111,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'messages',
+        path: APP_ROUTES.MESSAGES,
         element: (
           <RequireMenuPerm perm="messages" level="r">
             <MessagesPage />
@@ -109,7 +119,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'lessons',
+        path: APP_ROUTES.LESSONS,
         element: (
           <RequireMenuPerm perm="learnknow" level="r">
             <LessonsPage />
@@ -117,7 +127,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'profile',
+        path: APP_ROUTES.PROFILE,
         element: <ProfilePage />,
       },
     ],

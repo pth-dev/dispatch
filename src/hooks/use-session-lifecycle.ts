@@ -27,13 +27,13 @@ export function useSessionLifecycle(): { retryVerify: () => void } {
   const location = useLocation()
   const authStatus = useAppStore((s) => s.authStatus)
   const navigateRef = React.useRef(navigate)
-  const currentFromRef = React.useRef(`${location.pathname}${location.search}`)
+  const currentFromRef = React.useRef(`${location.pathname}${location.search}${location.hash}`)
   const [verifyAttempt, setVerifyAttempt] = React.useState(0)
 
   React.useEffect(() => {
     navigateRef.current = navigate
-    currentFromRef.current = `${location.pathname}${location.search}`
-  }, [navigate, location.pathname, location.search])
+    currentFromRef.current = `${location.pathname}${location.search}${location.hash}`
+  }, [navigate, location.pathname, location.search, location.hash])
 
   React.useEffect(() => {
     const controller = new AbortController()
@@ -41,6 +41,7 @@ export function useSessionLifecycle(): { retryVerify: () => void } {
 
     const redirectToLogin = () => {
       if (!active) return
+      active = false
       queryClient.clear()
       useAppStore.getState().clearSession()
       navigateRef.current(APP_ROUTES.LOGIN, {
@@ -51,8 +52,29 @@ export function useSessionLifecycle(): { retryVerify: () => void } {
 
     const bootstrap = async () => {
       let session = getStoredSession()
+      const rememberToken = !session ? getRememberToken() : null
 
-      if (!session && getRememberToken()) {
+      if (!session && !rememberToken) {
+        redirectToLogin()
+        return
+      }
+
+      // Skip immediate redundant verify right after an interactive login
+      const currentState = useAppStore.getState()
+      if (
+        session &&
+        verifyAttempt === 0 &&
+        currentState.authStatus === 'authenticated' &&
+        currentState.user?.username === session.username
+      ) {
+        return
+      }
+
+      if (currentState.authStatus !== 'authenticated') {
+        useAppStore.getState().setAuthStatus('checking')
+      }
+
+      if (!session && rememberToken) {
         const outcome = await resumeSession()
         if (outcome.status === 'resumed') {
           session = getStoredSession()
@@ -65,16 +87,6 @@ export function useSessionLifecycle(): { retryVerify: () => void } {
 
       if (!session) {
         redirectToLogin()
-        return
-      }
-
-      // Skip immediate redundant verify right after an interactive login
-      const currentState = useAppStore.getState()
-      if (
-        verifyAttempt === 0 &&
-        currentState.authStatus === 'authenticated' &&
-        currentState.user?.username === session.username
-      ) {
         return
       }
 

@@ -58,6 +58,14 @@ describe('toErrorStatus', () => {
 
   it('maps fetch failures to the network variant', () => {
     expect(toErrorStatus(new TypeError('Failed to fetch'))).toBe('network')
+    expect(toErrorStatus(new TypeError('NetworkError when attempting to fetch resource.'))).toBe('network')
+    expect(toErrorStatus(new TypeError('Load failed'))).toBe('network')
+  })
+
+  it('maps runtime TypeError bugs to unknown instead of network', () => {
+    expect(toErrorStatus(new TypeError("Cannot read properties of undefined (reading 'id')"))).toBe(
+      'unknown',
+    )
   })
 
   it('falls back to unknown for unmapped 4xx and arbitrary errors', () => {

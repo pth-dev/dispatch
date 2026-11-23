@@ -4,6 +4,7 @@ import { cn } from '@/utils/cn'
 import { canReadMenu, canShowMenu, isSuperLike } from '@/utils/permissions'
 import { Logo } from './Logo'
 import { SidebarNavItem } from './SidebarNavItem'
+import { APP_ROUTES } from '@/constants/app-routes'
 import { MAIN_NAV_ITEMS, ADMIN_NAV_ITEMS, type NavItemConfig } from '@/app/nav-config'
 import { useAppStore } from '@/app/store'
 import { TooltipProvider } from '@/components/ui/tooltip'
@@ -20,8 +21,8 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
   const isAdmin = Boolean(user && (user.role === 'admin' || isSuperLike(user)))
 
   const isItemActive = (href: string) => {
-    if (href === '/tasks') {
-      return location.pathname.startsWith('/tasks')
+    if (href === APP_ROUTES.TASKS) {
+      return location.pathname === href || location.pathname.startsWith(`${href}/`)
     }
     return location.pathname === href
   }
@@ -51,7 +52,7 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
         )}
       >
         <div className="flex h-14 shrink-0 items-center border-b border-border px-4">
-          <Link to="/" onClick={onNavigate} className="flex items-center">
+          <Link to={APP_ROUTES.HOME} onClick={onNavigate} className="flex items-center">
             <Logo size={36} />
           </Link>
         </div>
@@ -60,7 +61,7 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
           className="flex-1 overflow-y-auto py-2"
           style={{ scrollbarGutter: 'stable' }}
         >
-          <nav className="flex flex-col space-y-0.5">
+          <nav aria-label={t('sidebar.menuTitle')} className="flex flex-col space-y-0.5">
             {MAIN_NAV_ITEMS.map(renderItem)}
 
             {isAdmin && ADMIN_NAV_ITEMS.length > 0 && (

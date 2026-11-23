@@ -3,7 +3,13 @@ import en from '@/locales/en/translation.json'
 import vi from '@/locales/vi/translation.json'
 import zhCN from '@/locales/zh-CN/translation.json'
 import zhTW from '@/locales/zh-TW/translation.json'
-import { ADMIN_NAV_ITEMS, MAIN_NAV_ITEMS, type NavItemConfig } from './nav-config'
+import {
+  ADMIN_NAV_ITEMS,
+  MAIN_NAV_ITEMS,
+  getDefaultLandingRoute,
+  type NavItemConfig,
+} from './nav-config'
+import { APP_ROUTES } from '@/constants/app-routes'
 
 const LOCALES = {
   vi,
@@ -40,4 +46,24 @@ describe('nav config i18n', () => {
       expect(missing).toEqual([])
     })
   }
+})
+
+describe('getDefaultLandingRoute', () => {
+  it('returns first readable route when user lacks list permission', () => {
+    const route = getDefaultLandingRoute({
+      username: 'staff1',
+      role: 'user',
+      menu_perms: { list: '', todo: 'sr', messages: '', learnknow: '' },
+    })
+    expect(route).toBe(APP_ROUTES.TODO)
+  })
+
+  it('falls back to profile when user has no readable menu items', () => {
+    const route = getDefaultLandingRoute({
+      username: 'staff2',
+      role: 'user',
+      menu_perms: { list: 's', todo: '', messages: '', learnknow: '' },
+    })
+    expect(route).toBe(APP_ROUTES.PROFILE)
+  })
 })

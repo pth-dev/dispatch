@@ -130,6 +130,8 @@ export function isFullPageError(status: ErrorStatusCode): boolean {
   return getErrorStatusMeta(status).fullPage
 }
 
+const FETCH_NETWORK_TYPE_ERROR = /failed to fetch|networkerror|load failed/i
+
 /**
  * Normalizes any thrown value (ApiError, Response, fetch TypeError, unknown)
  * to one of the shared error codes. Never surfaces raw error messages.
@@ -150,7 +152,7 @@ export function toErrorStatus(error: unknown): ErrorStatusCode {
     }
   }
 
-  if (error instanceof TypeError) {
+  if (error instanceof TypeError && FETCH_NETWORK_TYPE_ERROR.test(error.message)) {
     return 'network'
   }
 

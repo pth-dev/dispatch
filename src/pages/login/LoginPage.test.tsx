@@ -3,6 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { LoginPage } from './LoginPage'
+import { resolveSafeRedirect } from './use-login-auto-resume'
+import { queryClient } from '@/app/providers/query-client'
 import { useAppStore } from '@/app/store'
 import { clearAllAuthStorage, getRememberToken, getStoredSession } from '@/services'
 
@@ -106,5 +108,58 @@ describe('LoginPage', () => {
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent('Sai tài khoản hoặc mật khẩu')
     })
+  })
+
+  it('clears stale query cache on fresh login and redirects to first readable route', async () => {
+    queryClient.setQueryData(['tasks', 'all'], [{ id: 1 }])
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () =>
+        jsonResponse({
+          success: true,
+          token: 'sess-token-2',
+          user: {
+            id: 2,
+            username: 'todo_only',
+            fullname: 'Todo User',
+            dept: 'IT',
+            site: 'YS',
+            role: 'user',
+            auth_source: 'local',
+            menu_perms: { list: '', todo: 'sr', messages: '', learnknow: '' },
+          },
+        }),
+      ),
+    )
+
+    const user = userEvent.setup()
+    render(
+      <MemoryRouter initialEntries={['/login']}>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/todo" element={<div>Todo Landing</div>} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    await user.type(await screen.findByLabelText(/tài khoản/i), 'todo_only')
+    await user.type(screen.getByLabelText(/mật khẩu/i), 'secret123')
+    await user.click(screen.getByRole('button', { name: /đăng nhập/i }))
+
+    expect(await screen.findByText('Todo Landing')).toBeInTheDocument()
+    expect(queryClient.getQueryData(['tasks', 'all'])).toBeUndefined()
+  })
+})
+
+describe('resolveSafeRedirect', () => {
+  it('blocks open redirects, backslashes, control chars, and login loops', () => {
+    expect(resolveSafeRedirect('https://evil.test', '/tasks')).toBe('/tasks')
+    expect(resolveSafeRedirect('//evil.test', '/tasks')).toBe('/tasks')
+    expect(resolveSafeRedirect('/\\evil.test', '/tasks')).toBe('/tasks')
+    expect(resolveSafeRedirect('/tasks\nheader', '/tasks')).toBe('/tasks')
+    expect(resolveSafeRedirect('/login', '/tasks')).toBe('/tasks')
+    expect(resolveSafeRedirect('/login/extra', '/tasks')).toBe('/tasks')
+    expect(resolveSafeRedirect('/login#hash', '/tasks')).toBe('/tasks')
+    expect(resolveSafeRedirect('/tasks/42?tab=info#top', '/tasks')).toBe('/tasks/42?tab=info#top')
   })
 })
