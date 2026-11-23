@@ -215,7 +215,9 @@
       "view": "View task {{id}}"
     },
     "mobile": {
-      "dueDate": "Due {{date}}"
+      "dueDate": "Due {{date}}",
+      "report": "Report",
+      "createShort": "New"
     },
     "detail": {
       "title": "Task details",

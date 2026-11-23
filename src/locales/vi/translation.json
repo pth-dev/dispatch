@@ -215,7 +215,9 @@
       "view": "Xem nhiệm vụ {{id}}"
     },
     "mobile": {
-      "dueDate": "Hạn {{date}}"
+      "dueDate": "Hạn {{date}}",
+      "report": "Báo cáo",
+      "createShort": "Thêm"
     },
     "detail": {
       "title": "Chi tiết nhiệm vụ",

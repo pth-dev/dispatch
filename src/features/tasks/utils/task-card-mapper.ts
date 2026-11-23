@@ -32,9 +32,11 @@ export type TaskCardViewModel = {
   translatedTitle: string | null
   isUntranslated: boolean
   dueAt: string
+  dueShortAt: string
   dueTone: TaskCardDueTone
   lastReportAt: string
   assigneeDisplay: string
+  assigneeShortDisplay: string
   dispatcherDisplay: string
   progressPercent: number
   needsReportToday: boolean
@@ -60,6 +62,21 @@ function formatDueDateTime(dateStr: string | null | undefined): string {
   if (!dateStr) return EMPTY_DISPLAY_VALUE
   const formatted = formatTaskDueDate(dateStr)
   return formatted === '-' ? EMPTY_DISPLAY_VALUE : formatted
+}
+
+function formatDueShort(dateStr: string | null | undefined, now: Date): string {
+  if (!dateStr) return EMPTY_DISPLAY_VALUE
+  const parsed = parseLocalDateTime(dateStr)
+  if (!parsed) {
+    const formatted = formatTaskDueDate(dateStr)
+    return formatted === '-' ? EMPTY_DISPLAY_VALUE : formatted
+  }
+  const day = String(parsed.getDate()).padStart(2, '0')
+  const month = String(parsed.getMonth() + 1).padStart(2, '0')
+  if (parsed.getFullYear() === now.getFullYear()) {
+    return `${day}/${month}`
+  }
+  return `${day}/${month}/${parsed.getFullYear()}`
 }
 
 function isDueToday(dateStr: string | null | undefined, now: Date): boolean {
@@ -111,6 +128,9 @@ export function mapTaskToCardViewModel(
   const assigneeNames = resolveAssignees(task.assign_person)
   const assigneeDept = task.assigned_unit ? resolvers.resolveDeptName(task.assigned_unit) : ''
   const assigneeDisplay = joinPresent([assigneeNames, assigneeDept])
+  const cleanedAssigneeNames = joinPresent([assigneeNames])
+  const assigneeShortDisplay =
+    cleanedAssigneeNames !== EMPTY_DISPLAY_VALUE ? cleanedAssigneeNames : joinPresent([assigneeDept])
 
   // 2. Người giao: Tên người giao (Mã) • BP Người giao
   const dispatcherName = resolveUser(task.reporter, task.reporter_name)
@@ -129,9 +149,11 @@ export function mapTaskToCardViewModel(
     translatedTitle,
     isUntranslated,
     dueAt: formatDueDateTime(task.due_date),
+    dueShortAt: formatDueShort(task.due_date, now),
     dueTone,
     lastReportAt,
     assigneeDisplay,
+    assigneeShortDisplay,
     dispatcherDisplay,
     progressPercent,
     needsReportToday,

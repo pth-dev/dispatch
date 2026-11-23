@@ -246,4 +246,38 @@ describe('TaskListPage', () => {
     expect(screen.getAllByText('Phần cứng').length).toBeGreaterThanOrEqual(1)
     expect(screen.queryByRole('button', { name: /trang sau/i })).not.toBeInTheDocument()
   })
+
+  it('renders flat mobile list instead of cards and places create button in header on mobile viewports', async () => {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 375 })
+    try {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(async (input) => {
+          const url = String(input)
+          if (url.includes('/meta/depts')) {
+            return jsonResponse({
+              depts: [{ value: '資訊部', vn: 'Bộ phận IT' }],
+              allDepts: [{ value: '資訊部', vn: 'Bộ phận IT' }],
+            })
+          }
+          if (url.includes('/meta/sites')) {
+            return jsonResponse({ sites: [], allSites: [] })
+          }
+          return jsonResponse(TASKS_PAYLOAD)
+        }),
+      )
+
+      renderTaskList('/tasks')
+
+      expect(await screen.findByTestId('task-mobile-list')).toBeInTheDocument()
+      expect(screen.getAllByTestId('task-mobile-row')).toHaveLength(2)
+      expect(screen.queryByTestId('task-card')).not.toBeInTheDocument()
+      expect(screen.queryByRole('table')).not.toBeInTheDocument()
+
+      const createLink = screen.getByRole('link', { name: /thêm nhiệm vụ/i })
+      expect(createLink).toHaveAttribute('href', '/tasks/new')
+    } finally {
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1440 })
+    }
+  })
 })

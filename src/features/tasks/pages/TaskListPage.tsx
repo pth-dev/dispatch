@@ -9,6 +9,7 @@ import { LegendStrip } from '../components/LegendStrip'
 import { FilterBar } from '../components/FilterBar'
 import { TaskViewControls } from '../components/TaskViewControls'
 import { TaskCardGrid } from '../components/TaskCardGrid'
+import { TaskMobileList } from '../components/TaskMobileList'
 import { useTaskList } from '../api/queries'
 import { usePageClamp, useTaskListParams } from '../hooks/use-task-list-params'
 import { useTaskColumns } from '../hooks/use-task-columns'
@@ -28,7 +29,6 @@ import { useAppStore } from '@/app/store'
 import { useLessons } from '@/hooks/use-lessons'
 import { buildTaskLessonHitsMap } from '@/utils/lesson-match'
 import { canCreateTask } from '@/utils/permissions'
-import { cn } from '@/utils'
 import type { RawTask, TaskListParams } from '@/schemas/task'
 
 function buildCardResetKey(params: TaskListParams): string {
@@ -108,7 +108,8 @@ export function TaskListPage() {
   const total = data?.total ?? 0
   const counts = data?.counts
   const availableTaskTypes = data?.availableTaskTypes ?? []
-  const isCardView = isMobile || viewMode === 'card'
+  const isDesktopCardView = !isMobile && viewMode === 'card'
+  const showTablePagination = !isError && total > 0 && !isMobile && viewMode === 'table'
   const cardResetKey = buildCardResetKey(params)
 
   const emptyMessage =
@@ -125,7 +126,7 @@ export function TaskListPage() {
   }
 
   return (
-    <PageContainer className={cn(isMobile && canCreate && 'pb-20 lg:pb-0')}>
+    <PageContainer className="max-lg:gap-2">
       {/* Page Header Row */}
       <PageHeader
         title={t('tasks.title')}
@@ -142,14 +143,14 @@ export function TaskListPage() {
               onResetColumns={resetColumns}
             />
 
-            {!isMobile && canCreate && (
+            {canCreate && (
               <Button
                 asChild
-                className="h-11 lg:h-10 px-4 gap-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-lg cursor-pointer"
+                className="h-9 lg:h-10 px-3 lg:px-4 gap-1.5 lg:gap-2 text-xs lg:text-sm bg-primary hover:bg-primary-hover text-primary-foreground rounded-lg cursor-pointer"
               >
-                <Link to={APP_ROUTES.TASK_NEW}>
+                <Link to={APP_ROUTES.TASK_NEW} aria-label={t('tasks.create')}>
                   <Plus className="size-4" aria-hidden="true" />
-                  <span>{t('tasks.create')}</span>
+                  <span>{isMobile ? t('tasks.mobile.createShort') : t('tasks.create')}</span>
                 </Link>
               </Button>
             )}
@@ -157,15 +158,19 @@ export function TaskListPage() {
         }
       />
 
-      {/* Main Content Card */}
-      <PageContainerBody surface="card" scrollable={false}>
-        <div className="shrink-0 flex flex-col gap-3 short:gap-2 p-4 short:p-3 pb-3 border-b border-border bg-card">
+      {/* Main Content Card (full-bleed flat list on mobile, card container on desktop) */}
+      <PageContainerBody
+        surface="card"
+        scrollable={false}
+        className="max-lg:-mx-4 max-lg:rounded-none max-lg:border-x-0"
+      >
+        <div className="shrink-0 flex flex-col gap-2 px-4 pt-1 pb-2.5 lg:gap-3 lg:short:gap-2 lg:p-4 lg:short:p-3 lg:pb-3 border-b border-border bg-card">
           <div className="flex items-center justify-between gap-4">
             <TaskScopeTabs
               activeScope={params.scope}
               counts={counts}
               onScopeChange={setScope}
-              className="min-w-0 xl:shrink-0 border-b-0 -mb-2 lg:mb-0"
+              className="min-w-0 xl:shrink-0 border-b-0 -mb-1 lg:mb-0"
             />
             <LegendStrip className="hidden xl:flex shrink-0" />
           </div>
@@ -188,7 +193,15 @@ export function TaskListPage() {
               onRetry={() => void refetch()}
               className="m-4"
             />
-          ) : isCardView ? (
+          ) : isMobile ? (
+            <TaskMobileList
+              tasks={filteredItems}
+              isLoading={isLoading}
+              statusFilter={params.status}
+              resetKey={cardResetKey}
+              emptyMessage={emptyMessage}
+            />
+          ) : isDesktopCardView ? (
             <TaskCardGrid
               tasks={filteredItems}
               isLoading={isLoading}
@@ -209,7 +222,7 @@ export function TaskListPage() {
           )}
         </div>
 
-        {!isError && total > 0 && !isCardView && (
+        {showTablePagination && (
           <div className="shrink-0 border-t border-border bg-card px-4 py-2.5">
             <PaginationControl
               page={params.page}
@@ -221,18 +234,6 @@ export function TaskListPage() {
           </div>
         )}
       </PageContainerBody>
-
-      {isMobile && canCreate && (
-        <Button
-          asChild
-          className="fixed bottom-5 right-5 z-40 size-14 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground p-0 flex items-center justify-center"
-          aria-label={t('tasks.create')}
-        >
-          <Link to={APP_ROUTES.TASK_NEW}>
-            <Plus className="size-6" aria-hidden="true" />
-          </Link>
-        </Button>
-      )}
     </PageContainer>
   )
 }

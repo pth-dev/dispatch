@@ -215,7 +215,9 @@
       "view": "檢視任務 {{id}}"
     },
     "mobile": {
-      "dueDate": "截止 {{date}}"
+      "dueDate": "截止 {{date}}",
+      "report": "回報",
+      "createShort": "新增"
     },
     "detail": {
       "title": "任務詳情",
