@@ -45,25 +45,25 @@ export function TaskCardInfoBlock({ vm }: TaskCardInfoBlockProps) {
   const { t } = useTranslation()
 
   return (
-    <div className="border-t border-border pt-3 space-y-2.5">
+    <div className="border-t border-border pt-2 space-y-1.5">
       <InfoRow
-        icon={<CalendarDays className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />}
+        icon={<CalendarDays className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />}
         label={t('tasks.card.dueAt')}
         value={vm.dueAt}
         valueClassName={DUE_TONE_CLASS[vm.dueTone]}
       />
       <InfoRow
-        icon={<Clock className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />}
+        icon={<Clock className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />}
         label={t('tasks.card.lastReportAt')}
         value={vm.lastReportAt}
       />
       <InfoRow
-        icon={<UserCheck className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />}
+        icon={<UserCheck className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />}
         label={t('tasks.card.assignee')}
         value={vm.assigneeDisplay}
       />
       <InfoRow
-        icon={<Send className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />}
+        icon={<Send className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />}
         label={t('tasks.card.dispatcher')}
         value={vm.dispatcherDisplay}
       />

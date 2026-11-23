@@ -34,7 +34,7 @@ export function TaskCard({ vm }: TaskCardProps) {
 
   return (
     <article data-testid="task-card" className="h-full min-w-0">
-      <Card className="relative h-full min-w-0 p-4 gap-3 focus-within:ring-2 focus-within:ring-ring">
+      <Card className="relative h-full min-w-0 p-3.5 gap-2 focus-within:ring-2 focus-within:ring-ring">
         {/* 1. Meta row (1 line) */}
         <div className="flex h-card-row items-center justify-between gap-2 text-xs">
           <div className="flex min-w-0 flex-1 items-center gap-1.5">
@@ -125,12 +125,12 @@ export function TaskCard({ vm }: TaskCardProps) {
           </span>
         </div>
 
-        {/* 6. Action row (44px, pinned at bottom, above stretched-link) */}
-        <div className="mt-auto">
+        {/* 6. Action row (44px mobile, 36px desktop, pinned at bottom, above stretched-link) */}
+        <div className="mt-auto pt-0.5">
           <Button
             asChild
             variant={vm.needsReportToday ? 'default' : 'outline'}
-            className="relative z-10 h-11 w-full text-sm font-medium"
+            className="relative z-10 h-11 lg:h-9 w-full text-xs lg:text-sm font-medium"
           >
             <Link to={actionPath}>
               {vm.needsReportToday ? t('tasks.card.reportNow') : t('tasks.card.viewDetail')}

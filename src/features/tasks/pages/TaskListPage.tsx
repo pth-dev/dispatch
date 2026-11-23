@@ -14,7 +14,9 @@ import { useTaskList } from '../api/queries'
 import { usePageClamp, useTaskListParams } from '../hooks/use-task-list-params'
 import { useTaskColumns } from '../hooks/use-task-columns'
 import { useTaskViewPrefs } from '../hooks/use-task-view-prefs'
+import { useScrollHideFilter } from '../hooks/use-scroll-hide-filter'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { cn } from '@/utils'
 import {
   InlineError,
   PageContainer,
@@ -99,6 +101,13 @@ export function TaskListPage() {
     setPage,
   })
 
+  const isDesktopCardView = !isMobile && viewMode === 'card'
+  const {
+    filterHidden,
+    handleScroll: handleCardGridScroll,
+    showFilter,
+  } = useScrollHideFilter(isDesktopCardView && !isLoading && filteredItems.length > 0)
+
   const errorStatus = toErrorStatus(error)
 
   if (isError && isFullPageError(errorStatus)) {
@@ -108,7 +117,6 @@ export function TaskListPage() {
   const total = data?.total ?? 0
   const counts = data?.counts
   const availableTaskTypes = data?.availableTaskTypes ?? []
-  const isDesktopCardView = !isMobile && viewMode === 'card'
   const showTablePagination = !isError && total > 0 && !isMobile && viewMode === 'table'
   const cardResetKey = buildCardResetKey(params)
 
@@ -164,26 +172,46 @@ export function TaskListPage() {
         scrollable={false}
         className="max-lg:-mx-4 max-lg:rounded-none max-lg:border-x-0"
       >
-        <div className="shrink-0 flex flex-col gap-2 px-4 pt-1 pb-2.5 lg:gap-3 lg:short:gap-2 lg:p-4 lg:short:p-3 lg:pb-3 border-b border-border bg-card">
-          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <div className="shrink-0 flex flex-col px-4 pt-1 pb-2.5 lg:px-4 lg:py-3 border-b border-border bg-card">
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5">
             <TaskScopeTabs
               activeScope={params.scope}
               counts={counts}
-              onScopeChange={setScope}
+              onScopeChange={(nextScope) => {
+                showFilter()
+                setScope(nextScope)
+              }}
               className="min-w-0 xl:shrink-0 border-b-0 -mb-1 lg:mb-0"
             />
             <LegendStrip className="hidden xl:flex max-w-full" />
           </div>
 
-          <FilterBar
-            params={params}
-            activeFilterCount={activeFilterCount}
-            advancedFilterCount={advancedFilterCount}
-            availableTaskTypes={availableTaskTypes}
-            onPatch={patchFilters}
-            onSortChange={setSort}
-            onReset={resetFilters}
-          />
+          <div
+            data-testid="task-filter-collapse"
+            data-collapsed={filterHidden ? 'true' : 'false'}
+            className={cn(
+              'grid transition-[grid-template-rows,opacity] duration-200 motion-reduce:transition-none',
+              filterHidden
+                ? 'grid-rows-[0fr] opacity-0 pointer-events-none'
+                : 'grid-rows-[1fr] opacity-100',
+            )}
+            aria-hidden={filterHidden}
+            inert={filterHidden}
+          >
+            <div className="overflow-hidden">
+              <div className="pt-2 lg:pt-2.5">
+                <FilterBar
+                  params={params}
+                  activeFilterCount={activeFilterCount}
+                  advancedFilterCount={advancedFilterCount}
+                  availableTaskTypes={availableTaskTypes}
+                  onPatch={patchFilters}
+                  onSortChange={setSort}
+                  onReset={resetFilters}
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="flex flex-col lg:min-h-0 lg:flex-1 lg:overflow-hidden lg:short:min-h-fit">
@@ -208,6 +236,7 @@ export function TaskListPage() {
               statusFilter={params.status}
               resetKey={cardResetKey}
               emptyMessage={emptyMessage}
+              onScroll={handleCardGridScroll}
             />
           ) : (
             <DataTable

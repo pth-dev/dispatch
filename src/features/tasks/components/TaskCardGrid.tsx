@@ -10,6 +10,7 @@ type TaskCardGridProps = {
   statusFilter?: TaskStatusFilter
   resetKey: string
   emptyMessage?: string
+  onScroll?: (event: React.UIEvent<HTMLDivElement>) => void
 }
 
 const SKELETON_INDICES = [0, 1, 2, 3, 4, 5] as const
@@ -36,6 +37,7 @@ export function TaskCardGrid({
   statusFilter,
   resetKey,
   emptyMessage,
+  onScroll,
 }: TaskCardGridProps) {
   const { t } = useTranslation()
   const [prevResetKey, setPrevResetKey] = React.useState(resetKey)
@@ -51,12 +53,12 @@ export function TaskCardGrid({
   if (isLoading) {
     return (
       <div
-        className="flex-1 min-h-0 overflow-auto p-4 lg:short:min-h-[297px] lg:short:[contain:size]"
+        className="flex-1 min-h-0 overflow-auto p-3.5 lg:short:min-h-[297px] lg:short:[contain:size]"
         role="status"
         aria-live="polite"
       >
         <span className="sr-only">{t('common.loading')}</span>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-3">
           {SKELETON_INDICES.map((index) => (
             <TaskCardSkeleton key={`task_card_skel_${index}`} />
           ))}
@@ -82,7 +84,10 @@ export function TaskCardGrid({
     (!statusFilter || !INCOMPLETE_ONLY_FILTERS.has(statusFilter)) && completedTasks.length > 0
 
   return (
-    <div className="flex-1 min-h-0 overflow-auto p-4 space-y-6 lg:short:min-h-[297px] lg:short:[contain:size]">
+    <div
+      onScroll={onScroll}
+      className="flex-1 min-h-0 overflow-auto p-3.5 space-y-4 lg:short:min-h-[297px] lg:short:[contain:size]"
+    >
       {showIncomplete && (
         <TaskCardSection
           variant="incomplete"

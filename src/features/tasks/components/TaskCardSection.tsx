@@ -34,8 +34,8 @@ function TaskCardTypeGroup({
     <div
       className={cn(
         isIncomplete
-          ? 'rounded-xl border border-border bg-secondary/35 p-3.5 space-y-3'
-          : 'space-y-2.5 opacity-90',
+          ? 'rounded-xl border border-border bg-secondary/35 p-3 space-y-2.5'
+          : 'space-y-2 opacity-90',
       )}
     >
       <div
@@ -59,7 +59,7 @@ function TaskCardTypeGroup({
 
       <div
         data-testid="task-card-grid"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-4"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-3"
       >
         {group.tasks.map((task) => {
           const vm = mapTaskToCardViewModel(task, resolvers)
@@ -113,7 +113,7 @@ export function TaskCardSection({
   }
 
   return (
-    <section className="space-y-3" aria-label={title}>
+    <section className="space-y-2.5" aria-label={title}>
       <h2 className="flex items-center">
         <button
           type="button"
@@ -146,7 +146,7 @@ export function TaskCardSection({
       </h2>
 
       {expanded && (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {groups.map((group) => (
             <TaskCardTypeGroup
               key={group.typeLabel}
