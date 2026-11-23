@@ -44,7 +44,7 @@ describe('LoginPage', () => {
     expect(screen.getByText(/vui lòng nhập mật khẩu/i)).toBeInTheDocument()
   })
 
-  it('logs in with remember-me, persists tokens, and redirects to /tasks', async () => {
+  it('logs in with remember-me, persists tokens, and redirects to /dashboard', async () => {
     const fetchMock = vi.fn(async () =>
       jsonResponse({
         success: true,
@@ -69,7 +69,7 @@ describe('LoginPage', () => {
       <MemoryRouter initialEntries={['/login']}>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/tasks" element={<div>Tasks Landing</div>} />
+          <Route path="/dashboard" element={<div>Dashboard Landing</div>} />
         </Routes>
       </MemoryRouter>,
     )
@@ -79,7 +79,7 @@ describe('LoginPage', () => {
     await user.click(screen.getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: /đăng nhập/i }))
 
-    expect(await screen.findByText('Tasks Landing')).toBeInTheDocument()
+    expect(await screen.findByText('Dashboard Landing')).toBeInTheDocument()
     expect(getStoredSession()).toEqual({ username: 'hieu', token: 'sess-token-1' })
     expect(getRememberToken()?.token).toBe('rem-token-64')
     expect(useAppStore.getState().user?.username).toBe('hieu')
@@ -127,7 +127,14 @@ describe('LoginPage', () => {
             site: 'YS',
             role: 'user',
             auth_source: 'local',
-            menu_perms: { list: '', todo: 'sr', messages: '', learnknow: '' },
+            menu_perms: {
+              dashboard: '',
+              dash_dept: '',
+              list: '',
+              todo: 'sr',
+              messages: '',
+              learnknow: '',
+            },
           },
         }),
       ),

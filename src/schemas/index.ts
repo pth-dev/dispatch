@@ -1,5 +1,6 @@
 export * from './account'
 export * from './auth'
+export * from './dashboard'
 export * from './lesson'
 export * from './message'
 export * from './meta'

@@ -1,6 +1,8 @@
 import {
+  Building2,
   CalendarCheck2,
   GraduationCap,
+  LayoutDashboard,
   ListChecks,
   MessagesSquare,
   UserCog,
@@ -31,6 +33,20 @@ export interface NavItemConfig {
  * Dashboard, Todo, SLA, Admin enabled incrementally per phase.
  */
 export const MAIN_NAV_ITEMS: NavItemConfig[] = [
+  {
+    id: 'dashboard',
+    titleKey: 'nav.dashboard',
+    href: APP_ROUTES.DASHBOARD,
+    icon: LayoutDashboard,
+    menuPermKey: 'dashboard',
+  },
+  {
+    id: 'dashboard-dept',
+    titleKey: 'nav.dashboardDept',
+    href: APP_ROUTES.DASHBOARD_DEPT,
+    icon: Building2,
+    menuPermKey: 'dash_dept',
+  },
   {
     id: 'tasks',
     titleKey: 'nav.tasks',

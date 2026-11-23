@@ -4,7 +4,8 @@
     "version": "V16.8.0"
   },
   "nav": {
-    "dashboard": "Dashboard",
+    "dashboard": "Overview Dashboard",
+    "dashboardDept": "Department Dashboard",
     "tasks": "Task list",
     "messages": "Message board",
     "lessons": "Lessons learned",
@@ -106,6 +107,8 @@
     "dueDate": "Due date",
     "createdAt": "Created at",
     "close": "Close",
+    "previous": "Previous",
+    "next": "Next",
     "copy": "Copy",
     "copied": "Copied",
     "scrollToTop": "Back to top",
@@ -890,6 +893,153 @@
       "legendOther": "Outside scope",
       "membersCount": "{{count}} members",
       "empty": "No matching departments or OUs found."
+    }
+  },
+  "dashboard": {
+    "title": "Overview Dashboard",
+    "subtitle": "Live operational status, bottlenecks, performance, and posting trends",
+    "scope": {
+      "label": "Metric scope",
+      "all": "All visible",
+      "mine": "My tasks"
+    },
+    "period": {
+      "label": "Time period",
+      "week": "This week",
+      "month": "This month",
+      "quarter": "This quarter",
+      "year": "This year"
+    },
+    "kpi": {
+      "open": "Open tasks",
+      "openSub": "Paused: {{paused}} · Total: {{total}}",
+      "overdue": "Overdue open",
+      "ontimeSub": "On-time: {{rate}}%",
+      "noCompleted": "No completed tasks yet",
+      "dueToday": "Due today",
+      "completedSub": "Done: {{done}} (late {{late}})",
+      "periodFlow": "In / Out this period",
+      "backlogUp": "Backlog grew +{{count}}",
+      "backlogDown": "Backlog shrank -{{count}}",
+      "backlogFlat": "Backlog steady",
+      "response1h": "1H response rate",
+      "response1hSub": "This month: {{pass}}/{{total}}"
+    },
+    "today": {
+      "title": "Action needed today ({{count}})",
+      "scopeMineOnly": "Mine only",
+      "scopeAllVisible": "All visible",
+      "openTodo": "Daily schedule",
+      "tabs": {
+        "all": "All",
+        "sched": "Scheduled",
+        "recur": "Recurring",
+        "due": "Due today",
+        "overdue": "Overdue"
+      },
+      "empty": "All tasks for today are completed or reported.",
+      "showMore": "Show {{count}} more tasks",
+      "collapse": "Collapse"
+    },
+    "bottleneck": {
+      "title": "Bottleneck analysis",
+      "subtitle": "Sorted by overdue and open count — click any row to filter tasks",
+      "unassigned": "Unassigned",
+      "tabs": {
+        "dept": "Department",
+        "site": "Site",
+        "level": "Priority",
+        "type": "Category"
+      },
+      "rowStat": "Open {{open}} (overdue {{overdue}}) / {{total}}",
+      "empty": "No breakdown data available."
+    },
+    "leaderboard": {
+      "title": "Efficiency leaderboard",
+      "subtitle": "Ranked by on-time completion rate (paused tasks excluded)",
+      "filterPlaceholder": "Filter assignees (comma-separated)...",
+      "empty": "No matching assignees."
+    },
+    "posts": {
+      "companyTitle": "Posting trends by department",
+      "companySubtitle": "Grouped by reporter department (auto-split tasks counted once)",
+      "companyRankingTitle": "Top 20 posters (with KPI score)",
+      "deptTitle": "Posting trends by member",
+      "deptSubtitle": "Top 12 department members (dashed line = department total)",
+      "deptRankingTitle": "Department posting ranking (with KPI score)",
+      "totalLine": "Total",
+      "totalPosts": "{{count}} posts total",
+      "noPermission": "You do not have permission to view posting trend analytics.",
+      "emptyChart": "No posting data in this period.",
+      "emptyRanking": "No ranking data available.",
+      "gran": {
+        "day": "Day",
+        "week": "Week",
+        "month": "Month"
+      },
+      "kpiPeriod": {
+        "month": "Monthly KPI",
+        "quarter": "Quarterly KPI",
+        "year": "Yearly KPI"
+      },
+      "cols": {
+        "person": "Person",
+        "dept": "Dept",
+        "posts": "Posts",
+        "kpiTasks": "Tasks",
+        "completion": "Done",
+        "ontime": "On-time",
+        "score": "KPI",
+        "grade": "Grade"
+      }
+    },
+    "modals": {
+      "empty": "No tasks found.",
+      "period": {
+        "title": "Period task details ({{start}} ~ {{end}})",
+        "created": "Created in period",
+        "completed": "Completed in period"
+      },
+      "myPending": {
+        "title": "My pending tasks ({{count}})",
+        "empty": "Great! You have no pending tasks."
+      },
+      "response1h": {
+        "title": "1-hour response details (this month)",
+        "pass": "Passed (≤ 60m)",
+        "fail": "Missed (> 60m)",
+        "none": "No response yet",
+        "mins": "{{mins}}m"
+      }
+    },
+    "dept": {
+      "title": "Department Dashboard",
+      "subtitle": "Department workload, member capacity, and posting heatmap",
+      "selectLabel": "Select department",
+      "includeSub": "Include child OUs",
+      "viewScopeLink": "View scope",
+      "scopeSummary": "{{depts}} dept(s) · {{matched}} / {{total}} related tasks",
+      "peopleLoadTitle": "Open workload by member",
+      "peopleLoadEmpty": "No member workload data.",
+      "metrics": {
+        "total": "Total",
+        "progress": "In progress",
+        "notStarted": "Not started",
+        "delayed": "Overdue",
+        "ontime": "On-time",
+        "late": "Late done",
+        "dueToday": "Due today",
+        "paused": "Paused"
+      },
+      "heatmapTitle": "Member posting heatmap ({{count}})",
+      "heatmapFilterPlaceholder": "Search member name or username...",
+      "heatmapEmpty": "No matching members.",
+      "heatmapCols": {
+        "total": "Total",
+        "avg": "Avg",
+        "latest": "Latest",
+        "trend": "Trend"
+      }
     }
   }
 }

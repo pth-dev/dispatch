@@ -4,7 +4,8 @@
     "version": "V16.8.0"
   },
   "nav": {
-    "dashboard": "仪表盘",
+    "dashboard": "总仪表板",
+    "dashboardDept": "部门仪表板",
     "tasks": "任务列表",
     "messages": "消息板",
     "lessons": "经验教训",
@@ -106,6 +107,8 @@
     "dueDate": "截止日期",
     "createdAt": "创建日期",
     "close": "关闭",
+    "previous": "上一页",
+    "next": "下一页",
     "copy": "复制",
     "copied": "已复制",
     "scrollToTop": "返回顶部",
@@ -890,6 +893,153 @@
       "legendOther": "其他范围",
       "membersCount": "{{count}} 人",
       "empty": "没有符合的部门或 OU。"
+    }
+  },
+  "dashboard": {
+    "title": "总仪表板",
+    "subtitle": "实时现状、瓶颈分析、人员效率与发帖趋势",
+    "scope": {
+      "label": "统计范围",
+      "all": "全部可视",
+      "mine": "我的案件"
+    },
+    "period": {
+      "label": "统计周期",
+      "week": "本周",
+      "month": "本月",
+      "quarter": "本季",
+      "year": "本年"
+    },
+    "kpi": {
+      "open": "处理中",
+      "openSub": "暂停: {{paused}} · 总计: {{total}}",
+      "overdue": "逾期未结",
+      "ontimeSub": "如期率: {{rate}}%",
+      "noCompleted": "尚无已结案",
+      "dueToday": "今日到期",
+      "completedSub": "已结: {{done}}（逾期 {{late}}）",
+      "periodFlow": "本期新增 / 结案",
+      "backlogUp": "积压增加 +{{count}}",
+      "backlogDown": "积压减少 -{{count}}",
+      "backlogFlat": "积压持平",
+      "response1h": "1H 响应率",
+      "response1hSub": "本月: {{pass}}/{{total}}"
+    },
+    "today": {
+      "title": "今日待办事项（{{count}}）",
+      "scopeMineOnly": "仅看我的",
+      "scopeAllVisible": "查看全部可视",
+      "openTodo": "今日排程",
+      "tabs": {
+        "all": "全部",
+        "sched": "今日排程",
+        "recur": "固定周期",
+        "due": "今日到期",
+        "overdue": "逾期未结"
+      },
+      "empty": "今日工作均已完成或回报。",
+      "showMore": "显示其余 {{count}} 笔",
+      "collapse": "收合"
+    },
+    "bottleneck": {
+      "title": "瓶颈分布分析",
+      "subtitle": "优先按逾期与未结案件排序 — 点击直接筛选清单",
+      "unassigned": "未分类",
+      "tabs": {
+        "dept": "部门",
+        "site": "厂区",
+        "level": "等级",
+        "type": "分类"
+      },
+      "rowStat": "未结 {{open}}（逾 {{overdue}}）/ {{total}}",
+      "empty": "暂无分析数据。"
+    },
+    "leaderboard": {
+      "title": "人员效率排行榜",
+      "subtitle": "按如期完成率由高至低排序（不含暂停案件）",
+      "filterPlaceholder": "筛选人员（多位用逗号分隔）...",
+      "empty": "无符合条件的人员。"
+    },
+    "posts": {
+      "companyTitle": "各部门发帖数量趋势",
+      "companySubtitle": "按发帖人部门统计（自动拆分案件仅算一帖）",
+      "companyRankingTitle": "发帖数量前 20 名（附 KPI 分数）",
+      "deptTitle": "部门每人发帖趋势",
+      "deptSubtitle": "显示前 12 位成员（虚线为部门合计）",
+      "deptRankingTitle": "部门人员发帖排行（附 KPI 分数）",
+      "totalLine": "合计",
+      "totalPosts": "共 {{count}} 帖",
+      "noPermission": "您没有查看发帖趋势的读取权限。",
+      "emptyChart": "此期间尚无发帖数据。",
+      "emptyRanking": "尚无排行数据。",
+      "gran": {
+        "day": "每日",
+        "week": "每周",
+        "month": "每月"
+      },
+      "kpiPeriod": {
+        "month": "本月 KPI",
+        "quarter": "本季 KPI",
+        "year": "本年 KPI"
+      },
+      "cols": {
+        "person": "人员",
+        "dept": "部门",
+        "posts": "发帖数",
+        "kpiTasks": "KPI件数",
+        "completion": "完成率",
+        "ontime": "如期率",
+        "score": "KPI分数",
+        "grade": "评级"
+      }
+    },
+    "modals": {
+      "empty": "暂无任务数据。",
+      "period": {
+        "title": "周期任务明细（{{start}} ~ {{end}}）",
+        "created": "期间新增",
+        "completed": "期间结案"
+      },
+      "myPending": {
+        "title": "待我处理清单（{{count}}）",
+        "empty": "太棒了！目前没有待处理任务。"
+      },
+      "response1h": {
+        "title": "本月 1 小时响应明细",
+        "pass": "达标（≤ 60 分钟）",
+        "fail": "未达标（> 60 分钟）",
+        "none": "尚未响应",
+        "mins": "{{mins}} 分钟"
+      }
+    },
+    "dept": {
+      "title": "部门仪表板",
+      "subtitle": "部门案件概况、人员负载与每人发帖热度矩阵",
+      "selectLabel": "选择部门",
+      "includeSub": "含下层 OU",
+      "viewScopeLink": "可观看范围",
+      "scopeSummary": "涵盖 {{depts}} 个部门 · 相关 {{matched}} / {{total}} 件",
+      "peopleLoadTitle": "人员未结负载",
+      "peopleLoadEmpty": "暂无受理人数据。",
+      "metrics": {
+        "total": "总数",
+        "progress": "处理中",
+        "notStarted": "未处理",
+        "delayed": "逾期未结",
+        "ontime": "如期结案",
+        "late": "逾期完成",
+        "dueToday": "今日到期",
+        "paused": "暂停"
+      },
+      "heatmapTitle": "部门每人发帖热度表（{{count}}）",
+      "heatmapFilterPlaceholder": "搜索人员姓名或账号...",
+      "heatmapEmpty": "无符合人员。",
+      "heatmapCols": {
+        "total": "合计",
+        "avg": "平均",
+        "latest": "最近一期",
+        "trend": "趋势"
+      }
     }
   }
 }

@@ -49,11 +49,18 @@ describe('nav config i18n', () => {
 })
 
 describe('getDefaultLandingRoute', () => {
-  it('returns first readable route when user lacks list permission', () => {
+  it('returns first readable route when user lacks dashboard and list permissions', () => {
     const route = getDefaultLandingRoute({
       username: 'staff1',
       role: 'user',
-      menu_perms: { list: '', todo: 'sr', messages: '', learnknow: '' },
+      menu_perms: {
+        dashboard: '',
+        dash_dept: '',
+        list: '',
+        todo: 'sr',
+        messages: '',
+        learnknow: '',
+      },
     })
     expect(route).toBe(APP_ROUTES.TODO)
   })
@@ -62,7 +69,14 @@ describe('getDefaultLandingRoute', () => {
     const route = getDefaultLandingRoute({
       username: 'staff2',
       role: 'user',
-      menu_perms: { list: 's', todo: '', messages: '', learnknow: '' },
+      menu_perms: {
+        dashboard: '',
+        dash_dept: '',
+        list: 's',
+        todo: '',
+        messages: '',
+        learnknow: '',
+      },
     })
     expect(route).toBe(APP_ROUTES.ACCOUNT)
   })

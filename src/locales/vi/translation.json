@@ -4,7 +4,8 @@
     "version": "V16.8.0"
   },
   "nav": {
-    "dashboard": "Bảng điều khiển",
+    "dashboard": "Tổng Dashboard",
+    "dashboardDept": "Dashboard bộ phận",
     "tasks": "Danh sách nhiệm vụ",
     "messages": "Bảng tin nhắn",
     "lessons": "Bài học kinh nghiệm",
@@ -106,6 +107,8 @@
     "dueDate": "Hạn hoàn thành",
     "createdAt": "Ngày tạo",
     "close": "Đóng",
+    "previous": "Trang trước",
+    "next": "Trang sau",
     "copy": "Sao chép",
     "copied": "Đã sao chép",
     "scrollToTop": "Lên đầu trang",
@@ -890,6 +893,153 @@
       "legendOther": "Ngoài phạm vi",
       "membersCount": "{{count}} người",
       "empty": "Không tìm thấy bộ phận hoặc OU phù hợp."
+    }
+  },
+  "dashboard": {
+    "title": "Tổng Dashboard",
+    "subtitle": "Thực trạng tức thời, điểm nghẽn, hiệu suất và xu hướng bài đăng",
+    "scope": {
+      "label": "Phạm vi thống kê",
+      "all": "Toàn phạm vi",
+      "mine": "Của tôi"
+    },
+    "period": {
+      "label": "Chu kỳ thống kê",
+      "week": "Tuần này",
+      "month": "Tháng này",
+      "quarter": "Quý này",
+      "year": "Năm nay"
+    },
+    "kpi": {
+      "open": "Đang mở",
+      "openSub": "Tạm dừng: {{paused}} · Tổng: {{total}}",
+      "overdue": "Quá hạn chưa xong",
+      "ontimeSub": "Đúng hạn: {{rate}}%",
+      "noCompleted": "Chưa có việc hoàn thành",
+      "dueToday": "Đến hạn hôm nay",
+      "completedSub": "Đã xong: {{done}} (trễ {{late}})",
+      "periodFlow": "Vào / Ra kỳ này",
+      "backlogUp": "Tồn đọng tăng +{{count}}",
+      "backlogDown": "Tồn đọng giảm -{{count}}",
+      "backlogFlat": "Tồn đọng ổn định",
+      "response1h": "Phản hồi ≤ 1 giờ",
+      "response1hSub": "Tháng này: {{pass}}/{{total}}"
+    },
+    "today": {
+      "title": "Việc cần xử lý hôm nay ({{count}})",
+      "scopeMineOnly": "Chỉ của tôi",
+      "scopeAllVisible": "Tất cả phạm vi xem",
+      "openTodo": "Lịch hôm nay",
+      "tabs": {
+        "all": "Tất cả",
+        "sched": "Đã lên lịch",
+        "recur": "Định kỳ",
+        "due": "Đến hạn",
+        "overdue": "Quá hạn"
+      },
+      "empty": "Hôm nay không có công việc nào cần xử lý thêm.",
+      "showMore": "Xem thêm {{count}} nhiệm vụ",
+      "collapse": "Thu gọn"
+    },
+    "bottleneck": {
+      "title": "Phân tích điểm nghẽn",
+      "subtitle": "Sắp xếp ưu tiên theo số việc quá hạn và đang mở — nhấp để lọc danh sách",
+      "unassigned": "Chưa phân loại",
+      "tabs": {
+        "dept": "Bộ phận",
+        "site": "Nhà xưởng",
+        "level": "Cấp độ",
+        "type": "Phân loại"
+      },
+      "rowStat": "Mở {{open}} (trễ {{overdue}}) / {{total}}",
+      "empty": "Chưa có dữ liệu phân tích."
+    },
+    "leaderboard": {
+      "title": "Bảng xếp hạng hiệu suất",
+      "subtitle": "Xếp theo tỷ lệ hoàn thành đúng hạn (loại trừ nhiệm vụ tạm dừng)",
+      "filterPlaceholder": "Lọc nhân viên (phân cách bằng dấu phẩy)...",
+      "empty": "Không có nhân viên phù hợp."
+    },
+    "posts": {
+      "companyTitle": "Xu hướng đăng bài theo bộ phận",
+      "companySubtitle": "Tính theo bộ phận người đăng (bài tự tách chỉ tính 1 lần)",
+      "companyRankingTitle": "Top 20 nhân viên đăng bài (kèm điểm KPI)",
+      "deptTitle": "Xu hướng đăng bài theo nhân viên",
+      "deptSubtitle": "Top 12 nhân viên trong bộ phận (đường nét đứt = tổng bộ phận)",
+      "deptRankingTitle": "Xếp hạng bài đăng bộ phận (kèm điểm KPI)",
+      "totalLine": "Tổng cộng",
+      "totalPosts": "Tổng {{count}} bài",
+      "noPermission": "Bạn chưa được cấp quyền đọc biểu đồ xu hướng bài đăng.",
+      "emptyChart": "Chưa có dữ liệu bài đăng trong kỳ này.",
+      "emptyRanking": "Chưa có dữ liệu xếp hạng.",
+      "gran": {
+        "day": "Ngày",
+        "week": "Tuần",
+        "month": "Tháng"
+      },
+      "kpiPeriod": {
+        "month": "KPI Tháng",
+        "quarter": "KPI Quý",
+        "year": "KPI Năm"
+      },
+      "cols": {
+        "person": "Nhân viên",
+        "dept": "Bộ phận",
+        "posts": "Số bài",
+        "kpiTasks": "Số NV",
+        "completion": "HT",
+        "ontime": "Đúng hạn",
+        "score": "Điểm KPI",
+        "grade": "Xếp loại"
+      }
+    },
+    "modals": {
+      "empty": "Không có nhiệm vụ nào.",
+      "period": {
+        "title": "Chi tiết nhiệm vụ trong kỳ ({{start}} ~ {{end}})",
+        "created": "Mới tạo trong kỳ",
+        "completed": "Đã hoàn thành trong kỳ"
+      },
+      "myPending": {
+        "title": "Việc chờ tôi xử lý ({{count}})",
+        "empty": "Tuyệt vời! Bạn không còn việc tồn đọng nào."
+      },
+      "response1h": {
+        "title": "Chi tiết phản hồi trong 1 giờ (tháng này)",
+        "pass": "Đạt (≤ 60 phút)",
+        "fail": "Không đạt (> 60 phút)",
+        "none": "Chưa phản hồi",
+        "mins": "{{mins}} phút"
+      }
+    },
+    "dept": {
+      "title": "Dashboard bộ phận",
+      "subtitle": "Tổng quan thực trạng, tải nhân viên và ma trận bài đăng theo bộ phận",
+      "selectLabel": "Chọn bộ phận",
+      "includeSub": "Gồm OU cấp dưới",
+      "viewScopeLink": "Phạm vi xem",
+      "scopeSummary": "{{depts}} bộ phận · {{matched}} / {{total}} nhiệm vụ liên quan",
+      "peopleLoadTitle": "Tải việc đang mở theo nhân viên",
+      "peopleLoadEmpty": "Chưa có dữ liệu nhân viên.",
+      "metrics": {
+        "total": "Tổng NV",
+        "progress": "Đang xử lý",
+        "notStarted": "Chưa xử lý",
+        "delayed": "Quá hạn",
+        "ontime": "Đúng hạn",
+        "late": "HT trễ",
+        "dueToday": "Hạn hôm nay",
+        "paused": "Tạm dừng"
+      },
+      "heatmapTitle": "Ma trận bài đăng theo nhân viên ({{count}})",
+      "heatmapFilterPlaceholder": "Tìm tên hoặc tài khoản nhân viên...",
+      "heatmapEmpty": "Không có nhân viên phù hợp.",
+      "heatmapCols": {
+        "total": "Tổng",
+        "avg": "TB",
+        "latest": "Kỳ gần nhất",
+        "trend": "Xu hướng"
+      }
     }
   }
 }
