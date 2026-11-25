@@ -1,10 +1,21 @@
 import { useTranslation } from 'react-i18next'
-import type { NavItemConfig, NavSectionConfig } from '@/app/nav-config'
+import {
+  canReadNavPerm,
+  type NavItemConfig,
+  type NavMenuPerm,
+  type NavSectionConfig,
+} from '@/app/nav-config'
 import { APP_ROUTES } from '@/constants/app-routes'
 import type { SessionUser } from '@/schemas/auth'
-import { canReadMenu, canShowMenu } from '@/utils/permissions'
+import { canShowMenu } from '@/utils/permissions'
 import { SidebarNavGroup, type ResolvedNavChild } from './SidebarNavGroup'
 import { SidebarNavItem } from './SidebarNavItem'
+
+function canShowPerm(user: SessionUser | null, perm?: NavMenuPerm): boolean {
+  if (!perm) return true
+  const keys = Array.isArray(perm) ? perm : [perm]
+  return keys.some((key) => canShowMenu(user, key))
+}
 
 type SidebarNavSectionProps = {
   section: NavSectionConfig
@@ -28,9 +39,9 @@ function renderNavItem(
 ) {
   if (item.children && item.children.length > 0) {
     const visibleChildren: ResolvedNavChild[] = item.children
-      .filter((child) => !child.menuPermKey || canShowMenu(user, child.menuPermKey))
+      .filter((child) => canShowPerm(user, child.menuPermKey))
       .map((child) => {
-        const readable = !child.menuPermKey || canReadMenu(user, child.menuPermKey)
+        const readable = canReadNavPerm(user, child.menuPermKey)
         return {
           child,
           readable,
@@ -51,9 +62,9 @@ function renderNavItem(
   }
 
   if (!item.href) return null
-  if (item.menuPermKey && !canShowMenu(user, item.menuPermKey)) return null
+  if (!canShowPerm(user, item.menuPermKey)) return null
 
-  const readable = !item.menuPermKey || canReadMenu(user, item.menuPermKey)
+  const readable = canReadNavPerm(user, item.menuPermKey)
   return (
     <SidebarNavItem
       key={item.id}

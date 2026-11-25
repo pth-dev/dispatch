@@ -29,7 +29,9 @@
       "overview": "Overview",
       "workspace": "Workspace",
       "analyticsSystem": "Analytics & System"
-    }
+    },
+    "worklog": "Worklog",
+    "reports": "Report Center"
   },
   "role": {
     "user": "Member",
@@ -1647,6 +1649,147 @@
       "reportsError": "Failed to load reports",
       "reportsEmpty": "No assignee reports found",
       "openOriginal": "Open Original Task"
+    }
+  },
+  "worklog": {
+    "title": "Daily Worklog",
+    "subtitle": "Consolidated daily progress reports as KPI output evidence.",
+    "kpiNotice": "Your daily progress reports are used as direct evidence for KPI performance evaluation.",
+    "userLabel": "User",
+    "allUsersSuper": "All users",
+    "allUsersDept": "All department users",
+    "startDate": "From date",
+    "endDate": "To date",
+    "rangeInvalid": "Start date cannot be after end date.",
+    "quick": {
+      "today": "Today",
+      "week": "This week",
+      "month": "This month",
+      "quarter": "This quarter",
+      "year": "This year"
+    },
+    "exportExcel": "Export Excel",
+    "exportSuccess": "Worklog exported to Excel.",
+    "exportEmpty": "No records to export.",
+    "stats": {
+      "records": "Reports",
+      "tasks": "Related tasks",
+      "days": "Active days"
+    },
+    "dayCount": "{{count}} reports",
+    "taskBadge": "Task #{{id}}",
+    "reporter": "Reporter",
+    "progress": "Progress",
+    "attachments": "Attachments",
+    "empty": "No work records found in this date range."
+  },
+  "reports": {
+    "title": "Report Center",
+    "subtitle": "Export PDF reports, periodic KPI workbooks, Excel statistics, and personal web report archive.",
+    "tabs": {
+      "pdf": "PDF Report",
+      "kpi": "Periodic KPI",
+      "excel": "Excel Statistics",
+      "web": "Web Report & Archive"
+    },
+    "common": {
+      "startDate": "From date",
+      "endDate": "To date",
+      "unlimitedDate": "No date limit",
+      "department": "Department",
+      "allDepartments": "All departments",
+      "status": "Status",
+      "search": "Search ID, title, assignee...",
+      "selectAll": "Select all",
+      "clearSelection": "Clear",
+      "selectedCount": "Selected {{count}} / {{total}} tasks",
+      "noTasks": "No tasks match the current filters.",
+      "exportExcel": "Export Excel (.xlsx)",
+      "exportSuccess": "Report exported successfully.",
+      "exportEmpty": "No data available to export.",
+      "printPdf": "Print / Save PDF",
+      "loadingReports": "Loading progress reports...",
+      "preview": "Preview"
+    },
+    "pdf": {
+      "description": "Select tasks to print with their complete progress report history.",
+      "printTitle": "Task Progress Report",
+      "historyTitle": "Progress Report History",
+      "noHistory": "No progress reports yet."
+    },
+    "kpi": {
+      "description": "Summarize periodic KPI metrics and export a 7-sheet Excel workbook.",
+      "cycle": "Period",
+      "cycles": {
+        "week": "Week",
+        "month": "Month",
+        "quarter": "Quarter",
+        "year": "Year",
+        "custom": "Custom"
+      },
+      "cards": {
+        "total": "Total Tasks",
+        "completed": "Completed",
+        "ontime": "On-time",
+        "late": "Late Done",
+        "delayed": "Overdue",
+        "rate": "On-time Rate"
+      },
+      "sheetsNote": "Workbook includes 7 sheets: KPI Summary, Trend, Departments, People, Task Types, Sites, Details."
+    },
+    "excel": {
+      "description": "Export integrated progress workbooks or efficiency rankings by assignee / reporter.",
+      "modeProgress": "Integrated Progress",
+      "modeEfficiency": "People Efficiency",
+      "scope": "Scope",
+      "scopes": {
+        "all": "All",
+        "dept": "By department",
+        "person": "By person"
+      },
+      "dimension": "Dimension",
+      "dimAssignee": "Assignee",
+      "dimReporter": "Reporter",
+      "peoplePicker": "Select people",
+      "keyword": "Extra keyword",
+      "cols": {
+        "person": "Person",
+        "dept": "Department",
+        "total": "Total",
+        "ontime": "On-time",
+        "late": "Late",
+        "delayed": "Overdue",
+        "open": "Open",
+        "rate": "On-time Rate"
+      }
+    },
+    "web": {
+      "description": "Build structured web reports (HTML / PDF / Word), archive to server, and reopen anytime.",
+      "subject": "Report subject",
+      "subjects": {
+        "SELF": "My tasks",
+        "DEPT": "Department",
+        "FILTER": "Filtered scope",
+        "PERSON": "Selected person"
+      },
+      "reportTitle": "Report title",
+      "defaultTitle": "Dispatch Summary Report",
+      "includeHistory": "Include progress report summaries",
+      "includeOfficeFiles": "Include Word/Excel attachment index",
+      "hideConfidential": "Hide confidential task titles",
+      "generatePreview": "Build preview",
+      "saveArchive": "Save to archive",
+      "downloadHtml": "Download HTML",
+      "downloadWord": "Download Word (.doc)",
+      "savedSuccess": "Report saved to personal archive.",
+      "deletedSuccess": "Archived report deleted.",
+      "archiveTitle": "My Report Archive",
+      "archiveEmpty": "No archived reports yet.",
+      "open": "Open",
+      "download": "HTML",
+      "delete": "Delete",
+      "confirmDelete": "Delete this archived report?",
+      "officeFilesCount": "Eligible Word/Excel files: {{count}}"
     }
   }
 }

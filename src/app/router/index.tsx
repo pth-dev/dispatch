@@ -22,6 +22,8 @@ const LessonsPage = React.lazy(() => import('@/features/lessons/pages/LessonsPag
 const TodoPage = React.lazy(() => import('@/features/todo/pages/TodoPage'))
 const KpiPeoplePage = React.lazy(() => import('@/features/kpi/pages/KpiPeoplePage'))
 const KpiBriefPage = React.lazy(() => import('@/features/kpi/pages/KpiBriefPage'))
+const WorklogPage = React.lazy(() => import('@/features/worklog/pages/WorklogPage'))
+const ReportsPage = React.lazy(() => import('@/features/reports/pages/ReportsPage'))
 const AccountPage = React.lazy(() => import('@/features/account/pages/AccountPage'))
 const ProfilePage = React.lazy(() => import('@/features/profile/pages/ProfilePage'))
 const TaskCardFixturePreviewPage = import.meta.env.DEV
@@ -163,6 +165,22 @@ export const router = createBrowserRouter([
             element: (
               <RequireMenuPerm perm="kpi_brief" level="r">
                 <KpiBriefPage />
+              </RequireMenuPerm>
+            ),
+          },
+          {
+            path: APP_ROUTES.WORKLOG,
+            element: (
+              <RequireMenuPerm perm="worklog" level="r">
+                <WorklogPage />
+              </RequireMenuPerm>
+            ),
+          },
+          {
+            path: APP_ROUTES.REPORTS,
+            element: (
+              <RequireMenuPerm perm={['report_pdf', 'kpi_report', 'excel_report']} level="r">
+                <ReportsPage />
               </RequireMenuPerm>
             ),
           },

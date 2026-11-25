@@ -29,7 +29,9 @@
       "overview": "營運總覽",
       "workspace": "日常工作",
       "analyticsSystem": "分析與系統"
-    }
+    },
+    "worklog": "工作日誌",
+    "reports": "報表中心"
   },
   "role": {
     "user": "一般成員",
@@ -1647,6 +1649,147 @@
       "reportsError": "動態回報讀取失敗",
       "reportsEmpty": "尚無受理人本人之動態回報",
       "openOriginal": "開啟原帖子"
+    }
+  },
+  "worklog": {
+    "title": "個人每日工作紀錄",
+    "subtitle": "彙總每日任務動態回報紀錄作為 KPI 產出證明。",
+    "kpiNotice": "您的每日回報紀錄將直接作為 KPI 績效產出考核依據。",
+    "userLabel": "人員",
+    "allUsersSuper": "全部人員",
+    "allUsersDept": "本單位全部人員",
+    "startDate": "起始日期",
+    "endDate": "結束日期",
+    "rangeInvalid": "起始日期不可晚於結束日期。",
+    "quick": {
+      "today": "今天",
+      "week": "本週",
+      "month": "本月",
+      "quarter": "本季",
+      "year": "本年"
+    },
+    "exportExcel": "匯出 Excel",
+    "exportSuccess": "工作紀錄已匯出為 Excel。",
+    "exportEmpty": "目前無資料可匯出。",
+    "stats": {
+      "records": "回報筆數",
+      "tasks": "涉及任務",
+      "days": "有產出天數"
+    },
+    "dayCount": "{{count}} 筆回報",
+    "taskBadge": "任務 #{{id}}",
+    "reporter": "填寫人",
+    "progress": "進度",
+    "attachments": "附件",
+    "empty": "此區間內無任何工作產出紀錄。"
+  },
+  "reports": {
+    "title": "報表中心",
+    "subtitle": "匯出 PDF 報告、週期 KPI 報表、Excel 統計以及個人網頁報告歸檔。",
+    "tabs": {
+      "pdf": "匯出 PDF 報告",
+      "kpi": "週期 KPI 報表",
+      "excel": "Excel 統計報表",
+      "web": "網頁報告與歸檔"
+    },
+    "common": {
+      "startDate": "起始日期",
+      "endDate": "結束日期",
+      "unlimitedDate": "不限制日期",
+      "department": "部門",
+      "allDepartments": "全部部門",
+      "status": "狀態",
+      "search": "搜尋編號、標題、受理人...",
+      "selectAll": "全選",
+      "clearSelection": "清除選擇",
+      "selectedCount": "已選擇 {{count}} / {{total}} 項任務",
+      "noTasks": "沒有符合篩選條件的任務。",
+      "exportExcel": "匯出 Excel (.xlsx)",
+      "exportSuccess": "報表匯出成功。",
+      "exportEmpty": "暫無可匯出的資料。",
+      "printPdf": "列印 / 儲存 PDF",
+      "loadingReports": "正在載入動態回報...",
+      "preview": "預覽"
+    },
+    "pdf": {
+      "description": "選擇需要列印的任務並附帶完整動態回報紀錄。",
+      "printTitle": "任務進度與動態回報報告",
+      "historyTitle": "動態回報紀錄",
+      "noHistory": "暫無回報紀錄。"
+    },
+    "kpi": {
+      "description": "按週、月、季、年彙總 KPI 指標並匯出 7 工作表 Excel。",
+      "cycle": "統計週期",
+      "cycles": {
+        "week": "週",
+        "month": "月",
+        "quarter": "季",
+        "year": "年",
+        "custom": "自訂"
+      },
+      "cards": {
+        "total": "總任務",
+        "completed": "已完成",
+        "ontime": "如期完成",
+        "late": "逾期完成",
+        "delayed": "逾期未結",
+        "rate": "如期結案率"
+      },
+      "sheetsNote": "Excel 包含 7 個工作表：KPI總覽、趨勢、部門、人員、任務類型、廠區、明細。"
+    },
+    "excel": {
+      "description": "匯出進度整合報表或按受理人 / 指派人統計效率排行。",
+      "modeProgress": "進度整合報表",
+      "modeEfficiency": "人員效率報表",
+      "scope": "統計範圍",
+      "scopes": {
+        "all": "全部",
+        "dept": "按部門",
+        "person": "按人員"
+      },
+      "dimension": "統計維度",
+      "dimAssignee": "受理人",
+      "dimReporter": "指派人",
+      "peoplePicker": "選擇人員",
+      "keyword": "附加關鍵字",
+      "cols": {
+        "person": "人員",
+        "dept": "部門",
+        "total": "總數",
+        "ontime": "如期",
+        "late": "逾期完成",
+        "delayed": "逾期未結",
+        "open": "處理中",
+        "rate": "如期率"
+      }
+    },
+    "web": {
+      "description": "產生專業網頁報告（HTML / PDF / Word），歸檔至伺服器並隨時重新開啟。",
+      "subject": "報告身分",
+      "subjects": {
+        "SELF": "個人任務",
+        "DEPT": "本部門",
+        "FILTER": "目前篩選",
+        "PERSON": "指定人員"
+      },
+      "reportTitle": "報告標題",
+      "defaultTitle": "派案綜合報告",
+      "includeHistory": "包含動態回報摘要",
+      "includeOfficeFiles": "包含 Word/Excel 附件清單",
+      "hideConfidential": "機密案件隱藏標題",
+      "generatePreview": "產生預覽",
+      "saveArchive": "儲存至歸檔",
+      "downloadHtml": "下載 HTML",
+      "downloadWord": "下載 Word (.doc)",
+      "savedSuccess": "已儲存至個人報告歸檔。",
+      "deletedSuccess": "已刪除歸檔報告。",
+      "archiveTitle": "我的報告歸檔",
+      "archiveEmpty": "尚無歸檔報告。",
+      "open": "開啟",
+      "download": "下載",
+      "delete": "刪除",
+      "confirmDelete": "確認刪除此歸檔報告？",
+      "officeFilesCount": "可用 Word/Excel 附件：{{count}}"
     }
   }
 }

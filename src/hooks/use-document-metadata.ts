@@ -15,6 +15,8 @@ const ROUTE_TITLE_KEYS: Record<string, string> = {
   [APP_ROUTES.LESSONS]: 'nav.lessons',
   [APP_ROUTES.KPI]: 'nav.kpi',
   [APP_ROUTES.KPI_BRIEF]: 'nav.kpiBrief',
+  [APP_ROUTES.WORKLOG]: 'nav.worklog',
+  [APP_ROUTES.REPORTS]: 'nav.reports',
   [APP_ROUTES.ACCOUNT]: 'nav.account',
   [APP_ROUTES.PROFILE]: 'nav.profile',
 }

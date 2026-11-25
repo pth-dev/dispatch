@@ -29,7 +29,9 @@
       "overview": "运营总览",
       "workspace": "日常工作",
       "analyticsSystem": "分析与系统"
-    }
+    },
+    "worklog": "工作日志",
+    "reports": "报表中心"
   },
   "role": {
     "user": "一般成员",
@@ -1647,6 +1649,147 @@
       "reportsError": "动态回报读取失败",
       "reportsEmpty": "尚无受理人本人之动态回报",
       "openOriginal": "打开原帖子"
+    }
+  },
+  "worklog": {
+    "title": "个人每日工作纪录",
+    "subtitle": "汇总每日任务动态回报记录作为 KPI 产出证明。",
+    "kpiNotice": "您的每日回报纪录将直接作为 KPI 绩效产出考核依据。",
+    "userLabel": "人员",
+    "allUsersSuper": "全部人员",
+    "allUsersDept": "本单位全部人员",
+    "startDate": "起始日期",
+    "endDate": "结束日期",
+    "rangeInvalid": "起始日期不可晚于结束日期。",
+    "quick": {
+      "today": "今天",
+      "week": "本周",
+      "month": "本月",
+      "quarter": "本季",
+      "year": "本年"
+    },
+    "exportExcel": "导出 Excel",
+    "exportSuccess": "工作纪录已导出为 Excel。",
+    "exportEmpty": "当前无数据可导出。",
+    "stats": {
+      "records": "回报笔数",
+      "tasks": "涉及任务",
+      "days": "有产出天数"
+    },
+    "dayCount": "{{count}} 笔回报",
+    "taskBadge": "任务 #{{id}}",
+    "reporter": "填写人",
+    "progress": "进度",
+    "attachments": "附件",
+    "empty": "此区间内无任何工作产出纪录。"
+  },
+  "reports": {
+    "title": "报表中心",
+    "subtitle": "导出 PDF 报告、周期 KPI 报表、Excel 统计以及个人网页报告归档。",
+    "tabs": {
+      "pdf": "导出 PDF 报告",
+      "kpi": "周期 KPI 报表",
+      "excel": "Excel 统计报表",
+      "web": "网页报告与归档"
+    },
+    "common": {
+      "startDate": "起始日期",
+      "endDate": "结束日期",
+      "unlimitedDate": "不限制日期",
+      "department": "部门",
+      "allDepartments": "全部部门",
+      "status": "状态",
+      "search": "搜索编号、标题、受理人...",
+      "selectAll": "全选",
+      "clearSelection": "清除选择",
+      "selectedCount": "已选择 {{count}} / {{total}} 项任务",
+      "noTasks": "没有符合筛选条件的任务。",
+      "exportExcel": "导出 Excel (.xlsx)",
+      "exportSuccess": "报表导出成功。",
+      "exportEmpty": "暂无可导出的数据。",
+      "printPdf": "打印 / 保存 PDF",
+      "loadingReports": "正在加载动态回报...",
+      "preview": "预览"
+    },
+    "pdf": {
+      "description": "选择需要打印的任务并附带完整动态回报记录。",
+      "printTitle": "任务进度与动态回报报告",
+      "historyTitle": "动态回报记录",
+      "noHistory": "暂无回报记录。"
+    },
+    "kpi": {
+      "description": "按周、月、季、年汇总 KPI 指标并导出 7 工作表 Excel。",
+      "cycle": "统计周期",
+      "cycles": {
+        "week": "周",
+        "month": "月",
+        "quarter": "季",
+        "year": "年",
+        "custom": "自定义"
+      },
+      "cards": {
+        "total": "总任务",
+        "completed": "已完成",
+        "ontime": "如期完成",
+        "late": "逾期完成",
+        "delayed": "逾期未结",
+        "rate": "如期结案率"
+      },
+      "sheetsNote": "Excel 包含 7 个工作表：KPI总览、趋势、部门、人员、任务类型、厂区、明细。"
+    },
+    "excel": {
+      "description": "导出进度整合报表或按受理人 / 指派人统计效率排行。",
+      "modeProgress": "进度整合报表",
+      "modeEfficiency": "人员效率报表",
+      "scope": "统计范围",
+      "scopes": {
+        "all": "全部",
+        "dept": "按部门",
+        "person": "按人员"
+      },
+      "dimension": "统计维度",
+      "dimAssignee": "受理人",
+      "dimReporter": "指派人",
+      "peoplePicker": "选择人员",
+      "keyword": "附加关键词",
+      "cols": {
+        "person": "人员",
+        "dept": "部门",
+        "total": "总数",
+        "ontime": "如期",
+        "late": "逾期完成",
+        "delayed": "逾期未结",
+        "open": "处理中",
+        "rate": "如期率"
+      }
+    },
+    "web": {
+      "description": "生成专业网页报告（HTML / PDF / Word），归档到服务器并随时重新打开。",
+      "subject": "报告身份",
+      "subjects": {
+        "SELF": "个人任务",
+        "DEPT": "本部门",
+        "FILTER": "当前筛选",
+        "PERSON": "指定人员"
+      },
+      "reportTitle": "报告标题",
+      "defaultTitle": "派案综合报告",
+      "includeHistory": "包含动态回报摘要",
+      "includeOfficeFiles": "包含 Word/Excel 附件清单",
+      "hideConfidential": "机密案件隐藏标题",
+      "generatePreview": "生成预览",
+      "saveArchive": "保存至归档",
+      "downloadHtml": "下载 HTML",
+      "downloadWord": "下载 Word (.doc)",
+      "savedSuccess": "已保存至个人报告归档。",
+      "deletedSuccess": "已删除归档报告。",
+      "archiveTitle": "我的报告归档",
+      "archiveEmpty": "尚无归档报告。",
+      "open": "打开",
+      "download": "下载",
+      "delete": "删除",
+      "confirmDelete": "确认删除此归档报告？",
+      "officeFilesCount": "可用 Word/Excel 附件：{{count}}"
     }
   }
 }

@@ -5,7 +5,7 @@ import type { MenuPermKey } from '@/schemas/auth'
 import { canReadMenu, canWriteMenu } from '@/utils/permissions'
 
 type RequireMenuPermProps = {
-  perm: MenuPermKey
+  perm: MenuPermKey | readonly MenuPermKey[]
   level?: 'r' | 'w'
   children: React.ReactNode
 }
@@ -17,7 +17,10 @@ type RequireMenuPermProps = {
  */
 export function RequireMenuPerm({ perm, level = 'r', children }: RequireMenuPermProps) {
   const user = useAppStore((s) => s.user)
-  const allowed = level === 'w' ? canWriteMenu(user, perm) : canReadMenu(user, perm)
+  const keys = Array.isArray(perm) ? perm : [perm]
+  const allowed = keys.some((key) =>
+    level === 'w' ? canWriteMenu(user, key) : canReadMenu(user, key),
+  )
   if (!allowed) {
     throwFullPageError('403')
   }

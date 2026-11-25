@@ -29,7 +29,9 @@
       "overview": "Điều hành",
       "workspace": "Công việc",
       "analyticsSystem": "Phân tích & Hệ thống"
-    }
+    },
+    "worklog": "Nhật ký công việc",
+    "reports": "Trung tâm báo cáo"
   },
   "role": {
     "user": "Thành viên",
@@ -1647,6 +1649,147 @@
       "reportsError": "Không tải được danh sách báo cáo",
       "reportsEmpty": "Chưa có báo cáo nào từ người nhận việc",
       "openOriginal": "Mở bài gốc"
+    }
+  },
+  "worklog": {
+    "title": "Nhật ký công việc",
+    "subtitle": "Tổng hợp toàn bộ báo cáo tiến độ hàng ngày làm bằng chứng sản lượng KPI.",
+    "kpiNotice": "Nhật ký báo cáo tiến độ hàng ngày được dùng làm căn cứ đánh giá sản lượng KPI của bạn.",
+    "userLabel": "Người dùng",
+    "allUsersSuper": "Tất cả nhân sự",
+    "allUsersDept": "Tất cả nhân sự trong bộ phận",
+    "startDate": "Từ ngày",
+    "endDate": "Đến ngày",
+    "rangeInvalid": "Ngày bắt đầu không được lớn hơn ngày kết thúc.",
+    "quick": {
+      "today": "Hôm nay",
+      "week": "Tuần này",
+      "month": "Tháng này",
+      "quarter": "Quý này",
+      "year": "Năm nay"
+    },
+    "exportExcel": "Xuất Excel",
+    "exportSuccess": "Đã xuất nhật ký công việc ra Excel.",
+    "exportEmpty": "Không có dữ liệu để xuất.",
+    "stats": {
+      "records": "Số báo cáo",
+      "tasks": "Nhiệm vụ liên quan",
+      "days": "Ngày có sản lượng"
+    },
+    "dayCount": "{{count}} báo cáo",
+    "taskBadge": "Nhiệm vụ #{{id}}",
+    "reporter": "Người báo cáo",
+    "progress": "Tiến độ",
+    "attachments": "Tệp đính kèm",
+    "empty": "Không có nhật ký công việc nào trong khoảng thời gian này."
+  },
+  "reports": {
+    "title": "Trung tâm báo cáo",
+    "subtitle": "Xuất báo cáo PDF, KPI định kỳ, thống kê Excel và quản lý kho báo cáo web cá nhân.",
+    "tabs": {
+      "pdf": "Xuất báo cáo PDF",
+      "kpi": "KPI định kỳ",
+      "excel": "Thống kê Excel",
+      "web": "Báo cáo Web & Lưu trữ"
+    },
+    "common": {
+      "startDate": "Từ ngày",
+      "endDate": "Đến ngày",
+      "unlimitedDate": "Không giới hạn ngày",
+      "department": "Bộ phận",
+      "allDepartments": "Tất cả bộ phận",
+      "status": "Trạng thái",
+      "search": "Tìm mã, tiêu đề, người xử lý...",
+      "selectAll": "Chọn tất cả",
+      "clearSelection": "Bỏ chọn",
+      "selectedCount": "Đã chọn {{count}} / {{total}} nhiệm vụ",
+      "noTasks": "Không có nhiệm vụ nào phù hợp điều kiện lọc.",
+      "exportExcel": "Xuất Excel (.xlsx)",
+      "exportSuccess": "Đã xuất báo cáo thành công.",
+      "exportEmpty": "Chưa có dữ liệu để xuất.",
+      "printPdf": "In / Lưu PDF",
+      "loadingReports": "Đang tải chi tiết báo cáo...",
+      "preview": "Xem trước"
+    },
+    "pdf": {
+      "description": "Chọn các nhiệm vụ cần in kèm toàn bộ lịch sử báo cáo tiến độ.",
+      "printTitle": "Báo cáo chi tiết nhiệm vụ & tiến độ",
+      "historyTitle": "Lịch sử báo cáo tiến độ",
+      "noHistory": "Chưa có báo cáo tiến độ."
+    },
+    "kpi": {
+      "description": "Tổng hợp KPI theo tuần, tháng, quý, năm và xuất sổ Excel 7 trang tính.",
+      "cycle": "Chu kỳ",
+      "cycles": {
+        "week": "Tuần",
+        "month": "Tháng",
+        "quarter": "Quý",
+        "year": "Năm",
+        "custom": "Tùy chỉnh"
+      },
+      "cards": {
+        "total": "Tổng NV",
+        "completed": "Hoàn thành",
+        "ontime": "Đúng hạn",
+        "late": "HT trễ",
+        "delayed": "Quá hạn",
+        "rate": "Tỷ lệ đúng hạn"
+      },
+      "sheetsNote": "Sổ Excel gồm 7 trang tính: Tổng quan KPI, Xu hướng, Đơn vị, Nhân sự, Loại NV, Khu vực, Chi tiết."
+    },
+    "excel": {
+      "description": "Xuất báo cáo tiến độ tích hợp hoặc đánh giá hiệu suất theo người nhận / người giao.",
+      "modeProgress": "Tiến độ tích hợp",
+      "modeEfficiency": "Hiệu suất nhân sự",
+      "scope": "Phạm vi",
+      "scopes": {
+        "all": "Tất cả",
+        "dept": "Theo bộ phận",
+        "person": "Theo nhân sự"
+      },
+      "dimension": "Chiều đánh giá",
+      "dimAssignee": "Người nhận xử lý",
+      "dimReporter": "Người giao việc",
+      "peoplePicker": "Chọn nhân sự",
+      "keyword": "Từ khóa lọc thêm",
+      "cols": {
+        "person": "Nhân sự",
+        "dept": "Bộ phận",
+        "total": "Tổng",
+        "ontime": "Đúng hạn",
+        "late": "HT trễ",
+        "delayed": "Quá hạn",
+        "open": "Đang XL",
+        "rate": "Tỷ lệ đúng hạn"
+      }
+    },
+    "web": {
+      "description": "Tạo báo cáo web tổng hợp (HTML / PDF / Word), lưu trữ lên máy chủ và mở lại bất cứ lúc nào.",
+      "subject": "Tư cách báo cáo",
+      "subjects": {
+        "SELF": "Cá nhân tôi",
+        "DEPT": "Toàn bộ phận",
+        "FILTER": "Theo điều kiện lọc",
+        "PERSON": "Theo nhân sự chọn"
+      },
+      "reportTitle": "Tiêu đề báo cáo",
+      "defaultTitle": "Báo cáo tổng hợp điều phối",
+      "includeHistory": "Kèm tóm tắt báo cáo tiến độ",
+      "includeOfficeFiles": "Kèm danh sách tệp Word/Excel đính kèm",
+      "hideConfidential": "Ẩn tiêu đề nhiệm vụ bảo mật",
+      "generatePreview": "Tạo bản xem trước",
+      "saveArchive": "Lưu vào kho lưu trữ",
+      "downloadHtml": "Tải HTML",
+      "downloadWord": "Tải Word (.doc)",
+      "savedSuccess": "Đã lưu báo cáo vào kho lưu trữ cá nhân.",
+      "deletedSuccess": "Đã xóa báo cáo lưu trữ.",
+      "archiveTitle": "Kho báo cáo lưu trữ cá nhân",
+      "archiveEmpty": "Chưa có báo cáo nào được lưu trữ.",
+      "open": "Mở",
+      "download": "Tải HTML",
+      "delete": "Xóa",
+      "confirmDelete": "Xác nhận xóa báo cáo lưu trữ này?",
+      "officeFilesCount": "Tệp Word/Excel hợp lệ: {{count}}"
     }
   }
 }

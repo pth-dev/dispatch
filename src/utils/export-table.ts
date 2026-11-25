@@ -90,3 +90,71 @@ export async function copyTableToClipboard(
   }
   return false
 }
+
+export type ExcelSheetSpec = {
+  name: string
+  headers: readonly string[]
+  rows: readonly (readonly ExportCellValue[])[]
+  colWidths?: readonly number[]
+}
+
+let xlsxModulePromise: Promise<typeof import('xlsx')> | null = null
+
+async function loadXlsxModule(): Promise<typeof import('xlsx')> {
+  if (!xlsxModulePromise) {
+    xlsxModulePromise = import('xlsx').catch((err) => {
+      xlsxModulePromise = null
+      throw err
+    })
+  }
+  return xlsxModulePromise
+}
+
+function sanitizeSheetName(raw: string, used: Set<string>): string {
+  const base = raw.replace(/[\\/?*[\]:]/g, ' ').trim().slice(0, 31) || 'Sheet'
+  if (!used.has(base)) {
+    used.add(base)
+    return base
+  }
+  for (let i = 2; i < 100; i += 1) {
+    const suffix = `_${i}`
+    const candidate = `${base.slice(0, 31 - suffix.length)}${suffix}`
+    if (!used.has(candidate)) {
+      used.add(candidate)
+      return candidate
+    }
+  }
+  return base
+}
+
+/**
+ * Lazily loads SheetJS (`xlsx`) and downloads a multi-sheet `.xlsx` workbook.
+ * Applies formula-injection neutralization to string cells.
+ */
+export async function exportMultiSheetWorkbook(
+  filename: string,
+  sheets: readonly ExcelSheetSpec[],
+): Promise<void> {
+  if (sheets.length === 0) return
+  const XLSX = await loadXlsxModule()
+  const workbook = XLSX.utils.book_new()
+  const usedNames = new Set<string>()
+
+  for (const sheet of sheets) {
+    const safeHeaders = sheet.headers.map((h) => sanitizeSpreadsheetCell(h))
+    const safeRows = sheet.rows.map((row) =>
+      row.map((cell) => {
+        if (typeof cell === 'number') return cell
+        return sanitizeSpreadsheetCell(cell)
+      }),
+    )
+    const ws = XLSX.utils.aoa_to_sheet([safeHeaders, ...safeRows])
+    if (sheet.colWidths && sheet.colWidths.length > 0) {
+      ws['!cols'] = sheet.colWidths.map((wch) => ({ wch }))
+    }
+    XLSX.utils.book_append_sheet(workbook, ws, sanitizeSheetName(sheet.name, usedNames))
+  }
+
+  const safeName = filename.endsWith('.xlsx') ? filename : `${filename}.xlsx`
+  XLSX.writeFile(workbook, safeName)
+}

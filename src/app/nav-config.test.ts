@@ -62,10 +62,14 @@ describe('getDefaultLandingRoute', () => {
         dash_dept: '',
         list: '',
         todo: 'sr',
+        worklog: '',
         messages: '',
         learnknow: '',
         kpi_people: '',
         kpi_brief: '',
+        report_pdf: '',
+        kpi_report: '',
+        excel_report: '',
       },
     })
     expect(route).toBe(APP_ROUTES.TODO)
@@ -80,10 +84,14 @@ describe('getDefaultLandingRoute', () => {
         dash_dept: '',
         list: '',
         todo: '',
+        worklog: '',
         messages: '',
         learnknow: '',
         kpi_people: '',
         kpi_brief: 'sr',
+        report_pdf: '',
+        kpi_report: '',
+        excel_report: '',
       },
     })
     expect(route).toBe(APP_ROUTES.KPI_BRIEF)
@@ -98,10 +106,14 @@ describe('getDefaultLandingRoute', () => {
         dash_dept: '',
         list: 's',
         todo: '',
+        worklog: '',
         messages: '',
         learnknow: '',
         kpi_people: '',
         kpi_brief: '',
+        report_pdf: '',
+        kpi_report: '',
+        excel_report: '',
       },
     })
     expect(route).toBe(APP_ROUTES.ACCOUNT)

@@ -2,6 +2,8 @@ import {
   Award,
   Building2,
   CalendarCheck2,
+  ClipboardList,
+  FileBarChart2,
   GraduationCap,
   LayoutDashboard,
   LayoutPanelTop,
@@ -14,12 +16,14 @@ import { APP_ROUTES } from '@/constants/app-routes'
 import type { MenuPermKey, SessionUser } from '@/schemas/auth'
 import { canReadMenu } from '@/utils/permissions'
 
+export type NavMenuPerm = MenuPermKey | readonly MenuPermKey[]
+
 export interface NavChildItemConfig {
   id: string
   titleKey: string
   href: string
   icon?: LucideIcon
-  menuPermKey?: MenuPermKey
+  menuPermKey?: NavMenuPerm
 }
 
 export interface NavItemConfig {
@@ -27,7 +31,7 @@ export interface NavItemConfig {
   titleKey: string
   href?: string
   icon: LucideIcon
-  menuPermKey?: MenuPermKey
+  menuPermKey?: NavMenuPerm
   badgeCount?: number
   adminOnly?: boolean
   children?: NavChildItemConfig[]
@@ -85,6 +89,13 @@ export const NAV_SECTIONS: NavSectionConfig[] = [
         menuPermKey: 'todo',
       },
       {
+        id: 'worklog',
+        titleKey: 'nav.worklog',
+        href: APP_ROUTES.WORKLOG,
+        icon: ClipboardList,
+        menuPermKey: 'worklog',
+      },
+      {
         id: 'messages',
         titleKey: 'nav.messages',
         href: APP_ROUTES.MESSAGES,
@@ -126,6 +137,13 @@ export const NAV_SECTIONS: NavSectionConfig[] = [
         ],
       },
       {
+        id: 'reports',
+        titleKey: 'nav.reports',
+        href: APP_ROUTES.REPORTS,
+        icon: FileBarChart2,
+        menuPermKey: ['report_pdf', 'kpi_report', 'excel_report'] as const,
+      },
+      {
         id: 'account',
         titleKey: 'nav.account',
         href: APP_ROUTES.ACCOUNT,
@@ -143,7 +161,16 @@ export type FlattenedNavTarget = {
   id: string
   titleKey: string
   href: string
-  menuPermKey?: MenuPermKey
+  menuPermKey?: NavMenuPerm
+}
+
+export function canReadNavPerm(
+  user: Pick<SessionUser, 'username' | 'role' | 'menu_perms'> | null | undefined,
+  perm?: NavMenuPerm,
+): boolean {
+  if (!perm) return true
+  const keys = Array.isArray(perm) ? perm : [perm]
+  return keys.some((key) => canReadMenu(user, key))
 }
 
 export function flattenNavTargets(items: NavItemConfig[]): FlattenedNavTarget[] {
@@ -178,8 +205,8 @@ export function getDefaultLandingRoute(
   user: Pick<SessionUser, 'username' | 'role' | 'menu_perms'> | null | undefined,
 ): string {
   if (!user) return APP_ROUTES.TASKS
-  const readable = flattenNavTargets(MAIN_NAV_ITEMS).find(
-    (item) => !item.menuPermKey || canReadMenu(user, item.menuPermKey),
+  const readable = flattenNavTargets(MAIN_NAV_ITEMS).find((item) =>
+    canReadNavPerm(user, item.menuPermKey),
   )
   return readable?.href ?? APP_ROUTES.PROFILE
 }

@@ -5,9 +5,14 @@ import { Copy, Check } from 'lucide-react'
 import { Logo } from './Logo'
 import { ErrorActions } from './ErrorActions'
 import { APP_ROUTES } from '@/constants/app-routes'
-import { flattenNavTargets, getDefaultLandingRoute, MAIN_NAV_ITEMS } from '@/app/nav-config'
+import {
+  canReadNavPerm,
+  flattenNavTargets,
+  getDefaultLandingRoute,
+  MAIN_NAV_ITEMS,
+} from '@/app/nav-config'
 import { useAppStore } from '@/app/store'
-import { canReadMenu, canWriteMenu } from '@/utils/permissions'
+import { canWriteMenu } from '@/utils/permissions'
 import { env } from '@/services/env'
 import {
   ERROR_TONE_CLASS,
@@ -53,7 +58,7 @@ export function ErrorState({
   const homeRoute = getDefaultLandingRoute(user)
   const suggestedLinks = [
     ...flattenNavTargets(MAIN_NAV_ITEMS)
-      .filter((item) => !item.menuPermKey || !user || canReadMenu(user, item.menuPermKey))
+      .filter((item) => !item.menuPermKey || !user || canReadNavPerm(user, item.menuPermKey))
       .map((item) => ({ labelKey: item.titleKey, href: item.href })),
     ...(!user || canWriteMenu(user, 'dashboard')
       ? [{ labelKey: 'tasks.create', href: APP_ROUTES.TASK_NEW }]

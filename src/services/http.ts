@@ -367,3 +367,8 @@ export async function httpBlob(path: string, options?: HttpRequestOptions): Prom
   const response = await executeRequest(path, options)
   return response.blob()
 }
+
+export async function httpText(path: string, options?: HttpRequestOptions): Promise<string> {
+  const response = await executeRequest(path, options)
+  return response.text()
+}
