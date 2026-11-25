@@ -1,5 +1,7 @@
-import * as React from 'react'
+import type { ReactNode } from 'react'
 import { ChevronRight, Info } from 'lucide-react'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/utils/cn'
 
 export type MetricCardTone = 'default' | 'primary' | 'success' | 'warning' | 'destructive'
@@ -12,14 +14,14 @@ const VALUE_TONE_CLASS: Record<MetricCardTone, string> = {
   destructive: 'text-destructive',
 }
 
-export interface MetricCardProps {
+export type MetricCardProps = {
   label: string
-  value: React.ReactNode
-  subtext?: React.ReactNode
-  badge?: React.ReactNode
+  value: ReactNode
+  subtext?: ReactNode
+  badge?: ReactNode
   tooltip?: string
   tone?: MetricCardTone
-  icon?: React.ReactNode
+  icon?: ReactNode
   onClick?: () => void
   active?: boolean
   className?: string
@@ -36,55 +38,59 @@ export function MetricCard({
   onClick,
   active,
   className,
-}: MetricCardProps) {
+}: MetricCardProps): ReactNode {
   const isActive = active === true
   const baseClass = cn(
-    'flex flex-col rounded-xl border bg-card p-3.5 text-left transition-colors',
+    'flex flex-col rounded-xl border bg-card p-3 text-left transition-colors',
     isActive ? 'border-primary bg-primary-soft/40' : 'border-border',
     onClick &&
-      'cursor-pointer hover:border-primary/50 hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99]',
+      'cursor-pointer hover:border-primary/50 hover:bg-secondary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-safe:active:scale-[0.99]',
     className,
   )
 
   const content = (
     <>
-      <div className={cn('flex items-start justify-between gap-2', badge ? 'min-h-14' : 'min-h-8')}>
-        {badge ? (
-          <div className="min-w-0 flex flex-col items-start gap-1">
-            <span
-              className="min-h-8 text-xs font-medium text-muted-foreground leading-snug line-clamp-2"
-              title={label}
-            >
-              {label}
-            </span>
-            {badge}
-          </div>
-        ) : (
-          <div className="min-w-0 flex items-center gap-1.5 flex-wrap">
-            <span
-              className="text-xs font-medium text-muted-foreground leading-snug line-clamp-2"
-              title={label}
-            >
-              {label}
-            </span>
-          </div>
-        )}
-        <div className="flex shrink-0 items-center gap-1 text-muted-foreground">
+      <div className="flex min-h-8 items-start justify-between gap-2">
+        <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5">
+          <span
+            className="text-xs font-medium text-muted-foreground leading-4 line-clamp-2"
+            title={label}
+          >
+            {label}
+          </span>
+          {badge}
+        </div>
+        <div className="flex shrink-0 items-center gap-1 pt-0.5 text-muted-foreground">
           {tooltip ? (
-            <span title={tooltip} aria-label={tooltip} className="inline-flex items-center">
+            onClick ? (
               <Info className="size-3.5" aria-hidden="true" />
-            </span>
+            ) : (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label={label}
+                    title={tooltip}
+                    className="-m-1 inline-flex shrink-0 items-center justify-center rounded p-1 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+                  >
+                    <Info className="size-3.5" aria-hidden="true" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-64 p-2.5 text-xs leading-relaxed">
+                  {tooltip}
+                </PopoverContent>
+              </Popover>
+            )
           ) : icon ? (
             <span aria-hidden="true">{icon}</span>
-          ) : onClick ? (
-            <ChevronRight className="size-3.5 mt-0.5" aria-hidden="true" />
           ) : null}
+          {onClick && <ChevronRight className="size-3.5" aria-hidden="true" />}
         </div>
       </div>
 
       <div
         className={cn(
-          'mt-2 flex flex-1 items-center text-2xl font-semibold tracking-tight tabular-nums leading-none',
+          'mt-1.5 flex flex-1 items-center text-xl xl:text-2xl font-semibold tracking-tight tabular-nums leading-none',
           VALUE_TONE_CLASS[tone],
         )}
       >
@@ -93,7 +99,7 @@ export function MetricCard({
 
       {subtext != null && (
         <div
-          className="mt-2 text-xs text-muted-foreground leading-snug truncate"
+          className="mt-1.5 min-h-4 text-xs leading-4 text-muted-foreground truncate"
           title={typeof subtext === 'string' ? subtext : undefined}
         >
           {subtext}
@@ -103,10 +109,21 @@ export function MetricCard({
   )
 
   if (onClick) {
-    return (
+    const buttonEl = (
       <button type="button" onClick={onClick} aria-pressed={active} className={baseClass}>
         {content}
       </button>
+    )
+    if (!tooltip) return buttonEl
+    return (
+      <TooltipProvider delayDuration={200}>
+        <Tooltip>
+          <TooltipTrigger asChild>{buttonEl}</TooltipTrigger>
+          <TooltipContent side="top" className="max-w-64">
+            {tooltip}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     )
   }
 
