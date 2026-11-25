@@ -138,6 +138,13 @@ Recorded here so **every future session** has persistent context without relying
    - **Phase 5:** Project `work_items` create/edit + Excel template/upload, Integrated Board & Gantt, `work_topics` reporting, AI report generation, rich paste, and 3-minute idle-aware auto-refresh.
    - **Phase 6:** Personal Worklog (`/worklog`) & 4-tab Report Center (`/reports`: PDF, Periodic KPI, Excel/Word/WebReport, Server Archive).
 
+---
+
+## 11. Mandatory TanStack Table (`DataTable`) Standard (2026-11-25)
+
+- **Rule:** Every UI data table in `src/features/` and `src/pages/` MUST use `DataTable` (`src/components/ui/data-table.tsx`, powered by `@tanstack/react-table`) — or `@tanstack/react-table` directly for specialized layouts.
+- **Prohibited:** Raw HTML `<table>` elements or direct shadcn `<Table>` primitives outside `src/components/ui/table.tsx` and `src/components/ui/data-table*.tsx` (the only permitted exception is non-React offline export HTML string generators such as standalone Web/Word report documents).
+
 
 
 

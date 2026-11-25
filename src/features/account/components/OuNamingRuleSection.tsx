@@ -12,6 +12,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { DataTable, type ColumnDef } from '@/components/ui/data-table'
 import type { OuRulePlanItem, OuRuleResponse } from '@/schemas/account-system'
 import { resolveApiErrorMessage } from '@/services'
 import { useRunOuRule } from '../api/admin-system'
@@ -19,19 +20,6 @@ import type { AdminNotice } from './AdminUserFormModal'
 
 type OuNamingRuleSectionProps = {
   onNotify: (notice: AdminNotice) => void
-}
-
-function OuRulePlanRow({ item }: { item: OuRulePlanItem }) {
-  return (
-    <tr>
-      <td className="px-3 py-1.5 font-medium text-foreground">
-        {item.fullname ? `${item.fullname} (${item.username})` : item.username}
-      </td>
-      <td className="px-3 py-1.5 text-muted-foreground">{item.from_label || '—'}</td>
-      <td className="px-3 py-1.5 font-medium text-destructive">{item.to || '—'}</td>
-      <td className="px-3 py-1.5 text-muted-foreground">{item.path || '—'}</td>
-    </tr>
-  )
 }
 
 export function OuNamingRuleSection({ onNotify }: OuNamingRuleSectionProps) {
@@ -69,6 +57,38 @@ export function OuNamingRuleSection({ onNotify }: OuNamingRuleSectionProps) {
   }
 
   const changedItems = (preview?.plan ?? []).filter((item) => !item.unchanged)
+  const columns: ColumnDef<OuRulePlanItem, unknown>[] = [
+    {
+      id: 'username',
+      header: t('account.admin.fields.username'),
+      cell: ({ row }) => (
+        <span className="font-medium text-foreground">
+          {row.original.fullname
+            ? `${row.original.fullname} (${row.original.username})`
+            : row.original.username}
+        </span>
+      ),
+    },
+    {
+      id: 'from',
+      header: t('account.system.ouRule.fromCol'),
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">{row.original.from_label || '—'}</span>
+      ),
+    },
+    {
+      id: 'to',
+      header: t('account.system.ouRule.toCol'),
+      cell: ({ row }) => (
+        <span className="font-medium text-destructive">{row.original.to || '—'}</span>
+      ),
+    },
+    {
+      id: 'path',
+      header: t('account.system.ouRule.pathCol'),
+      cell: ({ row }) => <span className="text-muted-foreground">{row.original.path || '—'}</span>,
+    },
+  ]
 
   return (
     <section className="rounded-xl border border-border bg-card p-4 space-y-3">
@@ -112,22 +132,14 @@ export function OuNamingRuleSection({ onNotify }: OuNamingRuleSectionProps) {
           {changedItems.length === 0 ? (
             <p className="text-xs text-success">{t('account.system.ouRule.allMatched')}</p>
           ) : (
-            <div className="max-h-64 overflow-auto rounded-lg border border-border">
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className="border-b border-border bg-secondary text-left font-semibold text-primary">
-                    <th className="px-3 py-2">{t('account.admin.fields.username')}</th>
-                    <th className="px-3 py-2">{t('account.system.ouRule.fromCol')}</th>
-                    <th className="px-3 py-2">{t('account.system.ouRule.toCol')}</th>
-                    <th className="px-3 py-2">{t('account.system.ouRule.pathCol')}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border bg-card">
-                  {changedItems.slice(0, 200).map((item) => (
-                    <OuRulePlanRow key={item.username} item={item} />
-                  ))}
-                </tbody>
-              </table>
+            <div className="max-h-64 overflow-auto rounded-lg border border-border bg-card">
+              <DataTable
+                data={changedItems.slice(0, 200)}
+                columns={columns}
+                keyExtractor={(item) => item.username}
+                variant="embedded"
+                density="compact"
+              />
             </div>
           )}
         </div>

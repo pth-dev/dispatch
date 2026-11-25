@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { InlineError, toErrorStatus } from '@/components/layout'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { DataTable, type ColumnDef } from '@/components/ui/data-table'
 import { Input } from '@/components/ui/input'
 import {
   CreateSiteFormSchema,
@@ -17,33 +18,6 @@ import type { AdminNotice } from './AdminUserFormModal'
 
 type SitesManagerSectionProps = {
   onNotify: (notice: AdminNotice) => void
-}
-
-function SiteRow({
-  site,
-  disabled,
-  onToggleActive,
-}: {
-  site: AdminSite
-  disabled: boolean
-  onToggleActive: (site: AdminSite, nextActive: boolean) => void
-}) {
-  const { t } = useTranslation()
-  return (
-    <tr className="hover:bg-secondary/50">
-      <td className="px-3 py-2 font-medium text-primary">{site.code}</td>
-      <td className="px-3 py-2 text-foreground">{site.name || '—'}</td>
-      <td className="px-3 py-2 text-muted-foreground">{site.vn || '—'}</td>
-      <td className="px-3 py-2 text-right">
-        <Checkbox
-          aria-label={`${site.code} - ${t('account.system.sites.active')}`}
-          checked={site.active}
-          disabled={disabled || site.builtin}
-          onCheckedChange={(checked) => onToggleActive(site, Boolean(checked))}
-        />
-      </td>
-    </tr>
-  )
 }
 
 export function SitesManagerSection({ onNotify }: SitesManagerSectionProps) {
@@ -83,6 +57,37 @@ export function SitesManagerSection({ onNotify }: SitesManagerSectionProps) {
 
   const { errors } = form.formState
   const sites = sitesQuery.data ?? []
+
+  const columns: ColumnDef<AdminSite, unknown>[] = [
+    {
+      id: 'code',
+      header: t('account.system.sites.code'),
+      cell: ({ row }) => <span className="font-medium text-primary">{row.original.code}</span>,
+    },
+    {
+      id: 'name',
+      header: t('account.system.sites.name'),
+      cell: ({ row }) => <span className="text-foreground">{row.original.name || '—'}</span>,
+    },
+    {
+      id: 'vn',
+      header: t('account.system.sites.vnName'),
+      cell: ({ row }) => <span className="text-muted-foreground">{row.original.vn || '—'}</span>,
+    },
+    {
+      id: 'active',
+      header: t('account.system.sites.active'),
+      meta: { width: '90px', align: 'right' },
+      cell: ({ row }) => (
+        <Checkbox
+          aria-label={`${row.original.code} - ${t('account.system.sites.active')}`}
+          checked={row.original.active}
+          disabled={updateMutation.isPending || row.original.builtin}
+          onCheckedChange={(checked) => void handleToggle(row.original, Boolean(checked))}
+        />
+      ),
+    },
+  ]
 
   return (
     <section className="rounded-xl border border-border bg-card p-4 space-y-4">
@@ -138,45 +143,22 @@ export function SitesManagerSection({ onNotify }: SitesManagerSectionProps) {
         </Button>
       </form>
 
-      {sitesQuery.isLoading ? (
-        <div role="status" className="h-28 motion-safe:animate-pulse rounded-lg border border-border bg-secondary">
-          <span className="sr-only">{t('common.loading')}</span>
-        </div>
-      ) : sitesQuery.isError ? (
+      {sitesQuery.isError ? (
         <InlineError
           status={toErrorStatus(sitesQuery.error)}
           onRetry={() => void sitesQuery.refetch()}
         />
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-border">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-secondary text-left text-xs font-semibold text-primary">
-                <th className="px-3 py-2">{t('account.system.sites.code')}</th>
-                <th className="px-3 py-2">{t('account.system.sites.name')}</th>
-                <th className="px-3 py-2">{t('account.system.sites.vnName')}</th>
-                <th className="px-3 py-2 text-right">{t('account.system.sites.active')}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border bg-card">
-              {sites.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className="px-3 py-4 text-center text-xs text-muted-foreground">
-                    {t('common.empty')}
-                  </td>
-                </tr>
-              ) : (
-                sites.map((site) => (
-                  <SiteRow
-                    key={site.code}
-                    site={site}
-                    disabled={updateMutation.isPending}
-                    onToggleActive={(s, active) => void handleToggle(s, active)}
-                  />
-                ))
-              )}
-            </tbody>
-          </table>
+        <div className="rounded-lg border border-border bg-card">
+          <DataTable
+            data={sites}
+            columns={columns}
+            isLoading={sitesQuery.isLoading}
+            keyExtractor={(site) => site.code}
+            emptyMessage={t('common.empty')}
+            variant="embedded"
+            density="compact"
+          />
         </div>
       )}
     </section>

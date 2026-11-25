@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { DataTable, type ColumnDef } from '@/components/ui/data-table'
 import { ResponsiveModal } from '@/components/ui/responsive-modal'
 import type { AdminUser } from '@/schemas/account'
 import type { MenuPermKey } from '@/schemas/auth'
@@ -22,48 +23,7 @@ type MenuPermsModalProps = {
   onNotify: (notice: AdminNotice) => void
 }
 
-function MenuPermRow({
-  item,
-  val,
-  onToggle,
-}: {
-  item: (typeof MENU_PERM_ITEMS)[number]
-  val: { s: boolean; r: boolean; w: boolean }
-  onToggle: (key: MenuPermKey, level: 's' | 'r' | 'w', checked: boolean) => void
-}) {
-  const { t } = useTranslation()
-  const label = t(item.labelKey)
-  return (
-    <tr className="hover:bg-secondary/50">
-      <td className="px-3 py-2 font-medium text-foreground">{label}</td>
-      <td className="px-3 py-2 text-center">
-        <Checkbox
-          aria-label={`${label} - ${t('account.admin.perms.showCol')}`}
-          checked={val.s}
-          onCheckedChange={(checked) => onToggle(item.key, 's', Boolean(checked))}
-        />
-      </td>
-      <td className="px-3 py-2 text-center">
-        <Checkbox
-          aria-label={`${label} - ${t('account.admin.perms.readCol')}`}
-          checked={val.r}
-          onCheckedChange={(checked) => onToggle(item.key, 'r', Boolean(checked))}
-        />
-      </td>
-      <td className="px-3 py-2 text-center">
-        {item.writeSupported ? (
-          <Checkbox
-            aria-label={`${label} - ${t('account.admin.perms.writeCol')}`}
-            checked={val.w}
-            onCheckedChange={(checked) => onToggle(item.key, 'w', Boolean(checked))}
-          />
-        ) : (
-          <span className="text-xs text-muted-foreground">—</span>
-        )}
-      </td>
-    </tr>
-  )
-}
+type MenuPermItem = (typeof MENU_PERM_ITEMS)[number]
 
 export function MenuPermsModal({ open, onOpenChange, targets, onNotify }: MenuPermsModalProps) {
   const { t, i18n } = useTranslation()
@@ -105,6 +65,64 @@ export function MenuPermsModal({ open, onOpenChange, targets, onNotify }: MenuPe
     }
   }
 
+  const columns: ColumnDef<MenuPermItem, unknown>[] = [
+    {
+      id: 'feature',
+      header: t('account.admin.perms.featureCol'),
+      cell: ({ row }) => (
+        <span className="font-medium text-foreground">{t(row.original.labelKey)}</span>
+      ),
+    },
+    {
+      id: 'show',
+      header: t('account.admin.perms.showCol'),
+      meta: { width: '80px', align: 'center' },
+      cell: ({ row }) => {
+        const label = t(row.original.labelKey)
+        return (
+          <Checkbox
+            aria-label={`${label} - ${t('account.admin.perms.showCol')}`}
+            checked={draft[row.original.key].s}
+            onCheckedChange={(checked) => toggleFlag(row.original.key, 's', Boolean(checked))}
+          />
+        )
+      },
+    },
+    {
+      id: 'read',
+      header: t('account.admin.perms.readCol'),
+      meta: { width: '80px', align: 'center' },
+      cell: ({ row }) => {
+        const label = t(row.original.labelKey)
+        return (
+          <Checkbox
+            aria-label={`${label} - ${t('account.admin.perms.readCol')}`}
+            checked={draft[row.original.key].r}
+            onCheckedChange={(checked) => toggleFlag(row.original.key, 'r', Boolean(checked))}
+          />
+        )
+      },
+    },
+    {
+      id: 'write',
+      header: t('account.admin.perms.writeCol'),
+      meta: { width: '80px', align: 'center' },
+      cell: ({ row }) => {
+        const label = t(row.original.labelKey)
+        if (!row.original.writeSupported) {
+          return <span className="text-xs text-muted-foreground">—</span>
+        }
+        return (
+          <Checkbox
+            aria-label={`${label} - ${t('account.admin.perms.writeCol')}`}
+            checked={draft[row.original.key].w}
+            onCheckedChange={(checked) => toggleFlag(row.original.key, 'w', Boolean(checked))}
+          />
+        )
+      },
+    },
+  ]
+
   return (
     <ResponsiveModal
       open={open}
@@ -142,27 +160,14 @@ export function MenuPermsModal({ open, onOpenChange, targets, onNotify }: MenuPe
       }
     >
       <p className="mb-3 text-xs text-muted-foreground">{t('account.admin.perms.hierarchyHint')}</p>
-      <div className="overflow-x-auto rounded-lg border border-border">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border bg-secondary text-left text-xs font-semibold text-primary">
-              <th className="px-3 py-2.5">{t('account.admin.perms.featureCol')}</th>
-              <th className="w-20 px-3 py-2.5 text-center">{t('account.admin.perms.showCol')}</th>
-              <th className="w-20 px-3 py-2.5 text-center">{t('account.admin.perms.readCol')}</th>
-              <th className="w-20 px-3 py-2.5 text-center">{t('account.admin.perms.writeCol')}</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border bg-card">
-            {MENU_PERM_ITEMS.map((item) => (
-              <MenuPermRow
-                key={item.key}
-                item={item}
-                val={draft[item.key]}
-                onToggle={toggleFlag}
-              />
-            ))}
-          </tbody>
-        </table>
+      <div className="rounded-lg border border-border bg-card">
+        <DataTable
+          data={MENU_PERM_ITEMS}
+          columns={columns}
+          keyExtractor={(item) => item.key}
+          variant="embedded"
+          density="compact"
+        />
       </div>
     </ResponsiveModal>
   )

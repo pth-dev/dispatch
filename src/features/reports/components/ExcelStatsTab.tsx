@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useAppStore } from '@/app/store'
 import { InlineError, toErrorStatus } from '@/components/layout'
 import { Button } from '@/components/ui/button'
+import { DataTable, type ColumnDef } from '@/components/ui/data-table'
 import { Input } from '@/components/ui/input'
 import { getDeptDisplayName, useMetaDepts } from '@/hooks/use-meta'
 import { isSuperLike } from '@/utils/permissions'
@@ -14,6 +15,7 @@ import {
   buildEfficiencyRanking,
   exportEfficiencyWorkbook,
   exportProgressWorkbook,
+  type ReportGroupRow,
 } from '../utils/report-domain'
 
 const SELECT_CLS =
@@ -49,6 +51,63 @@ export function ExcelStatsTab({ onNotify }: { onNotify: (msg: string) => void })
   })
 
   const ranking = buildEfficiencyRanking(scopedTasks, dimension)
+
+  const columns: ColumnDef<ReportGroupRow, unknown>[] = [
+    {
+      id: 'rank',
+      header: '#',
+      meta: { width: '48px', minWidth: '48px' },
+      cell: ({ row }) => <span className="text-muted-foreground">{row.index + 1}</span>,
+    },
+    {
+      id: 'person',
+      header: t('reports.excel.cols.person'),
+      meta: { minWidth: '150px' },
+      cell: ({ row }) => <span className="font-medium text-foreground">{row.original.label}</span>,
+    },
+    {
+      id: 'dept',
+      header: t('reports.excel.cols.dept'),
+      meta: { minWidth: '130px' },
+      cell: ({ row }) => <span className="text-muted-foreground">{row.original.dept || '—'}</span>,
+    },
+    {
+      id: 'total',
+      header: t('reports.excel.cols.total'),
+      meta: { align: 'right', minWidth: '72px' },
+      cell: ({ row }) => <span>{row.original.metrics.total}</span>,
+    },
+    {
+      id: 'ontime',
+      header: t('reports.excel.cols.ontime'),
+      meta: { align: 'right', minWidth: '84px' },
+      cell: ({ row }) => <span className="text-success">{row.original.metrics.ontime}</span>,
+    },
+    {
+      id: 'late',
+      header: t('reports.excel.cols.late'),
+      meta: { align: 'right', minWidth: '76px' },
+      cell: ({ row }) => <span className="text-warning">{row.original.metrics.late}</span>,
+    },
+    {
+      id: 'delayed',
+      header: t('reports.excel.cols.delayed'),
+      meta: { align: 'right', minWidth: '80px' },
+      cell: ({ row }) => <span className="text-destructive">{row.original.metrics.delayed}</span>,
+    },
+    {
+      id: 'open',
+      header: t('reports.excel.cols.open'),
+      meta: { align: 'right', minWidth: '80px' },
+      cell: ({ row }) => <span className="text-primary">{row.original.metrics.open}</span>,
+    },
+    {
+      id: 'rate',
+      header: t('reports.excel.cols.rate'),
+      meta: { align: 'right', minWidth: '104px' },
+      cell: ({ row }) => <span className="font-semibold">{row.original.metrics.ontimeRate}%</span>,
+    },
+  ]
 
   const handleExport = async () => {
     if (scopedTasks.length === 0) {
@@ -151,52 +210,22 @@ export function ExcelStatsTab({ onNotify }: { onNotify: (msg: string) => void })
         </div>
       </section>
 
-      {tasksQuery.isLoading ? (
-        <div role="status" className="h-40 motion-safe:animate-pulse rounded-xl border border-border bg-card">
-          <span className="sr-only">{t('common.loading')}</span>
-        </div>
-      ) : tasksQuery.isError ? (
+      {tasksQuery.isError ? (
         <InlineError
           status={toErrorStatus(tasksQuery.error)}
           onRetry={() => void tasksQuery.refetch()}
         />
-      ) : ranking.length === 0 ? (
-        <div className="rounded-xl border border-border bg-card p-6 text-center text-sm text-muted-foreground">
-          {t('reports.common.noTasks')}
-        </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-border bg-card">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-secondary text-left text-xs font-semibold text-primary">
-                <th className="px-3 py-2">#</th>
-                <th className="px-3 py-2">{t('reports.excel.cols.person')}</th>
-                <th className="px-3 py-2">{t('reports.excel.cols.dept')}</th>
-                <th className="px-3 py-2 text-right">{t('reports.excel.cols.total')}</th>
-                <th className="px-3 py-2 text-right">{t('reports.excel.cols.ontime')}</th>
-                <th className="px-3 py-2 text-right">{t('reports.excel.cols.late')}</th>
-                <th className="px-3 py-2 text-right">{t('reports.excel.cols.delayed')}</th>
-                <th className="px-3 py-2 text-right">{t('reports.excel.cols.open')}</th>
-                <th className="px-3 py-2 text-right">{t('reports.excel.cols.rate')}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {ranking.map((row, idx) => (
-                <tr key={row.key} className="hover:bg-secondary/50">
-                  <td className="px-3 py-2 text-muted-foreground">{idx + 1}</td>
-                  <td className="px-3 py-2 font-medium text-foreground">{row.label}</td>
-                  <td className="px-3 py-2 text-muted-foreground">{row.dept || '—'}</td>
-                  <td className="px-3 py-2 text-right">{row.metrics.total}</td>
-                  <td className="px-3 py-2 text-right text-success">{row.metrics.ontime}</td>
-                  <td className="px-3 py-2 text-right text-warning">{row.metrics.late}</td>
-                  <td className="px-3 py-2 text-right text-destructive">{row.metrics.delayed}</td>
-                  <td className="px-3 py-2 text-right text-primary">{row.metrics.open}</td>
-                  <td className="px-3 py-2 text-right font-semibold">{row.metrics.ontimeRate}%</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          data={ranking}
+          columns={columns}
+          isLoading={tasksQuery.isLoading}
+          keyExtractor={(row) => row.key}
+          emptyMessage={t('reports.common.noTasks')}
+          density="compact"
+          enablePagination
+          minViewportHeightClass=""
+        />
       )}
     </div>
   )

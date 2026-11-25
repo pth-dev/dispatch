@@ -1,6 +1,8 @@
+import { DataTable, type ColumnDef } from '@/components/ui/data-table'
 import type { AdDiagnoseResponse, AdDiagnoseStep } from '@/schemas/account-ad'
 
 type DiagnoseResultData = NonNullable<AdDiagnoseResponse['result']>
+type DiagnoseTestRow = DiagnoseResultData['tests'][number]
 
 function formatDiagnoseStep(step: AdDiagnoseStep): { ok: boolean | null; label: string } {
   if (!step) return { ok: null, label: '—' }
@@ -17,6 +19,38 @@ function getStepToneClass(ok: boolean | null): string {
   return ok ? 'text-success' : 'text-destructive'
 }
 
+const DIAGNOSE_COLUMNS: ColumnDef<DiagnoseTestRow, unknown>[] = [
+  {
+    id: 'url',
+    header: 'URL',
+    cell: ({ row }) => <span className="font-medium text-foreground">{row.original.url}</span>,
+  },
+  {
+    id: 'tcp',
+    header: 'TCP',
+    cell: ({ row }) => {
+      const step = formatDiagnoseStep(row.original.tcp)
+      return <span className={getStepToneClass(step.ok)}>{step.label}</span>
+    },
+  },
+  {
+    id: 'bind',
+    header: 'Bind',
+    cell: ({ row }) => {
+      const step = formatDiagnoseStep(row.original.bind)
+      return <span className={getStepToneClass(step.ok)}>{step.label}</span>
+    },
+  },
+  {
+    id: 'ldap',
+    header: 'LDAP',
+    cell: ({ row }) => {
+      const step = formatDiagnoseStep(row.original.search)
+      return <span className={getStepToneClass(step.ok)}>{step.label}</span>
+    },
+  },
+]
+
 export function AdDiagnosePanel({ result }: { result: DiagnoseResultData }) {
   return (
     <div className="rounded-lg border border-border bg-secondary p-3 text-xs space-y-2">
@@ -24,34 +58,14 @@ export function AdDiagnosePanel({ result }: { result: DiagnoseResultData }) {
         {result.domain} ({result.durationMs}ms) — {result.goodUrl || '—'}
       </div>
       {result.tests.length > 0 && (
-        <div className="overflow-x-auto rounded border border-border bg-card">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b border-border bg-secondary text-left font-semibold text-primary">
-                <th className="px-2 py-1.5">URL</th>
-                <th className="px-2 py-1.5">TCP</th>
-                <th className="px-2 py-1.5">Bind</th>
-                <th className="px-2 py-1.5">LDAP</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {result.tests.map((test) => {
-                const tcp = formatDiagnoseStep(test.tcp)
-                const bind = formatDiagnoseStep(test.bind)
-                const searchStep = formatDiagnoseStep(test.search)
-                return (
-                  <tr key={test.url}>
-                    <td className="px-2 py-1.5 font-medium text-foreground">{test.url}</td>
-                    <td className={`px-2 py-1.5 ${getStepToneClass(tcp.ok)}`}>{tcp.label}</td>
-                    <td className={`px-2 py-1.5 ${getStepToneClass(bind.ok)}`}>{bind.label}</td>
-                    <td className={`px-2 py-1.5 ${getStepToneClass(searchStep.ok)}`}>
-                      {searchStep.label}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+        <div className="rounded border border-border bg-card">
+          <DataTable
+            data={result.tests}
+            columns={DIAGNOSE_COLUMNS}
+            keyExtractor={(row, idx) => `${row.url}-${idx}`}
+            variant="embedded"
+            density="compact"
+          />
         </div>
       )}
       {result.hints.map((hint, idx) => (

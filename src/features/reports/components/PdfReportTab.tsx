@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { InlineError, toErrorStatus } from '@/components/layout'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { DataTable, type ColumnDef } from '@/components/ui/data-table'
 import { Input } from '@/components/ui/input'
 import { StatusText } from '@/components/ui/status-text'
 import type { RawReport, RawTask } from '@/schemas/task'
@@ -79,6 +80,55 @@ export function PdfReportTab({ onNotify }: { onNotify: (msg: string) => void }) 
     }
     setIsPreparing(false)
   }
+
+  const columns: ColumnDef<RawTask, unknown>[] = [
+    {
+      id: 'select',
+      header: () => <span className="sr-only">{t('reports.common.selectAll')}</span>,
+      meta: { width: '48px', minWidth: '48px', align: 'center' },
+      cell: ({ row }) => (
+        <Checkbox
+          aria-label={`#${row.original.id} ${row.original.title}`}
+          checked={selectedIds.has(row.original.id)}
+          onCheckedChange={() => toggleId(row.original.id)}
+        />
+      ),
+    },
+    {
+      id: 'id',
+      header: 'ID',
+      meta: { width: '80px', minWidth: '72px' },
+      cell: ({ row }) => <span className="font-medium text-primary">#{row.original.id}</span>,
+    },
+    {
+      id: 'title',
+      header: t('tasks.columns.title'),
+      meta: { minWidth: '220px' },
+      cell: ({ row }) => <span className="text-foreground">{row.original.title}</span>,
+    },
+    {
+      id: 'assignee',
+      header: t('common.assignee'),
+      meta: { minWidth: '140px' },
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">{row.original.assign_person || '—'}</span>
+      ),
+    },
+    {
+      id: 'due',
+      header: t('common.dueDate'),
+      meta: { minWidth: '130px' },
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">{row.original.due_date || '—'}</span>
+      ),
+    },
+    {
+      id: 'status',
+      header: t('common.status'),
+      meta: { minWidth: '130px' },
+      cell: ({ row }) => <StatusText status={deriveTaskStatus(row.original)} />,
+    },
+  ]
 
   return (
     <div className="space-y-4">
@@ -163,56 +213,23 @@ export function PdfReportTab({ onNotify }: { onNotify: (msg: string) => void }) 
         </div>
       </section>
 
-      {tasksQuery.isLoading ? (
-        <div role="status" className="h-40 motion-safe:animate-pulse rounded-xl border border-border bg-card">
-          <span className="sr-only">{t('common.loading')}</span>
-        </div>
-      ) : tasksQuery.isError ? (
+      {tasksQuery.isError ? (
         <InlineError
           status={toErrorStatus(tasksQuery.error)}
           onRetry={() => void tasksQuery.refetch()}
         />
-      ) : filtered.length === 0 ? (
-        <div className="rounded-xl border border-border bg-card p-6 text-center text-sm text-muted-foreground print:hidden">
-          {t('reports.common.noTasks')}
-        </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-border bg-card print:hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-secondary text-left text-xs font-semibold text-primary">
-                <th className="w-10 px-3 py-2">
-                  <span className="sr-only">{t('reports.common.selectAll')}</span>
-                </th>
-                <th className="px-3 py-2">ID</th>
-                <th className="px-3 py-2">{t('tasks.columns.title')}</th>
-                <th className="px-3 py-2">{t('common.assignee')}</th>
-                <th className="px-3 py-2">{t('common.dueDate')}</th>
-                <th className="px-3 py-2">{t('common.status')}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filtered.map((task) => (
-                <tr key={task.id} className="hover:bg-secondary/50">
-                  <td className="px-3 py-2 text-center">
-                    <Checkbox
-                      aria-label={`#${task.id}`}
-                      checked={selectedIds.has(task.id)}
-                      onCheckedChange={() => toggleId(task.id)}
-                    />
-                  </td>
-                  <td className="px-3 py-2 font-medium text-primary">#{task.id}</td>
-                  <td className="px-3 py-2 text-foreground">{task.title}</td>
-                  <td className="px-3 py-2 text-muted-foreground">{task.assign_person || '—'}</td>
-                  <td className="px-3 py-2 text-muted-foreground">{task.due_date || '—'}</td>
-                  <td className="px-3 py-2">
-                    <StatusText status={deriveTaskStatus(task)} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          data={filtered}
+          columns={columns}
+          isLoading={tasksQuery.isLoading}
+          keyExtractor={(task) => String(task.id)}
+          emptyMessage={t('reports.common.noTasks')}
+          density="compact"
+          enablePagination
+          minViewportHeightClass=""
+          className="print:hidden"
+        />
       )}
 
       {printEntries.length > 0 && (
