@@ -1,7 +1,10 @@
 {
   "app": {
     "name": "Điều Phối",
-    "version": "V16.8.0"
+    "version": "V16.8.0",
+    "fullTitle": "Điều Phối — 中越雙語調度系統",
+    "description": "中越雙語任務調度系統（Shingtak）：用於任務管理、進度回報、KPI 考核、訊息板及營運儀表板。",
+    "logoAlt": "Điều Phối Shingtak 標誌"
   },
   "nav": {
     "dashboard": "總儀表板",

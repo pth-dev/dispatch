@@ -74,7 +74,7 @@ Brief §8 item 17 states:
 ## 6. Mocks & Dev Tooling (Updated: Direct Real-API Integration)
 
 - **MSW mocks & DevPanel removed (user decision):** To integrate directly against the real backend via Vite `server.proxy` (`VITE_PROXY_TARGET`), the runtime MSW browser worker (`src/mocks/`, `public/mockServiceWorker.js`) and `DevPanel` simulation tool were removed. Unit tests stub `fetch` at the transport boundary as needed.
-- **Service worker / `public/`:** `vite.config.ts` keeps `build.copyPublicDir: false` (revisit if real static assets are added to `public/`).
+- **Service worker / `public/`:** `vite.config.ts` keeps default `build.copyPublicDir` (`true`) because `public/` now holds real static production assets (`logo.png`, `site.webmanifest`) after `mockServiceWorker.js` removal.
 
 ---
 

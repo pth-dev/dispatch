@@ -1,10 +1,11 @@
 import * as React from 'react'
-import { createBrowserRouter, Navigate } from 'react-router'
+import { createBrowserRouter, Navigate, Outlet } from 'react-router'
 import { APP_ROUTES } from '@/constants/app-routes'
 import { getDefaultLandingRoute } from '@/app/nav-config'
 import { useAppStore } from '@/app/store'
 import { AppShell, RootRouteErrorBoundary, ErrorState } from '@/components/layout'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
+import { useDocumentMetadata } from '@/hooks/use-document-metadata'
 import { RequireMenuPerm } from './RequireMenuPerm'
 
 // Route-based code splitting per performance skill
@@ -36,142 +37,153 @@ function HomeRedirect() {
   return <Navigate to={getDefaultLandingRoute(user)} replace />
 }
 
+function RootMetadataLayout() {
+  useDocumentMetadata()
+  return <Outlet />
+}
+
 export const router = createBrowserRouter([
-  ...(import.meta.env.DEV && TaskCardFixturePreviewPage
-    ? [
-        {
-          path: '/dev/task-cards',
-          element: (
-            <React.Suspense fallback={<RouteFallback />}>
-              <TaskCardFixturePreviewPage />
-            </React.Suspense>
-          ),
-          errorElement: <RootRouteErrorBoundary />,
-        },
-      ]
-    : []),
   {
-    path: APP_ROUTES.LOGIN,
-    element: (
-      <React.Suspense fallback={<RouteFallback />}>
-        <LoginPage />
-      </React.Suspense>
-    ),
-    errorElement: <RootRouteErrorBoundary />,
-  },
-  {
-    path: APP_ROUTES.HOME,
-    element: <AppShell />,
+    element: <RootMetadataLayout />,
     errorElement: <RootRouteErrorBoundary />,
     children: [
+      ...(import.meta.env.DEV && TaskCardFixturePreviewPage
+        ? [
+            {
+              path: '/dev/task-cards',
+              element: (
+                <React.Suspense fallback={<RouteFallback />}>
+                  <TaskCardFixturePreviewPage />
+                </React.Suspense>
+              ),
+              errorElement: <RootRouteErrorBoundary />,
+            },
+          ]
+        : []),
       {
-        index: true,
-        element: <HomeRedirect />,
-      },
-      {
-        path: APP_ROUTES.DASHBOARD,
+        path: APP_ROUTES.LOGIN,
         element: (
-          <RequireMenuPerm perm="dashboard" level="r">
-            <DashboardPage />
-          </RequireMenuPerm>
+          <React.Suspense fallback={<RouteFallback />}>
+            <LoginPage />
+          </React.Suspense>
         ),
+        errorElement: <RootRouteErrorBoundary />,
       },
       {
-        path: APP_ROUTES.DASHBOARD_DEPT,
-        element: (
-          <RequireMenuPerm perm="dash_dept" level="r">
-            <DepartmentDashboardPage />
-          </RequireMenuPerm>
-        ),
+        path: APP_ROUTES.HOME,
+        element: <AppShell />,
+        errorElement: <RootRouteErrorBoundary />,
+        children: [
+          {
+            index: true,
+            element: <HomeRedirect />,
+          },
+          {
+            path: APP_ROUTES.DASHBOARD,
+            element: (
+              <RequireMenuPerm perm="dashboard" level="r">
+                <DashboardPage />
+              </RequireMenuPerm>
+            ),
+          },
+          {
+            path: APP_ROUTES.DASHBOARD_DEPT,
+            element: (
+              <RequireMenuPerm perm="dash_dept" level="r">
+                <DepartmentDashboardPage />
+              </RequireMenuPerm>
+            ),
+          },
+          {
+            path: APP_ROUTES.TASKS,
+            element: (
+              <RequireMenuPerm perm="list" level="r">
+                <TaskListPage />
+              </RequireMenuPerm>
+            ),
+          },
+          {
+            path: APP_ROUTES.TASK_NEW,
+            element: (
+              <RequireMenuPerm perm="dashboard" level="w">
+                <TaskCreatePage />
+              </RequireMenuPerm>
+            ),
+          },
+          {
+            path: APP_ROUTES.TASK_EDIT(),
+            element: (
+              <RequireMenuPerm perm="dashboard" level="w">
+                <TaskCreatePage />
+              </RequireMenuPerm>
+            ),
+          },
+          {
+            path: APP_ROUTES.TASK_DETAIL(),
+            element: (
+              <RequireMenuPerm perm="list" level="r">
+                <TaskDetailPage />
+              </RequireMenuPerm>
+            ),
+          },
+          {
+            path: APP_ROUTES.TODO,
+            element: (
+              <RequireMenuPerm perm="todo" level="r">
+                <TodoPage />
+              </RequireMenuPerm>
+            ),
+          },
+          {
+            path: APP_ROUTES.MESSAGES,
+            element: (
+              <RequireMenuPerm perm="messages" level="r">
+                <MessagesPage />
+              </RequireMenuPerm>
+            ),
+          },
+          {
+            path: APP_ROUTES.LESSONS,
+            element: (
+              <RequireMenuPerm perm="learnknow" level="r">
+                <LessonsPage />
+              </RequireMenuPerm>
+            ),
+          },
+          {
+            path: APP_ROUTES.KPI,
+            element: (
+              <RequireMenuPerm perm="kpi_people" level="r">
+                <KpiPeoplePage />
+              </RequireMenuPerm>
+            ),
+          },
+          {
+            path: APP_ROUTES.KPI_BRIEF,
+            element: (
+              <RequireMenuPerm perm="kpi_brief" level="r">
+                <KpiBriefPage />
+              </RequireMenuPerm>
+            ),
+          },
+          {
+            path: '/sla',
+            element: <Navigate to={APP_ROUTES.KPI} replace />,
+          },
+          {
+            path: APP_ROUTES.ACCOUNT,
+            element: <AccountPage />,
+          },
+          {
+            path: APP_ROUTES.PROFILE,
+            element: <ProfilePage />,
+          },
+        ],
       },
       {
-        path: APP_ROUTES.TASKS,
-        element: (
-          <RequireMenuPerm perm="list" level="r">
-            <TaskListPage />
-          </RequireMenuPerm>
-        ),
-      },
-      {
-        path: APP_ROUTES.TASK_NEW,
-        element: (
-          <RequireMenuPerm perm="dashboard" level="w">
-            <TaskCreatePage />
-          </RequireMenuPerm>
-        ),
-      },
-      {
-        path: APP_ROUTES.TASK_EDIT(),
-        element: (
-          <RequireMenuPerm perm="dashboard" level="w">
-            <TaskCreatePage />
-          </RequireMenuPerm>
-        ),
-      },
-      {
-        path: APP_ROUTES.TASK_DETAIL(),
-        element: (
-          <RequireMenuPerm perm="list" level="r">
-            <TaskDetailPage />
-          </RequireMenuPerm>
-        ),
-      },
-      {
-        path: APP_ROUTES.TODO,
-        element: (
-          <RequireMenuPerm perm="todo" level="r">
-            <TodoPage />
-          </RequireMenuPerm>
-        ),
-      },
-      {
-        path: APP_ROUTES.MESSAGES,
-        element: (
-          <RequireMenuPerm perm="messages" level="r">
-            <MessagesPage />
-          </RequireMenuPerm>
-        ),
-      },
-      {
-        path: APP_ROUTES.LESSONS,
-        element: (
-          <RequireMenuPerm perm="learnknow" level="r">
-            <LessonsPage />
-          </RequireMenuPerm>
-        ),
-      },
-      {
-        path: APP_ROUTES.KPI,
-        element: (
-          <RequireMenuPerm perm="kpi_people" level="r">
-            <KpiPeoplePage />
-          </RequireMenuPerm>
-        ),
-      },
-      {
-        path: APP_ROUTES.KPI_BRIEF,
-        element: (
-          <RequireMenuPerm perm="kpi_brief" level="r">
-            <KpiBriefPage />
-          </RequireMenuPerm>
-        ),
-      },
-      {
-        path: '/sla',
-        element: <Navigate to={APP_ROUTES.KPI} replace />,
-      },
-      {
-        path: APP_ROUTES.ACCOUNT,
-        element: <AccountPage />,
-      },
-      {
-        path: APP_ROUTES.PROFILE,
-        element: <ProfilePage />,
+        path: '*',
+        element: <ErrorState status="404" />,
       },
     ],
-  },
-  {
-    path: '*',
-    element: <ErrorState status="404" />,
   },
 ])

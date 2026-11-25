@@ -1,0 +1,20 @@
+{
+  "name": "Điều Phối — Hệ thống điều phối song ngữ Trung - Việt",
+  "short_name": "Điều Phối",
+  "description": "Hệ thống điều phối công việc song ngữ Trung - Việt (Shingtak): quản lý nhiệm vụ, tiến độ, KPI, bảng tin nhắn và dashboard điều hành.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "lang": "vi",
+  "background_color": "#F3F4F8",
+  "theme_color": "#1F6FEB",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "304x295",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

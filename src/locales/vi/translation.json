@@ -1,7 +1,10 @@
 {
   "app": {
     "name": "Điều Phối",
-    "version": "V16.8.0"
+    "version": "V16.8.0",
+    "fullTitle": "Điều Phối — Hệ thống điều phối song ngữ Trung - Việt",
+    "description": "Hệ thống điều phối công việc song ngữ Trung - Việt (Shingtak): quản lý nhiệm vụ, tiến độ, KPI, bảng tin nhắn và dashboard điều hành.",
+    "logoAlt": "Logo Điều Phối Shingtak"
   },
   "nav": {
     "dashboard": "Tổng Dashboard",

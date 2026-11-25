@@ -37,10 +37,6 @@ export default defineConfig(({ mode }) => {
     build: {
       // Never emit source maps so original TypeScript/JSX source is not exposed in DevTools.
       sourcemap: false,
-      // `public/` only holds the MSW service worker, which must never ship to
-      // production. It stays served by the dev server because Vite reads
-      // `publicDir` regardless of this flag.
-      copyPublicDir: false,
       rolldownOptions: {
         output: {
           entryFileNames: 'assets/[hash].js',

@@ -1,8 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import { House } from 'lucide-react'
 import { cn } from '@/utils/cn'
 
-interface LogoProps {
+type LogoProps = {
   size?: number
   className?: string
   showText?: boolean
@@ -13,13 +12,16 @@ export function Logo({ size = 36, className, showText = true }: LogoProps) {
 
   return (
     <div className={cn('flex items-center gap-3 select-none', className)}>
-      <div
+      <img
+        src="/logo.png"
+        alt={showText ? '' : t('app.logoAlt')}
+        aria-hidden={showText ? true : undefined}
+        width={size}
+        height={size}
         style={{ width: size, height: size }}
-        className="flex shrink-0 items-center justify-center rounded-full bg-brand text-brand-foreground"
-        aria-hidden="true"
-      >
-        <House className="size-5 stroke-[2.2]" />
-      </div>
+        className="shrink-0 rounded-full object-contain"
+        decoding="async"
+      />
 
       {showText && (
         <div className="flex flex-col">

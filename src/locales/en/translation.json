@@ -1,7 +1,10 @@
 {
   "app": {
     "name": "Điều Phối",
-    "version": "V16.8.0"
+    "version": "V16.8.0",
+    "fullTitle": "Điều Phối — Bilingual CN–VN Dispatch System",
+    "description": "Bilingual Chinese–Vietnamese task dispatch system (Shingtak) for task tracking, progress reports, KPIs, message boards, and operational dashboards.",
+    "logoAlt": "Điều Phối Shingtak logo"
   },
   "nav": {
     "dashboard": "Overview Dashboard",
