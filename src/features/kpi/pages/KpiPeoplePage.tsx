@@ -3,7 +3,15 @@ import { Award, Copy, Download, LayoutPanelTop, Printer, RefreshCw } from 'lucid
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router'
 import { useAppStore } from '@/app/store'
-import { InlineError, PageContainer, PageContainerBody, PageHeader } from '@/components/layout'
+import {
+  InlineError,
+  PageContainer,
+  PageContainerBody,
+  PageHeader,
+  isFullPageError,
+  throwFullPageError,
+  toErrorStatus,
+} from '@/components/layout'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -13,8 +21,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { APP_ROUTES } from '@/constants/app-routes'
-import { getDeptDisplayName } from '@/features/tasks/api/meta'
-import { useMetaDepts, useUserDirectory } from '@/features/tasks/api/queries'
+import { getDeptDisplayName, useMetaDepts, useUserDirectory } from '@/hooks/use-meta'
 import { parseKpiPeopleSearchParams } from '@/schemas/kpi'
 import type { RawTask } from '@/schemas/task'
 import { cn } from '@/utils/cn'
@@ -78,6 +85,11 @@ export default function KpiPeoplePage() {
     includeCycles: true,
     enabled: !isRangeInvalid,
   })
+
+  const errorStatus = toErrorStatus(tasksQuery.error)
+  if (tasksQuery.isError && isFullPageError(errorStatus)) {
+    throwFullPageError(errorStatus)
+  }
 
   const depts = deptsQuery.data?.allDepts ?? deptsQuery.data?.depts ?? []
   const directory = directoryQuery.data ?? []
@@ -205,8 +217,10 @@ export default function KpiPeoplePage() {
       showNotice('error', t('kpi.toast.invalidRange'))
       return
     }
-    await Promise.all([tasksQuery.refetch(), directoryQuery.refetch()])
-    showNotice('success', t('kpi.toast.refreshed'))
+    const [tasksRes, dirRes] = await Promise.all([tasksQuery.refetch(), directoryQuery.refetch()])
+    if (!tasksRes.isError && !dirRes.isError) {
+      showNotice('success', t('kpi.toast.refreshed'))
+    }
   }
 
   const scopeDesc = isSuperLike(user)
@@ -318,7 +332,7 @@ export default function KpiPeoplePage() {
             {t('kpi.toast.invalidRange')}
           </div>
         ) : tasksQuery.isError ? (
-          <InlineError status="500" onRetry={() => void tasksQuery.refetch()} />
+          <InlineError status={errorStatus} onRetry={() => void tasksQuery.refetch()} />
         ) : tasksQuery.isLoading ? (
           <div className="flex justify-center py-12">
             <LoadingSpinner size="lg" />

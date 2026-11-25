@@ -8,7 +8,6 @@ import {
 } from './session'
 
 export const DEFAULT_GET_TIMEOUT_MS = 45_000
-export const DEFAULT_GET_RETRY_DELAY_MS = 800
 
 export type ApiErrorKind = 'http' | 'business' | 'network' | 'timeout'
 
@@ -24,8 +23,6 @@ export type HttpRequestOptions = RequestInit & {
   skipAuth?: boolean
   /** Override request timeout in milliseconds (defaults to 45s for GET/HEAD, none for writes). */
   timeoutMs?: number
-  /** Override retry delay in milliseconds for GET/HEAD transient failures (defaults to 800ms). */
-  retryDelayMs?: number
   /** Internal guard to prevent infinite 401 auto-resume loops. */
   __resumed?: boolean
 }
@@ -197,24 +194,6 @@ function buildHeaders(options?: HttpRequestOptions): Record<string, string> {
   return result
 }
 
-function sleep(ms: number, signal?: AbortSignal | null): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (signal?.aborted) {
-      reject(signal.reason ?? new DOMException('Aborted', 'AbortError'))
-      return
-    }
-    const timer = setTimeout(() => {
-      signal?.removeEventListener('abort', onAbort)
-      resolve()
-    }, ms)
-    const onAbort = () => {
-      clearTimeout(timer)
-      reject(signal?.reason ?? new DOMException('Aborted', 'AbortError'))
-    }
-    signal?.addEventListener('abort', onAbort, { once: true })
-  })
-}
-
 async function fetchWithTimeout(
   url: string,
   init: RequestInit,
@@ -269,8 +248,6 @@ export async function http<T>(path: string, options?: HttpRequestOptions): Promi
   const method = (options?.method ?? 'GET').toUpperCase()
   const isReadMethod = method === 'GET' || method === 'HEAD'
   const timeoutMs = options?.timeoutMs ?? (isReadMethod ? DEFAULT_GET_TIMEOUT_MS : undefined)
-  const retryDelayMs = options?.retryDelayMs ?? DEFAULT_GET_RETRY_DELAY_MS
-  const maxAttempts = isReadMethod ? 2 : 1
 
   const fetchInit: RequestInit = {
     method: options?.method,
@@ -287,51 +264,34 @@ export async function http<T>(path: string, options?: HttpRequestOptions): Promi
     headers: buildHeaders(options),
   }
 
-  let response: Response | undefined
-
-  for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    try {
-      response = await fetchWithTimeout(url, fetchInit, timeoutMs)
-      break
-    } catch (err) {
-      // Respect caller cancellation (e.g. TanStack Query unmount) immediately
-      if (options?.signal?.aborted) {
-        throw err
-      }
-
-      const isLastAttempt = attempt >= maxAttempts - 1
-      if (!isLastAttempt) {
-        await sleep(retryDelayMs, options?.signal)
-        continue
-      }
-
-      if (isApiError(err)) {
-        throw err
-      }
-
-      const networkError: ApiError = {
-        status: 0,
-        code: 'NETWORK_ERROR',
-        message: 'Network error',
-        kind: 'network',
-      }
-      throw networkError
+  let response: Response
+  try {
+    response = await fetchWithTimeout(url, fetchInit, timeoutMs)
+  } catch (err) {
+    // Respect caller cancellation (e.g. TanStack Query abort) immediately
+    if (options?.signal?.aborted) {
+      throw err
     }
-  }
 
-  if (!response) {
-    const fallbackError: ApiError = {
+    if (isApiError(err)) {
+      throw err
+    }
+
+    const networkError: ApiError = {
       status: 0,
       code: 'NETWORK_ERROR',
       message: 'Network error',
       kind: 'network',
     }
-    throw fallbackError
+    throw networkError
   }
 
   if (response.status === 401 && !options?.skipAuth && !isLoggingOut()) {
     if (!options?.__resumed) {
       const outcome = await resumeSession()
+      if (options?.signal?.aborted) {
+        throw options.signal.reason ?? new DOMException('Aborted', 'AbortError')
+      }
       if (outcome.status === 'resumed') {
         return http<T>(path, { ...options, __resumed: true })
       }

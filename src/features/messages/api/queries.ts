@@ -40,8 +40,10 @@ function assertOptionalSuccessEnvelope(raw: unknown): void {
 export function useMessages() {
   return useQuery({
     queryKey: messageKeys.list(),
-    queryFn: async ({ signal }): Promise<RawMessage[]> => {
-      const raw = await http<unknown>('/messages', { signal })
+    // Intentionally omit `signal`: parameterless board list should populate cache cleanly
+    // without canceling during route transitions or StrictMode dev remounts.
+    queryFn: async (): Promise<RawMessage[]> => {
+      const raw = await http<unknown>('/messages')
       if (!Array.isArray(raw)) return []
       return RawMessageListSchema.parse(raw)
     },

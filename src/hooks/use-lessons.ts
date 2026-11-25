@@ -14,13 +14,14 @@ export const lessonKeys = {
 export function useLessons() {
   return useQuery({
     queryKey: lessonKeys.list(),
-    queryFn: async ({ signal }): Promise<RawLesson[]> => {
-      const raw = await http<unknown>('/lessons', { signal })
+    // Shared across Dashboard, TaskList, Todo, and Lessons; let in-flight fetch populate cache.
+    queryFn: async (): Promise<RawLesson[]> => {
+      const raw = await http<unknown>('/lessons')
       if (Array.isArray(raw)) {
         return RawLessonListSchema.parse(raw)
       }
       return RawLessonListResponseSchema.parse(raw).list
     },
-    staleTime: 30_000,
+    staleTime: 60_000,
   })
 }

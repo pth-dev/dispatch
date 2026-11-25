@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { PostStatsResponseSchema, type PostStatsResponse } from '@/schemas/dashboard'
 import { http } from '@/services'
 import { dashboardKeys, type PostStatsQueryParams } from './keys'
@@ -28,5 +28,6 @@ export function usePostStats(params: PostStatsQueryParams, enabled = true) {
     queryFn: ({ signal }) => fetchPostStats(params, signal),
     enabled,
     staleTime: 2 * 60 * 1000,
+    placeholderData: keepPreviousData,
   })
 }

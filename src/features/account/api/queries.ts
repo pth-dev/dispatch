@@ -18,10 +18,13 @@ export async function fetchAccountOrg(signal?: AbortSignal): Promise<AccountOrgR
   return AccountOrgResponseSchema.parse(raw)
 }
 
+// Parameterless account reference queries omit `signal` so route transitions
+// populate the shared cache instead of aborting in-flight fetches.
+
 export function useAccountScope() {
   return useQuery({
     queryKey: accountKeys.scope(),
-    queryFn: ({ signal }) => fetchAccountScope(signal),
+    queryFn: () => fetchAccountScope(),
     staleTime: 2 * 60 * 1000,
   })
 }
@@ -29,7 +32,7 @@ export function useAccountScope() {
 export function useAccountOrg() {
   return useQuery({
     queryKey: accountKeys.org(),
-    queryFn: ({ signal }) => fetchAccountOrg(signal),
+    queryFn: () => fetchAccountOrg(),
     staleTime: 5 * 60 * 1000,
   })
 }

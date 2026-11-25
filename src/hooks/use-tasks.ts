@@ -7,10 +7,12 @@ export const SHARED_TASK_LIST_KEY = ['tasks', 'all'] as const
 export function useAllTasks() {
   return useQuery({
     queryKey: SHARED_TASK_LIST_KEY,
-    queryFn: async ({ signal }): Promise<RawTask[]> => {
-      const raw = await http<unknown>('/tasks', { signal })
+    // Intentionally omit `signal`: shared app-wide task list (~1.75MB) should
+    // finish populating the cache across lazy route transitions instead of aborting.
+    queryFn: async (): Promise<RawTask[]> => {
+      const raw = await http<unknown>('/tasks')
       return RawTaskListSchema.parse(raw)
     },
-    staleTime: 30_000,
+    staleTime: 60_000,
   })
 }

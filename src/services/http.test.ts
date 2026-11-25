@@ -133,30 +133,18 @@ describe('http', () => {
     })
   })
 
-  it('retries GET once on network error and succeeds on second attempt', async () => {
-    let calls = 0
-    const fetchMock = stubFetch(async () => {
-      calls += 1
-      if (calls === 1) throw new TypeError('Failed to fetch')
-      return jsonResponse({ items: [] })
-    })
-
-    await expect(http('/tasks', { retryDelayMs: 1 })).resolves.toEqual({ items: [] })
-    expect(fetchMock).toHaveBeenCalledTimes(2)
-  })
-
-  it('throws normalized network ApiError after GET retry exhaustion', async () => {
+  it('throws normalized network ApiError without duplicating TanStack Query retries', async () => {
     const fetchMock = stubFetch(async () => {
       throw new TypeError('Failed to fetch')
     })
 
-    await expect(http('/tasks', { retryDelayMs: 1 })).rejects.toEqual({
+    await expect(http('/tasks')).rejects.toEqual({
       status: 0,
       code: 'NETWORK_ERROR',
       message: 'Network error',
       kind: 'network',
     })
-    expect(fetchMock).toHaveBeenCalledTimes(2)
+    expect(fetchMock).toHaveBeenCalledTimes(1)
   })
 
   it('does NOT retry POST requests on network failure', async () => {
@@ -183,16 +171,16 @@ describe('http', () => {
         }),
     )
 
-    await expect(http('/tasks', { timeoutMs: 15, retryDelayMs: 1 })).rejects.toEqual({
+    await expect(http('/tasks', { timeoutMs: 15 })).rejects.toEqual({
       status: 0,
       code: 'TIMEOUT',
       message: 'Request timeout',
       kind: 'timeout',
     })
-    expect(fetchMock).toHaveBeenCalledTimes(2)
+    expect(fetchMock).toHaveBeenCalledTimes(1)
   })
 
-  it('respects caller AbortSignal without retrying', async () => {
+  it('respects caller AbortSignal immediately', async () => {
     const controller = new AbortController()
     const fetchMock = stubFetch(
       (_url, init) =>
@@ -203,7 +191,7 @@ describe('http', () => {
         }),
     )
 
-    const promise = http('/tasks', { signal: controller.signal, retryDelayMs: 1 })
+    const promise = http('/tasks', { signal: controller.signal })
     controller.abort()
 
     await expect(promise).rejects.toThrow()

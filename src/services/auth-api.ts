@@ -7,12 +7,6 @@ import {
   type RegisterFormValues,
   type SessionUser,
 } from '@/schemas/auth'
-import {
-  MetaDeptsResponseSchema,
-  MetaSitesResponseSchema,
-  type DeptItem,
-  type SiteItem,
-} from '@/schemas/meta'
 import { http, type ApiError } from './http'
 import {
   broadcastLogout,
@@ -151,24 +145,4 @@ export async function registerAccount(values: RegisterFormValues): Promise<strin
     throw err
   }
   return parsed.message
-}
-
-export async function fetchPublicMetaDepts(signal?: AbortSignal): Promise<DeptItem[]> {
-  const raw = await http<unknown>('/meta/depts', {
-    method: 'GET',
-    skipAuth: true,
-    signal,
-  })
-  const parsed = MetaDeptsResponseSchema.safeParse(raw)
-  return parsed.success ? parsed.data.depts : []
-}
-
-export async function fetchPublicMetaSites(signal?: AbortSignal): Promise<SiteItem[]> {
-  const raw = await http<unknown>('/meta/sites', {
-    method: 'GET',
-    skipAuth: true,
-    signal,
-  })
-  const parsed = MetaSitesResponseSchema.safeParse(raw)
-  return parsed.success ? parsed.data.sites : []
 }

@@ -1,6 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
-import { http } from '@/services/http'
+import { http, isApiError } from '@/services/http'
 import { useAppStore } from '@/app/store'
+import {
+  useMetaDepts,
+  useMetaSites,
+  usePocketTaskTypes,
+  useUserDirectory,
+} from '@/hooks/use-meta'
 import { useAllTasks } from '@/hooks/use-tasks'
 import {
   DupCheckResponseSchema,
@@ -13,14 +19,8 @@ import {
 } from '@/schemas/task'
 import { filterAndPaginateTasks, type FilteredTaskPage } from './filter-tasks'
 import { taskKeys } from './keys'
-import {
-  fetchMetaDepts,
-  fetchMetaSites,
-  fetchPocketTaskTypes,
-  fetchUserDirectory,
-} from './meta'
 
-export { useAllTasks }
+export { useAllTasks, useMetaDepts, useMetaSites, usePocketTaskTypes, useUserDirectory }
 export { filterAndPaginateTasks, type FilteredTaskPage }
 export {
   assertMutationSuccess,
@@ -73,7 +73,10 @@ export function useMyTaskHistory(enabled = true) {
         }
       } catch (err) {
         if (signal?.aborted) throw err
-        // Fallback to active tasks filtered by reporter (matches legacy DU_cloneLoad)
+        if (!isApiError(err) || (err.status !== 404 && err.status !== 405 && err.status !== 501)) {
+          throw err
+        }
+        // Fallback to active tasks filtered by reporter when history endpoint is unavailable
       }
       const fallbackRaw = await http<unknown>('/tasks', { signal })
       const all = RawTaskListSchema.parse(fallbackRaw)
@@ -95,38 +98,6 @@ export function useTaskReports(taskId: number) {
     },
     enabled: Number.isFinite(taskId) && taskId > 0,
     staleTime: 15_000,
-  })
-}
-
-export function useMetaDepts() {
-  return useQuery({
-    queryKey: taskKeys.metaDepts(),
-    queryFn: ({ signal }) => fetchMetaDepts(signal),
-    staleTime: 10 * 60_000,
-  })
-}
-
-export function useMetaSites() {
-  return useQuery({
-    queryKey: taskKeys.metaSites(),
-    queryFn: ({ signal }) => fetchMetaSites(signal),
-    staleTime: 10 * 60_000,
-  })
-}
-
-export function useUserDirectory() {
-  return useQuery({
-    queryKey: taskKeys.directory(),
-    queryFn: ({ signal }) => fetchUserDirectory(signal),
-    staleTime: 5 * 60_000,
-  })
-}
-
-export function usePocketTaskTypes() {
-  return useQuery({
-    queryKey: taskKeys.pocketTaskTypes(),
-    queryFn: ({ signal }) => fetchPocketTaskTypes(signal),
-    staleTime: 5 * 60_000,
   })
 }
 

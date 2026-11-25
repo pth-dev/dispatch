@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useAppStore } from '@/app/store'
 import { RawTaskListSchema, type RawTask } from '@/schemas/task'
 import { http, isApiError } from '@/services/http'
@@ -65,5 +65,6 @@ export function useKpiReportTasks({
     enabled: enabled && Boolean(user),
     staleTime: 30_000,
     refetchInterval,
+    placeholderData: keepPreviousData,
   })
 }

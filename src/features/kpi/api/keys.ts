@@ -1,7 +1,8 @@
+import { SHARED_QUERY_KEYS } from '@/constants/query-keys'
 import type { KpiBasis } from '../utils/kpi-people-domain'
 
 export const kpiKeys = {
-  all: ['kpi'] as const,
+  all: SHARED_QUERY_KEYS.kpi,
   reportTasks: (params: {
     start?: string
     end?: string

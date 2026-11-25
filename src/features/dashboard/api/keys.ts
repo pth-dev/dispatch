@@ -1,3 +1,4 @@
+import { SHARED_QUERY_KEYS } from '@/constants/query-keys'
 import type { PostGranularity, PostKpiPeriod } from '@/schemas/dashboard'
 
 export interface PostStatsQueryParams {
@@ -10,6 +11,6 @@ export interface PostStatsQueryParams {
 }
 
 export const dashboardKeys = {
-  all: ['dashboard'] as const,
+  all: SHARED_QUERY_KEYS.dashboard,
   posts: (params: PostStatsQueryParams) => [...dashboardKeys.all, 'posts', params] as const,
 } as const

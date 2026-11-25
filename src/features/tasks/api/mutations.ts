@@ -1,4 +1,5 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query'
+import { SHARED_QUERY_KEYS } from '@/constants/query-keys'
 import { http, type ApiError } from '@/services/http'
 import {
   DeleteAttachmentResponseSchema,
@@ -9,6 +10,13 @@ import {
   type TaskMutationResponse,
 } from '@/schemas/task'
 import { taskKeys } from './keys'
+
+function invalidateTaskRelatedQueries(queryClient: QueryClient): void {
+  void queryClient.invalidateQueries({ queryKey: taskKeys.list() })
+  void queryClient.invalidateQueries({ queryKey: taskKeys.history() })
+  void queryClient.invalidateQueries({ queryKey: SHARED_QUERY_KEYS.dashboard })
+  void queryClient.invalidateQueries({ queryKey: SHARED_QUERY_KEYS.kpi })
+}
 
 type MutationEnvelope = {
   success: boolean
@@ -46,7 +54,7 @@ export function useCreateTask() {
       return assertMutationSuccess(TaskMutationResponseSchema.parse(raw))
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: taskKeys.list() })
+      invalidateTaskRelatedQueries(queryClient)
     },
   })
 }
@@ -68,7 +76,7 @@ export function useUpdateTask() {
       return assertMutationSuccess(TaskMutationResponseSchema.parse(raw))
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: taskKeys.list() })
+      invalidateTaskRelatedQueries(queryClient)
     },
   })
 }
@@ -84,7 +92,7 @@ export function useDeleteTask() {
     },
     onSuccess: (_data, id) => {
       queryClient.removeQueries({ queryKey: taskKeys.reports(id) })
-      void queryClient.invalidateQueries({ queryKey: taskKeys.list() })
+      invalidateTaskRelatedQueries(queryClient)
     },
   })
 }
@@ -106,7 +114,7 @@ export function useSubmitReport() {
       return assertMutationSuccess(ReportMutationResponseSchema.parse(raw))
     },
     onSuccess: (data, variables) => {
-      void queryClient.invalidateQueries({ queryKey: taskKeys.list() })
+      invalidateTaskRelatedQueries(queryClient)
       void queryClient.invalidateQueries({ queryKey: taskKeys.reports(variables.taskId) })
       if (data.task_id && data.task_id !== variables.taskId) {
         void queryClient.invalidateQueries({ queryKey: taskKeys.reports(data.task_id) })
