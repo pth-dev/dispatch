@@ -904,6 +904,128 @@
       "legendOther": "其他范围",
       "membersCount": "{{count}} 人",
       "empty": "没有符合的部门或 OU。"
+    },
+    "tabs": {
+      "scope": "范围与 OU 树",
+      "users": "账号管理"
+    },
+    "admin": {
+      "searchPlaceholder": "搜索账号、姓名、部门、厂区...",
+      "allRoles": "全部角色",
+      "statuses": {
+        "Approved": "正常启用",
+        "Pending": "待审核",
+        "Disabled": "已停用"
+      },
+      "fields": {
+        "username": "登录账号",
+        "fullname": "真实姓名",
+        "password": "密码",
+        "newPasswordOptional": "新密码（留空则不修改）",
+        "site": "厂区",
+        "role": "角色"
+      },
+      "validation": {
+        "usernameRequired": "请输入登录账号",
+        "fullnameRequired": "请输入真实姓名",
+        "passwordMin": "密码至少需要 6 个字符",
+        "deptRequired": "请选择部门",
+        "siteRequired": "请选择厂区"
+      },
+      "form": {
+        "createTitle": "新增账号",
+        "editTitle": "编辑账号"
+      },
+      "actions": {
+        "createUser": "新增用户",
+        "approve": "审核通过",
+        "menuPerms": "功能权限（16 项）",
+        "extraDepts": "兼任部门",
+        "forceLogout": "强制登出",
+        "advanced": "AD 转换 / 合并账号"
+      },
+      "batch": {
+        "selected": "已勾选 {{count}} 个账号",
+        "menuPerms": "批量功能权限",
+        "extraDepts": "批量多部门",
+        "keepDept": "— 不变更部门 —",
+        "keepSite": "— 不变更厂区 —",
+        "keepRole": "— 不变更角色 —",
+        "keepStatus": "— 不变更状态 —",
+        "emptyChange": "请至少选择一项要更新的内容"
+      },
+      "batchModes": {
+        "replace": "覆盖",
+        "add": "追加",
+        "remove": "移除"
+      },
+      "perms": {
+        "title": "账号功能权限设置",
+        "batchDesc": "将套用于所选 {{count}} 个账号",
+        "resetFull": "恢复全部权限",
+        "hierarchyHint": "联动规则：写入 (W) 自动包含读取 (R) 与显示 (S)。",
+        "featureCol": "功能项",
+        "showCol": "显示",
+        "readCol": "读取",
+        "writeCol": "写入",
+        "noEligible": "功能权限仅适用于一般成员与部门管理员"
+      },
+      "permKeys": {
+        "dashboard": "总仪表板",
+        "dash_total": "发帖趋势（总）",
+        "dash_dept": "部门仪表板",
+        "list": "任务列表",
+        "todo": "今日待办",
+        "messages": "消息板",
+        "learnknow": "经验教训",
+        "language": "系统文本",
+        "worklog": "个人工作记录",
+        "report_pdf": "导出 PDF 报表",
+        "kpi_report": "周期 KPI 报表",
+        "excel_report": "Excel / Word / 网页报表",
+        "kpi_people": "人员 KPI 一览表",
+        "kpi_brief": "主管看板",
+        "account": "账号管理",
+        "ad": "Active Directory (AD)"
+      },
+      "extraDepts": {
+        "title": "兼任部门（本地部门 + AD OU）",
+        "batchDesc": "将套用于所选 {{count}} 个账号",
+        "selectedCount": "已选择 {{count}} 个兼任部门",
+        "primary": "主部门"
+      },
+      "advanced": {
+        "title": "认证来源转换与账号合并",
+        "convertToAd": "本地账号转换为 AD 账号",
+        "convertToLocal": "AD 账号转换为本地账号",
+        "adSam": "AD 账号 (sAMAccountName)",
+        "useAdUsername": "同步使用 AD 登录账号",
+        "enableAfterConvert": "转换后立即启用账号",
+        "convertBtn": "执行转换",
+        "conflictHint": "目标 AD 账号已存在，请使用下方账号合并功能。",
+        "mergeTitle": "将其它账号资料合并到此账号",
+        "mergeHint": "把来源账号的任务、汇报与记录全部转移至目标账号。",
+        "sourceUsername": "来源账号名",
+        "previewBtn": "预览影响",
+        "disableSource": "合并后停用来源账号",
+        "confirmMerge": "确认合并账号"
+      },
+      "deleteConfirm": {
+        "title": "确认删除账号？",
+        "desc": "确定要删除账号 {{username}} 吗？此操作无法撤销。"
+      },
+      "toast": {
+        "userCreated": "已创建账号",
+        "userUpdated": "已更新账号",
+        "userApproved": "已审核通过",
+        "userDeleted": "已删除账号",
+        "forceLoggedOut": "已强制登出该账号",
+        "batchUpdated": "已批量更新 {{count}} 个账号",
+        "permsSaved": "已保存功能权限",
+        "extraDeptsSaved": "已更新兼任部门",
+        "authConverted": "已转换认证来源",
+        "merged": "账号合并完成"
+      }
     }
   },
   "dashboard": {

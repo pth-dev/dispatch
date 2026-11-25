@@ -904,6 +904,128 @@
       "legendOther": "其他範圍",
       "membersCount": "{{count}} 人",
       "empty": "沒有符合的部門或 OU。"
+    },
+    "tabs": {
+      "scope": "範圍與 OU 樹",
+      "users": "帳號管理"
+    },
+    "admin": {
+      "searchPlaceholder": "搜尋帳號、姓名、部門、廠區...",
+      "allRoles": "全部角色",
+      "statuses": {
+        "Approved": "正常啟用",
+        "Pending": "待審核",
+        "Disabled": "已停用"
+      },
+      "fields": {
+        "username": "登入帳號",
+        "fullname": "真實姓名",
+        "password": "密碼",
+        "newPasswordOptional": "新密碼（留空則不修改）",
+        "site": "廠區",
+        "role": "角色"
+      },
+      "validation": {
+        "usernameRequired": "請輸入登入帳號",
+        "fullnameRequired": "請輸入真實姓名",
+        "passwordMin": "密碼至少需要 6 個字元",
+        "deptRequired": "請選擇部門",
+        "siteRequired": "請選擇廠區"
+      },
+      "form": {
+        "createTitle": "新增帳號",
+        "editTitle": "編輯帳號"
+      },
+      "actions": {
+        "createUser": "新增使用者",
+        "approve": "審核通過",
+        "menuPerms": "功能權限（16 項）",
+        "extraDepts": "兼任部門",
+        "forceLogout": "強制登出",
+        "advanced": "AD 轉換 / 合併帳號"
+      },
+      "batch": {
+        "selected": "已勾選 {{count}} 個帳號",
+        "menuPerms": "批次功能權限",
+        "extraDepts": "批次多部門",
+        "keepDept": "— 不變更部門 —",
+        "keepSite": "— 不變更廠區 —",
+        "keepRole": "— 不變更角色 —",
+        "keepStatus": "— 不變更狀態 —",
+        "emptyChange": "請至少選擇一項要更新的內容"
+      },
+      "batchModes": {
+        "replace": "覆蓋",
+        "add": "追加",
+        "remove": "移除"
+      },
+      "perms": {
+        "title": "帳號功能權限設定",
+        "batchDesc": "將套用於所選 {{count}} 個帳號",
+        "resetFull": "恢復全部權限",
+        "hierarchyHint": "連動規則：寫入 (W) 自動包含讀取 (R) 與顯示 (S)。",
+        "featureCol": "功能項",
+        "showCol": "顯示",
+        "readCol": "讀取",
+        "writeCol": "寫入",
+        "noEligible": "功能權限僅適用於一般成員與部門管理員"
+      },
+      "permKeys": {
+        "dashboard": "總儀表板",
+        "dash_total": "發帖趨勢（總）",
+        "dash_dept": "部門儀表板",
+        "list": "任務列表",
+        "todo": "今日待辦",
+        "messages": "訊息板",
+        "learnknow": "經驗教訓",
+        "language": "系統文字",
+        "worklog": "個人工作紀錄",
+        "report_pdf": "匯出 PDF 報表",
+        "kpi_report": "週期 KPI 報表",
+        "excel_report": "Excel / Word / 網頁報表",
+        "kpi_people": "人員 KPI 一覽表",
+        "kpi_brief": "主管看板",
+        "account": "帳號管理",
+        "ad": "Active Directory (AD)"
+      },
+      "extraDepts": {
+        "title": "兼任部門（本地部門 + AD OU）",
+        "batchDesc": "將套用於所選 {{count}} 個帳號",
+        "selectedCount": "已選擇 {{count}} 個兼任部門",
+        "primary": "主部門"
+      },
+      "advanced": {
+        "title": "認證來源轉換與帳號合併",
+        "convertToAd": "本地帳號轉換為 AD 帳號",
+        "convertToLocal": "AD 帳號轉換為本地帳號",
+        "adSam": "AD 帳號 (sAMAccountName)",
+        "useAdUsername": "同步使用 AD 登入帳號",
+        "enableAfterConvert": "轉換後立即啟用帳號",
+        "convertBtn": "執行轉換",
+        "conflictHint": "目標 AD 帳號已存在，請使用下方帳號合併功能。",
+        "mergeTitle": "將其他帳號資料合併至此帳號",
+        "mergeHint": "把來源帳號的任務、回報與紀錄全部轉移至目標帳號。",
+        "sourceUsername": "來源帳號名",
+        "previewBtn": "預覽影響",
+        "disableSource": "合併後停用來源帳號",
+        "confirmMerge": "確認合併帳號"
+      },
+      "deleteConfirm": {
+        "title": "確認刪除帳號？",
+        "desc": "確定要刪除帳號 {{username}} 嗎？此操作無法復原。"
+      },
+      "toast": {
+        "userCreated": "已建立帳號",
+        "userUpdated": "已更新帳號",
+        "userApproved": "已審核通過",
+        "userDeleted": "已刪除帳號",
+        "forceLoggedOut": "已強制登出該帳號",
+        "batchUpdated": "已批次更新 {{count}} 個帳號",
+        "permsSaved": "已儲存功能權限",
+        "extraDeptsSaved": "已更新兼任部門",
+        "authConverted": "已轉換認證來源",
+        "merged": "帳號合併完成"
+      }
     }
   },
   "dashboard": {

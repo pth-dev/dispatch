@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import '@/i18n'
+import { useAppStore } from '@/app/store'
 import { AccountPage } from './AccountPage'
 
 const MOCK_SCOPE = {
@@ -50,13 +51,29 @@ const MOCK_ORG = {
   ],
 }
 
-function renderAccountPage() {
+const MOCK_ADMIN_USERS = [
+  {
+    id: 11,
+    username: 'newbie',
+    fullname: 'Trần Văn B',
+    dept: '資訊部',
+    extra_depts: [],
+    view_depts: [],
+    site: 'YS',
+    role: 'user',
+    status: 'Pending',
+    auth_source: 'local',
+    menu_perms: null,
+  },
+]
+
+function renderAccountPage(initialUrl = '/account') {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   })
   return render(
     <QueryClientProvider client={client}>
-      <MemoryRouter>
+      <MemoryRouter initialEntries={[initialUrl]}>
         <AccountPage />
       </MemoryRouter>
     </QueryClientProvider>,
@@ -66,13 +83,26 @@ function renderAccountPage() {
 describe('AccountPage', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
+    useAppStore.setState({
+      user: {
+        username: 'staff1',
+        fullname: 'Nguyễn Văn A',
+        dept: '資訊部',
+        site: 'YS',
+        role: 'user',
+        auth_source: 'ad',
+        menu_perms: null,
+        is_computer_room: false,
+      },
+      authStatus: 'authenticated',
+    })
   })
 
   afterEach(() => {
     vi.unstubAllGlobals()
   })
 
-  it('renders account scope cards and filters the OU organization tree', async () => {
+  it('renders account scope cards and filters the OU organization tree for regular users', async () => {
     const user = userEvent.setup()
     vi.stubGlobal(
       'fetch',
@@ -91,6 +121,7 @@ describe('AccountPage', () => {
     renderAccountPage()
 
     expect(await screen.findByText('Nguyễn Văn A')).toBeInTheDocument()
+    expect(screen.queryByRole('tab', { name: 'Quản lý tài khoản' })).not.toBeInTheDocument()
     expect(screen.getAllByText('Company › IT › Infra').length).toBeGreaterThanOrEqual(2)
     expect(screen.getByText('12 người')).toBeInTheDocument()
     expect(screen.getByText('40 người')).toBeInTheDocument()
@@ -101,6 +132,67 @@ describe('AccountPage', () => {
     await waitFor(() => {
       expect(screen.getByText('40 người')).toBeInTheDocument()
       expect(screen.queryByText('12 người')).not.toBeInTheDocument()
+    })
+  })
+
+  it('allows admins to switch to users tab, approve a pending account, and save 16 menu perms', async () => {
+    const user = userEvent.setup()
+    useAppStore.setState({
+      user: {
+        username: 'boss',
+        fullname: 'Super Boss',
+        dept: '資訊部',
+        site: 'YS',
+        role: 'superadmin',
+        auth_source: 'local',
+        menu_perms: null,
+        is_computer_room: false,
+      },
+      authStatus: 'authenticated',
+    })
+
+    const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input)
+      if (url.includes('/account/scope')) {
+        return new Response(JSON.stringify(MOCK_SCOPE), { status: 200 })
+      }
+      if (url.includes('/account/org')) {
+        return new Response(JSON.stringify(MOCK_ORG), { status: 200 })
+      }
+      if (url.includes('/admin/users/menu-perms') && init?.method === 'PUT') {
+        return new Response(JSON.stringify({ success: true }), { status: 200 })
+      }
+      if (url.includes('/admin/users/11') && init?.method === 'PUT') {
+        return new Response(JSON.stringify({ success: true }), { status: 200 })
+      }
+      if (url.includes('/admin/users')) {
+        return new Response(JSON.stringify(MOCK_ADMIN_USERS), { status: 200 })
+      }
+      return new Response(JSON.stringify({}), { status: 404 })
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    renderAccountPage('/account?tab=users')
+
+    expect(await screen.findByText('Trần Văn B')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Duyệt tài khoản' }))
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringContaining('/admin/users/11'),
+        expect.objectContaining({ method: 'PUT' }),
+      )
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Phân quyền chức năng (16 mục)' }))
+    expect(await screen.findByText('Phân quyền chức năng theo tài khoản')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Đặt lại toàn quyền' }))
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringContaining('/admin/users/menu-perms'),
+        expect.objectContaining({ method: 'PUT' }),
+      )
     })
   })
 

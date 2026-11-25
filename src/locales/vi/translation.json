@@ -904,6 +904,128 @@
       "legendOther": "Ngoài phạm vi",
       "membersCount": "{{count}} người",
       "empty": "Không tìm thấy bộ phận hoặc OU phù hợp."
+    },
+    "tabs": {
+      "scope": "Phạm vi & Cây OU",
+      "users": "Quản lý tài khoản"
+    },
+    "admin": {
+      "searchPlaceholder": "Tìm theo tài khoản, họ tên, bộ phận, khu vực...",
+      "allRoles": "Tất cả vai trò",
+      "statuses": {
+        "Approved": "Đang hoạt động",
+        "Pending": "Chờ duyệt",
+        "Disabled": "Đã khóa"
+      },
+      "fields": {
+        "username": "Tên đăng nhập",
+        "fullname": "Họ và tên",
+        "password": "Mật khẩu",
+        "newPasswordOptional": "Mật khẩu mới (để trống nếu không đổi)",
+        "site": "Khu vực",
+        "role": "Vai trò"
+      },
+      "validation": {
+        "usernameRequired": "Vui lòng nhập tên đăng nhập",
+        "fullnameRequired": "Vui lòng nhập họ và tên",
+        "passwordMin": "Mật khẩu tối thiểu 6 ký tự",
+        "deptRequired": "Vui lòng chọn bộ phận",
+        "siteRequired": "Vui lòng chọn khu vực"
+      },
+      "form": {
+        "createTitle": "Thêm tài khoản mới",
+        "editTitle": "Chỉnh sửa tài khoản"
+      },
+      "actions": {
+        "createUser": "Thêm người dùng",
+        "approve": "Duyệt tài khoản",
+        "menuPerms": "Phân quyền chức năng (16 mục)",
+        "extraDepts": "Bộ phận kiêm nhiệm",
+        "forceLogout": "Buộc đăng xuất",
+        "advanced": "Chuyển đổi AD / Gộp tài khoản"
+      },
+      "batch": {
+        "selected": "Đã chọn {{count}} tài khoản",
+        "menuPerms": "Phân quyền hàng loạt",
+        "extraDepts": "Đa bộ phận hàng loạt",
+        "keepDept": "— Giữ nguyên bộ phận —",
+        "keepSite": "— Giữ nguyên khu vực —",
+        "keepRole": "— Giữ nguyên vai trò —",
+        "keepStatus": "— Giữ nguyên trạng thái —",
+        "emptyChange": "Vui lòng chọn ít nhất một trường cần cập nhật"
+      },
+      "batchModes": {
+        "replace": "Ghi đè",
+        "add": "Thêm vào",
+        "remove": "Gỡ bỏ"
+      },
+      "perms": {
+        "title": "Phân quyền chức năng theo tài khoản",
+        "batchDesc": "Áp dụng cho {{count}} tài khoản đã chọn",
+        "resetFull": "Đặt lại toàn quyền",
+        "hierarchyHint": "Quy tắc liên động: Ghi (W) tự động bật Đọc (R) và Hiển thị (S).",
+        "featureCol": "Chức năng",
+        "showCol": "Hiển thị",
+        "readCol": "Đọc",
+        "writeCol": "Ghi",
+        "noEligible": "Chỉ áp dụng phân quyền chức năng cho vai trò Thành viên và Quản trị viên"
+      },
+      "permKeys": {
+        "dashboard": "Tổng Dashboard",
+        "dash_total": "Xu hướng bài đăng (Tổng)",
+        "dash_dept": "Dashboard bộ phận",
+        "list": "Danh sách nhiệm vụ",
+        "todo": "Việc cần làm hôm nay",
+        "messages": "Bảng tin nhắn",
+        "learnknow": "Bài học kinh nghiệm",
+        "language": "Văn bản hệ thống",
+        "worklog": "Nhật ký công việc",
+        "report_pdf": "Xuất báo cáo PDF",
+        "kpi_report": "Báo cáo tiến độ & KPI",
+        "excel_report": "Báo cáo Excel / Word / Web",
+        "kpi_people": "Bảng KPI nhân viên",
+        "kpi_brief": "Bảng quản lý KPI",
+        "account": "Quản lý tài khoản",
+        "ad": "Active Directory (AD)"
+      },
+      "extraDepts": {
+        "title": "Bộ phận kiêm nhiệm (Local + AD OU)",
+        "batchDesc": "Áp dụng cho {{count}} tài khoản đã chọn",
+        "selectedCount": "Đã chọn {{count}} bộ phận kiêm nhiệm",
+        "primary": "Bộ phận chính"
+      },
+      "advanced": {
+        "title": "Chuyển đổi nguồn xác thực & Gộp tài khoản",
+        "convertToAd": "Chuyển tài khoản nội bộ sang AD",
+        "convertToLocal": "Chuyển tài khoản AD sang nội bộ",
+        "adSam": "Tên tài khoản AD (sAMAccountName)",
+        "useAdUsername": "Đổi tên đăng nhập theo tài khoản AD",
+        "enableAfterConvert": "Kích hoạt tài khoản sau khi chuyển đổi",
+        "convertBtn": "Chuyển đổi nguồn",
+        "conflictHint": "Tài khoản AD đã tồn tại. Bạn có thể dùng chức năng Gộp tài khoản bên dưới.",
+        "mergeTitle": "Gộp dữ liệu từ tài khoản khác vào tài khoản này",
+        "mergeHint": "Chuyển toàn bộ nhiệm vụ, báo cáo và lịch sử từ tài khoản nguồn sang tài khoản đích.",
+        "sourceUsername": "Tên đăng nhập tài khoản nguồn",
+        "previewBtn": "Xem trước",
+        "disableSource": "Khóa tài khoản nguồn sau khi gộp",
+        "confirmMerge": "Xác nhận gộp tài khoản"
+      },
+      "deleteConfirm": {
+        "title": "Xóa tài khoản?",
+        "desc": "Bạn có chắc muốn xóa tài khoản {{username}}? Thao tác này không thể hoàn tác."
+      },
+      "toast": {
+        "userCreated": "Đã tạo tài khoản mới",
+        "userUpdated": "Đã cập nhật tài khoản",
+        "userApproved": "Đã duyệt tài khoản",
+        "userDeleted": "Đã xóa tài khoản",
+        "forceLoggedOut": "Đã buộc đăng xuất tài khoản",
+        "batchUpdated": "Đã cập nhật hàng loạt {{count}} tài khoản",
+        "permsSaved": "Đã lưu phân quyền chức năng",
+        "extraDeptsSaved": "Đã cập nhật bộ phận kiêm nhiệm",
+        "authConverted": "Đã chuyển đổi nguồn xác thực",
+        "merged": "Đã gộp tài khoản thành công"
+      }
     }
   },
   "dashboard": {

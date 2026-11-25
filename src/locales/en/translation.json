@@ -904,6 +904,128 @@
       "legendOther": "Outside scope",
       "membersCount": "{{count}} members",
       "empty": "No matching departments or OUs found."
+    },
+    "tabs": {
+      "scope": "Scope & OU Tree",
+      "users": "Account Management"
+    },
+    "admin": {
+      "searchPlaceholder": "Search by username, name, department, site...",
+      "allRoles": "All roles",
+      "statuses": {
+        "Approved": "Active",
+        "Pending": "Pending",
+        "Disabled": "Disabled"
+      },
+      "fields": {
+        "username": "Username",
+        "fullname": "Full name",
+        "password": "Password",
+        "newPasswordOptional": "New password (leave blank to keep)",
+        "site": "Site",
+        "role": "Role"
+      },
+      "validation": {
+        "usernameRequired": "Username is required",
+        "fullnameRequired": "Full name is required",
+        "passwordMin": "Password must be at least 6 characters",
+        "deptRequired": "Department is required",
+        "siteRequired": "Site is required"
+      },
+      "form": {
+        "createTitle": "Add new user",
+        "editTitle": "Edit account"
+      },
+      "actions": {
+        "createUser": "Add user",
+        "approve": "Approve account",
+        "menuPerms": "Feature permissions (16 items)",
+        "extraDepts": "Concurrent departments",
+        "forceLogout": "Force sign out",
+        "advanced": "Convert AD / Merge account"
+      },
+      "batch": {
+        "selected": "{{count}} accounts selected",
+        "menuPerms": "Batch permissions",
+        "extraDepts": "Batch departments",
+        "keepDept": "— Keep department —",
+        "keepSite": "— Keep site —",
+        "keepRole": "— Keep role —",
+        "keepStatus": "— Keep status —",
+        "emptyChange": "Select at least one field to update"
+      },
+      "batchModes": {
+        "replace": "Replace",
+        "add": "Add",
+        "remove": "Remove"
+      },
+      "perms": {
+        "title": "Per-account feature permissions",
+        "batchDesc": "Applying to {{count}} selected accounts",
+        "resetFull": "Reset to full access",
+        "hierarchyHint": "Hierarchy: Write (W) implies Read (R), which implies Show (S).",
+        "featureCol": "Feature",
+        "showCol": "Show",
+        "readCol": "Read",
+        "writeCol": "Write",
+        "noEligible": "Menu permissions apply only to Member and Department Admin roles"
+      },
+      "permKeys": {
+        "dashboard": "Overview Dashboard",
+        "dash_total": "Post trends (Overview)",
+        "dash_dept": "Department Dashboard",
+        "list": "Task list",
+        "todo": "Today's to-do",
+        "messages": "Message board",
+        "learnknow": "Lessons learned",
+        "language": "System texts",
+        "worklog": "Personal worklog",
+        "report_pdf": "PDF export report",
+        "kpi_report": "Periodic KPI report",
+        "excel_report": "Excel / Word / Web report",
+        "kpi_people": "People KPI Table",
+        "kpi_brief": "Supervisor KPI Board",
+        "account": "Account management",
+        "ad": "Active Directory (AD)"
+      },
+      "extraDepts": {
+        "title": "Concurrent departments (Local + AD OU)",
+        "batchDesc": "Applying to {{count}} selected accounts",
+        "selectedCount": "{{count}} concurrent departments selected",
+        "primary": "Primary"
+      },
+      "advanced": {
+        "title": "Auth source conversion & Account merge",
+        "convertToAd": "Convert local account to AD",
+        "convertToLocal": "Convert AD account to local",
+        "adSam": "AD account (sAMAccountName)",
+        "useAdUsername": "Adopt AD username",
+        "enableAfterConvert": "Enable account after conversion",
+        "convertBtn": "Convert source",
+        "conflictHint": "Target AD account already exists. Use Account merge below.",
+        "mergeTitle": "Merge another account into this account",
+        "mergeHint": "Transfers all tasks, reports, and history from the source account to this target.",
+        "sourceUsername": "Source username",
+        "previewBtn": "Preview",
+        "disableSource": "Disable source account after merge",
+        "confirmMerge": "Confirm merge"
+      },
+      "deleteConfirm": {
+        "title": "Delete account?",
+        "desc": "Are you sure you want to delete {{username}}? This action cannot be undone."
+      },
+      "toast": {
+        "userCreated": "Account created",
+        "userUpdated": "Account updated",
+        "userApproved": "Account approved",
+        "userDeleted": "Account deleted",
+        "forceLoggedOut": "User signed out from all sessions",
+        "batchUpdated": "Updated {{count}} accounts",
+        "permsSaved": "Feature permissions saved",
+        "extraDeptsSaved": "Concurrent departments updated",
+        "authConverted": "Auth source converted",
+        "merged": "Accounts merged successfully"
+      }
     }
   },
   "dashboard": {

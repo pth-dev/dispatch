@@ -1,5 +1,8 @@
 import { RefreshCw } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { useSearchParams } from 'react-router'
+import { useQueryClient } from '@tanstack/react-query'
+import { useAppStore } from '@/app/store'
 import {
   InlineError,
   PageContainer,
@@ -10,9 +13,15 @@ import {
   toErrorStatus,
 } from '@/components/layout'
 import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { accountKeys } from '../api/keys'
 import { useAccountOrg, useAccountScope } from '../api/queries'
 import { AccountScopeCards } from '../components/AccountScopeCards'
+import { AdminUsersTab } from '../components/AdminUsersTab'
 import { OrgTreePanel } from '../components/OrgTreePanel'
+import { canAccessAccountAdminTab } from '../utils/admin-permissions'
+
+type AccountTabKey = 'scope' | 'users'
 
 function AccountLoadingSkeleton({ label }: { label: string }) {
   return (
@@ -30,6 +39,14 @@ function AccountLoadingSkeleton({ label }: { label: string }) {
 
 export function AccountPage() {
   const { t } = useTranslation()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const queryClient = useQueryClient()
+  const user = useAppStore((s) => s.user)
+
+  const canManageUsers = canAccessAccountAdminTab(user)
+  const rawTab = searchParams.get('tab')
+  const activeTab: AccountTabKey = rawTab === 'users' && canManageUsers ? 'users' : 'scope'
+
   const scopeQuery = useAccountScope()
   const orgQuery = useAccountOrg()
 
@@ -46,7 +63,33 @@ export function AccountPage() {
   const handleRefresh = () => {
     void scopeQuery.refetch()
     void orgQuery.refetch()
+    if (canManageUsers) {
+      void queryClient.invalidateQueries({ queryKey: accountKeys.adminUsers() })
+    }
   }
+
+  const handleTabChange = (next: string) => {
+    setSearchParams(
+      (prev) => {
+        const updated = new URLSearchParams(prev)
+        if (next === 'scope') updated.delete('tab')
+        else updated.set('tab', next)
+        return updated
+      },
+      { replace: true },
+    )
+  }
+
+  const scopeContent = isLoading ? (
+    <AccountLoadingSkeleton label={t('common.loading')} />
+  ) : hasError || !scopeQuery.data || !orgQuery.data ? (
+    <InlineError status={errorStatus} onRetry={handleRefresh} />
+  ) : (
+    <>
+      <AccountScopeCards scope={scopeQuery.data} />
+      <OrgTreePanel org={orgQuery.data} scope={scopeQuery.data} />
+    </>
+  )
 
   return (
     <PageContainer>
@@ -65,15 +108,21 @@ export function AccountPage() {
       />
 
       <PageContainerBody className="space-y-4">
-        {isLoading ? (
-          <AccountLoadingSkeleton label={t('common.loading')} />
-        ) : hasError || !scopeQuery.data || !orgQuery.data ? (
-          <InlineError status={errorStatus} onRetry={handleRefresh} />
+        {canManageUsers ? (
+          <Tabs value={activeTab} onValueChange={handleTabChange}>
+            <TabsList variant="line" className="w-full justify-start border-b border-border pb-1">
+              <TabsTrigger value="scope">{t('account.tabs.scope')}</TabsTrigger>
+              <TabsTrigger value="users">{t('account.tabs.users')}</TabsTrigger>
+            </TabsList>
+            <TabsContent value="scope" className="space-y-4 pt-3">
+              {scopeContent}
+            </TabsContent>
+            <TabsContent value="users" className="pt-3">
+              <AdminUsersTab orgItems={orgQuery.data?.items ?? []} />
+            </TabsContent>
+          </Tabs>
         ) : (
-          <>
-            <AccountScopeCards scope={scopeQuery.data} />
-            <OrgTreePanel org={orgQuery.data} scope={scopeQuery.data} />
-          </>
+          scopeContent
         )}
       </PageContainerBody>
     </PageContainer>
