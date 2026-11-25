@@ -10,6 +10,7 @@ import {
   toErrorStatus,
 } from '@/components/layout'
 import { MetricCard } from '@/components/ui/metric-card'
+import { toast } from '@/components/ui/toaster'
 import { isSuperLike } from '@/utils/permissions'
 import { useWorkRecords, useWorklogUsers } from '../api/queries'
 import { WorklogDayGroup } from '../components/WorklogDayGroup'
@@ -39,7 +40,6 @@ export function WorklogPage() {
     end: today,
   })
   const [isExporting, setIsExporting] = React.useState(false)
-  const [notice, setNotice] = React.useState<string | null>(null)
 
   const effectiveUser = selectedUser || user?.username || ''
   const effectiveAppliedUser = applied.user || user?.username || ''
@@ -69,15 +69,15 @@ export function WorklogPage() {
   const handleExport = async () => {
     const rows = recordsQuery.data ?? []
     if (rows.length === 0) {
-      setNotice(t('worklog.exportEmpty'))
+      toast.info(t('worklog.exportEmpty'))
       return
     }
     setIsExporting(true)
     try {
       await exportWorklogExcel(rows, applied.start, applied.end)
-      setNotice(t('worklog.exportSuccess'))
+      toast.success(t('worklog.exportSuccess'))
     } catch {
-      setNotice(t('common.error'))
+      toast.error(t('common.error'))
     }
     setIsExporting(false)
   }
@@ -91,22 +91,6 @@ export function WorklogPage() {
           <Info className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
           <span>{t('worklog.kpiNotice')}</span>
         </div>
-
-        {notice && (
-          <div
-            role="status"
-            className="flex items-center justify-between gap-2 rounded-lg border border-border bg-card px-3.5 py-2 text-xs text-foreground"
-          >
-            <span>{notice}</span>
-            <button
-              type="button"
-              className="text-primary hover:underline"
-              onClick={() => setNotice(null)}
-            >
-              {t('common.close')}
-            </button>
-          </div>
-        )}
 
         <WorklogFilterBar
           canSelectUser={canSelectUser}

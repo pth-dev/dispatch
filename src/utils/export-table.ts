@@ -156,5 +156,20 @@ export async function exportMultiSheetWorkbook(
   }
 
   const safeName = filename.endsWith('.xlsx') ? filename : `${filename}.xlsx`
-  XLSX.writeFile(workbook, safeName)
+  const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' }) as ArrayBuffer
+  const blob = new Blob([buffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  })
+  const url = URL.createObjectURL(blob)
+  try {
+    const link = document.createElement('a')
+    link.href = url
+    link.download = safeName
+    link.style.display = 'none'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  } finally {
+    window.setTimeout(() => URL.revokeObjectURL(url), 30_000)
+  }
 }

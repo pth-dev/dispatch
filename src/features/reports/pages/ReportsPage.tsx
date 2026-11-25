@@ -1,9 +1,9 @@
-import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router'
 import { useAppStore } from '@/app/store'
 import { PageContainer, PageContainerBody, PageHeader } from '@/components/layout'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { toast } from '@/components/ui/toaster'
 import { canReadMenu } from '@/utils/permissions'
 import { ExcelStatsTab } from '../components/ExcelStatsTab'
 import { PdfReportTab } from '../components/PdfReportTab'
@@ -16,7 +16,10 @@ export function ReportsPage() {
   const { t } = useTranslation()
   const user = useAppStore((s) => s.user)
   const [searchParams, setSearchParams] = useSearchParams()
-  const [notice, setNotice] = React.useState<string | null>(null)
+
+  const handleNotify = (message: string) => {
+    toast.info(message)
+  }
 
   const canPdf = canReadMenu(user, 'report_pdf')
   const canKpi = canReadMenu(user, 'kpi_report')
@@ -57,22 +60,6 @@ export function ReportsPage() {
         scrollable={false}
         className="gap-3 p-3 lg:p-4 print:border-0 print:p-0 print:overflow-visible"
       >
-        {notice && (
-          <div
-            role="status"
-            className="flex shrink-0 items-center justify-between gap-2 rounded-lg border border-border bg-secondary px-3 py-1.5 text-xs text-foreground print:hidden"
-          >
-            <span>{notice}</span>
-            <button
-              type="button"
-              className="font-medium text-primary hover:underline"
-              onClick={() => setNotice(null)}
-            >
-              {t('common.close')}
-            </button>
-          </div>
-        )}
-
         <Tabs
           value={activeTab}
           onValueChange={handleTabChange}
@@ -93,7 +80,7 @@ export function ReportsPage() {
               value="pdf"
               className="mt-0 min-h-0 flex-1 flex-col data-[state=active]:flex"
             >
-              <PdfReportTab onNotify={setNotice} />
+              <PdfReportTab onNotify={handleNotify} />
             </TabsContent>
           )}
           {canKpi && (
@@ -101,7 +88,7 @@ export function ReportsPage() {
               value="kpi"
               className="mt-0 min-h-0 flex-1 flex-col data-[state=active]:flex"
             >
-              <PeriodicKpiTab onNotify={setNotice} />
+              <PeriodicKpiTab onNotify={handleNotify} />
             </TabsContent>
           )}
           {canExcel && (
@@ -109,14 +96,14 @@ export function ReportsPage() {
               value="excel"
               className="mt-0 min-h-0 flex-1 flex-col data-[state=active]:flex"
             >
-              <ExcelStatsTab onNotify={setNotice} />
+              <ExcelStatsTab onNotify={handleNotify} />
             </TabsContent>
           )}
           <TabsContent
             value="web"
             className="mt-0 min-h-0 flex-1 flex-col data-[state=active]:flex"
           >
-            <WebReportTab onNotify={setNotice} />
+            <WebReportTab onNotify={handleNotify} />
           </TabsContent>
         </Tabs>
       </PageContainerBody>
