@@ -1,11 +1,11 @@
 import { Link, useLocation } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/utils/cn'
-import { canReadMenu, canShowMenu, isSuperLike } from '@/utils/permissions'
+import { isSuperLike } from '@/utils/permissions'
 import { Logo } from './Logo'
-import { SidebarNavItem } from './SidebarNavItem'
+import { SidebarNavSection } from './SidebarNavSection'
 import { APP_ROUTES } from '@/constants/app-routes'
-import { MAIN_NAV_ITEMS, ADMIN_NAV_ITEMS, type NavItemConfig } from '@/app/nav-config'
+import { ADMIN_NAV_ITEMS, NAV_SECTIONS } from '@/app/nav-config'
 import { useAppStore } from '@/app/store'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
@@ -20,34 +20,11 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
   const user = useAppStore((state) => state.user)
   const isAdmin = Boolean(user && (user.role === 'admin' || isSuperLike(user)))
 
-  const isItemActive = (href: string) => {
-    if (href === APP_ROUTES.TASKS) {
-      return location.pathname === href || location.pathname.startsWith(`${href}/`)
-    }
-    return location.pathname === href
-  }
-
-  const renderItem = (item: NavItemConfig) => {
-    if (item.menuPermKey && !canShowMenu(user, item.menuPermKey)) {
-      return null
-    }
-    const readable = !item.menuPermKey || canReadMenu(user, item.menuPermKey)
-    return (
-      <SidebarNavItem
-        key={item.id}
-        item={item}
-        readable={readable}
-        active={readable && isItemActive(item.href)}
-        onNavigate={onNavigate}
-      />
-    )
-  }
-
   return (
     <TooltipProvider>
       <aside
         className={cn(
-          'flex h-full w-[260px] flex-col border-r border-border bg-card select-none',
+          'flex h-full w-[var(--sidebar-width)] flex-col border-r border-border bg-card select-none',
           className,
         )}
       >
@@ -57,22 +34,25 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
           </Link>
         </div>
 
-        <div
-          className="flex-1 overflow-y-auto py-2"
-          style={{ scrollbarGutter: 'stable' }}
-        >
-          <nav aria-label={t('sidebar.menuTitle')} className="flex flex-col space-y-0.5">
-            {MAIN_NAV_ITEMS.map(renderItem)}
+        <div className="flex-1 overflow-y-auto py-2" style={{ scrollbarGutter: 'stable' }}>
+          <nav aria-label={t('sidebar.menuTitle')} className="flex flex-col space-y-3">
+            {NAV_SECTIONS.map((section) => (
+              <SidebarNavSection
+                key={section.id}
+                section={section}
+                pathname={location.pathname}
+                user={user}
+                onNavigate={onNavigate}
+              />
+            ))}
 
             {isAdmin && ADMIN_NAV_ITEMS.length > 0 && (
-              <>
-                <div className="pt-4 pb-1 px-3">
-                  <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
-                    {t('nav.admin')}
-                  </span>
-                </div>
-                {ADMIN_NAV_ITEMS.map(renderItem)}
-              </>
+              <SidebarNavSection
+                section={{ id: 'admin', labelKey: 'nav.admin', items: ADMIN_NAV_ITEMS }}
+                pathname={location.pathname}
+                user={user}
+                onNavigate={onNavigate}
+              />
             )}
           </nav>
         </div>

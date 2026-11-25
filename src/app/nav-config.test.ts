@@ -6,6 +6,7 @@ import zhTW from '@/locales/zh-TW/translation.json'
 import {
   ADMIN_NAV_ITEMS,
   MAIN_NAV_ITEMS,
+  NAV_SECTIONS,
   getDefaultLandingRoute,
   type NavItemConfig,
 } from './nav-config'
@@ -31,8 +32,11 @@ function collectTitleKeys(items: NavItemConfig[]): string[] {
   return items.flatMap((item) => [item.titleKey, ...(item.children ?? []).map((c) => c.titleKey)])
 }
 
+const SECTION_LABEL_KEYS = NAV_SECTIONS.map((s) => s.labelKey).filter(
+  (key): key is string => Boolean(key),
+)
 const NAV_ITEMS = [...MAIN_NAV_ITEMS, ...ADMIN_NAV_ITEMS]
-const TITLE_KEYS = collectTitleKeys(NAV_ITEMS)
+const TITLE_KEYS = [...SECTION_LABEL_KEYS, ...collectTitleKeys(NAV_ITEMS)]
 
 describe('nav config i18n', () => {
   it('declares at least one item', () => {
@@ -65,6 +69,24 @@ describe('getDefaultLandingRoute', () => {
       },
     })
     expect(route).toBe(APP_ROUTES.TODO)
+  })
+
+  it('resolves readable child route inside collapsible groups', () => {
+    const route = getDefaultLandingRoute({
+      username: 'staff-kpi',
+      role: 'user',
+      menu_perms: {
+        dashboard: '',
+        dash_dept: '',
+        list: '',
+        todo: '',
+        messages: '',
+        learnknow: '',
+        kpi_people: '',
+        kpi_brief: 'sr',
+      },
+    })
+    expect(route).toBe(APP_ROUTES.KPI_BRIEF)
   })
 
   it('falls back to account when user has no readable permission-gated menu items', () => {

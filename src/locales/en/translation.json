@@ -23,7 +23,13 @@
     "profile": "Personal settings",
     "logout": "Sign out",
     "kpi": "People KPI Table",
-    "kpiBrief": "Supervisor KPI Board"
+    "kpiBrief": "Supervisor KPI Board",
+    "kpiGroup": "KPI & Reports",
+    "sections": {
+      "overview": "Overview",
+      "workspace": "Workspace",
+      "analyticsSystem": "Analytics & System"
+    }
   },
   "role": {
     "user": "Member",

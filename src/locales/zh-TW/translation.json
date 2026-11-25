@@ -23,7 +23,13 @@
     "profile": "個人設定",
     "logout": "登出",
     "kpi": "人員KPI 一覽表",
-    "kpiBrief": "主管看板 (KPI 精簡版)"
+    "kpiBrief": "主管看板 (KPI 精簡版)",
+    "kpiGroup": "KPI 與報表",
+    "sections": {
+      "overview": "營運總覽",
+      "workspace": "日常工作",
+      "analyticsSystem": "分析與系統"
+    }
   },
   "role": {
     "user": "一般成員",

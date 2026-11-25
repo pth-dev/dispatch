@@ -23,7 +23,13 @@
     "profile": "Cài đặt cá nhân",
     "logout": "Đăng xuất",
     "kpi": "Bảng KPI nhân viên",
-    "kpiBrief": "Bảng quản lý KPI"
+    "kpiBrief": "Bảng quản lý KPI",
+    "kpiGroup": "KPI & Báo cáo",
+    "sections": {
+      "overview": "Điều hành",
+      "workspace": "Công việc",
+      "analyticsSystem": "Phân tích & Hệ thống"
+    }
   },
   "role": {
     "user": "Thành viên",
