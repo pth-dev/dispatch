@@ -8,7 +8,8 @@ export function useSiteNameResolver() {
   const siteCatalog = metaSites?.allSites ?? metaSites?.sites ?? []
 
   return (code: string): string => {
-    const match = siteCatalog.find((s) => s.value.toUpperCase() === code.toUpperCase())
+    const normalized = code.trim().toUpperCase()
+    const match = siteCatalog.find((s) => s.value.trim().toUpperCase() === normalized)
     return match ? getSiteDisplayName(match, i18n.language) : code
   }
 }

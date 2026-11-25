@@ -13,11 +13,11 @@ import {
 } from '@/schemas/task'
 import { taskKeys } from './keys'
 
-function invalidateTaskRelatedQueries(queryClient: QueryClient): void {
-  void queryClient.invalidateQueries({ queryKey: taskKeys.list() })
+function invalidateTaskRelatedQueries(queryClient: QueryClient): Promise<void> {
   void queryClient.invalidateQueries({ queryKey: taskKeys.history() })
   void queryClient.invalidateQueries({ queryKey: SHARED_QUERY_KEYS.dashboard })
   void queryClient.invalidateQueries({ queryKey: SHARED_QUERY_KEYS.kpi })
+  return queryClient.invalidateQueries({ queryKey: taskKeys.list() })
 }
 
 type MutationEnvelope = {
@@ -55,8 +55,8 @@ export function useCreateTask() {
       })
       return assertMutationSuccess(TaskMutationResponseSchema.parse(raw))
     },
-    onSuccess: () => {
-      invalidateTaskRelatedQueries(queryClient)
+    onSuccess: async () => {
+      await invalidateTaskRelatedQueries(queryClient)
     },
   })
 }
@@ -77,8 +77,8 @@ export function useUpdateTask() {
       })
       return assertMutationSuccess(TaskMutationResponseSchema.parse(raw))
     },
-    onSuccess: () => {
-      invalidateTaskRelatedQueries(queryClient)
+    onSuccess: async () => {
+      await invalidateTaskRelatedQueries(queryClient)
     },
   })
 }
@@ -94,7 +94,7 @@ export function useDeleteTask() {
     },
     onSuccess: (_data, id) => {
       queryClient.removeQueries({ queryKey: taskKeys.reports(id) })
-      invalidateTaskRelatedQueries(queryClient)
+      void invalidateTaskRelatedQueries(queryClient)
     },
   })
 }
@@ -116,7 +116,7 @@ export function useSubmitReport() {
       return assertMutationSuccess(ReportMutationResponseSchema.parse(raw))
     },
     onSuccess: (data, variables) => {
-      invalidateTaskRelatedQueries(queryClient)
+      void invalidateTaskRelatedQueries(queryClient)
       void queryClient.invalidateQueries({ queryKey: taskKeys.reports(variables.taskId) })
       if (data.task_id && data.task_id !== variables.taskId) {
         void queryClient.invalidateQueries({ queryKey: taskKeys.reports(data.task_id) })

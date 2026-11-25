@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useAppStore } from '@/app/store'
 import type { SessionUser } from '@/schemas/auth'
 import { clearAllAuthStorage, setStoredSession } from '@/services'
+import { taskKeys } from '../api/keys'
 import { TaskDetailPage } from './TaskDetailPage'
 
 function jsonResponse(body: unknown, status = 200) {
@@ -239,6 +240,49 @@ describe('TaskDetailPage', () => {
 
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Sao lưu máy chủ hàng tuần' }),
+    ).toBeInTheDocument()
+  })
+
+  it('waits for background refetch instead of throwing 404 when navigating to a newly created task', async () => {
+    const newlyCreatedTask = { ...RECURRING_TASK, id: 999, title: 'Nhiệm vụ vừa tạo' }
+    let resolveRefetch: ((res: Response) => void) | undefined
+
+    const fetchMock = vi.fn((input: RequestInfo | URL) => {
+      const url = String(input)
+      if (url.includes('/meta/depts')) return Promise.resolve(jsonResponse({ depts: [], allDepts: [] }))
+      if (url.includes('/meta/sites')) return Promise.resolve(jsonResponse({ sites: [], allSites: [] }))
+      if (url.includes('/users/directory')) return Promise.resolve(jsonResponse([]))
+      if (url.endsWith('/tasks/999/reports')) return Promise.resolve(jsonResponse([]))
+      return new Promise<Response>((resolve) => {
+        resolveRefetch = resolve
+      })
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    })
+    // Seed stale cache with old task list (missing #999) and mark stale so it refetches on mount
+    queryClient.setQueryData(taskKeys.list(), [RECURRING_TASK])
+    await queryClient.invalidateQueries({ queryKey: taskKeys.list(), refetchType: 'none' })
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={['/tasks/999']}>
+          <Routes>
+            <Route path="/tasks/:id" element={<TaskDetailPage />} />
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
+    )
+
+    // Should render loading state instead of throwing 404 while refetch is in flight
+    expect(screen.getByRole('status')).toBeInTheDocument()
+
+    resolveRefetch?.(jsonResponse([RECURRING_TASK, newlyCreatedTask]))
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Nhiệm vụ vừa tạo' }),
     ).toBeInTheDocument()
   })
 })

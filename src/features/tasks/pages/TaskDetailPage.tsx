@@ -41,7 +41,7 @@ export function TaskDetailPage() {
 
   useMetaDepts()
   const { data: lessons = [] } = useLessons()
-  const { data: task, isLoading, isError, error, refetch } = useTaskById(taskId)
+  const { data: task, isLoading, isFetching, isError, error, refetch } = useTaskById(taskId)
   const {
     data: reports = [],
     isLoading: reportsLoading,
@@ -75,7 +75,9 @@ export function TaskDetailPage() {
     throwFullPageError(errorStatus)
   }
 
-  if (!isLoading && !isError && !task) {
+  const isResolvingTask = isLoading || (!task && isFetching)
+
+  if (!isResolvingTask && !isError && !task) {
     throwFullPageError('404')
   }
 
@@ -101,7 +103,7 @@ export function TaskDetailPage() {
 
   return (
     <PageContainer>
-      {task && !isLoading && !isError ? (
+      {task && !isResolvingTask && !isError ? (
         <div className="shrink-0 space-y-3">
           <TaskDetailHeader
             task={task}
@@ -118,7 +120,7 @@ export function TaskDetailPage() {
       )}
 
       <PageContainerBody className="space-y-4">
-        {isLoading ? (
+        {isResolvingTask ? (
           <div role="status" className="space-y-4 animate-pulse">
             <span className="sr-only">{t('common.loading')}</span>
             <div className="h-4 bg-muted rounded w-48" />

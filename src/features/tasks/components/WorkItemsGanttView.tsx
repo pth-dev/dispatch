@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { CheckCircle2, PenLine } from 'lucide-react'
+import { AlertTriangle, CheckCircle2, PenLine } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/utils/cn'
 import { parseLocalDateTime } from '@/utils/task-domain'
@@ -13,7 +13,15 @@ type WorkItemsGanttViewProps = {
 }
 
 const MS_PER_DAY = 86_400_000
-const DAY_PX = 28
+const DAY_PX_SHORT = 44
+const DAY_PX_MEDIUM = 36
+const DAY_PX_LONG = 28
+
+function resolveDayPx(totalDays: number): number {
+  if (totalDays <= 14) return DAY_PX_SHORT
+  if (totalDays <= 30) return DAY_PX_MEDIUM
+  return DAY_PX_LONG
+}
 
 function formatShortDate(dt: Date): string {
   return `${String(dt.getDate()).padStart(2, '0')}/${String(dt.getMonth() + 1).padStart(2, '0')}`
@@ -61,16 +69,18 @@ export function WorkItemsGanttView({
 
   const today = toStartOfDay(new Date())
   const totalDays = Math.min(180, Math.max(1, Math.round((maxMs - minMs) / MS_PER_DAY) + 1))
-  const timelineWidth = totalDays * DAY_PX
+  const dayPx = resolveDayPx(totalDays)
+  const timelineWidth = totalDays * dayPx
 
   const dayHeaders: Date[] = []
   for (let i = 0; i < totalDays; i++) {
     dayHeaders.push(new Date(minMs + i * MS_PER_DAY))
   }
 
+  const todayDiffDays = today ? Math.round((today.getTime() - minMs) / MS_PER_DAY) : -1
   const todayOffset =
-    today && today.getTime() >= minMs && today.getTime() <= maxMs
-      ? Math.round((today.getTime() - minMs) / MS_PER_DAY) * DAY_PX + DAY_PX / 2
+    today && todayDiffDays >= 0 && todayDiffDays < totalDays
+      ? todayDiffDays * dayPx + dayPx / 2
       : null
 
   return (
@@ -84,15 +94,16 @@ export function WorkItemsGanttView({
           <div className="relative flex" style={{ width: `${timelineWidth}px` }}>
             {dayHeaders.map((dt, idx) => {
               const isWeekend = dt.getDay() === 0 || dt.getDay() === 6
-              const showLabel = totalDays <= 21 || idx % 3 === 0 || idx === 0
+              const labelStep = dayPx >= DAY_PX_SHORT ? 1 : dayPx >= DAY_PX_MEDIUM ? 2 : 3
+              const showLabel = idx === 0 || idx % labelStep === 0
               return (
                 <div
                   key={dt.getTime()}
                   className={cn(
-                    'shrink-0 border-r border-border/50 py-2 text-center tabular-nums',
+                    'shrink-0 border-r border-border/50 px-0.5 py-2 text-center whitespace-nowrap tabular-nums',
                     isWeekend && 'bg-muted/50',
                   )}
-                  style={{ width: `${DAY_PX}px` }}
+                  style={{ width: `${dayPx}px` }}
                   title={formatShortDate(dt)}
                 >
                   {showLabel ? formatShortDate(dt) : ''}
@@ -110,10 +121,17 @@ export function WorkItemsGanttView({
             const isDone = pg >= 100
             const isOverdue = remain?.level === 'over' && !isDone
 
-            const leftDays = Math.max(0, Math.round((startDay.getTime() - minMs) / MS_PER_DAY))
-            const spanDays = Math.max(1, Math.round((endDay.getTime() - startDay.getTime()) / MS_PER_DAY) + 1)
-            const barLeft = leftDays * DAY_PX
-            const barWidth = Math.max(DAY_PX, spanDays * DAY_PX)
+            const leftDays = Math.min(
+              totalDays - 1,
+              Math.max(0, Math.round((startDay.getTime() - minMs) / MS_PER_DAY)),
+            )
+            const rawSpanDays = Math.max(
+              1,
+              Math.round((endDay.getTime() - startDay.getTime()) / MS_PER_DAY) + 1,
+            )
+            const spanDays = Math.min(totalDays - leftDays, rawSpanDays)
+            const barLeft = leftDays * dayPx
+            const barWidth = Math.max(dayPx, spanDays * dayPx)
 
             return (
               <div key={item.id} className="flex items-center text-xs hover:bg-secondary/20">
@@ -172,6 +190,12 @@ export function WorkItemsGanttView({
                     />
                     <span className="absolute inset-0 flex items-center gap-1 px-2 truncate tabular-nums">
                       {isDone && <CheckCircle2 className="size-3 shrink-0" aria-hidden="true" />}
+                      {isOverdue && (
+                        <>
+                          <AlertTriangle className="size-3 shrink-0" aria-hidden="true" />
+                          <span className="sr-only">{t('tasks.project.warnOverdue')}</span>
+                        </>
+                      )}
                       <span className="truncate">
                         {isDone ? t('tasks.project.doneShort') : `${pg}%`} • {formatShortDate(endDay)}
                       </span>
@@ -189,7 +213,7 @@ export function WorkItemsGanttView({
                         key={mark.reportId}
                         title={`${mark.who} • ${mark.at}${mark.progress !== null ? ` (${mark.progress}%)` : ''}`}
                         className="absolute bottom-1 size-2 -translate-x-1/2 rounded-full bg-primary ring-2 ring-card"
-                        style={{ left: `${mOffset * DAY_PX + DAY_PX / 2}px` }}
+                        style={{ left: `${mOffset * dayPx + dayPx / 2}px` }}
                       />
                     )
                   })}
