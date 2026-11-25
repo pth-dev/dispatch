@@ -63,25 +63,35 @@ export function PeriodicKpiTab({ onNotify }: { onNotify: (msg: string) => void }
   }
 
   return (
-    <div className="space-y-4">
-      <section className="rounded-xl border border-border bg-card p-4 space-y-3">
-        <p className="text-xs text-muted-foreground">{t('reports.kpi.description')}</p>
+    <div className="min-h-0 flex-1 overflow-y-auto space-y-3">
+      <section className="space-y-2.5 border-b border-border pb-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-1.5">
+            {CYCLES.map((item) => (
+              <Button
+                key={item}
+                type="button"
+                size="sm"
+                variant={cycle === item ? 'default' : 'outline'}
+                onClick={() => handleCycleChange(item)}
+              >
+                {t(`reports.kpi.cycles.${item}`)}
+              </Button>
+            ))}
+          </div>
 
-        <div className="flex flex-wrap items-center gap-1.5">
-          {CYCLES.map((item) => (
-            <Button
-              key={item}
-              type="button"
-              size="sm"
-              variant={cycle === item ? 'default' : 'outline'}
-              onClick={() => handleCycleChange(item)}
-            >
-              {t(`reports.kpi.cycles.${item}`)}
-            </Button>
-          ))}
+          <Button
+            type="button"
+            size="sm"
+            disabled={scopedTasks.length === 0 || isExporting}
+            onClick={() => void handleExport()}
+          >
+            <Download className="size-4" aria-hidden="true" />
+            <span>{t('reports.common.exportExcel')}</span>
+          </Button>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
           <Input
             type="date"
             aria-label={t('reports.common.startDate')}
@@ -115,14 +125,6 @@ export function PeriodicKpiTab({ onNotify }: { onNotify: (msg: string) => void }
               ))}
             </select>
           )}
-          <Button
-            type="button"
-            disabled={scopedTasks.length === 0 || isExporting}
-            onClick={() => void handleExport()}
-          >
-            <Download className="size-4" aria-hidden="true" />
-            <span>{t('reports.common.exportExcel')}</span>
-          </Button>
         </div>
 
         <p className="text-xs text-muted-foreground">{t('reports.kpi.sheetsNote')}</p>

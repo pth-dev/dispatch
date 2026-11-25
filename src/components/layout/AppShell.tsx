@@ -41,9 +41,9 @@ export function AppShell() {
   }
 
   return (
-    <div className="relative flex h-dvh w-full overflow-hidden bg-background">
+    <div className="relative flex h-dvh w-full overflow-hidden bg-background print:block print:h-auto print:overflow-visible">
       {/* Desktop Persistent Sidebar */}
-      <div className="hidden lg:flex lg:shrink-0">
+      <div className="hidden lg:flex lg:shrink-0 print:hidden">
         <Sidebar />
       </div>
 
@@ -56,13 +56,15 @@ export function AppShell() {
       </Sheet>
 
       {/* Main Content Area */}
-      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        <Header onOpenMobileMenu={() => setMobileMenuOpen(true)} />
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden print:block print:overflow-visible">
+        <div className="print:hidden">
+          <Header onOpenMobileMenu={() => setMobileMenuOpen(true)} />
+        </div>
 
         {/* Fixed-height scroll area on desktop (inner PageContainer scrolls); short desktop & mobile scroll on <main> when needed. */}
         <main
           ref={mainRef}
-          className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto bg-background px-4 pt-4 pb-20 lg:overflow-hidden lg:short:overflow-y-auto lg:px-6 lg:py-4 short:py-3"
+          className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto bg-background px-4 pt-4 pb-20 lg:overflow-hidden lg:short:overflow-y-auto lg:px-6 lg:py-4 short:py-3 print:block print:overflow-visible print:p-0"
         >
           <React.Suspense
             fallback={<LoadingSpinner size="md" label={t('common.loadingPage')} className="h-32" />}

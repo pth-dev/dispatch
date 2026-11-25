@@ -131,11 +131,9 @@ export function PdfReportTab({ onNotify }: { onNotify: (msg: string) => void }) 
   ]
 
   return (
-    <div className="space-y-4">
-      <section className="rounded-xl border border-border bg-card p-4 space-y-3 print:hidden">
-        <p className="text-xs text-muted-foreground">{t('reports.pdf.description')}</p>
-
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
+    <div className="flex min-h-0 flex-1 flex-col gap-3">
+      <section className="shrink-0 space-y-2 print:hidden">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
           <Input
             type="date"
             aria-label={t('reports.common.startDate')}
@@ -172,7 +170,7 @@ export function PdfReportTab({ onNotify }: { onNotify: (msg: string) => void }) 
           />
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <label className="inline-flex items-center gap-2 text-xs text-foreground">
             <Checkbox
               checked={unlimited}
@@ -203,6 +201,7 @@ export function PdfReportTab({ onNotify }: { onNotify: (msg: string) => void }) 
             </Button>
             <Button
               type="button"
+              size="sm"
               disabled={selectedIds.size === 0 || isPreparing}
               onClick={() => void handlePrint()}
             >
@@ -227,8 +226,7 @@ export function PdfReportTab({ onNotify }: { onNotify: (msg: string) => void }) 
           emptyMessage={t('reports.common.noTasks')}
           density="compact"
           enablePagination
-          minViewportHeightClass=""
-          className="print:hidden"
+          className="min-h-0 flex-1 print:hidden"
         />
       )}
 
