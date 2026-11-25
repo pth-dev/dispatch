@@ -8,8 +8,13 @@ export function sanitizeDownloadUrl(raw: string | null | undefined): string {
   if (SAFE_RELATIVE_PATH_RE.test(trimmed)) return trimmed
   try {
     const parsed = new URL(trimmed)
-    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
-      return parsed.toString()
+    const currentOrigin = typeof window !== 'undefined' ? window.location.origin : ''
+    if (
+      (parsed.protocol === 'http:' || parsed.protocol === 'https:') &&
+      currentOrigin &&
+      parsed.origin === currentOrigin
+    ) {
+      return `${parsed.pathname}${parsed.search}${parsed.hash}`
     }
   } catch {
     // Reject malformed or unsupported schemes (e.g. javascript:, data:)
@@ -17,16 +22,36 @@ export function sanitizeDownloadUrl(raw: string | null | undefined): string {
   return ''
 }
 
-export const AdminSiteSchema = z.object({
-  code: z.string(),
-  name: z.string().nullish().transform((v) => v ?? ''),
-  vn: z.string().nullish().transform((v) => v ?? ''),
-  label: z.string().nullish().transform((v) => v ?? ''),
-  active: z
-    .union([z.boolean(), z.number()])
-    .nullish()
-    .transform((v) => (v == null ? true : Boolean(v))),
-})
+export const AdminSiteSchema = z
+  .object({
+    code: z.string().nullish(),
+    value: z.string().nullish(),
+    name: z.string().nullish().transform((v) => v ?? ''),
+    vn: z.string().nullish().transform((v) => v ?? ''),
+    label: z.string().nullish().transform((v) => v ?? ''),
+    users: z.coerce
+      .number()
+      .nullish()
+      .transform((v) => v ?? 0),
+    builtin: z
+      .union([z.boolean(), z.number()])
+      .nullish()
+      .transform((v) => Boolean(v)),
+    created_by: z.string().nullish().transform((v) => v ?? ''),
+    createdAt: z.string().nullish().transform((v) => v ?? ''),
+    active: z
+      .union([z.boolean(), z.number()])
+      .nullish()
+      .transform((v) => (v == null ? true : Boolean(v))),
+  })
+  .transform((raw) => {
+    const resolved = (raw.code ?? raw.value ?? '').trim()
+    return {
+      ...raw,
+      code: resolved,
+      value: (raw.value ?? raw.code ?? '').trim(),
+    }
+  })
 
 export type AdminSite = z.infer<typeof AdminSiteSchema>
 
@@ -75,11 +100,23 @@ export const OuRuleResponseSchema = z.object({
 
 export type OuRuleResponse = z.infer<typeof OuRuleResponseSchema>
 
+export const ArchiveCountsSchema = z.object({
+  tasks: z.coerce.number().optional().default(0),
+  reports: z.coerce.number().optional().default(0),
+  messages: z.coerce.number().optional().default(0),
+  todos: z.coerce.number().optional().default(0),
+  files: z.coerce.number().optional().default(0),
+  missing: z.coerce.number().optional().default(0),
+})
+
+export type ArchiveCounts = z.infer<typeof ArchiveCountsSchema>
+
 export const ArchiveHistoryItemSchema = z.object({
   name: z.string().nullish().transform((v) => v ?? ''),
   path: z.string().nullish().transform((v) => v ?? ''),
   sizeBytes: z.coerce.number().optional().default(0),
   createdAt: z.string().nullish().transform((v) => v ?? ''),
+  counts: ArchiveCountsSchema.nullish(),
   downloadUrl: z
     .string()
     .nullish()
@@ -113,6 +150,7 @@ export const ArchiveRunResponseSchema = z.object({
   name: z.string().nullish().transform((v) => v ?? ''),
   path: z.string().nullish().transform((v) => v ?? ''),
   sizeBytes: z.coerce.number().optional().default(0),
+  counts: ArchiveCountsSchema.nullish(),
   downloadUrl: z
     .string()
     .nullish()

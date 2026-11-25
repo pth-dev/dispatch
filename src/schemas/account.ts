@@ -199,6 +199,40 @@ export const AdminUserSchema = z.object({
     .transform((v) => v ?? ''),
   menu_perms: MenuPermsRawSchema,
   extra_depts_editable: z.boolean().optional(),
+  menu_perms_editable: z.boolean().optional(),
+  view_depts_editable: z.boolean().optional(),
+  online: z
+    .union([z.boolean(), z.number()])
+    .nullish()
+    .transform((v) => Boolean(v)),
+  last_seen: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ''),
+  ad_state: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ''),
+  ad_upn: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ''),
+  ad_sam: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ''),
+  ad_synced_at: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ''),
+  ad_auto_disabled: z
+    .union([z.boolean(), z.number()])
+    .nullish()
+    .transform((v) => Boolean(v)),
+  merged_into: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ''),
   createdAt: z
     .string()
     .nullish()
@@ -261,10 +295,14 @@ export const MergeAccountFormSchema = z.object({
 
 export type MergeAccountFormValues = z.infer<typeof MergeAccountFormSchema>
 
+const SiteCreatedRawSchema = z
+  .union([z.boolean(), z.record(z.string(), z.unknown())])
+  .nullish()
+
 export const SimpleAdminMutationSchema = z.object({
   success: z.boolean().optional(),
   message: z.string().optional(),
-  site_created: z.boolean().optional(),
+  site_created: SiteCreatedRawSchema,
   changed: z.coerce.number().optional(),
   skipped: z.coerce.number().optional(),
 })
@@ -275,7 +313,7 @@ export const BatchUsersResponseSchema = z.object({
   success: z.boolean().optional(),
   updated: z.coerce.number().optional().default(0),
   message: z.string().optional(),
-  site_created: z.boolean().optional(),
+  site_created: SiteCreatedRawSchema,
   results: z
     .array(
       z.object({

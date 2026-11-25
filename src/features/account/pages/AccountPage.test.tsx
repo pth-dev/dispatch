@@ -365,7 +365,9 @@ describe('AccountPage', () => {
         return new Response(
           JSON.stringify({
             success: true,
-            sites: [{ code: 'YS', name: '永盛', vn: 'Vĩnh Thịnh', active: true }],
+            sites: [
+              { value: 'YS', name: '永盛', vn: 'Vĩnh Thịnh', users: 15, builtin: true, active: true },
+            ],
           }),
           { status: 200 },
         )
@@ -412,6 +414,9 @@ describe('AccountPage', () => {
           { status: 200 },
         )
       }
+      if (url.includes('/admin/archive/download/backup-2026.zip')) {
+        return new Response(new Blob(['zip-bytes'], { type: 'application/zip' }), { status: 200 })
+      }
       if (url.includes('/admin/archive') && init?.method === 'POST') {
         return new Response(
           JSON.stringify({ success: true, name: 'new-backup.zip', path: 'E:\\backups\\new.zip' }),
@@ -426,7 +431,19 @@ describe('AccountPage', () => {
 
     expect(await screen.findByText('Vĩnh Thịnh')).toBeInTheDocument()
     expect(await screen.findByText('backup-2026.zip')).toBeInTheDocument()
-    expect(screen.getAllByRole('link', { name: 'Tải xuống' })).toHaveLength(1)
+    const downloadBtns = screen.getAllByRole('button', { name: 'Tải xuống' })
+    expect(downloadBtns).toHaveLength(1)
+
+    const createObjectUrlSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-archive')
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
+    await user.click(downloadBtns[0]!)
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith(
+        '/api/admin/archive/download/backup-2026.zip',
+        expect.objectContaining({ method: 'GET' }),
+      )
+    })
+    expect(createObjectUrlSpy).toHaveBeenCalled()
 
     await user.type(screen.getByLabelText('Mã khu vực'), 'HN')
     await user.type(screen.getByLabelText('Tên (tiếng Trung)'), '河內')

@@ -176,23 +176,23 @@ export function useSaveUserExtraDepts() {
       ids?: number[]
       depts: string[]
       ous: string[]
-      mode?: 'replace' | 'add' | 'remove'
+      mode?: 'set' | 'add' | 'remove'
     }): Promise<SimpleAdminMutation> => {
       const raw =
         payload.singleId != null
           ? await http<unknown>(`/admin/users/${payload.singleId}/depts`, {
-            method: 'PUT',
-            body: JSON.stringify({ depts: payload.depts, ous: payload.ous }),
-          })
-        : await http<unknown>('/admin/users/depts/batch', {
-            method: 'POST',
-            body: JSON.stringify({
-              ids: payload.ids ?? [],
-              depts: payload.depts,
-              ous: payload.ous,
-              mode: payload.mode ?? 'replace',
-            }),
-          })
+              method: 'PUT',
+              body: JSON.stringify({ depts: payload.depts, ous: payload.ous }),
+            })
+          : await http<unknown>('/admin/users/depts/batch', {
+              method: 'POST',
+              body: JSON.stringify({
+                ids: payload.ids ?? [],
+                depts: payload.depts,
+                ous: payload.ous,
+                mode: payload.mode ?? 'set',
+              }),
+            })
       return SimpleAdminMutationSchema.parse(raw)
     },
     onSuccess: invalidate,

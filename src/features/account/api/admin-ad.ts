@@ -23,7 +23,7 @@ export function useSaveViewDepts() {
       singleId?: number
       ids?: number[]
       depts: string[]
-      mode?: 'replace' | 'add' | 'remove'
+      mode?: 'set' | 'add' | 'remove'
     }): Promise<SimpleAdminMutation> => {
       const raw =
         payload.singleId != null
@@ -36,7 +36,7 @@ export function useSaveViewDepts() {
               body: JSON.stringify({
                 ids: payload.ids ?? [],
                 depts: payload.depts,
-                mode: payload.mode ?? 'replace',
+                mode: payload.mode ?? 'set',
               }),
             })
       return SimpleAdminMutationSchema.parse(raw)

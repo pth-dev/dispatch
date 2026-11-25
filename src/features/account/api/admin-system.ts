@@ -11,8 +11,20 @@ import {
   type ArchiveRunResponse,
   type OuRuleResponse,
 } from '@/schemas/account-system'
-import { http } from '@/services'
+import { http, httpBlob } from '@/services'
 import { accountKeys } from './keys'
+
+export async function downloadArchiveFile(downloadUrl: string, filename: string): Promise<void> {
+  const blob = await httpBlob(downloadUrl, { method: 'GET' })
+  const objectUrl = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = objectUrl
+  link.download = filename || 'dispatch_archive.zip'
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 30_000)
+}
 
 export function useAdminSites(enabled: boolean) {
   return useQuery({

@@ -1,5 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import {
+  AdminUserSchema,
+  BatchUsersResponseSchema,
+  SimpleAdminMutationSchema,
+} from './account'
+import { AdDiagnoseResponseSchema, AdUserItemSchema } from './account-ad'
+import {
+  AdminSitesResponseSchema,
+  ArchiveInfoResponseSchema,
+  ArchiveRunResponseSchema,
+  sanitizeDownloadUrl,
+} from './account-system'
+import {
   SessionUserSchema,
   SessionVerifyResponseSchema,
   UpdatePasswordFormSchema,
@@ -240,5 +252,142 @@ describe('task & report schemas', () => {
         assign_person: Array.from({ length: 21 }, (_, i) => `u${i}`),
       }).success,
     ).toBe(false)
+  })
+})
+
+describe('account & admin legacy contract schemas', () => {
+  it('parses extended AdminUser fields and object site_created payloads', () => {
+    const user = AdminUserSchema.parse({
+      id: 7,
+      username: 'ad_u1',
+      fullname: 'AD User',
+      dept: '資訊部',
+      site: 'YS',
+      role: 'user',
+      status: 'Approved',
+      auth_source: 'ad',
+      online: 1,
+      last_seen: '2026-11-25 10:00:00',
+      ad_state: 'active',
+      ad_upn: 'ad_u1@corp.local',
+      ad_sam: 'ad_u1',
+      ad_synced_at: '2026-11-25 09:30:00',
+      ad_auto_disabled: 0,
+      merged_into: null,
+      menu_perms_editable: true,
+      view_depts_editable: false,
+    })
+    expect(user.online).toBe(true)
+    expect(user.ad_auto_disabled).toBe(false)
+    expect(user.ad_upn).toBe('ad_u1@corp.local')
+    expect(user.menu_perms_editable).toBe(true)
+    expect(user.view_depts_editable).toBe(false)
+
+    const simple = SimpleAdminMutationSchema.parse({
+      success: true,
+      site_created: { value: 'HN', label: '河內 / Hà Nội' },
+    })
+    expect(simple.site_created).toEqual({ value: 'HN', label: '河內 / Hà Nội' })
+
+    const batch = BatchUsersResponseSchema.parse({
+      success: true,
+      updated: 2,
+      site_created: true,
+    })
+    expect(batch.site_created).toBe(true)
+  })
+
+  it('parses AD diagnose object steps and AD user legacy fields', () => {
+    const diag = AdDiagnoseResponseSchema.parse({
+      success: true,
+      result: {
+        domain: 'corp.local',
+        baseDN: 'DC=corp,DC=local',
+        bindUser: 'svc_ad',
+        passwordSet: true,
+        durationMs: 120,
+        goodUrl: 'ldap://dc1.corp.local:389',
+        dns: { srv: ['dc1.corp.local'], a: ['10.0.0.1'], errors: {} },
+        tests: [
+          {
+            url: 'ldap://dc1.corp.local:389',
+            tcp: { ok: true, ms: 8 },
+            bind: { ok: true, ms: 24 },
+            search: { ok: true, entries: 15 },
+          },
+          {
+            url: 'ldap://dc2.corp.local:389',
+            tcp: false,
+            bind: { ok: false, error: 'TIMEOUT', message: 'Timed out' },
+            search: null,
+          },
+        ],
+        hints: ['OK'],
+      },
+    })
+    expect(diag.result?.tests[0]?.tcp).toMatchObject({ ok: true, ms: 8 })
+    expect(diag.result?.tests[0]?.search).toMatchObject({ ok: true, entries: 15 })
+    expect(diag.result?.tests[1]?.tcp).toMatchObject({ ok: false })
+    expect(diag.result?.dns?.srv).toEqual(['dc1.corp.local'])
+
+    const adUser = AdUserItemSchema.parse({
+      sam: 'john',
+      displayName: 'John Doe',
+      mail: 'john@corp.local',
+      exists: true,
+      linked: true,
+      localSource: 'ad',
+      localUsername: 'john',
+      state: 'active',
+      expired: false,
+      locked: false,
+    })
+    expect(adUser.mail).toBe('john@corp.local')
+    expect(adUser.linked).toBe(true)
+    expect(adUser.localSource).toBe('ad')
+  })
+
+  it('normalizes AdminSite with value-only payload and parses archive counts', () => {
+    const sites = AdminSitesResponseSchema.parse({
+      success: true,
+      sites: [
+        { value: 'YS', name: '永昇', vn: 'Vĩnh Thịnh', users: 42, builtin: 1, active: 1 },
+      ],
+    })
+    expect(sites.sites[0]).toMatchObject({
+      code: 'YS',
+      value: 'YS',
+      users: 42,
+      builtin: true,
+      active: true,
+    })
+
+    const info = ArchiveInfoResponseSchema.parse({
+      defaultPath: 'E:\\backups',
+      history: [
+        {
+          name: 'arc.zip',
+          sizeBytes: 1024,
+          createdAt: '2026-11-25',
+          downloadUrl: '/api/admin/archive/download/arc.zip',
+          counts: { tasks: 10, reports: 25, messages: 3, todos: 4, files: 12, missing: 0 },
+        },
+      ],
+    })
+    expect(info.history[0]?.counts?.tasks).toBe(10)
+
+    const run = ArchiveRunResponseSchema.parse({
+      success: true,
+      name: 'arc.zip',
+      counts: { tasks: 10, files: 12 },
+    })
+    expect(run.counts?.files).toBe(12)
+
+    expect(sanitizeDownloadUrl('/api/admin/archive/download/arc.zip')).toBe(
+      '/api/admin/archive/download/arc.zip',
+    )
+    expect(sanitizeDownloadUrl('https://evil.example/steal.zip')).toBe('')
+    expect(sanitizeDownloadUrl('//evil.example/steal.zip')).toBe('')
+    expect(sanitizeDownloadUrl('javascript:alert(1)')).toBe('')
   })
 })

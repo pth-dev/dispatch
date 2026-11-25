@@ -55,6 +55,12 @@ function ExtraDeptOptionRow({
   )
 }
 
+const BATCH_MODE_LABELS = {
+  set: 'account.admin.batchModes.replace',
+  add: 'account.admin.batchModes.add',
+  remove: 'account.admin.batchModes.remove',
+} as const
+
 export function ExtraDeptsModal({
   open,
   onOpenChange,
@@ -67,7 +73,7 @@ export function ExtraDeptsModal({
   const single = targets.length === 1 ? targets[0] : null
 
   const [query, setQuery] = React.useState('')
-  const [mode, setMode] = React.useState<'replace' | 'add' | 'remove'>('replace')
+  const [mode, setMode] = React.useState<'set' | 'add' | 'remove'>('set')
   const [picked, setPicked] = React.useState<Set<string>>(
     () => new Set(single?.extra_depts ?? []),
   )
@@ -144,15 +150,16 @@ export function ExtraDeptsModal({
       <div className="space-y-3">
         {!single && (
           <div className="flex flex-wrap items-center gap-2">
-            {(['replace', 'add', 'remove'] as const).map((m) => (
+            {(['set', 'add', 'remove'] as const).map((m) => (
               <Button
                 key={m}
                 type="button"
                 size="sm"
+                aria-pressed={mode === m}
                 variant={mode === m ? 'default' : 'outline'}
                 onClick={() => setMode(m)}
               >
-                {t(`account.admin.batchModes.${m}`)}
+                {t(BATCH_MODE_LABELS[m])}
               </Button>
             ))}
           </div>

@@ -160,7 +160,24 @@ function isBinaryOrFormBody(body: BodyInit | null | undefined): boolean {
   )
 }
 
-function buildHeaders(options?: HttpRequestOptions): Record<string, string> {
+function isTrustedApiUrl(url: string): boolean {
+  if (/^\/(?!\/)/.test(url)) return true
+  try {
+    const parsed = new URL(url)
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return false
+    if (typeof window !== 'undefined' && parsed.origin === window.location.origin) {
+      return true
+    }
+    if (env.apiUrl.startsWith('http://') || env.apiUrl.startsWith('https://')) {
+      return parsed.origin === new URL(env.apiUrl).origin
+    }
+  } catch {
+    return false
+  }
+  return false
+}
+
+function buildHeaders(options?: HttpRequestOptions, attachAuth = true): Record<string, string> {
   const result: Record<string, string> = {}
   const isFormData = options?.body instanceof FormData
 
@@ -168,7 +185,7 @@ function buildHeaders(options?: HttpRequestOptions): Record<string, string> {
     result['Content-Type'] = 'application/json'
   }
 
-  if (!options?.skipAuth) {
+  if (attachAuth && !options?.skipAuth) {
     Object.assign(result, buildAuthHeaders())
   }
 
@@ -243,8 +260,32 @@ async function fetchWithTimeout(
   }
 }
 
-export async function http<T>(path: string, options?: HttpRequestOptions): Promise<T> {
-  const url = path.startsWith('http') ? path : `${env.apiUrl}${path}`
+function resolveRequestUrl(path: string): string {
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path
+  }
+  const base = env.apiUrl.replace(/\/+$/, '')
+  if (!base) return path
+  if (path === base || path.startsWith(`${base}/`)) {
+    return path
+  }
+  if (base.startsWith('http://') || base.startsWith('https://')) {
+    try {
+      const baseUrl = new URL(base)
+      const basePath = baseUrl.pathname.replace(/\/+$/, '')
+      if (basePath && (path === basePath || path.startsWith(`${basePath}/`))) {
+        return `${baseUrl.origin}${path}`
+      }
+    } catch {
+      // Fall through to simple concatenation
+    }
+  }
+  return `${base}${path}`
+}
+
+async function executeRequest(path: string, options?: HttpRequestOptions): Promise<Response> {
+  const url = resolveRequestUrl(path)
+  const trusted = isTrustedApiUrl(url)
   const method = (options?.method ?? 'GET').toUpperCase()
   const isReadMethod = method === 'GET' || method === 'HEAD'
   const timeoutMs = options?.timeoutMs ?? (isReadMethod ? DEFAULT_GET_TIMEOUT_MS : undefined)
@@ -261,7 +302,7 @@ export async function http<T>(path: string, options?: HttpRequestOptions): Promi
     referrer: options?.referrer,
     referrerPolicy: options?.referrerPolicy,
     signal: options?.signal,
-    headers: buildHeaders(options),
+    headers: buildHeaders(options, trusted),
   }
 
   let response: Response
@@ -286,14 +327,14 @@ export async function http<T>(path: string, options?: HttpRequestOptions): Promi
     throw networkError
   }
 
-  if (response.status === 401 && !options?.skipAuth && !isLoggingOut()) {
+  if (response.status === 401 && trusted && !options?.skipAuth && !isLoggingOut()) {
     if (!options?.__resumed) {
       const outcome = await resumeSession()
       if (options?.signal?.aborted) {
         throw options.signal.reason ?? new DOMException('Aborted', 'AbortError')
       }
       if (outcome.status === 'resumed') {
-        return http<T>(path, { ...options, __resumed: true })
+        return executeRequest(path, { ...options, __resumed: true })
       }
       if (outcome.status === 'invalid' || outcome.status === 'no_token') {
         clearStoredSession()
@@ -309,9 +350,20 @@ export async function http<T>(path: string, options?: HttpRequestOptions): Promi
     throw await toApiError(response)
   }
 
+  return response
+}
+
+export async function http<T>(path: string, options?: HttpRequestOptions): Promise<T> {
+  const response = await executeRequest(path, options)
+
   if (response.status === 204) {
     return undefined as T
   }
 
   return response.json() as Promise<T>
+}
+
+export async function httpBlob(path: string, options?: HttpRequestOptions): Promise<Blob> {
+  const response = await executeRequest(path, options)
+  return response.blob()
 }

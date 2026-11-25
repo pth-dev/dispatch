@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Download, Package } from 'lucide-react'
 import { Controller, useForm } from 'react-hook-form'
@@ -12,7 +13,7 @@ import {
   type ArchiveRunFormValues,
 } from '@/schemas/account-system'
 import { resolveApiErrorMessage } from '@/services'
-import { useArchiveInfo, useRunArchive } from '../api/admin-system'
+import { downloadArchiveFile, useArchiveInfo, useRunArchive } from '../api/admin-system'
 import type { AdminNotice } from './AdminUserFormModal'
 
 type ArchiveBackupSectionProps = {
@@ -29,7 +30,15 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`
 }
 
-function ArchiveHistoryRow({ item }: { item: ArchiveHistoryItem }) {
+function ArchiveHistoryRow({
+  item,
+  downloading,
+  onDownload,
+}: {
+  item: ArchiveHistoryItem
+  downloading: boolean
+  onDownload: (item: ArchiveHistoryItem) => void
+}) {
   const { t } = useTranslation()
   return (
     <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2">
@@ -40,14 +49,17 @@ function ArchiveHistoryRow({ item }: { item: ArchiveHistoryItem }) {
         </div>
       </div>
       {item.downloadUrl && (
-        <a
-          href={item.downloadUrl}
-          download
-          className="inline-flex items-center gap-1 text-primary hover:underline"
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          disabled={downloading}
+          className="h-auto px-2 py-1 text-xs text-primary hover:text-primary"
+          onClick={() => onDownload(item)}
         >
           <Download className="size-3.5" aria-hidden="true" />
           <span>{t('account.system.archive.download')}</span>
-        </a>
+        </Button>
       )}
     </div>
   )
@@ -57,6 +69,18 @@ export function ArchiveBackupSection({ onNotify }: ArchiveBackupSectionProps) {
   const { t, i18n } = useTranslation()
   const infoQuery = useArchiveInfo(true)
   const runMutation = useRunArchive()
+  const [downloadingName, setDownloadingName] = React.useState<string | null>(null)
+
+  const handleDownload = async (item: ArchiveHistoryItem) => {
+    if (!item.downloadUrl) return
+    setDownloadingName(item.name)
+    try {
+      await downloadArchiveFile(item.downloadUrl, item.name || 'dispatch_archive.zip')
+    } catch (error) {
+      onNotify({ tone: 'error', text: resolveApiErrorMessage(error, t, i18n.language) })
+    }
+    setDownloadingName((current) => (current === item.name ? null : current))
+  }
 
   const form = useForm<ArchiveRunFormValues>({
     resolver: zodResolver(ArchiveRunFormSchema),
@@ -198,7 +222,12 @@ export function ArchiveBackupSection({ onNotify }: ArchiveBackupSectionProps) {
           {(infoQuery.data?.history.length ?? 0) > 0 && (
             <div className="divide-y divide-border rounded-lg border border-border text-xs">
               {(infoQuery.data?.history ?? []).slice(0, 6).map((item) => (
-                <ArchiveHistoryRow key={`${item.name}-${item.createdAt}`} item={item} />
+                <ArchiveHistoryRow
+                  key={`${item.name}-${item.createdAt}`}
+                  item={item}
+                  downloading={downloadingName === item.name}
+                  onDownload={(target) => void handleDownload(target)}
+                />
               ))}
             </div>
           )}

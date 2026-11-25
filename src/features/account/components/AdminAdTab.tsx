@@ -20,6 +20,7 @@ import {
   useAdUsers,
 } from '../api/admin-ad'
 import { canWriteAd } from '../utils/admin-permissions'
+import { AdDiagnosePanel } from './AdDiagnosePanel'
 import { AdminNoticeBanner } from './AdminNoticeBanner'
 import type { AdminNotice } from './AdminUserFormModal'
 
@@ -28,6 +29,14 @@ const SELECT_CLS =
 
 function getAdAccountId(u: AdUserItem): string {
   return u.sam || u.sAMAccountName || u.username
+}
+
+function isAdUserImported(u: AdUserItem): boolean {
+  return Boolean(u.imported || u.linked || (u.exists && u.localSource === 'ad'))
+}
+
+function isAdUserBlocked(u: AdUserItem): boolean {
+  return Boolean(u.disabled || u.expired || u.state === 'disabled' || u.state === 'expired')
 }
 
 export function AdminAdTab() {
@@ -62,7 +71,16 @@ export function AdminAdTab() {
     const sam = getAdAccountId(u).toLowerCase()
     const name = (u.fullname || u.displayName).toLowerCase()
     const dept = (u.dept || u.department || u.ou).toLowerCase()
-    return sam.includes(q) || name.includes(q) || dept.includes(q)
+    const mail = (u.mail || u.email).toLowerCase()
+    const title = u.title.toLowerCase()
+    return (
+      sam.includes(q) ||
+      name.includes(q) ||
+      dept.includes(q) ||
+      mail.includes(q) ||
+      title.includes(q) ||
+      u.localUsername.toLowerCase().includes(q)
+    )
   })
 
   const toggleSam = (sam: string) => {
@@ -130,7 +148,7 @@ export function AdminAdTab() {
               return (
                 <Checkbox
                   aria-label={sam}
-                  disabled={row.original.disabled || !sam}
+                  disabled={isAdUserBlocked(row.original) || !sam}
                   checked={selectedSams.has(sam)}
                   onCheckedChange={() => toggleSam(sam)}
                 />
@@ -167,15 +185,19 @@ export function AdminAdTab() {
       id: 'status',
       header: t('common.status'),
       meta: { width: '20%' },
-      cell: ({ row }) => (
-        <span className={row.original.disabled ? 'text-destructive' : 'text-success'}>
-          {row.original.disabled
-            ? t('account.admin.statuses.Disabled')
-            : row.original.imported
-              ? t('account.ad.imported')
-              : t('account.ad.available')}
-        </span>
-      ),
+      cell: ({ row }) => {
+        const blocked = isAdUserBlocked(row.original)
+        const imported = isAdUserImported(row.original)
+        return (
+          <span className={blocked ? 'text-destructive' : 'text-success'}>
+            {blocked
+              ? t('account.admin.statuses.Disabled')
+              : imported
+                ? t('account.ad.imported')
+                : t('account.ad.available')}
+          </span>
+        )
+      },
     },
   ]
 
@@ -261,19 +283,7 @@ export function AdminAdTab() {
           </div>
         )}
 
-        {diagnoseResult?.result && (
-          <div className="rounded-lg border border-border bg-secondary p-3 text-xs space-y-1">
-            <div className="font-semibold text-foreground">
-              {diagnoseResult.result.domain} ({diagnoseResult.result.durationMs}ms) —{' '}
-              {diagnoseResult.result.goodUrl || '—'}
-            </div>
-            {diagnoseResult.result.hints.map((hint, idx) => (
-              <p key={idx} className="text-muted-foreground">
-                • {hint}
-              </p>
-            ))}
-          </div>
-        )}
+        {diagnoseResult?.result && <AdDiagnosePanel result={diagnoseResult.result} />}
       </div>
 
       {status?.available && (

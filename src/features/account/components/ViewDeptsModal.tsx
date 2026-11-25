@@ -42,6 +42,12 @@ function ViewDeptOptionRow({
   )
 }
 
+const BATCH_MODE_LABELS = {
+  set: 'account.admin.batchModes.replace',
+  add: 'account.admin.batchModes.add',
+  remove: 'account.admin.batchModes.remove',
+} as const
+
 export function ViewDeptsModal({
   open,
   onOpenChange,
@@ -55,7 +61,7 @@ export function ViewDeptsModal({
   const single = targets.length === 1 ? targets[0] : null
 
   const [query, setQuery] = React.useState('')
-  const [mode, setMode] = React.useState<'replace' | 'add' | 'remove'>('replace')
+  const [mode, setMode] = React.useState<'set' | 'add' | 'remove'>('set')
   const [picked, setPicked] = React.useState<Set<string>>(() => new Set(single?.view_depts ?? []))
 
   const filtered = orgItems.filter((node) => {
@@ -127,7 +133,7 @@ export function ViewDeptsModal({
       <div className="space-y-3">
         {!single && (
           <div className="flex flex-wrap items-center gap-2">
-            {(['replace', 'add', 'remove'] as const).map((m) => (
+            {(['set', 'add', 'remove'] as const).map((m) => (
               <Button
                 key={m}
                 type="button"
@@ -136,7 +142,7 @@ export function ViewDeptsModal({
                 variant={mode === m ? 'default' : 'outline'}
                 onClick={() => setMode(m)}
               >
-                {t(`account.admin.batchModes.${m}`)}
+                {t(BATCH_MODE_LABELS[m])}
               </Button>
             ))}
           </div>

@@ -38,7 +38,7 @@ function SiteRow({
         <Checkbox
           aria-label={`${site.code} - ${t('account.system.sites.active')}`}
           checked={site.active}
-          disabled={disabled}
+          disabled={disabled || site.builtin}
           onCheckedChange={(checked) => onToggleActive(site, Boolean(checked))}
         />
       </td>
