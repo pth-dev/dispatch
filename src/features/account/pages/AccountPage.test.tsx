@@ -331,6 +331,123 @@ describe('AccountPage', () => {
     expect(screen.queryByRole('button', { name: /Nhập từ AD/i })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Đồng bộ ngay' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Chẩn đoán AD' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('tab', { name: 'Cấu hình hệ thống' })).not.toBeInTheDocument()
+  })
+
+  it('renders Sites, OU Naming Rule preview, and Archive tools on System tab for superadmin', async () => {
+    const user = userEvent.setup()
+    useAppStore.setState({
+      user: {
+        username: 'boss',
+        fullname: 'Super Boss',
+        dept: '資訊部',
+        site: 'YS',
+        role: 'superadmin',
+        auth_source: 'local',
+        menu_perms: null,
+        is_computer_room: false,
+      },
+      authStatus: 'authenticated',
+    })
+
+    const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input)
+      if (url.includes('/account/scope')) {
+        return new Response(JSON.stringify(MOCK_SCOPE), { status: 200 })
+      }
+      if (url.includes('/account/org')) {
+        return new Response(JSON.stringify(MOCK_ORG), { status: 200 })
+      }
+      if (url.includes('/admin/sites') && init?.method === 'POST') {
+        return new Response(JSON.stringify({ success: true }), { status: 200 })
+      }
+      if (url.includes('/admin/sites')) {
+        return new Response(
+          JSON.stringify({
+            success: true,
+            sites: [{ code: 'YS', name: '永盛', vn: 'Vĩnh Thịnh', active: true }],
+          }),
+          { status: 200 },
+        )
+      }
+      if (url.includes('/admin/dept-ou-rule') && init?.method === 'POST') {
+        return new Response(
+          JSON.stringify({
+            success: true,
+            total: 10,
+            changes: 1,
+            plan: [
+              {
+                username: 'ad1',
+                fullname: 'AD One',
+                from_label: 'Old',
+                to: 'IT',
+                path: 'Corp › IT',
+                unchanged: false,
+              },
+            ],
+          }),
+          { status: 200 },
+        )
+      }
+      if (url.includes('/admin/archive/info')) {
+        return new Response(
+          JSON.stringify({
+            defaultPath: 'E:\\backups\\dispatch',
+            history: [
+              {
+                name: 'backup-2026.zip',
+                sizeBytes: 2048,
+                createdAt: '2026-11-25',
+                downloadUrl: '/api/admin/archive/download/backup-2026.zip',
+              },
+              {
+                name: 'unsafe.zip',
+                sizeBytes: 1024,
+                createdAt: '2026-11-24',
+                downloadUrl: 'javascript:alert(1)',
+              },
+            ],
+          }),
+          { status: 200 },
+        )
+      }
+      if (url.includes('/admin/archive') && init?.method === 'POST') {
+        return new Response(
+          JSON.stringify({ success: true, name: 'new-backup.zip', path: 'E:\\backups\\new.zip' }),
+          { status: 200 },
+        )
+      }
+      return new Response(JSON.stringify({}), { status: 200 })
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    renderAccountPage('/account?tab=system')
+
+    expect(await screen.findByText('Vĩnh Thịnh')).toBeInTheDocument()
+    expect(await screen.findByText('backup-2026.zip')).toBeInTheDocument()
+    expect(screen.getAllByRole('link', { name: 'Tải xuống' })).toHaveLength(1)
+
+    await user.type(screen.getByLabelText('Mã khu vực'), 'HN')
+    await user.type(screen.getByLabelText('Tên (tiếng Trung)'), '河內')
+    await user.click(screen.getByRole('button', { name: 'Thêm khu vực' }))
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringContaining('/admin/sites'),
+        expect.objectContaining({ method: 'POST' }),
+      )
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Xem trước' }))
+    expect(await screen.findByText(/AD One \(ad1\)/)).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Đóng gói ngay' }))
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringContaining('/admin/archive'),
+        expect.objectContaining({ method: 'POST' }),
+      )
+    })
   })
 
   it('shows InlineError on 500 failure and recovers when clicking retry', async () => {

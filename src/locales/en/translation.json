@@ -909,7 +909,54 @@
       "scope": "Scope & OU Tree",
       "users": "Account Management",
       "ouView": "Multi-OU Visibility",
-      "ad": "Active Directory (AD)"
+      "ad": "Active Directory (AD)",
+      "system": "System Configuration"
+    },
+    "system": {
+      "sites": {
+        "title": "Sites & Plants Manager",
+        "code": "Site code",
+        "name": "Name (Chinese)",
+        "vnName": "Vietnamese name",
+        "active": "Active",
+        "addBtn": "Add site",
+        "created": "Site created",
+        "updated": "Site status updated",
+        "validation": {
+          "codeRequired": "Site code is required",
+          "codeMax": "Site code must be 20 characters or fewer",
+          "nameRequired": "Site name is required",
+          "nameMax": "Site name must be 60 characters or fewer",
+          "vnMax": "Vietnamese name must be 80 characters or fewer"
+        }
+      },
+      "ouRule": {
+        "title": "AD OU Department Naming Rule",
+        "subtitle": "Align AD user departments with their organizational unit folder rule.",
+        "previewBtn": "Preview",
+        "applyBtn": "Apply rule",
+        "summary": "Total {{total}} AD accounts · {{changes}} accounts will change",
+        "allMatched": "All AD accounts already match the OU rule.",
+        "fromCol": "Current dept",
+        "toCol": "New dept (OU)",
+        "pathCol": "OU path",
+        "confirmTitle": "Apply AD OU naming rule?",
+        "confirmDesc": "All AD accounts will have their department updated to follow the AD OU rule on future syncs.",
+        "applied": "Applied to {{applied}} accounts (failed: {{failed}})"
+      },
+      "archive": {
+        "title": "One-Click Full System Archive",
+        "subtitle": "Export all tasks, reports, messages, to-dos, and attachments to the server.",
+        "targetPath": "Server destination path",
+        "format": "Archive format",
+        "folderFormat": "Folder",
+        "runBtn": "Archive now",
+        "completed": "Archive created: {{name}}",
+        "download": "Download",
+        "validation": {
+          "pathRequired": "Server destination path is required"
+        }
+      }
     },
     "ouView": {
       "title": "Per-user Multi-OU Visibility",

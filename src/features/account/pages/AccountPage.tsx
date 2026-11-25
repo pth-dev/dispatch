@@ -14,16 +14,18 @@ import {
 } from '@/components/layout'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { isSuperLike } from '@/utils/permissions'
 import { accountKeys } from '../api/keys'
 import { useAccountOrg, useAccountScope } from '../api/queries'
 import { AccountScopeCards } from '../components/AccountScopeCards'
 import { AdminAdTab } from '../components/AdminAdTab'
 import { AdminOuViewTab } from '../components/AdminOuViewTab'
+import { AdminSystemTab } from '../components/AdminSystemTab'
 import { AdminUsersTab } from '../components/AdminUsersTab'
 import { OrgTreePanel } from '../components/OrgTreePanel'
 import { canAccessAccountAdminTab, canAccessAdTab } from '../utils/admin-permissions'
 
-type AccountTabKey = 'scope' | 'users' | 'ou-view' | 'ad'
+type AccountTabKey = 'scope' | 'users' | 'ou-view' | 'ad' | 'system'
 
 function AccountLoadingSkeleton({ label }: { label: string }) {
   return (
@@ -47,7 +49,8 @@ export function AccountPage() {
 
   const canManageUsers = canAccessAccountAdminTab(user)
   const canManageAd = canAccessAdTab(user)
-  const hasAdminTabs = canManageUsers || canManageAd
+  const canManageSystem = isSuperLike(user)
+  const hasAdminTabs = canManageUsers || canManageAd || canManageSystem
 
   const rawTab = searchParams.get('tab')
   const activeTab: AccountTabKey =
@@ -57,7 +60,9 @@ export function AccountPage() {
         ? 'ou-view'
         : rawTab === 'ad' && canManageAd
           ? 'ad'
-          : 'scope'
+          : rawTab === 'system' && canManageSystem
+            ? 'system'
+            : 'scope'
 
   const scopeQuery = useAccountScope()
   const orgQuery = useAccountOrg()
@@ -82,6 +87,10 @@ export function AccountPage() {
       void queryClient.invalidateQueries({ queryKey: accountKeys.adStatus() })
       void queryClient.invalidateQueries({ queryKey: accountKeys.adUsers() })
       void queryClient.invalidateQueries({ queryKey: accountKeys.adSyncLogs() })
+    }
+    if (canManageSystem) {
+      void queryClient.invalidateQueries({ queryKey: accountKeys.sites() })
+      void queryClient.invalidateQueries({ queryKey: accountKeys.archiveInfo() })
     }
   }
 
@@ -137,6 +146,9 @@ export function AccountPage() {
                 <TabsTrigger value="ou-view">{t('account.tabs.ouView')}</TabsTrigger>
               )}
               {canManageAd && <TabsTrigger value="ad">{t('account.tabs.ad')}</TabsTrigger>}
+              {canManageSystem && (
+                <TabsTrigger value="system">{t('account.tabs.system')}</TabsTrigger>
+              )}
             </TabsList>
             <TabsContent value="scope" className="space-y-4 pt-3">
               {scopeContent}
@@ -154,6 +166,11 @@ export function AccountPage() {
             {canManageAd && (
               <TabsContent value="ad" className="pt-3">
                 <AdminAdTab />
+              </TabsContent>
+            )}
+            {canManageSystem && (
+              <TabsContent value="system" className="pt-3">
+                <AdminSystemTab />
               </TabsContent>
             )}
           </Tabs>

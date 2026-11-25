@@ -909,7 +909,54 @@
       "scope": "Phạm vi & Cây OU",
       "users": "Quản lý tài khoản",
       "ouView": "Phân quyền xem đa OU",
-      "ad": "Active Directory (AD)"
+      "ad": "Active Directory (AD)",
+      "system": "Cấu hình hệ thống"
+    },
+    "system": {
+      "sites": {
+        "title": "Quản lý Khu vực / Nhà máy (Sites)",
+        "code": "Mã khu vực",
+        "name": "Tên (tiếng Trung)",
+        "vnName": "Tên tiếng Việt",
+        "active": "Hoạt động",
+        "addBtn": "Thêm khu vực",
+        "created": "Đã thêm khu vực mới",
+        "updated": "Đã cập nhật trạng thái khu vực",
+        "validation": {
+          "codeRequired": "Vui lòng nhập mã khu vực",
+          "codeMax": "Mã khu vực tối đa 20 ký tự",
+          "nameRequired": "Vui lòng nhập tên khu vực",
+          "nameMax": "Tên khu vực tối đa 60 ký tự",
+          "vnMax": "Tên tiếng Việt tối đa 80 ký tự"
+        }
+      },
+      "ouRule": {
+        "title": "Quy tắc đặt tên bộ phận theo AD OU",
+        "subtitle": "Chuẩn hóa tên bộ phận cho toàn bộ tài khoản AD theo thư mục OU tương ứng.",
+        "previewBtn": "Xem trước",
+        "applyBtn": "Áp dụng quy tắc",
+        "summary": "Tổng {{total}} tài khoản AD · Dự kiến thay đổi {{changes}} tài khoản",
+        "allMatched": "Tất cả tài khoản AD đã khớp quy tắc OU.",
+        "fromCol": "Bộ phận hiện tại",
+        "toCol": "Bộ phận mới (OU)",
+        "pathCol": "Đường dẫn OU",
+        "confirmTitle": "Áp dụng quy tắc đặt tên BP theo OU?",
+        "confirmDesc": "Toàn bộ tài khoản AD sẽ được cập nhật bộ phận theo quy tắc OU và tự động duy trì trong các lần đồng bộ AD.",
+        "applied": "Đã áp dụng {{applied}} tài khoản (lỗi: {{failed}})"
+      },
+      "archive": {
+        "title": "Đóng gói & Sao lưu toàn hệ thống",
+        "subtitle": "Xuất toàn bộ nhiệm vụ, báo cáo, tin nhắn, việc cần làm và tệp đính kèm ra máy chủ.",
+        "targetPath": "Thư mục lưu trên máy chủ",
+        "format": "Định dạng đóng gói",
+        "folderFormat": "Thư mục (Folder)",
+        "runBtn": "Đóng gói ngay",
+        "completed": "Đã tạo gói sao lưu: {{name}}",
+        "download": "Tải xuống",
+        "validation": {
+          "pathRequired": "Vui lòng nhập đường dẫn lưu trên máy chủ"
+        }
+      }
     },
     "ouView": {
       "title": "Phạm vi OU được xem của nhân viên",

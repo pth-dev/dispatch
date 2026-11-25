@@ -909,7 +909,54 @@
       "scope": "范围与 OU 树",
       "users": "账号管理",
       "ouView": "多 OU 观看权限",
-      "ad": "Active Directory (AD)"
+      "ad": "Active Directory (AD)",
+      "system": "系统配置"
+    },
+    "system": {
+      "sites": {
+        "title": "厂区管理 (Sites)",
+        "code": "厂区代码",
+        "name": "中文名称",
+        "vnName": "越南文名称",
+        "active": "启用",
+        "addBtn": "新增厂区",
+        "created": "已新增厂区",
+        "updated": "已更新厂区状态",
+        "validation": {
+          "codeRequired": "请输入厂区代码",
+          "codeMax": "厂区代码最多 20 个字符",
+          "nameRequired": "请输入厂区名称",
+          "nameMax": "厂区名称最多 60 个字符",
+          "vnMax": "越南文名称最多 80 个字符"
+        }
+      },
+      "ouRule": {
+        "title": "部门 OU 命名规则",
+        "subtitle": "将全部 AD 账号部门按所属组织单位 (OU) 规则统一命名。",
+        "previewBtn": "预览",
+        "applyBtn": "套用规则",
+        "summary": "共 {{total}} 个 AD 账号 · 预计变更 {{changes}} 个",
+        "allMatched": "全部 AD 账号均已符合规则。",
+        "fromCol": "目前部门",
+        "toCol": "新部门 (OU)",
+        "pathCol": "OU 路径",
+        "confirmTitle": "确认套用部门 OU 命名规则？",
+        "confirmDesc": "套用后所有 AD 账号部门将跟随 AD OU 规则，并在定时同步时自动维持。",
+        "applied": "已套用 {{applied}} 个账号（失败：{{failed}}）"
+      },
+      "archive": {
+        "title": "一键打包所有帖子与资料",
+        "subtitle": "将任务、汇报、留言、待办与附件完整导出至服务器目录或 ZIP。",
+        "targetPath": "服务器保存路径",
+        "format": "打包格式",
+        "folderFormat": "文件夹 (Folder)",
+        "runBtn": "立即打包",
+        "completed": "已生成备份包：{{name}}",
+        "download": "下载",
+        "validation": {
+          "pathRequired": "请输入服务器保存路径"
+        }
+      }
     },
     "ouView": {
       "title": "人员可观看 OU（复选）",

@@ -909,7 +909,54 @@
       "scope": "範圍與 OU 樹",
       "users": "帳號管理",
       "ouView": "多 OU 觀看權限",
-      "ad": "Active Directory (AD)"
+      "ad": "Active Directory (AD)",
+      "system": "系統設定"
+    },
+    "system": {
+      "sites": {
+        "title": "廠區管理 (Sites)",
+        "code": "廠區代碼",
+        "name": "中文名稱",
+        "vnName": "越南文名稱",
+        "active": "啟用",
+        "addBtn": "新增廠區",
+        "created": "已新增廠區",
+        "updated": "已更新廠區狀態",
+        "validation": {
+          "codeRequired": "請輸入廠區代碼",
+          "codeMax": "廠區代碼最多 20 個字元",
+          "nameRequired": "請輸入廠區名稱",
+          "nameMax": "廠區名稱最多 60 個字元",
+          "vnMax": "越南文名稱最多 80 個字元"
+        }
+      },
+      "ouRule": {
+        "title": "部門 OU 命名規則",
+        "subtitle": "將全部 AD 帳號部門按所屬組織單位 (OU) 規則統一命名。",
+        "previewBtn": "預覽",
+        "applyBtn": "套用規則",
+        "summary": "共 {{total}} 個 AD 帳號 · 預計變更 {{changes}} 個",
+        "allMatched": "全部 AD 帳號均已符合規則。",
+        "fromCol": "目前部門",
+        "toCol": "新部門 (OU)",
+        "pathCol": "OU 路徑",
+        "confirmTitle": "確認套用部門 OU 命名規則？",
+        "confirmDesc": "套用後所有 AD 帳號部門將跟隨 AD OU 規則，並在定時同步時自動維持。",
+        "applied": "已套用 {{applied}} 個帳號（失敗：{{failed}}）"
+      },
+      "archive": {
+        "title": "一鍵打包所有帖子與資料",
+        "subtitle": "將任務、回報、留言、待辦與附件完整匯出至伺服器目錄或 ZIP。",
+        "targetPath": "伺服器儲存路徑",
+        "format": "打包格式",
+        "folderFormat": "資料夾 (Folder)",
+        "runBtn": "立即打包",
+        "completed": "已產生備份包：{{name}}",
+        "download": "下載",
+        "validation": {
+          "pathRequired": "請輸入伺服器儲存路徑"
+        }
+      }
     },
     "ouView": {
       "title": "人員可觀看 OU（複選）",
