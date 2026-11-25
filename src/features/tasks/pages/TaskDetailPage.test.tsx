@@ -285,4 +285,60 @@ describe('TaskDetailPage', () => {
       await screen.findByRole('heading', { level: 1, name: 'Nhiệm vụ vừa tạo' }),
     ).toBeInTheDocument()
   })
+
+  it('focuses invalid field via Zod, supports progress presets, and prevents decreasing progress', async () => {
+    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+      const url = String(input)
+      if (url.includes('/meta/depts')) return jsonResponse({ depts: [], allDepts: [] })
+      if (url.includes('/meta/sites')) return jsonResponse({ sites: [], allSites: [] })
+      if (url.includes('/users/directory')) return jsonResponse([])
+      if (url.endsWith('/tasks/205/reports')) return jsonResponse([])
+      return jsonResponse([RECURRING_TASK]) // progress = 50
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    })
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={['/tasks/205']}>
+          <Routes>
+            <Route path="/tasks/:id" element={<TaskDetailPage />} />
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
+    )
+
+    expect(await screen.findByText('Sao lưu máy chủ hàng tuần')).toBeInTheDocument()
+    const user = userEvent.setup()
+
+    // 1. Preset buttons: 25% disabled (< 50%), 75% clickable
+    expect(screen.getByRole('button', { name: '25%' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: '50%' })).toBeEnabled()
+    const btn75 = screen.getByRole('button', { name: '75%' })
+    await user.click(btn75)
+
+    const progressInput = screen.getByLabelText(/tiến độ/i) as HTMLInputElement
+    expect(progressInput.value).toBe('75')
+
+    // 2. Empty content -> Zod blocks submit and focuses textarea
+    const contentTextarea = screen.getByLabelText(/nội dung báo cáo/i)
+    await user.click(screen.getByRole('button', { name: /gửi báo cáo/i }))
+    expect(await screen.findByText('Vui lòng nhập nội dung báo cáo')).toBeInTheDocument()
+    expect(contentTextarea).toHaveFocus()
+    expect(contentTextarea).toHaveAttribute('aria-invalid', 'true')
+
+    // 3. Lower progress (30 < 50) -> Zod blocks submit and focuses progress input
+    await user.type(contentTextarea, 'Thử giảm tiến độ')
+    await user.clear(progressInput)
+    await user.type(progressInput, '30')
+    await user.click(screen.getByRole('button', { name: /gửi báo cáo/i }))
+    expect(
+      await screen.findByText('Tiến độ không được thấp hơn tiến độ hiện tại (50%)'),
+    ).toBeInTheDocument()
+    expect(progressInput).toHaveFocus()
+    expect(progressInput).toHaveAttribute('aria-invalid', 'true')
+  })
 })

@@ -133,7 +133,7 @@ export function ReportWorkTopicsPicker({
               <div className="flex shrink-0 flex-col items-end gap-1 w-28">
                 <Input
                   type="number"
-                  min={0}
+                  min={stat?.topicProgress ?? 0}
                   max={100}
                   step={1}
                   aria-label={`${item.topic} (%)`}

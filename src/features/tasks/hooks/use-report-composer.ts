@@ -3,7 +3,7 @@ import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import {
-  TaskReportFormSchema,
+  createTaskReportFormSchema,
   type RawReport,
   type RawTask,
   type SplitMember,
@@ -93,12 +93,23 @@ export function useReportComposer({
     isAssignedToUser({ assign_person: m.assignee }, user),
   )
   const defaultTargetId = selfSplitMember?.id ?? task.id
+  const [selectedTargetId, setSelectedTargetId] = React.useState<number>(defaultTargetId)
+
+  const activeSplitMember =
+    splitMembers.length > 0
+      ? splitMembers.find((m) => m.id === selectedTargetId) ?? selfSplitMember
+      : undefined
+  const minProgress = Math.min(
+    100,
+    Math.max(0, Math.round(activeSplitMember?.progress ?? task.progress)),
+  )
 
   const form = useForm<TaskReportFormValues>({
-    resolver: zodResolver(TaskReportFormSchema),
+    resolver: zodResolver(createTaskReportFormSchema(minProgress)),
+    shouldFocusError: true,
     defaultValues: {
       content: '',
-      progress: task.progress,
+      progress: minProgress,
       km_link: '',
       status: isTaskPaused(task) ? 'paused' : 'running',
       pause_reason: task.pause_reason ?? '',
@@ -110,9 +121,24 @@ export function useReportComposer({
   const currentProgress = useWatch({ control: form.control, name: 'progress' })
 
   const handleStatusChange = (nextStatus: 'running' | 'paused') => {
-    form.setValue('status', nextStatus)
+    form.setValue('status', nextStatus, { shouldValidate: true })
     if (nextStatus === 'paused' && Number(currentProgress) === 100) {
-      form.setValue('progress', 99)
+      form.setValue('progress', 99, { shouldValidate: true })
+    }
+  }
+
+  const handleSelectProgressPreset = (value: number) => {
+    const maxAllowed = currentStatus === 'paused' ? 99 : 100
+    if (value < minProgress || value > maxAllowed) return
+    form.setValue('progress', value, { shouldDirty: true, shouldValidate: true })
+  }
+
+  const handleTargetChange = (nextTargetId: number) => {
+    setSelectedTargetId(nextTargetId)
+    form.setValue('target_id', nextTargetId)
+    const nextMember = splitMembers.find((m) => m.id === nextTargetId)
+    if (nextMember && Number(form.getValues('progress')) < nextMember.progress) {
+      form.setValue('progress', nextMember.progress, { shouldValidate: true })
     }
   }
 
@@ -240,7 +266,13 @@ export function useReportComposer({
             setSubmitError(t('tasks.project.topicProgressInvalid'))
             return
           }
-          selectedTopics.push({ id: item.id, progress: Math.round(num) })
+          const rounded = Math.round(num)
+          const prevTopicProgress = reportStats[item.id]?.topicProgress ?? 0
+          if (rounded < prevTopicProgress) {
+            setSubmitError(t('tasks.validation.progressCannotDecrease', { min: prevTopicProgress }))
+            return
+          }
+          selectedTopics.push({ id: item.id, progress: rounded })
         } else {
           selectedTopics.push({ id: item.id, progress: null })
         }
@@ -281,6 +313,8 @@ export function useReportComposer({
   return {
     form,
     currentStatus,
+    currentProgress,
+    minProgress,
     selfSplitMember,
     reportStats,
     files,
@@ -293,6 +327,8 @@ export function useReportComposer({
     isAiPending: generateAi.isPending,
     isSubmitPending: submitReport.isPending,
     handleStatusChange,
+    handleSelectProgressPreset,
+    handleTargetChange,
     handleTopicToggle,
     handleTopicProgressChange,
     handleTopicEarlyChange,

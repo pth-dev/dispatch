@@ -307,22 +307,32 @@ export const MAX_ASSIGNEES_LIMIT = 20
 export const MAX_VIEWERS_LIMIT = 100
 export const UNCLASSIFIED_TASK_TYPE = '未分類 / Chưa phân loại'
 
-export const TaskReportFormSchema = z
-  .object({
-    content: z.string(),
-    progress: z.number().int().min(0).max(100),
-    km_link: z.string(),
-    status: z.enum(['running', 'paused']),
-    pause_reason: z.string(),
-    target_id: z.number().optional(),
-  })
-  .refine(
-    (data) => !(data.status === 'paused' && data.progress === 100),
-    {
+export function createTaskReportFormSchema(minProgress = 0) {
+  const floor = Math.min(100, Math.max(0, Math.round(minProgress)))
+  return z
+    .object({
+      content: z.string().trim().min(1, 'tasks.validation.reportContentRequired'),
+      progress: z
+        .number({ message: 'tasks.validation.progressRange' })
+        .int('tasks.validation.progressRange')
+        .min(0, 'tasks.validation.progressRange')
+        .max(100, 'tasks.validation.progressRange'),
+      km_link: z.string(),
+      status: z.enum(['running', 'paused']),
+      pause_reason: z.string(),
+      target_id: z.number().optional(),
+    })
+    .refine((data) => data.progress >= floor, {
+      path: ['progress'],
+      message: 'tasks.validation.progressCannotDecrease',
+    })
+    .refine((data) => !(data.status === 'paused' && data.progress === 100), {
       path: ['progress'],
       message: 'tasks.validation.pausedCannotBe100',
-    },
-  )
+    })
+}
+
+export const TaskReportFormSchema = createTaskReportFormSchema(0)
 export type TaskReportFormValues = z.infer<typeof TaskReportFormSchema>
 
 export const TaskEditorFormSchema = z

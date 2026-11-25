@@ -13,6 +13,8 @@ import { useUserDisplayResolver } from '../hooks/use-user-display-resolver'
 import { useReportComposer } from '../hooks/use-report-composer'
 import { ReportWorkTopicsPicker } from './ReportWorkTopicsPicker'
 
+const PROGRESS_PRESETS = [25, 50, 75, 100] as const
+
 type ReportComposerProps = {
   task: RawTask
   user: SessionUser
@@ -35,6 +37,8 @@ export function ReportComposer({
   const {
     form,
     currentStatus,
+    currentProgress,
+    minProgress,
     selfSplitMember,
     reportStats,
     files,
@@ -47,6 +51,8 @@ export function ReportComposer({
     isAiPending,
     isSubmitPending,
     handleStatusChange,
+    handleSelectProgressPreset,
+    handleTargetChange,
     handleTopicToggle,
     handleTopicProgressChange,
     handleTopicEarlyChange,
@@ -115,20 +121,42 @@ export function ReportComposer({
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <label htmlFor="report-progress" className="block text-xs font-semibold text-foreground">
               {t('tasks.report.progressLabel')} (%)
             </label>
             <Input
               id="report-progress"
               type="number"
-              min={0}
+              min={minProgress}
               max={currentStatus === 'paused' ? 99 : 100}
               aria-invalid={Boolean(errors.progress)}
               {...register('progress', { valueAsNumber: true })}
             />
+            <div className="flex flex-wrap gap-1.5">
+              {PROGRESS_PRESETS.map((pct) => {
+                const maxAllowed = currentStatus === 'paused' ? 99 : 100
+                const presetDisabled = isBusy || pct < minProgress || pct > maxAllowed
+                const isSelected = Number(currentProgress) === pct
+                return (
+                  <Button
+                    key={pct}
+                    type="button"
+                    variant={isSelected ? 'default' : 'outline'}
+                    size="sm"
+                    className="h-7 px-2 text-xs tabular-nums"
+                    disabled={presetDisabled}
+                    onClick={() => handleSelectProgressPreset(pct)}
+                  >
+                    {pct}%
+                  </Button>
+                )
+              })}
+            </div>
             {errors.progress?.message && (
-              <p className="text-xs text-destructive">{t(errors.progress.message)}</p>
+              <p role="alert" className="text-xs text-destructive">
+                {t(errors.progress.message, { min: minProgress })}
+              </p>
             )}
           </div>
 
@@ -154,7 +182,11 @@ export function ReportComposer({
               </label>
               <select
                 id="report-target"
-                {...register('target_id', { valueAsNumber: true })}
+                {...register('target_id', {
+                  valueAsNumber: true,
+                  onChange: (e: React.ChangeEvent<HTMLSelectElement>) =>
+                    handleTargetChange(Number(e.target.value)),
+                })}
                 className={SELECT_FIELD_CLASS}
               >
                 {splitMembers.map((m) => (
@@ -189,15 +221,22 @@ export function ReportComposer({
             id="report-content"
             rows={3}
             placeholder={t('tasks.report.contentPlaceholder')}
+            aria-invalid={Boolean(errors.content)}
             {...register('content')}
             onPaste={(e) =>
               handleRichTextareaPaste(e, {
                 currentValue: getValues('content'),
-                onValueChange: (next) => setValue('content', next, { shouldDirty: true }),
+                onValueChange: (next) =>
+                  setValue('content', next, { shouldDirty: true, shouldValidate: true }),
                 onPasteFiles: appendPastedFiles,
               })
             }
           />
+          {errors.content?.message && (
+            <p role="alert" className="text-xs text-destructive">
+              {t(errors.content.message)}
+            </p>
+          )}
         </div>
 
         <div className="space-y-3">
