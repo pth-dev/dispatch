@@ -1728,14 +1728,31 @@
         "custom": "自訂"
       },
       "cards": {
-        "total": "總任務",
+        "total": "期間派案數",
         "completed": "已完成",
         "ontime": "如期完成",
         "late": "逾期完成",
         "delayed": "逾期未結",
-        "rate": "如期結案率"
+        "rate": "如期結案率",
+        "finishedInPeriod": "期間結案數",
+        "ontimeRate": "如期結案率",
+        "completionRate": "結案率",
+        "response1h": "1H 回應率",
+        "avgLeadDays": "平均結案天數",
+        "kpiScore": "綜合 KPI 分數",
+        "finalRate": "最終完成率 (KPI)"
       },
-      "sheetsNote": "Excel 包含 7 個工作表：KPI總覽、趨勢、部門、人員、任務類型、廠區、明細。"
+      "sheetsNote": "Excel 包含 8 個工作表：KPI總覽、期間趨勢、受理單位、受理人、人員KPI、案件類型、廠區、明細。",
+      "yearLabel": "年度",
+      "weekLabel": "週次 (ISO)",
+      "weekOption": "第 {{week}} 週",
+      "monthLabel": "月份",
+      "monthOption": "{{month}} 月",
+      "quarterLabel": "季度",
+      "rangeInvalid": "請選擇有效的日期區間。",
+      "formulaNote": "KPI 公式（V16.11.0-r8，按最終完成日）：綜合分數 = 最終完成率 × 60% + 如期率 × 40%（暫停不計，週期任務逐期計入）。",
+      "topPeopleTitle": "受理人前 10 名（預覽）",
+      "topPeopleHint": "預覽僅顯示前 10 名，完整 8 個分頁請下載 Excel 報表。"
     },
     "excel": {
       "description": "匯出進度整合報表或按受理人 / 指派人統計效率排行。",

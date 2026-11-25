@@ -7,6 +7,9 @@ import '@/i18n'
 import { useAppStore } from '@/app/store'
 import { ReportsPage } from './ReportsPage'
 
+const NOW = new Date()
+const CUR_YM = `${NOW.getFullYear()}-${String(NOW.getMonth() + 1).padStart(2, '0')}`
+
 const MOCK_TASKS = [
   {
     id: 801,
@@ -14,14 +17,14 @@ const MOCK_TASKS = [
     assigned_unit: '資訊部',
     assign_person: 'staff1',
     reporter: 'boss',
-    due_date: '2026-11-30T17:00',
-    finish_date: '2026-11-24 10:00:00',
+    due_date: `${CUR_YM}-28T17:00`,
+    finish_date: `${CUR_YM}-15 10:00:00`,
     progress: 100,
     paused: 0,
     confidential: 0,
     task_type: '系統 / Hệ thống',
     site: 'YS',
-    createdAt: '2026-11-20 08:00:00',
+    createdAt: `${CUR_YM}-10 08:00:00`,
   },
 ]
 
@@ -99,7 +102,12 @@ describe('ReportsPage', () => {
     expect(await screen.findByText('Nâng cấp máy chủ')).toBeInTheDocument()
 
     await user.click(screen.getByRole('tab', { name: 'KPI định kỳ' }))
-    expect(await screen.findByText('100%')).toBeInTheDocument()
+    expect(await screen.findByText('100 (A)')).toBeInTheDocument()
+    expect(screen.getByText('Top 10 nhân sự (xem trước)')).toBeInTheDocument()
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('include_cycles=1&basis=final'),
+      expect.anything(),
+    )
 
     await user.click(screen.getByRole('tab', { name: 'Thống kê Excel' }))
     expect(await screen.findByText('staff1')).toBeInTheDocument()

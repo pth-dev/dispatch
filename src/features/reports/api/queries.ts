@@ -17,15 +17,26 @@ import { http, httpText } from '@/services'
 import { reportKeys } from './keys'
 
 export function useReportTasks(
-  params: { purpose: ReportPurpose; start: string; end: string },
+  params: {
+    purpose: ReportPurpose
+    start: string
+    end: string
+    includeCycles?: boolean
+    basis?: 'final' | 'created'
+  },
   enabled = true,
 ) {
   return useQuery({
-    queryKey: reportKeys.tasks(params.purpose, params.start, params.end),
+    queryKey: reportKeys.tasks(params.purpose, params.start, params.end, {
+      includeCycles: params.includeCycles,
+      basis: params.basis,
+    }),
     queryFn: async ({ signal }): Promise<RawTask[]> => {
       const qs = new URLSearchParams({ purpose: params.purpose })
       if (params.start) qs.set('start', params.start)
       if (params.end) qs.set('end', params.end)
+      if (params.includeCycles) qs.set('include_cycles', '1')
+      if (params.basis) qs.set('basis', params.basis)
       const raw = await http<unknown>(`/reports/tasks?${qs.toString()}`, {
         method: 'GET',
         signal,

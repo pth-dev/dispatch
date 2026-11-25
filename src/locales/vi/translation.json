@@ -1728,14 +1728,31 @@
         "custom": "Tùy chỉnh"
       },
       "cards": {
-        "total": "Tổng NV",
+        "total": "NV giao trong kỳ",
         "completed": "Hoàn thành",
         "ontime": "Đúng hạn",
-        "late": "HT trễ",
-        "delayed": "Quá hạn",
-        "rate": "Tỷ lệ đúng hạn"
+        "late": "Hoàn thành trễ",
+        "delayed": "Quá hạn chưa xong",
+        "rate": "Tỷ lệ đúng hạn",
+        "finishedInPeriod": "NV HT trong kỳ",
+        "ontimeRate": "Tỷ lệ đúng hạn",
+        "completionRate": "Tỷ lệ hoàn thành",
+        "response1h": "Phản hồi 1H",
+        "avgLeadDays": "TB ngày HT",
+        "kpiScore": "Điểm KPI tổng hợp",
+        "finalRate": "Tỷ lệ HT cuối (KPI)"
       },
-      "sheetsNote": "Sổ Excel gồm 7 trang tính: Tổng quan KPI, Xu hướng, Đơn vị, Nhân sự, Loại NV, Khu vực, Chi tiết."
+      "sheetsNote": "Sổ Excel gồm 8 trang tính: Tổng quan KPI, Xu hướng, Đơn vị, Nhân sự, KPI nhân viên, Loại NV, Khu vực, Chi tiết.",
+      "yearLabel": "Năm",
+      "weekLabel": "Tuần ISO",
+      "weekOption": "Tuần {{week}}",
+      "monthLabel": "Tháng",
+      "monthOption": "Tháng {{month}}",
+      "quarterLabel": "Quý",
+      "rangeInvalid": "Vui lòng chọn khoảng ngày hợp lệ.",
+      "formulaNote": "Công thức KPI V16.11.0-r8 (theo ngày HT cuối): Điểm KPI = Tỷ lệ HT cuối × 60% + Tỷ lệ đúng hạn × 40% (bỏ qua tạm dừng, định kỳ tính từng kỳ).",
+      "topPeopleTitle": "Top 10 nhân sự (xem trước)",
+      "topPeopleHint": "Xem trước 10 người dẫn đầu; tải Excel để xem đầy đủ 8 trang tính."
     },
     "excel": {
       "description": "Xuất báo cáo tiến độ tích hợp hoặc đánh giá hiệu suất theo người nhận / người giao.",

@@ -1728,14 +1728,31 @@
         "custom": "Custom"
       },
       "cards": {
-        "total": "Total Tasks",
+        "total": "Assigned in Period",
         "completed": "Completed",
         "ontime": "On-time",
-        "late": "Late Done",
-        "delayed": "Overdue",
-        "rate": "On-time Rate"
+        "late": "Late Completed",
+        "delayed": "Overdue Open",
+        "rate": "On-time Rate",
+        "finishedInPeriod": "Finished in Period",
+        "ontimeRate": "On-time Rate",
+        "completionRate": "Completion Rate",
+        "response1h": "1H Response",
+        "avgLeadDays": "Avg Lead Days",
+        "kpiScore": "Overall KPI Score",
+        "finalRate": "Final Rate (KPI)"
       },
-      "sheetsNote": "Workbook includes 7 sheets: KPI Summary, Trend, Departments, People, Task Types, Sites, Details."
+      "sheetsNote": "Workbook includes 8 sheets: KPI Summary, Trend, Departments, People, People KPI, Task Types, Sites, Details.",
+      "yearLabel": "Year",
+      "weekLabel": "ISO Week",
+      "weekOption": "Week {{week}}",
+      "monthLabel": "Month",
+      "monthOption": "Month {{month}}",
+      "quarterLabel": "Quarter",
+      "rangeInvalid": "Please select a valid date range.",
+      "formulaNote": "KPI V16.11.0-r8 formula (final completion basis): Score = Final Completion Rate × 60% + On-time Rate × 40% (paused excluded, recurring counted per cycle).",
+      "topPeopleTitle": "Top 10 People (Preview)",
+      "topPeopleHint": "Showing top 10 assignees; download Excel for all 8 sheets."
     },
     "excel": {
       "description": "Export integrated progress workbooks or efficiency rankings by assignee / reporter.",
