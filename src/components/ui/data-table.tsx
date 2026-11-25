@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
-import { useTable, type RowData } from '@tanstack/react-table'
+import { useTable, type PaginationState, type RowData } from '@tanstack/react-table'
 import { Table } from './table'
+import { PaginationControl } from './pagination-control'
 import { DataTableMobileList } from './data-table-mobile'
 import { DataTableBodyView, DataTableHeaderView } from './data-table-desktop'
 import {
@@ -35,6 +36,9 @@ export function DataTable<T extends RowData>({
   renderSubComponent,
   subRowClassName,
   subCellClassName,
+  enablePagination = false,
+  initialPageSize = 10,
+  paginationClassName,
   error,
   minViewportHeightClass,
   containerClassName,
@@ -47,6 +51,18 @@ export function DataTable<T extends RowData>({
   const { t } = useTranslation()
   const storeDensity = useAppStore((state) => state.density)
   const density = propDensity || storeDensity
+
+  const [pagination, setPagination] = React.useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: initialPageSize,
+  })
+
+  const totalCount = data.length
+  const maxPageIndex = Math.max(0, Math.ceil(totalCount / pagination.pageSize) - 1)
+  const safePageIndex = Math.min(pagination.pageIndex, maxPageIndex)
+  const activePagination: PaginationState = enablePagination
+    ? { pageIndex: safePageIndex, pageSize: pagination.pageSize }
+    : { pageIndex: 0, pageSize: Math.max(1, totalCount) }
 
   const isDefault = variant === 'default'
   const resolvedMinViewport =
@@ -64,6 +80,9 @@ export function DataTable<T extends RowData>({
     features: DATA_TABLE_FEATURES,
     data,
     columns,
+    state: { pagination: activePagination },
+    onPaginationChange: setPagination,
+    manualPagination: !enablePagination,
     getRowId: (originalRow, index) => keyExtractor(originalRow, index),
   })
 
@@ -79,6 +98,10 @@ export function DataTable<T extends RowData>({
       : 'hidden lg:block'
     : 'block'
 
+  const visibleRows = table.getRowModel().rows
+  const showPaginationBar =
+    enablePagination && !isLoading && variant !== 'print' && totalCount > pagination.pageSize
+
   return (
     <div
       className={cn(
@@ -89,8 +112,7 @@ export function DataTable<T extends RowData>({
     >
       {renderMobileCard && (
         <DataTableMobileList
-          data={data}
-          keyExtractor={keyExtractor}
+          rows={visibleRows}
           onRowClick={onRowClick}
           isLoading={isLoading}
           emptyMessage={resolvedEmptyMessage}
@@ -129,7 +151,7 @@ export function DataTable<T extends RowData>({
             headerRowClassName={headerRowClassName}
           />
           <DataTableBodyView
-            rows={table.getRowModel().rows}
+            rows={visibleRows}
             columns={columns}
             isLoading={isLoading}
             emptyMessage={resolvedEmptyMessage}
@@ -147,6 +169,27 @@ export function DataTable<T extends RowData>({
           />
         </Table>
       </div>
+
+      {showPaginationBar && (
+        <div
+          className={cn(
+            'shrink-0 border-t border-border/60 pt-2.5 mt-2',
+            paginationClassName,
+          )}
+        >
+          <PaginationControl
+            page={safePageIndex + 1}
+            pageSize={pagination.pageSize}
+            total={totalCount}
+            onPageChange={(nextPage) =>
+              setPagination((prev) => ({ ...prev, pageIndex: Math.max(0, nextPage - 1) }))
+            }
+            onPageSizeChange={(nextSize) =>
+              setPagination({ pageIndex: 0, pageSize: nextSize })
+            }
+          />
+        </div>
+      )}
     </div>
   )
 }

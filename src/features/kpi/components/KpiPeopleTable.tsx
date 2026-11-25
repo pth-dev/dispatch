@@ -86,6 +86,10 @@ export function KpiPeopleTable({
         data={rows}
         columns={columns}
         keyExtractor={(r) => r.key}
+        enablePagination
+        initialPageSize={20}
+        paginationClassName="px-4 pb-2.5 mt-0"
+        tableClassName="min-w-[1380px]"
         emptyMessage={t('kpi.table.empty')}
         emptyClassName="px-4 py-10 text-sm"
         expandedKeys={expandedKeys}

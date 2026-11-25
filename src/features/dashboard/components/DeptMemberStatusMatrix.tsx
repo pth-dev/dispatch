@@ -50,7 +50,6 @@ export function DeptMemberStatusMatrix({
   directoryUsers = [],
 }: DeptMemberStatusMatrixProps): React.ReactElement {
   const { t } = useTranslation()
-  const visibleMembers = memberRows.slice(0, 12)
   const department = selectedDept || undefined
   const lookup = buildUserDirectoryLookup(directoryUsers)
 
@@ -67,14 +66,17 @@ export function DeptMemberStatusMatrix({
       id: 'person',
       header: t('dashboard.posts.cols.person'),
       meta: {
+        minWidth: '170px',
         headerClassName: 'px-3 py-2 font-semibold',
-        cellClassName: 'px-3 py-1.5 font-medium text-foreground whitespace-nowrap',
+        cellClassName: 'min-w-[170px] px-3 py-1.5 font-medium text-foreground whitespace-nowrap',
       },
       cell: ({ row }) => {
         const identity = resolveAssigneeIdentity(row.original.name, lookup)
+        const fullTitle = identity.code ? `${identity.name} (${identity.code})` : identity.name
         return (
           <Link
             to={cellUrl(row.original.name)}
+            title={fullTitle}
             className="inline-flex items-baseline gap-1.5 hover:text-primary hover:underline"
           >
             <span>{identity.name}</span>
@@ -93,7 +95,7 @@ export function DeptMemberStatusMatrix({
       meta: {
         align: 'right',
         headerClassName: 'px-2 py-2 font-semibold text-destructive',
-        cellClassName: 'px-2 py-1.5',
+        cellClassName: 'px-2 py-1.5 whitespace-nowrap',
       },
       cell: ({ row }) => (
         <MatrixCellLink
@@ -109,7 +111,7 @@ export function DeptMemberStatusMatrix({
       meta: {
         align: 'right',
         headerClassName: 'px-2 py-2 font-semibold text-primary',
-        cellClassName: 'px-2 py-1.5',
+        cellClassName: 'px-2 py-1.5 whitespace-nowrap',
       },
       cell: ({ row }) => (
         <MatrixCellLink
@@ -125,7 +127,7 @@ export function DeptMemberStatusMatrix({
       meta: {
         align: 'right',
         headerClassName: 'px-2 py-2 font-semibold',
-        cellClassName: 'px-2 py-1.5',
+        cellClassName: 'px-2 py-1.5 whitespace-nowrap',
       },
       cell: ({ row }) => (
         <MatrixCellLink
@@ -140,7 +142,7 @@ export function DeptMemberStatusMatrix({
       meta: {
         align: 'right',
         headerClassName: 'px-2 py-2 font-semibold',
-        cellClassName: 'px-2 py-1.5',
+        cellClassName: 'px-2 py-1.5 whitespace-nowrap',
       },
       cell: ({ row }) => (
         <MatrixCellLink
@@ -156,7 +158,7 @@ export function DeptMemberStatusMatrix({
       meta: {
         align: 'right',
         headerClassName: 'px-2 py-2 font-semibold text-success',
-        cellClassName: 'px-2 py-1.5',
+        cellClassName: 'px-2 py-1.5 whitespace-nowrap',
       },
       cell: ({ row }) => (
         <MatrixCellLink
@@ -172,7 +174,7 @@ export function DeptMemberStatusMatrix({
       meta: {
         align: 'right',
         headerClassName: 'px-3 py-2 font-semibold',
-        cellClassName: 'px-3 py-1.5',
+        cellClassName: 'px-3 py-1.5 whitespace-nowrap',
       },
       cell: ({ row }) => (
         <MatrixCellLink
@@ -198,17 +200,20 @@ export function DeptMemberStatusMatrix({
         </span>
       </div>
 
-      {visibleMembers.length === 0 ? (
+      {memberRows.length === 0 ? (
         <p className="py-4 text-center text-xs text-muted-foreground">
           {t('dashboard.dept.peopleLoadEmpty')}
         </p>
       ) : (
         <DataTable
           variant="embedded"
-          data={visibleMembers}
+          data={memberRows}
           columns={columns}
           keyExtractor={(row) => row.name}
+          enablePagination
+          initialPageSize={10}
           containerClassName="rounded-lg border border-border"
+          tableClassName="min-w-[620px]"
           headerClassName="bg-secondary/60 text-xs"
           rowClassName={() => 'hover:bg-secondary/40'}
         />

@@ -48,8 +48,9 @@ export function useKpiPeopleColumns({
         />
       ),
       meta: {
+        width: '40px',
         headerClassName: 'w-10 px-3 py-2.5',
-        cellClassName: 'px-3 py-2.5',
+        cellClassName: 'px-3 py-2.5 whitespace-nowrap',
       },
       cell: ({ row }) => (
         <Checkbox
@@ -63,8 +64,9 @@ export function useKpiPeopleColumns({
       id: 'rank',
       header: t('kpi.table.rank'),
       meta: {
-        headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'px-2.5 py-2.5 font-medium tabular-nums text-muted-foreground',
+        width: '48px',
+        headerClassName: 'px-2 py-2.5',
+        cellClassName: 'px-2 py-2.5 font-medium tabular-nums text-muted-foreground whitespace-nowrap',
       },
       cell: ({ row }) => row.index + 1,
     },
@@ -72,8 +74,9 @@ export function useKpiPeopleColumns({
       id: 'username',
       header: t('kpi.table.username'),
       meta: {
+        minWidth: '88px',
         headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'px-2.5 py-2.5 font-semibold text-foreground',
+        cellClassName: 'px-2.5 py-2.5 font-semibold text-foreground whitespace-nowrap tabular-nums',
       },
       cell: ({ row }) => row.original.username,
     },
@@ -81,18 +84,29 @@ export function useKpiPeopleColumns({
       id: 'fullname',
       header: t('kpi.table.fullname'),
       meta: {
+        minWidth: '170px',
+        maxWidth: '240px',
         headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'px-2.5 py-2.5 text-foreground',
+        cellClassName: 'min-w-[170px] max-w-[240px] px-2.5 py-2.5 font-medium text-foreground',
       },
-      cell: ({ row }) =>
-        row.original.isUnregistered ? t('kpi.unregistered') : row.original.fullname || '-',
+      cell: ({ row }) => {
+        const displayName = row.original.isUnregistered
+          ? t('kpi.unregistered')
+          : row.original.fullname || '-'
+        return (
+          <span className="block truncate" title={displayName}>
+            {displayName}
+          </span>
+        )
+      },
     },
     {
       id: 'dept',
       header: t('kpi.table.dept'),
       meta: {
+        minWidth: '100px',
         headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'px-2.5 py-2.5 text-muted-foreground',
+        cellClassName: 'px-2.5 py-2.5 text-muted-foreground whitespace-nowrap',
       },
       cell: ({ row }) => (row.original.deptRaw ? resolveDeptLabel(row.original.deptRaw) : '-'),
     },
@@ -101,8 +115,8 @@ export function useKpiPeopleColumns({
       header: t('kpi.table.total'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'px-2.5 py-2.5 font-semibold tabular-nums text-primary',
+        headerClassName: 'px-2 py-2.5',
+        cellClassName: 'px-2 py-2.5 font-semibold tabular-nums text-primary whitespace-nowrap',
       },
       cell: ({ row }) => row.original.total,
     },
@@ -111,8 +125,8 @@ export function useKpiPeopleColumns({
       header: t('kpi.table.completed'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'px-2.5 py-2.5 tabular-nums',
+        headerClassName: 'px-2 py-2.5',
+        cellClassName: 'px-2 py-2.5 tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => row.original.completed,
     },
@@ -121,8 +135,8 @@ export function useKpiPeopleColumns({
       header: t('kpi.table.completionRate'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'px-2.5 py-2.5 tabular-nums',
+        headerClassName: 'px-2 py-2.5',
+        cellClassName: 'px-2 py-2.5 tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => (
         <>
@@ -142,8 +156,8 @@ export function useKpiPeopleColumns({
       header: t('kpi.table.ontime'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'px-2.5 py-2.5 tabular-nums',
+        headerClassName: 'px-2 py-2.5',
+        cellClassName: 'px-2 py-2.5 tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => row.original.ontime,
     },
@@ -152,8 +166,8 @@ export function useKpiPeopleColumns({
       header: t('kpi.table.ontimeRate'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'px-2.5 py-2.5 tabular-nums',
+        headerClassName: 'px-2 py-2.5',
+        cellClassName: 'px-2 py-2.5 tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => (
         <>
@@ -173,8 +187,8 @@ export function useKpiPeopleColumns({
       header: t('kpi.table.late'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'px-2.5 py-2.5 tabular-nums text-warning',
+        headerClassName: 'px-2 py-2.5',
+        cellClassName: 'px-2 py-2.5 tabular-nums text-warning whitespace-nowrap',
       },
       cell: ({ row }) => (
         <>
@@ -190,8 +204,8 @@ export function useKpiPeopleColumns({
       header: t('kpi.table.pending'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'px-2.5 py-2.5 tabular-nums',
+        headerClassName: 'px-2 py-2.5',
+        cellClassName: 'px-2 py-2.5 tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => row.original.pending,
     },
@@ -200,8 +214,8 @@ export function useKpiPeopleColumns({
       header: t('kpi.table.overdue'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'px-2.5 py-2.5 font-semibold tabular-nums',
+        headerClassName: 'px-2 py-2.5',
+        cellClassName: 'px-2 py-2.5 font-semibold tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => (
         <span
@@ -216,8 +230,8 @@ export function useKpiPeopleColumns({
       header: t('kpi.table.response1h'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'px-2.5 py-2.5 tabular-nums',
+        headerClassName: 'px-2 py-2.5',
+        cellClassName: 'px-2 py-2.5 tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => formatKpiPct(row.original.responseRate, row.original.total),
     },
@@ -226,8 +240,8 @@ export function useKpiPeopleColumns({
       header: t('kpi.table.paused'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'px-2.5 py-2.5 tabular-nums',
+        headerClassName: 'px-2 py-2.5',
+        cellClassName: 'px-2 py-2.5 tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => (
         <span
@@ -245,7 +259,7 @@ export function useKpiPeopleColumns({
       meta: {
         align: 'right',
         headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'px-2.5 py-2.5 text-sm font-bold tabular-nums text-primary',
+        cellClassName: 'px-2.5 py-2.5 text-sm font-bold tabular-nums text-primary whitespace-nowrap',
       },
       cell: ({ row }) => (row.original.score === null ? '-' : row.original.score),
     },
@@ -266,6 +280,7 @@ export function useKpiPeopleColumns({
       id: 'detail',
       header: t('kpi.table.detail'),
       meta: {
+        minWidth: '104px',
         headerClassName: 'px-2.5 py-2.5',
         cellClassName: 'whitespace-nowrap px-2.5 py-2.5',
       },
@@ -278,7 +293,7 @@ export function useKpiPeopleColumns({
             size="sm"
             onClick={() => onToggleExpand(row.original.key)}
             aria-expanded={expanded}
-            className="h-7 gap-1 px-2 text-xs"
+            className="h-7 gap-1 px-2.5 text-xs"
           >
             {expanded ? (
               <ChevronUp className="size-3.5" aria-hidden="true" />

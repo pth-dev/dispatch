@@ -75,7 +75,7 @@ function buildPersonTaskColumns(
     {
       id: 'id',
       header: '#',
-      meta: { cellClassName: 'font-semibold tabular-nums' },
+      meta: { cellClassName: 'whitespace-nowrap font-semibold tabular-nums' },
       cell: ({ row }) =>
         forPrint ? (
           <span>#{row.original.id}</span>
@@ -88,22 +88,28 @@ function buildPersonTaskColumns(
     {
       id: 'title',
       header: t('kpi.detail.title'),
-      meta: { cellClassName: 'font-medium text-foreground' },
+      meta: {
+        minWidth: '220px',
+        maxWidth: '340px',
+        cellClassName: 'min-w-[220px] max-w-[340px] font-medium text-foreground',
+      },
       cell: ({ row }) => {
         const task = row.original
         const rec = isRecurringTask({ recur_type: task.recur_type ?? 'once' })
         return (
-          <>
-            <span>{task.title}</span>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="line-clamp-2" title={task.title}>
+              {task.title}
+            </span>
             {rec && (
-              <Badge variant="secondary" className="ml-1.5 text-[10px]">
+              <Badge variant="secondary" className="text-[10px]">
                 {t('kpi.detail.cycleTag', {
                   no: task.cycle_no || 1,
                   date: task.cycle_date || task.recur_cycle_date || '',
                 })}
               </Badge>
             )}
-          </>
+          </div>
         )
       },
     },
@@ -161,7 +167,7 @@ function buildPersonTaskColumns(
     {
       id: 'progress',
       header: t('kpi.detail.progress'),
-      meta: { align: 'right', cellClassName: 'font-semibold tabular-nums' },
+      meta: { align: 'right', cellClassName: 'whitespace-nowrap font-semibold tabular-nums' },
       cell: ({ row }) => `${row.original.progress}%`,
     },
     {
@@ -173,7 +179,7 @@ function buildPersonTaskColumns(
     {
       id: 'points',
       header: t('kpi.detail.points'),
-      meta: { align: 'right', cellClassName: 'font-semibold tabular-nums text-primary' },
+      meta: { align: 'right', cellClassName: 'whitespace-nowrap font-semibold tabular-nums text-primary' },
       cell: ({ row }) => {
         const pts = getKpiTaskPoints(row.original)
         return pts === null ? '-' : pts
@@ -206,7 +212,11 @@ export function KpiPersonTaskDetails({
       data={tasks}
       columns={columns}
       keyExtractor={(task, idx) => `${task.id}-${task.cycle_date ?? idx}`}
+      enablePagination={!forPrint}
+      initialPageSize={10}
+      paginationClassName="px-3 pb-2 mt-0"
       containerClassName="rounded-lg border border-border bg-card"
+      tableClassName="min-w-[880px]"
       headerClassName="bg-muted/50 text-xs"
       rowClassName={() => 'hover:bg-muted/30'}
     />

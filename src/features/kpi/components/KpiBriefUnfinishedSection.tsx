@@ -137,9 +137,11 @@ export function KpiBriefUnfinishedSection({
             data={cases}
             columns={columns}
             keyExtractor={(c) => c.tkey}
+            enablePagination
+            initialPageSize={10}
             mobileBreakpoint="md"
             mobileItemClassName={() => 'p-0'}
-            tableClassName="min-w-[920px]"
+            tableClassName="min-w-[1040px]"
             rowClassName={() => 'align-top hover:bg-muted/40'}
             renderMobileCard={(c) => (
               <UnfinishedCaseMobileCard

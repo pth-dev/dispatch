@@ -180,8 +180,9 @@ export function DataTableBodyView<T extends RowData>({
 
   return (
     <TableBody className={cn(!isPrint && 'divide-y divide-border', bodyClassName)}>
-      {rows.map((row, index) => {
+      {rows.map((row) => {
         const item = row.original
+        const index = row.index
         const isExpanded = Boolean(expandedKeys?.has(row.id) && renderSubComponent)
         return (
           <React.Fragment key={row.id}>

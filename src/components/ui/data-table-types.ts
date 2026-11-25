@@ -1,5 +1,7 @@
 import type * as React from 'react'
 import {
+  createPaginatedRowModel,
+  rowPaginationFeature,
   tableFeatures,
   type CellData,
   type ColumnDef as TanStackColumnDef,
@@ -17,6 +19,8 @@ export type DataTableColumnMeta = {
 }
 
 export const DATA_TABLE_FEATURES = tableFeatures({
+  rowPaginationFeature,
+  paginatedRowModel: createPaginatedRowModel(),
   columnMeta: {} as DataTableColumnMeta,
 })
 
@@ -48,6 +52,12 @@ export type DataTableProps<T extends RowData> = {
   renderSubComponent?: (item: T, index: number) => React.ReactNode
   subRowClassName?: string
   subCellClassName?: string
+  /** Enables built-in TanStack Table client-side pagination with PaginationControl footer. */
+  enablePagination?: boolean
+  /** Initial page size when `enablePagination` is true (defaults to 10). */
+  initialPageSize?: number
+  /** Custom class for the built-in pagination footer bar. */
+  paginationClassName?: string
   error?: React.ReactNode
   minViewportHeightClass?: string
   containerClassName?: string

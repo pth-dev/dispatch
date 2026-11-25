@@ -22,8 +22,9 @@ export function useKpiBriefPeopleColumns({
       id: 'person',
       header: t('kpiBrief.table.person'),
       meta: {
-        headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5',
+        minWidth: '180px',
+        headerClassName: 'px-2.5 py-2',
+        cellClassName: 'min-w-[180px] px-2.5 py-2.5',
       },
       cell: ({ row }) => {
         const p = row.original
@@ -37,7 +38,9 @@ export function useKpiBriefPeopleColumns({
             className="w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
           >
             <span className="flex flex-wrap items-center gap-1">
-              <span className="font-semibold text-foreground hover:text-primary">{p.fullname}</span>
+              <span className="font-semibold text-foreground hover:text-primary whitespace-nowrap">
+                {p.fullname}
+              </span>
               {isMe && (
                 <Badge variant="secondary" className="text-[10px]">
                   {t('kpiBrief.meTag')}
@@ -49,7 +52,7 @@ export function useKpiBriefPeopleColumns({
                 </Badge>
               )}
             </span>
-            <span className="block text-[11px] text-muted-foreground">
+            <span className="block text-[11px] text-muted-foreground whitespace-nowrap">
               {p.username}
               {p.deptRaw ? ` · ${resolveDeptLabel(p.deptRaw)}` : ''}
             </span>
@@ -63,7 +66,7 @@ export function useKpiBriefPeopleColumns({
       meta: {
         align: 'right',
         headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5 font-semibold tabular-nums',
+        cellClassName: 'px-2 py-2.5 font-semibold tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => row.original.total,
     },
@@ -73,7 +76,7 @@ export function useKpiBriefPeopleColumns({
       meta: {
         align: 'right',
         headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5 font-semibold tabular-nums text-success',
+        cellClassName: 'px-2 py-2.5 font-semibold tabular-nums text-success whitespace-nowrap',
       },
       cell: ({ row }) => row.original.ontime,
     },
@@ -83,7 +86,7 @@ export function useKpiBriefPeopleColumns({
       meta: {
         align: 'right',
         headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5 font-semibold tabular-nums text-warning',
+        cellClassName: 'px-2 py-2.5 font-semibold tabular-nums text-warning whitespace-nowrap',
       },
       cell: ({ row }) => row.original.late,
     },
@@ -93,7 +96,7 @@ export function useKpiBriefPeopleColumns({
       meta: {
         align: 'right',
         headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5 font-semibold tabular-nums',
+        cellClassName: 'px-2 py-2.5 font-semibold tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => (
         <span className={cn(row.original.overdue > 0 ? 'text-destructive' : 'text-muted-foreground')}>
@@ -105,7 +108,8 @@ export function useKpiBriefPeopleColumns({
       id: 'completionBar',
       header: t('kpiBrief.table.completionRate'),
       meta: {
-        width: '32%',
+        width: '28%',
+        minWidth: '120px',
         headerClassName: 'px-2 py-2',
         cellClassName: 'px-2 py-2.5',
       },
@@ -130,7 +134,7 @@ export function useKpiBriefPeopleColumns({
       meta: {
         align: 'right',
         headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5 font-bold tabular-nums text-foreground',
+        cellClassName: 'px-2 py-2.5 font-bold tabular-nums text-foreground whitespace-nowrap',
       },
       cell: ({ row }) => `${row.original.rate}%`,
     },
@@ -140,7 +144,7 @@ export function useKpiBriefPeopleColumns({
       meta: {
         align: 'right',
         headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5 font-medium tabular-nums text-muted-foreground',
+        cellClassName: 'px-2 py-2.5 font-medium tabular-nums text-muted-foreground whitespace-nowrap',
       },
       cell: ({ row }) => `${row.original.ontimeRate}%`,
     },

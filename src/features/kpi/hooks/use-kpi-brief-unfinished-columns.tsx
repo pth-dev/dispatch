@@ -31,8 +31,9 @@ export function useKpiBriefUnfinishedColumns({
       id: 'id',
       header: t('kpiBrief.cases.id'),
       meta: {
-        headerClassName: 'px-2 py-2',
-        cellClassName: 'whitespace-nowrap px-2 py-2.5 font-semibold tabular-nums',
+        width: '92px',
+        headerClassName: 'px-2.5 py-2',
+        cellClassName: 'whitespace-nowrap px-2.5 py-2.5 font-semibold tabular-nums',
       },
       cell: ({ row }) => {
         const c = row.original
@@ -56,8 +57,10 @@ export function useKpiBriefUnfinishedColumns({
       id: 'title',
       header: t('kpiBrief.cases.title'),
       meta: {
-        headerClassName: 'px-2 py-2',
-        cellClassName: 'min-w-[180px] px-2 py-2.5 font-medium text-foreground',
+        minWidth: '220px',
+        maxWidth: '320px',
+        headerClassName: 'px-2.5 py-2',
+        cellClassName: 'min-w-[220px] max-w-[320px] px-2.5 py-2.5 font-medium text-foreground',
       },
       cell: ({ row }) => {
         const c = row.original
@@ -65,12 +68,15 @@ export function useKpiBriefUnfinishedColumns({
           <>
             <Link
               to={APP_ROUTES.TASK_DETAIL(c.task.id)}
-              className="hover:text-primary hover:underline"
+              title={c.task.title}
+              className="line-clamp-2 hover:text-primary hover:underline"
             >
               {c.task.title}
             </Link>
             {c.task.task_type && (
-              <span className="block text-[10px] text-muted-foreground">{c.task.task_type}</span>
+              <span className="mt-0.5 block truncate text-[10px] text-muted-foreground">
+                {c.task.task_type}
+              </span>
             )}
           </>
         )
@@ -80,17 +86,27 @@ export function useKpiBriefUnfinishedColumns({
       id: 'assignee',
       header: t('kpiBrief.cases.assignee'),
       meta: {
-        headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5 text-foreground',
+        minWidth: '150px',
+        maxWidth: '220px',
+        headerClassName: 'px-2.5 py-2',
+        cellClassName: 'min-w-[150px] max-w-[220px] px-2.5 py-2.5 text-foreground',
       },
-      cell: ({ row }) => row.original.names.join(', '),
+      cell: ({ row }) => {
+        const fullNames = row.original.names.join(', ')
+        return (
+          <span className="line-clamp-2 break-words font-medium" title={fullNames}>
+            {fullNames}
+          </span>
+        )
+      },
     },
     {
       id: 'status',
       header: t('kpiBrief.cases.status'),
       meta: {
-        headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5',
+        minWidth: '132px',
+        headerClassName: 'px-2.5 py-2',
+        cellClassName: 'whitespace-nowrap px-2.5 py-2.5',
       },
       cell: ({ row }) => {
         const c = row.original
@@ -98,7 +114,7 @@ export function useKpiBriefUnfinishedColumns({
           <>
             <KpiBriefStatusBadge status={c.status} />
             {c.status === 'paused' && c.task.pause_reason && (
-              <span className="mt-1 block text-[10px] text-muted-foreground">
+              <span className="mt-1 block max-w-[140px] truncate text-[10px] text-muted-foreground">
                 {c.task.pause_reason}
               </span>
             )}
@@ -110,8 +126,8 @@ export function useKpiBriefUnfinishedColumns({
       id: 'planDate',
       header: t('kpiBrief.cases.planDate'),
       meta: {
-        headerClassName: 'px-2 py-2',
-        cellClassName: 'whitespace-nowrap px-2 py-2.5 tabular-nums',
+        headerClassName: 'px-2.5 py-2',
+        cellClassName: 'whitespace-nowrap px-2.5 py-2.5 tabular-nums',
       },
       cell: ({ row }) => (
         <span
@@ -130,8 +146,8 @@ export function useKpiBriefUnfinishedColumns({
       header: t('kpiBrief.cases.overdueDays'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5 font-semibold tabular-nums',
+        headerClassName: 'px-2.5 py-2',
+        cellClassName: 'whitespace-nowrap px-2.5 py-2.5 font-semibold tabular-nums',
       },
       cell: ({ row }) => (
         <span
@@ -146,8 +162,8 @@ export function useKpiBriefUnfinishedColumns({
       header: t('kpiBrief.cases.progress'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5 tabular-nums',
+        headerClassName: 'px-2.5 py-2',
+        cellClassName: 'whitespace-nowrap px-2.5 py-2.5 tabular-nums',
       },
       cell: ({ row }) => (
         <div className="flex items-center justify-end gap-1.5">
@@ -165,30 +181,42 @@ export function useKpiBriefUnfinishedColumns({
       id: 'reqDept',
       header: t('kpiBrief.cases.reqDept'),
       meta: {
-        headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5 text-muted-foreground',
+        minWidth: '110px',
+        headerClassName: 'px-2.5 py-2',
+        cellClassName: 'min-w-[110px] px-2.5 py-2.5 text-muted-foreground',
       },
       cell: ({ row }) => {
         const reqDepts = parseReqDepts(row.original.task.req_depts, row.original.task.req_dept)
           .map(resolveDeptLabel)
           .join(', ')
-        return reqDepts || '-'
+        return (
+          <span className="line-clamp-2" title={reqDepts || '-'}>
+            {reqDepts || '-'}
+          </span>
+        )
       },
     },
     {
       id: 'lastReport',
       header: t('kpiBrief.cases.lastReport'),
       meta: {
-        width: '26%',
-        headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5 text-muted-foreground whitespace-pre-wrap break-words',
+        minWidth: '200px',
+        maxWidth: '280px',
+        headerClassName: 'px-2.5 py-2',
+        cellClassName: 'min-w-[200px] max-w-[280px] px-2.5 py-2.5 text-muted-foreground',
       },
-      cell: ({ row }) =>
-        getBriefLastReportText(
+      cell: ({ row }) => {
+        const text = getBriefLastReportText(
           row.original.task.last_report,
           Boolean(row.original.task.is_cycle),
           t,
-        ),
+        )
+        return (
+          <span className="line-clamp-2 break-words" title={text}>
+            {text}
+          </span>
+        )
+      },
     },
   ]
 }

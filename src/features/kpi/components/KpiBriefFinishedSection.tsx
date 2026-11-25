@@ -115,10 +115,12 @@ export function KpiBriefFinishedSection({
             data={displayed}
             columns={columns}
             keyExtractor={(c) => c.tkey}
+            enablePagination
+            initialPageSize={10}
             mobileBreakpoint="md"
             onRowClick={onOpenFinishedDetail}
             mobileItemClassName={() => 'px-0 py-3 hover:bg-muted/30'}
-            tableClassName="min-w-[920px]"
+            tableClassName="min-w-[1040px]"
             rowClassName={() => 'align-top hover:bg-muted/40'}
             renderMobileCard={(c) => (
               <FinishedCaseMobileCard

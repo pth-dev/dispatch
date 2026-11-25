@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { DataTable, type ColumnDef } from './data-table'
 
@@ -60,6 +61,34 @@ describe('DataTable', () => {
     )
 
     expect(screen.getByText('Sub details for First task')).toBeInTheDocument()
+  })
+
+  it('paginates rows when enablePagination is true and data exceeds initialPageSize', async () => {
+    const user = userEvent.setup()
+    const rows: Row[] = Array.from({ length: 12 }, (_, idx) => ({
+      id: String(idx + 1),
+      name: `Person ${idx + 1}`,
+    }))
+
+    render(
+      <DataTable
+        data={rows}
+        columns={columns}
+        keyExtractor={keyExtractor}
+        enablePagination
+        initialPageSize={10}
+      />,
+    )
+
+    expect(screen.getByText('Person 1')).toBeInTheDocument()
+    expect(screen.getByText('Person 10')).toBeInTheDocument()
+    expect(screen.queryByText('Person 11')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: '2' }))
+
+    expect(screen.getByText('Person 11')).toBeInTheDocument()
+    expect(screen.getByText('Person 12')).toBeInTheDocument()
+    expect(screen.queryByText('Person 1')).not.toBeInTheDocument()
   })
 
   it('replaces the table with the inline error block', () => {

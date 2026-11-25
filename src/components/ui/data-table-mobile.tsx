@@ -1,9 +1,10 @@
 import type * as React from 'react'
+import type { Row, RowData } from '@tanstack/react-table'
+import type { DataTableFeatures } from './data-table-types'
 import { cn } from '@/utils'
 
-type DataTableMobileListProps<T> = {
-  data: readonly T[]
-  keyExtractor: (item: T, index: number) => string
+type DataTableMobileListProps<T extends RowData> = {
+  rows: Row<DataTableFeatures, T>[]
   onRowClick?: (item: T) => void
   isLoading: boolean
   emptyMessage: string
@@ -29,9 +30,8 @@ function MobileCardSkeleton() {
   )
 }
 
-export function DataTableMobileList<T>({
-  data,
-  keyExtractor,
+export function DataTableMobileList<T extends RowData>({
+  rows,
   onRowClick,
   isLoading,
   emptyMessage,
@@ -55,7 +55,7 @@ export function DataTableMobileList<T>({
         SKELETON_CARD_INDICES.map((idx) => (
           <MobileCardSkeleton key={`skel_card_${idx}`} />
         ))
-      ) : data.length === 0 ? (
+      ) : rows.length === 0 ? (
         <div
           className={cn(
             'py-12 text-center text-sm text-muted-foreground',
@@ -65,13 +65,14 @@ export function DataTableMobileList<T>({
           {emptyMessage}
         </div>
       ) : (
-        data.map((item, index) => {
-          const key = keyExtractor(item, index)
+        rows.map((row) => {
+          const item = row.original
+          const index = row.index
           const itemCls = mobileItemClassName?.(item, index)
           if (onRowClick) {
             return (
               <button
-                key={key}
+                key={row.id}
                 type="button"
                 onClick={() => onRowClick(item)}
                 className={cn(
@@ -84,7 +85,7 @@ export function DataTableMobileList<T>({
             )
           }
           return (
-            <div key={key} className={cn(itemCls ?? 'p-3.5')}>
+            <div key={row.id} className={cn(itemCls ?? 'p-3.5')}>
               {renderMobileCard(item, index)}
             </div>
           )

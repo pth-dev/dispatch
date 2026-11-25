@@ -34,10 +34,13 @@ function buildHeatmapColumns(
       header: t('dashboard.posts.cols.person'),
       meta: {
         sticky: 'left',
-        headerClassName: 'bg-secondary px-2.5 py-2 font-semibold whitespace-nowrap',
-        cellClassName: 'bg-card px-2.5 py-1.5 font-medium text-foreground whitespace-nowrap',
+        minWidth: '170px',
+        headerClassName: 'min-w-[170px] bg-secondary px-2.5 py-2 font-semibold whitespace-nowrap',
+        cellClassName: 'min-w-[170px] bg-card px-2.5 py-1.5 font-medium text-foreground whitespace-nowrap',
       },
-      cell: ({ row }) => row.original.label,
+      cell: ({ row }) => (
+        <span title={row.original.label}>{row.original.label}</span>
+      ),
     },
     {
       id: 'total',
@@ -45,7 +48,7 @@ function buildHeatmapColumns(
       meta: {
         align: 'right',
         headerClassName: 'px-2 py-2 font-semibold whitespace-nowrap',
-        cellClassName: 'px-2 py-1.5 font-semibold text-primary tabular-nums',
+        cellClassName: 'px-2 py-1.5 font-semibold text-primary tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => row.original.total,
     },
@@ -55,7 +58,7 @@ function buildHeatmapColumns(
       meta: {
         align: 'right',
         headerClassName: 'px-2 py-2 font-semibold whitespace-nowrap',
-        cellClassName: 'px-2 py-1.5 text-muted-foreground tabular-nums',
+        cellClassName: 'px-2 py-1.5 text-muted-foreground tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => (n > 0 ? Math.round((row.original.total / n) * 10) / 10 : 0),
     },
@@ -184,6 +187,8 @@ export function DeptPeopleHeatmapTable({
         data={rows}
         columns={columns}
         keyExtractor={(row) => row.username || row.label}
+        enablePagination
+        initialPageSize={20}
         emptyMessage={t('dashboard.dept.heatmapEmpty')}
         emptyClassName="px-4 py-6 text-xs"
         containerClassName="rounded-lg border border-border"

@@ -70,8 +70,9 @@ export function PostRankingList({
       id: 'rank',
       header: '#',
       meta: {
+        width: '44px',
         headerClassName: 'py-2 pr-2 pl-0 w-10',
-        cellClassName: 'py-2 pr-2 pl-0 font-semibold tabular-nums',
+        cellClassName: 'py-2 pr-2 pl-0 font-semibold tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => (
         <span className={row.original.rank <= 3 ? 'text-warning' : 'text-muted-foreground'}>
@@ -83,22 +84,26 @@ export function PostRankingList({
       id: 'person',
       header: t('dashboard.posts.cols.person'),
       meta: {
+        minWidth: '180px',
         headerClassName: 'py-2 pr-2 pl-0',
-        cellClassName: 'py-2 pr-2 pl-0 font-medium text-foreground',
+        cellClassName: 'min-w-[180px] py-2 pr-2 pl-0 font-medium text-foreground whitespace-nowrap',
       },
-      cell: ({ row }) => (
-        <>
-          {row.original.fullname || row.original.username}{' '}
-          <span className="text-muted-foreground">({row.original.username})</span>
-        </>
-      ),
+      cell: ({ row }) => {
+        const displayName = row.original.fullname || row.original.username
+        return (
+          <span title={`${displayName} (${row.original.username})`}>
+            {displayName} <span className="text-muted-foreground">({row.original.username})</span>
+          </span>
+        )
+      },
     },
     {
       id: 'dept',
       header: t('dashboard.posts.cols.dept'),
       meta: {
+        minWidth: '110px',
         headerClassName: 'py-2 pr-2 pl-0',
-        cellClassName: 'py-2 pr-2 pl-0 text-muted-foreground',
+        cellClassName: 'py-2 pr-2 pl-0 text-muted-foreground whitespace-nowrap',
       },
       cell: ({ row }) => row.original.dept_label || '—',
     },
@@ -108,7 +113,7 @@ export function PostRankingList({
       meta: {
         align: 'right',
         headerClassName: 'py-2 pr-2 pl-0',
-        cellClassName: 'py-2 pr-2 pl-0 font-semibold text-primary tabular-nums',
+        cellClassName: 'py-2 pr-2 pl-0 font-semibold text-primary tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => row.original.posts,
     },
@@ -118,7 +123,7 @@ export function PostRankingList({
       meta: {
         align: 'right',
         headerClassName: 'py-2 pr-2 pl-0',
-        cellClassName: 'py-2 pr-2 pl-0 tabular-nums text-muted-foreground',
+        cellClassName: 'py-2 pr-2 pl-0 tabular-nums text-muted-foreground whitespace-nowrap',
       },
       cell: ({ row }) => row.original.kpi_total,
     },
@@ -128,7 +133,7 @@ export function PostRankingList({
       meta: {
         align: 'right',
         headerClassName: 'py-2 pr-2 pl-0',
-        cellClassName: 'py-2 pr-2 pl-0 tabular-nums',
+        cellClassName: 'py-2 pr-2 pl-0 tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => `${row.original.completionRate}%`,
     },
@@ -138,7 +143,7 @@ export function PostRankingList({
       meta: {
         align: 'right',
         headerClassName: 'py-2 pr-2 pl-0',
-        cellClassName: 'py-2 pr-2 pl-0 tabular-nums',
+        cellClassName: 'py-2 pr-2 pl-0 tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => `${row.original.ontimeRate}%`,
     },
@@ -148,7 +153,7 @@ export function PostRankingList({
       meta: {
         align: 'right',
         headerClassName: 'py-2 pr-2 pl-0',
-        cellClassName: 'py-2 pr-2 pl-0 font-semibold tabular-nums',
+        cellClassName: 'py-2 pr-2 pl-0 font-semibold tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => row.original.kpi_score ?? '—',
     },
@@ -157,7 +162,7 @@ export function PostRankingList({
       header: t('dashboard.posts.cols.grade'),
       meta: {
         headerClassName: 'py-2 px-0',
-        cellClassName: 'py-2 px-0',
+        cellClassName: 'py-2 px-0 whitespace-nowrap',
       },
       cell: ({ row }) => {
         const grade = getKpiGrade(row.original.kpi_score)
@@ -176,9 +181,12 @@ export function PostRankingList({
       data={shown}
       columns={columns}
       keyExtractor={(row) => `${row.rank}-${row.username}`}
+      enablePagination
+      initialPageSize={10}
       mobileBreakpoint="md"
       mobileContainerClassName="divide-y-0 space-y-2"
       mobileItemClassName={() => 'p-0'}
+      tableClassName="min-w-[680px]"
       headerClassName="bg-transparent text-xs"
       rowClassName={() => 'hover:bg-secondary/40'}
       renderMobileCard={(row) => <PostRankingMobileCard row={row} />}

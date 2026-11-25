@@ -61,8 +61,9 @@ export function WorkItemsReadOnly({
       id: 'index',
       header: '#',
       meta: {
+        width: '44px',
         headerClassName: 'py-2 pr-3 pl-0 text-primary font-semibold',
-        cellClassName: 'py-2 pr-3 pl-0 text-muted-foreground',
+        cellClassName: 'py-2 pr-3 pl-0 text-muted-foreground whitespace-nowrap tabular-nums',
       },
       cell: ({ row }) => row.index + 1,
     },
@@ -70,8 +71,9 @@ export function WorkItemsReadOnly({
       id: 'topic',
       header: t('tasks.detail.workItemTopic'),
       meta: {
+        minWidth: '220px',
         headerClassName: 'py-2 pr-3 pl-0 text-primary font-semibold',
-        cellClassName: 'py-2 pr-3 pl-0',
+        cellClassName: 'min-w-[220px] py-2 pr-3 pl-0',
       },
       cell: ({ row }) => (
         <div>
@@ -88,13 +90,15 @@ export function WorkItemsReadOnly({
       id: 'owner',
       header: t('tasks.detail.workItemOwner'),
       meta: {
+        minWidth: '150px',
         headerClassName: 'py-2 pr-3 pl-0 text-primary font-semibold',
-        cellClassName: 'py-2 pr-3 pl-0 text-muted-foreground',
+        cellClassName: 'min-w-[150px] py-2 pr-3 pl-0 text-muted-foreground whitespace-nowrap',
       },
       cell: ({ row }) => {
         const owner = resolveUser(row.original.owner) || '-'
         const agent = row.original.agent ? ` (${resolveUser(row.original.agent)})` : ''
-        return `${owner}${agent}`
+        const fullText = `${owner}${agent}`
+        return <span title={fullText}>{fullText}</span>
       },
     },
     {
@@ -102,7 +106,7 @@ export function WorkItemsReadOnly({
       header: t('tasks.detail.workItemDates'),
       meta: {
         headerClassName: 'py-2 pr-3 pl-0 text-primary font-semibold',
-        cellClassName: 'py-2 pr-3 pl-0 whitespace-nowrap text-muted-foreground',
+        cellClassName: 'py-2 pr-3 pl-0 whitespace-nowrap text-muted-foreground tabular-nums',
       },
       cell: ({ row }) => `${row.original.start || '-'} ~ ${row.original.end || '-'}`,
     },
@@ -112,7 +116,7 @@ export function WorkItemsReadOnly({
       meta: {
         align: 'right',
         headerClassName: 'py-2 px-0 text-primary font-semibold',
-        cellClassName: 'py-2 px-0 font-medium text-foreground',
+        cellClassName: 'py-2 px-0 font-medium text-foreground whitespace-nowrap tabular-nums',
       },
       cell: ({ row }) =>
         typeof row.original.progress === 'number' ? `${row.original.progress}%` : '-',
@@ -136,6 +140,8 @@ export function WorkItemsReadOnly({
         data={envelope.items}
         columns={columns}
         keyExtractor={(item) => String(item.id)}
+        enablePagination
+        initialPageSize={10}
         mobileBreakpoint="md"
         mobileContainerClassName="divide-y-0 space-y-2.5"
         mobileItemClassName={() => 'p-0'}
