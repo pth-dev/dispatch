@@ -49,13 +49,8 @@ export function DashboardKpiRow({
   const { t } = useTranslation()
   const periodFlow = periodComparison.current
 
-  const liveBadge = (
-    <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-      {t('dashboard.scopeBadge.live')}
-    </span>
-  )
   const periodBadge = (
-    <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+    <span className="rounded bg-primary-soft px-1.5 py-0.5 text-[10px] font-medium leading-tight text-primary">
       {t(`dashboard.period.${period}`)}
     </span>
   )
@@ -120,7 +115,6 @@ export function DashboardKpiRow({
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-6">
         <MetricCard
           label={t('dashboard.kpi.open')}
-          badge={liveBadge}
           tooltip={t('dashboard.tooltips.open')}
           value={snapshot.open}
           subtext={t('dashboard.kpi.openSub', {
@@ -133,7 +127,6 @@ export function DashboardKpiRow({
 
         <MetricCard
           label={t('dashboard.kpi.overdue')}
-          badge={liveBadge}
           tooltip={t('dashboard.tooltips.overdue')}
           value={snapshot.overdue}
           subtext={
@@ -150,7 +143,6 @@ export function DashboardKpiRow({
 
         <MetricCard
           label={t('dashboard.kpi.dueToday')}
-          badge={liveBadge}
           tooltip={t('dashboard.tooltips.dueToday')}
           value={snapshot.dueToday}
           subtext={t('dashboard.kpi.completedSub', {

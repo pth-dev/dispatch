@@ -60,7 +60,7 @@ export function DashboardFlowKpiCard({
           >
             {t('dashboard.kpi.periodFlow')}
           </span>
-          <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-medium leading-tight text-muted-foreground">
+          <span className="rounded bg-primary-soft px-1.5 py-0.5 text-[10px] font-medium leading-tight text-primary">
             {t(`dashboard.period.${period}`)}
           </span>
         </div>
