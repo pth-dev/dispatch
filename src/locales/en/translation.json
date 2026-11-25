@@ -907,7 +907,36 @@
     },
     "tabs": {
       "scope": "Scope & OU Tree",
-      "users": "Account Management"
+      "users": "Account Management",
+      "ouView": "Multi-OU Visibility",
+      "ad": "Active Directory (AD)"
+    },
+    "ouView": {
+      "title": "Per-user Multi-OU Visibility",
+      "subtitle": "Assign additional OUs so users can view general posts across those OUs and their sub-levels.",
+      "modalTitle": "Configure visible OUs",
+      "batchDesc": "Applying to {{count}} selected accounts",
+      "selectedCount": "{{count}} OUs selected",
+      "batchBtn": "Batch assign ({{count}})",
+      "saved": "Visible OUs updated"
+    },
+    "ad": {
+      "statusTitle": "Active Directory Status & Sync",
+      "syncInterval": "Auto-sync every {{minutes}} min",
+      "unavailable": "AD is not configured or unreachable",
+      "diagnose": "Diagnose AD",
+      "syncNow": "Sync now",
+      "localTotal": "Imported AD accounts",
+      "localDisabled": "Disabled",
+      "lastSync": "Last sync",
+      "searchPlaceholder": "Search AD accounts by ID, name, department...",
+      "autoDept": "Auto from AD OU",
+      "importSelected": "Import from AD ({{count}})",
+      "importDone": "AD import complete: {{created}} created, {{linked}} linked, {{failed}} failed",
+      "syncTriggered": "AD sync completed",
+      "imported": "Imported",
+      "available": "Available",
+      "syncLogsTitle": "Recent AD sync logs"
     },
     "admin": {
       "searchPlaceholder": "Search by username, name, department, site...",

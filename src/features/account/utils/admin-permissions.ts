@@ -46,6 +46,20 @@ export function canAccessAccountAdminTab(
   return canReadMenu(user, 'account')
 }
 
+export function canAccessAdTab(
+  user: Pick<SessionUser, 'username' | 'role' | 'menu_perms'> | null | undefined,
+): boolean {
+  if (!isAnyAdmin(user)) return false
+  return canReadMenu(user, 'ad')
+}
+
+export function canWriteAd(
+  user: Pick<SessionUser, 'username' | 'role' | 'menu_perms'> | null | undefined,
+): boolean {
+  if (!isAnyAdmin(user)) return false
+  return canWriteMenu(user, 'ad')
+}
+
 export function canWriteAccountAdmin(
   user: Pick<SessionUser, 'username' | 'role' | 'menu_perms'> | null | undefined,
 ): boolean {

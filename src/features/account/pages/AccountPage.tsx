@@ -17,11 +17,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { accountKeys } from '../api/keys'
 import { useAccountOrg, useAccountScope } from '../api/queries'
 import { AccountScopeCards } from '../components/AccountScopeCards'
+import { AdminAdTab } from '../components/AdminAdTab'
+import { AdminOuViewTab } from '../components/AdminOuViewTab'
 import { AdminUsersTab } from '../components/AdminUsersTab'
 import { OrgTreePanel } from '../components/OrgTreePanel'
-import { canAccessAccountAdminTab } from '../utils/admin-permissions'
+import { canAccessAccountAdminTab, canAccessAdTab } from '../utils/admin-permissions'
 
-type AccountTabKey = 'scope' | 'users'
+type AccountTabKey = 'scope' | 'users' | 'ou-view' | 'ad'
 
 function AccountLoadingSkeleton({ label }: { label: string }) {
   return (
@@ -44,8 +46,18 @@ export function AccountPage() {
   const user = useAppStore((s) => s.user)
 
   const canManageUsers = canAccessAccountAdminTab(user)
+  const canManageAd = canAccessAdTab(user)
+  const hasAdminTabs = canManageUsers || canManageAd
+
   const rawTab = searchParams.get('tab')
-  const activeTab: AccountTabKey = rawTab === 'users' && canManageUsers ? 'users' : 'scope'
+  const activeTab: AccountTabKey =
+    rawTab === 'users' && canManageUsers
+      ? 'users'
+      : rawTab === 'ou-view' && canManageUsers
+        ? 'ou-view'
+        : rawTab === 'ad' && canManageAd
+          ? 'ad'
+          : 'scope'
 
   const scopeQuery = useAccountScope()
   const orgQuery = useAccountOrg()
@@ -65,6 +77,11 @@ export function AccountPage() {
     void orgQuery.refetch()
     if (canManageUsers) {
       void queryClient.invalidateQueries({ queryKey: accountKeys.adminUsers() })
+    }
+    if (canManageAd) {
+      void queryClient.invalidateQueries({ queryKey: accountKeys.adStatus() })
+      void queryClient.invalidateQueries({ queryKey: accountKeys.adUsers() })
+      void queryClient.invalidateQueries({ queryKey: accountKeys.adSyncLogs() })
     }
   }
 
@@ -108,18 +125,37 @@ export function AccountPage() {
       />
 
       <PageContainerBody className="space-y-4">
-        {canManageUsers ? (
+        {hasAdminTabs ? (
           <Tabs value={activeTab} onValueChange={handleTabChange}>
-            <TabsList variant="line" className="w-full justify-start border-b border-border pb-1">
+            <TabsList
+              variant="line"
+              className="w-full justify-start overflow-x-auto border-b border-border pb-1"
+            >
               <TabsTrigger value="scope">{t('account.tabs.scope')}</TabsTrigger>
-              <TabsTrigger value="users">{t('account.tabs.users')}</TabsTrigger>
+              {canManageUsers && <TabsTrigger value="users">{t('account.tabs.users')}</TabsTrigger>}
+              {canManageUsers && (
+                <TabsTrigger value="ou-view">{t('account.tabs.ouView')}</TabsTrigger>
+              )}
+              {canManageAd && <TabsTrigger value="ad">{t('account.tabs.ad')}</TabsTrigger>}
             </TabsList>
             <TabsContent value="scope" className="space-y-4 pt-3">
               {scopeContent}
             </TabsContent>
-            <TabsContent value="users" className="pt-3">
-              <AdminUsersTab orgItems={orgQuery.data?.items ?? []} />
-            </TabsContent>
+            {canManageUsers && (
+              <TabsContent value="users" className="pt-3">
+                <AdminUsersTab orgItems={orgQuery.data?.items ?? []} />
+              </TabsContent>
+            )}
+            {canManageUsers && (
+              <TabsContent value="ou-view" className="pt-3">
+                <AdminOuViewTab orgItems={orgQuery.data?.items ?? []} />
+              </TabsContent>
+            )}
+            {canManageAd && (
+              <TabsContent value="ad" className="pt-3">
+                <AdminAdTab />
+              </TabsContent>
+            )}
           </Tabs>
         ) : (
           scopeContent

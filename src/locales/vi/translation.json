@@ -907,7 +907,36 @@
     },
     "tabs": {
       "scope": "Phạm vi & Cây OU",
-      "users": "Quản lý tài khoản"
+      "users": "Quản lý tài khoản",
+      "ouView": "Phân quyền xem đa OU",
+      "ad": "Active Directory (AD)"
+    },
+    "ouView": {
+      "title": "Phạm vi OU được xem của nhân viên",
+      "subtitle": "Chọn nhiều OU để nhân viên xem bài đăng Thông thường của các OU đó (bao gồm cấp dưới).",
+      "modalTitle": "Thiết lập OU được xem",
+      "batchDesc": "Áp dụng cho {{count}} tài khoản đã chọn",
+      "selectedCount": "Đã chọn {{count}} OU",
+      "batchBtn": "Gán hàng loạt ({{count}})",
+      "saved": "Đã lưu phạm vi OU được xem"
+    },
+    "ad": {
+      "statusTitle": "Kết nối & Đồng bộ Active Directory",
+      "syncInterval": "Tự đồng bộ mỗi {{minutes}} phút",
+      "unavailable": "Chưa cấu hình hoặc không kết nối được máy chủ AD",
+      "diagnose": "Chẩn đoán AD",
+      "syncNow": "Đồng bộ ngay",
+      "localTotal": "Tài khoản AD đã nhập",
+      "localDisabled": "Đã khóa",
+      "lastSync": "Đồng bộ gần nhất",
+      "searchPlaceholder": "Tìm tài khoản AD theo mã, tên, phòng ban...",
+      "autoDept": "Tự động theo AD OU",
+      "importSelected": "Nhập từ AD ({{count}})",
+      "importDone": "Nhập AD xong: tạo mới {{created}}, liên kết {{linked}}, lỗi {{failed}}",
+      "syncTriggered": "Đã chạy đồng bộ AD thành công",
+      "imported": "Đã nhập",
+      "available": "Chưa nhập",
+      "syncLogsTitle": "Nhật ký đồng bộ AD gần đây"
     },
     "admin": {
       "searchPlaceholder": "Tìm theo tài khoản, họ tên, bộ phận, khu vực...",

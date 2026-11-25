@@ -196,6 +196,143 @@ describe('AccountPage', () => {
     })
   })
 
+  it('supports Multi-OU view assignment and Active Directory sync in Phase 4B tabs', async () => {
+    const user = userEvent.setup()
+    useAppStore.setState({
+      user: {
+        username: 'boss',
+        fullname: 'Super Boss',
+        dept: '資訊部',
+        site: 'YS',
+        role: 'superadmin',
+        auth_source: 'local',
+        menu_perms: null,
+        is_computer_room: false,
+      },
+      authStatus: 'authenticated',
+    })
+
+    const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input)
+      if (url.includes('/account/scope')) {
+        return new Response(JSON.stringify(MOCK_SCOPE), { status: 200 })
+      }
+      if (url.includes('/account/org')) {
+        return new Response(JSON.stringify(MOCK_ORG), { status: 200 })
+      }
+      if (url.includes('/admin/users/11/view-depts') && init?.method === 'PUT') {
+        return new Response(JSON.stringify({ success: true }), { status: 200 })
+      }
+      if (url.includes('/admin/users')) {
+        return new Response(JSON.stringify(MOCK_ADMIN_USERS), { status: 200 })
+      }
+      if (url.includes('/admin/ad/status')) {
+        return new Response(
+          JSON.stringify({
+            available: true,
+            installed: true,
+            syncing: false,
+            config: { domain: 'corp.local', syncMinutes: 30 },
+            localAdAccounts: { total: 42, disabled: 2 },
+          }),
+          { status: 200 },
+        )
+      }
+      if (url.includes('/admin/ad/users')) {
+        return new Response(
+          JSON.stringify({
+            success: true,
+            users: [{ sam: 'ad_user1', fullname: 'AD User One', department: 'IT', imported: false }],
+          }),
+          { status: 200 },
+        )
+      }
+      if (url.includes('/admin/ad/sync/logs')) {
+        return new Response(JSON.stringify({ success: true, logs: [] }), { status: 200 })
+      }
+      if (url.includes('/admin/ad/sync') && init?.method === 'POST') {
+        return new Response(JSON.stringify({ success: true }), { status: 200 })
+      }
+      return new Response(JSON.stringify({}), { status: 200 })
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    renderAccountPage('/account?tab=ou-view')
+
+    expect(await screen.findByText('Phạm vi OU được xem của nhân viên')).toBeInTheDocument()
+    await user.click(await screen.findByRole('button', { name: 'Chỉnh sửa' }))
+    expect(await screen.findByText('Thiết lập OU được xem')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Lưu' }))
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringContaining('/admin/users/11/view-depts'),
+        expect.objectContaining({ method: 'PUT' }),
+      )
+    })
+
+    await user.click(screen.getByRole('tab', { name: 'Active Directory (AD)' }))
+    expect(await screen.findByText('ad_user1')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Đồng bộ ngay' }))
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.stringContaining('/admin/ad/sync'),
+        expect.objectContaining({ method: 'POST' }),
+      )
+    })
+  })
+
+  it('hides AD import and superadmin sync controls for dept admin with read-only ad permission', async () => {
+    useAppStore.setState({
+      user: {
+        username: 'dept_lead',
+        fullname: 'Dept Lead',
+        dept: '資訊部',
+        site: 'YS',
+        role: 'admin',
+        auth_source: 'local',
+        menu_perms: { ad: 'sr', account: 'sr' },
+        is_computer_room: false,
+      },
+      authStatus: 'authenticated',
+    })
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: RequestInfo | URL) => {
+        const url = String(input)
+        if (url.includes('/account/scope')) {
+          return new Response(JSON.stringify(MOCK_SCOPE), { status: 200 })
+        }
+        if (url.includes('/account/org')) {
+          return new Response(JSON.stringify(MOCK_ORG), { status: 200 })
+        }
+        if (url.includes('/admin/ad/status')) {
+          return new Response(
+            JSON.stringify({ available: true, config: { domain: 'corp.local', syncMinutes: 30 } }),
+            { status: 200 },
+          )
+        }
+        if (url.includes('/admin/ad/users')) {
+          return new Response(
+            JSON.stringify({
+              success: true,
+              users: [{ sam: 'ad_readonly', fullname: 'AD Readonly', department: 'IT' }],
+            }),
+            { status: 200 },
+          )
+        }
+        return new Response(JSON.stringify({}), { status: 200 })
+      }),
+    )
+
+    renderAccountPage('/account?tab=ad')
+
+    expect(await screen.findByText('ad_readonly')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Nhập từ AD/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Đồng bộ ngay' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Chẩn đoán AD' })).not.toBeInTheDocument()
+  })
+
   it('shows InlineError on 500 failure and recovers when clicking retry', async () => {
     const user = userEvent.setup()
     let failFirst = true

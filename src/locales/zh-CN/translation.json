@@ -907,7 +907,36 @@
     },
     "tabs": {
       "scope": "范围与 OU 树",
-      "users": "账号管理"
+      "users": "账号管理",
+      "ouView": "多 OU 观看权限",
+      "ad": "Active Directory (AD)"
+    },
+    "ouView": {
+      "title": "人员可观看 OU（复选）",
+      "subtitle": "为使用者复选多个 OU，即可观看这些 OU（含下层）的一般性派案帖子。",
+      "modalTitle": "设置可观看 OU",
+      "batchDesc": "将套用于所选 {{count}} 个账号",
+      "selectedCount": "已选择 {{count}} 个 OU",
+      "batchBtn": "批量设置 ({{count}})",
+      "saved": "已保存可观看 OU"
+    },
+    "ad": {
+      "statusTitle": "Active Directory 状态与同步",
+      "syncInterval": "每 {{minutes}} 分钟自动同步",
+      "unavailable": "尚未配置或无法连接 AD 服务器",
+      "diagnose": "AD 诊断",
+      "syncNow": "立即同步",
+      "localTotal": "已导入 AD 账号",
+      "localDisabled": "已停用",
+      "lastSync": "最近同步",
+      "searchPlaceholder": "搜索 AD 账号、姓名、部门...",
+      "autoDept": "自动跟随 AD OU",
+      "importSelected": "导入 AD 账号 ({{count}})",
+      "importDone": "AD 导入完成：新增 {{created}}，关联 {{linked}}，失败 {{failed}}",
+      "syncTriggered": "AD 同步已完成",
+      "imported": "已导入",
+      "available": "可导入",
+      "syncLogsTitle": "最近 AD 同步日志"
     },
     "admin": {
       "searchPlaceholder": "搜索账号、姓名、部门、厂区...",

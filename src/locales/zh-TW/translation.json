@@ -907,7 +907,36 @@
     },
     "tabs": {
       "scope": "範圍與 OU 樹",
-      "users": "帳號管理"
+      "users": "帳號管理",
+      "ouView": "多 OU 觀看權限",
+      "ad": "Active Directory (AD)"
+    },
+    "ouView": {
+      "title": "人員可觀看 OU（複選）",
+      "subtitle": "為使用者複選多個 OU，即可觀看這些 OU（含下層）的一般性派案帖子。",
+      "modalTitle": "設定可觀看 OU",
+      "batchDesc": "將套用於所選 {{count}} 個帳號",
+      "selectedCount": "已選擇 {{count}} 個 OU",
+      "batchBtn": "批次設定 ({{count}})",
+      "saved": "已儲存可觀看 OU"
+    },
+    "ad": {
+      "statusTitle": "Active Directory 狀態與同步",
+      "syncInterval": "每 {{minutes}} 分鐘自動同步",
+      "unavailable": "尚未設定或無法連線 AD 伺服器",
+      "diagnose": "AD 診斷",
+      "syncNow": "立即同步",
+      "localTotal": "已匯入 AD 帳號",
+      "localDisabled": "已停用",
+      "lastSync": "最近同步",
+      "searchPlaceholder": "搜尋 AD 帳號、姓名、部門...",
+      "autoDept": "自動跟隨 AD OU",
+      "importSelected": "匯入 AD 帳號 ({{count}})",
+      "importDone": "AD 匯入完成：新增 {{created}}，關聯 {{linked}}，失敗 {{failed}}",
+      "syncTriggered": "AD 同步已完成",
+      "imported": "已匯入",
+      "available": "可匯入",
+      "syncLogsTitle": "最近 AD 同步日誌"
     },
     "admin": {
       "searchPlaceholder": "搜尋帳號、姓名、部門、廠區...",
