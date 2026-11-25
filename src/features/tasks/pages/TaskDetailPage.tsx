@@ -25,7 +25,7 @@ import { parseSplitMembers, parseWorkItems } from '@/utils/task-domain'
 import { resolveApiErrorMessage } from '@/services'
 import { useDeleteTask, useMetaDepts, useTaskById, useTaskReports } from '../api/queries'
 import { SplitGroupPanel } from '../components/SplitGroupPanel'
-import { WorkItemsReadOnly } from '../components/WorkItemsReadOnly'
+import { ProjectWorkItemsPanel } from '../components/ProjectWorkItemsPanel'
 import { ReportComposer } from '../components/ReportComposer'
 import { ReportFeed } from '../components/ReportFeed'
 import { TaskDetailHeader } from '../components/TaskDetailHeader'
@@ -51,6 +51,20 @@ export function TaskDetailPage() {
   } = useTaskReports(taskId)
   const deleteTask = useDeleteTask()
   const [deleteError, setDeleteError] = React.useState<string | null>(null)
+  const [activeTopicFilter, setActiveTopicFilter] = React.useState('')
+  const selectTopicRef = React.useRef<((topicId: string) => void) | null>(null)
+
+  const handleQuickReportTopic = (topicId: string) => {
+    selectTopicRef.current?.(topicId)
+    document.getElementById('report')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  const handleFilterTopic = (topicId: string) => {
+    setActiveTopicFilter(topicId)
+    if (topicId) {
+      document.getElementById('report-feed')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
+  }
 
   if (taskId <= 0) {
     throwFullPageError('404')
@@ -116,7 +130,17 @@ export function TaskDetailPage() {
         ) : task ? (
           <>
             <SplitGroupPanel currentTaskId={task.id} members={splitMembers} />
-            <WorkItemsReadOnly envelope={workItems} />
+            <ProjectWorkItemsPanel
+              envelope={workItems}
+              taskTitle={task.title}
+              isTaskFinished={task.progress >= 100}
+              reports={reports}
+              currentUsername={user?.username}
+              canReport={allowReport}
+              activeFilterTopicId={activeTopicFilter}
+              onReportTopic={handleQuickReportTopic}
+              onFilterTopic={handleFilterTopic}
+            />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
               <div className="lg:col-span-2 space-y-4">
@@ -144,6 +168,9 @@ export function TaskDetailPage() {
                     task={task}
                     user={user}
                     splitMembers={splitMembers}
+                    workItems={workItems}
+                    reports={reports}
+                    selectTopicRef={selectTopicRef}
                   />
                 )}
 
@@ -152,6 +179,9 @@ export function TaskDetailPage() {
                   task={task}
                   user={user}
                   reports={reports}
+                  workItems={workItems}
+                  activeTopicFilter={activeTopicFilter}
+                  onTopicFilterChange={setActiveTopicFilter}
                   isLoading={reportsLoading}
                   isError={reportsError}
                   error={reportsErrorObj}

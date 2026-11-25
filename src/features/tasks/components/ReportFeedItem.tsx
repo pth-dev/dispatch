@@ -1,17 +1,19 @@
-import { ExternalLink, Paperclip, Pencil, Trash2 } from 'lucide-react'
+import { CheckCircle2, ExternalLink, Paperclip, Pencil, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import type { SessionUser } from '@/schemas/auth'
-import type { RawReport, RawTask } from '@/schemas/task'
+import type { RawReport, RawTask, WorkItemsEnvelope } from '@/schemas/task'
 import { canDeleteReportAttachment } from '@/utils/permissions'
 import { parseAttachments, parseLinks, resolveFileUrl } from '@/utils/task-domain'
 import { useUserDisplayResolver } from '../hooks/use-user-display-resolver'
+import { parseReportWorkTopics } from '../utils/work-items-domain'
 
 type ReportFeedItemProps = {
   task: RawTask
   user: SessionUser | null
   report: RawReport
+  workItems?: WorkItemsEnvelope | null
   isEditing: boolean
   editingContent: string
   isSavingEdit: boolean
@@ -27,6 +29,7 @@ export function ReportFeedItem({
   task,
   user,
   report,
+  workItems = null,
   isEditing,
   editingContent,
   isSavingEdit,
@@ -41,6 +44,7 @@ export function ReportFeedItem({
   const { resolveUser, resolveAssignees } = useUserDisplayResolver()
   const attachments = parseAttachments(report.attachments)
   const links = parseLinks(report.km_link)
+  const reportTopics = parseReportWorkTopics(report)
   const isAuthor =
     Boolean(user) &&
     report.username.trim().toLowerCase() === user?.username.trim().toLowerCase()
@@ -82,6 +86,30 @@ export function ReportFeedItem({
           )}
         </div>
       </div>
+
+      {reportTopics.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {reportTopics.map((entry) => {
+            const idx = workItems?.items.findIndex((it) => it.id === entry.id) ?? -1
+            const matchedItem = idx >= 0 ? workItems?.items[idx] : undefined
+            const label = matchedItem ? `${idx + 1}. ${matchedItem.topic}` : entry.topic || entry.id
+            return (
+              <span
+                key={entry.id}
+                className="inline-flex items-center gap-1 rounded-md border border-border bg-primary-soft px-2 py-0.5 text-[11px] font-medium text-primary"
+              >
+                <span className="truncate max-w-[200px]">{label}</span>
+                {entry.progress !== null && entry.progress !== undefined && (
+                  <span className="font-semibold tabular-nums">{entry.progress}%</span>
+                )}
+                {entry.early && (
+                  <CheckCircle2 className="size-3 text-success shrink-0" aria-hidden="true" />
+                )}
+              </span>
+            )
+          })}
+        </div>
+      )}
 
       {isEditing ? (
         <div className="space-y-2">

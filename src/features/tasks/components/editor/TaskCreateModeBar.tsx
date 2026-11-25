@@ -1,14 +1,15 @@
 import { useTranslation } from 'react-i18next'
-import { FilePlus2, History, Wrench, Zap } from 'lucide-react'
+import { FilePlus2, FolderKanban, History, Wrench, Zap } from 'lucide-react'
 import { cn } from '@/utils/cn'
 
-export type TaskCreateVariant = 'full' | 'quick' | 'daily' | 'clone'
+export type TaskCreateVariant = 'full' | 'quick' | 'project' | 'daily' | 'clone'
 
 interface TaskCreateModeBarProps {
   activeVariant: TaskCreateVariant
   showDailyRepair: boolean
   onSelectFull: () => void
   onSelectQuick: () => void
+  onSelectProject: () => void
   onOpenHistoryPicker: () => void
   onSelectDailyRepair: () => void
 }
@@ -18,6 +19,7 @@ export function TaskCreateModeBar({
   showDailyRepair,
   onSelectFull,
   onSelectQuick,
+  onSelectProject,
   onOpenHistoryPicker,
   onSelectDailyRepair,
 }: TaskCreateModeBarProps) {
@@ -55,6 +57,16 @@ export function TaskCreateModeBar({
       >
         <Zap className="size-3.5" aria-hidden="true" />
         <span>{t('tasks.createModes.quick')}</span>
+      </button>
+
+      <button
+        type="button"
+        aria-pressed={activeVariant === 'project'}
+        onClick={onSelectProject}
+        className={buttonClass(activeVariant === 'project')}
+      >
+        <FolderKanban className="size-3.5" aria-hidden="true" />
+        <span>{t('tasks.createModes.project')}</span>
       </button>
 
       <button

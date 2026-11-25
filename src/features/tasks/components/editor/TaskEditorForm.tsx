@@ -42,8 +42,9 @@ import { TaskBasicInfoSection } from './TaskBasicInfoSection'
 import { TaskPeopleSection } from './TaskPeopleSection'
 import { TaskScheduleSection } from './TaskScheduleSection'
 import { TaskRequesterSection } from './TaskRequesterSection'
+import { WorkItemsEditorSection } from './WorkItemsEditorSection'
 
-export type TaskEditorVariant = 'full' | 'quick' | 'daily'
+export type TaskEditorVariant = 'full' | 'quick' | 'project' | 'daily'
 
 type TaskEditorFormProps = {
   mode: 'create' | 'edit' | 'clone'
@@ -130,7 +131,17 @@ export function TaskEditorForm({
     }
   }, [enterQuickModeRef, getValues, setValue, user?.username])
 
+  const isQuickMode = mode === 'create' && variant === 'quick'
+  const isProjectMode = mode === 'create' && variant === 'project'
+  const isDailyMode = mode === 'create' && variant === 'daily'
+
   const {
+    workItems,
+    workItemsRule,
+    workItemsError,
+    workItemsDirty,
+    setWorkItems,
+    setWorkItemsRule,
     newFiles,
     setNewFiles,
     retainedFiles,
@@ -142,6 +153,8 @@ export function TaskEditorForm({
     mode,
     sourceTask,
     reporterUsername: user?.username ?? '',
+    defaultOu: user?.dept ?? '',
+    requireWorkItems: isProjectMode,
     setError,
   })
 
@@ -153,9 +166,6 @@ export function TaskEditorForm({
     dueDate: watchDueDate,
     excludeId: mode === 'edit' ? sourceTask?.id : undefined,
   })
-
-  const isQuickMode = mode === 'create' && variant === 'quick'
-  const isDailyMode = mode === 'create' && variant === 'daily'
 
   const handleInvalidSubmit = (fieldErrors: FieldErrors<TaskEditorFormValues>) => {
     if (!isQuickMode) return
@@ -183,7 +193,7 @@ export function TaskEditorForm({
   }
 
   const handleCancel = () => {
-    if (isDirty || newFiles.length > 0) {
+    if (isDirty || workItemsDirty || newFiles.length > 0) {
       setLeaveDialogOpen(true)
     } else {
       navigateAway()
@@ -278,6 +288,22 @@ export function TaskEditorForm({
               allowCross={allowCross}
               hideViewers={isQuickMode}
             />
+            {!isQuickMode && (
+              <WorkItemsEditorSection
+                items={workItems}
+                rule={workItemsRule}
+                depts={depts}
+                directory={directory}
+                defaultOwner={user?.username ?? ''}
+                defaultOu={user?.dept ?? ''}
+                taskTitle={watchTitle}
+                required={isProjectMode}
+                disabled={isSubmitting || isPending}
+                error={workItemsError}
+                onItemsChange={setWorkItems}
+                onRuleChange={setWorkItemsRule}
+              />
+            )}
           </div>
 
           <div className="lg:col-span-5 xl:col-span-4 space-y-4">
@@ -303,7 +329,7 @@ export function TaskEditorForm({
           </div>
         </div>
 
-        <div className="sticky bottom-0 z-20 flex items-center justify-end gap-3 rounded-xl border border-border bg-card/95 px-4 py-3 shadow-md backdrop-blur-xs">
+        <div className="sticky bottom-0 z-20 flex items-center justify-end gap-3 rounded-xl border border-border bg-card/95 px-4 py-3 backdrop-blur-xs">
           <Button type="button" variant="outline" onClick={handleCancel}>
             {t('common.cancel')}
           </Button>

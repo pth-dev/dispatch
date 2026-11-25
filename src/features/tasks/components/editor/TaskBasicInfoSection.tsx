@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { FileDropzone } from '@/components/ui/file-dropzone'
 import type { PocketValueItem } from '@/schemas/meta'
 import type { RawAttachment, TaskEditorFormValues } from '@/schemas/task'
+import { handleRichTextareaPaste } from '@/utils/rich-paste'
 import {
   CUSTOM_TASK_TYPE_VALUE,
   SELECT_FIELD_CLASS,
@@ -44,6 +45,13 @@ export function TaskBasicInfoSection({
 }: TaskBasicInfoSectionProps) {
   const { t, i18n } = useTranslation()
   const taskType = useWatch({ control, name: 'task_type' })
+  const contentValue = useWatch({ control, name: 'content' })
+  const precautionsValue = useWatch({ control, name: 'precautions' })
+
+  const appendPastedFiles = (incoming: File[]) => {
+    if (incoming.length === 0 || disabled) return
+    onNewFilesChange([...newFiles, ...incoming])
+  }
 
   const personalTypes = pocketTypes.filter((item) => !isStandardTaskType(item.value))
   const knownPersonalValues = new Set(personalTypes.map((p) => p.value))
@@ -144,6 +152,13 @@ export function TaskBasicInfoSection({
             rows={4}
             placeholder={t('tasks.createForm.descriptionPlaceholder')}
             {...register('content')}
+            onPaste={(e) =>
+              handleRichTextareaPaste(e, {
+                currentValue: contentValue ?? '',
+                onValueChange: (next) => setValue('content', next, { shouldDirty: true }),
+                onPasteFiles: appendPastedFiles,
+              })
+            }
           />
         </div>
 
@@ -151,7 +166,18 @@ export function TaskBasicInfoSection({
           <label htmlFor="task-precautions" className="block text-xs font-semibold text-foreground">
             {t('tasks.fields.precautions')}
           </label>
-          <Textarea id="task-precautions" rows={2} {...register('precautions')} />
+          <Textarea
+            id="task-precautions"
+            rows={2}
+            {...register('precautions')}
+            onPaste={(e) =>
+              handleRichTextareaPaste(e, {
+                currentValue: precautionsValue ?? '',
+                onValueChange: (next) => setValue('precautions', next, { shouldDirty: true }),
+                onPasteFiles: appendPastedFiles,
+              })
+            }
+          />
         </div>
 
         {!compact && (

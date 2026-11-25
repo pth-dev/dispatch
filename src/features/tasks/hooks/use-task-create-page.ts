@@ -42,9 +42,11 @@ export function useTaskCreatePage() {
   const initialVariant: TaskEditorVariant =
     mode === 'create' && rawModeParam === 'quick'
       ? 'quick'
-      : mode === 'create' && rawModeParam === 'daily' && showDailyRepair
-        ? 'daily'
-        : 'full'
+      : mode === 'create' && rawModeParam === 'project'
+        ? 'project'
+        : mode === 'create' && rawModeParam === 'daily' && showDailyRepair
+          ? 'daily'
+          : 'full'
 
   const [variantState, setVariantState] = React.useState<{
     base: TaskEditorVariant
@@ -115,6 +117,7 @@ export function useTaskCreatePage() {
   }
 
   const isQuickMode = mode === 'create' && variant === 'quick'
+  const isProjectMode = mode === 'create' && variant === 'project'
   const isDailyMode = mode === 'create' && variant === 'daily'
   const activeModeVariant: TaskCreateVariant = mode === 'clone' ? 'clone' : variant
 
@@ -130,9 +133,11 @@ export function useTaskCreatePage() {
           ? t('tasks.createForm.cloneTitle', { id: String(sourceTask?.id ?? '') })
           : isQuickMode
             ? t('tasks.createModes.quick')
-            : isDailyMode
-              ? t('tasks.createModes.dailyRepair')
-              : t('tasks.createForm.title')
+            : isProjectMode
+              ? t('tasks.createModes.project')
+              : isDailyMode
+                ? t('tasks.createModes.dailyRepair')
+                : t('tasks.createForm.title')
 
   const handleSelectFull = () => {
     if (mode === 'clone') {
@@ -149,6 +154,14 @@ export function useTaskCreatePage() {
     }
     enterQuickModeRef.current?.()
     setVariant('quick')
+  }
+
+  const handleSelectProject = () => {
+    if (mode === 'clone') {
+      navigate(`${APP_ROUTES.TASK_NEW}?mode=project`, { replace: true })
+      return
+    }
+    setVariant('project')
   }
 
   const handleSelectDailyRepair = () => {
@@ -183,6 +196,7 @@ export function useTaskCreatePage() {
     enterQuickModeRef,
     handleSelectFull,
     handleSelectQuick,
+    handleSelectProject,
     handleSelectDailyRepair,
     handlePickHistoricalTask,
     handleRetry,

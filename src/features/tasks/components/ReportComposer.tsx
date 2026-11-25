@@ -1,119 +1,119 @@
-import * as React from 'react'
-import { useForm, useWatch } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import type * as React from 'react'
 import { useTranslation } from 'react-i18next'
-import { CircleAlert, Send } from 'lucide-react'
+import { CircleAlert, Loader2, Send, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { FileDropzone } from '@/components/ui/file-dropzone'
-import {
-  TaskReportFormSchema,
-  type RawTask,
-  type SplitMember,
-  type TaskReportFormValues,
-} from '@/schemas/task'
+import type { RawReport, RawTask, SplitMember, WorkItemsEnvelope } from '@/schemas/task'
 import type { SessionUser } from '@/schemas/auth'
-import { isAssignedToUser, isTaskPaused } from '@/utils/task-domain'
-import { resolveApiErrorMessage } from '@/services'
+import { handleRichTextareaPaste } from '@/utils/rich-paste'
 import { SELECT_FIELD_CLASS } from '../api/task-catalog'
-import { useSubmitReport } from '../api/queries'
 import { useUserDisplayResolver } from '../hooks/use-user-display-resolver'
+import { useReportComposer } from '../hooks/use-report-composer'
+import { ReportWorkTopicsPicker } from './ReportWorkTopicsPicker'
 
 type ReportComposerProps = {
   task: RawTask
   user: SessionUser
   splitMembers: SplitMember[]
+  workItems?: WorkItemsEnvelope | null
+  reports?: RawReport[]
+  selectTopicRef?: React.RefObject<((topicId: string) => void) | null>
 }
 
-export function ReportComposer({ task, user, splitMembers }: ReportComposerProps) {
-  const { t, i18n } = useTranslation()
-  const submitReport = useSubmitReport()
+export function ReportComposer({
+  task,
+  user,
+  splitMembers,
+  workItems = null,
+  reports = [],
+  selectTopicRef,
+}: ReportComposerProps) {
+  const { t } = useTranslation()
   const { resolveAssignees } = useUserDisplayResolver()
-  const [files, setFiles] = React.useState<File[]>([])
-  const [submitError, setSubmitError] = React.useState<string | null>(null)
-
-  const selfSplitMember = splitMembers.find((m) =>
-    isAssignedToUser({ assign_person: m.assignee }, user),
-  )
-  const defaultTargetId = selfSplitMember?.id ?? task.id
+  const {
+    form,
+    currentStatus,
+    selfSplitMember,
+    reportStats,
+    files,
+    setFiles,
+    appendPastedFiles,
+    submitError,
+    aiError,
+    calcHint,
+    topicDrafts,
+    isAiPending,
+    isSubmitPending,
+    handleStatusChange,
+    handleTopicToggle,
+    handleTopicProgressChange,
+    handleTopicEarlyChange,
+    handleTopicPreset,
+    handleCalcWeighted,
+    handleAiGenerate,
+    onSubmit,
+  } = useReportComposer({ task, user, splitMembers, workItems, reports, selectTopicRef })
 
   const {
     register,
-    control,
+    getValues,
     setValue,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting },
-  } = useForm<TaskReportFormValues>({
-    resolver: zodResolver(TaskReportFormSchema),
-    defaultValues: {
-      content: '',
-      progress: task.progress,
-      km_link: '',
-      status: isTaskPaused(task) ? 'paused' : 'running',
-      pause_reason: task.pause_reason ?? '',
-      target_id: defaultTargetId,
-    },
-  })
+  } = form
 
-  const currentStatus = useWatch({ control, name: 'status' })
-  const currentProgress = useWatch({ control, name: 'progress' })
-
-  const handleStatusChange = (nextStatus: 'running' | 'paused') => {
-    setValue('status', nextStatus)
-    if (nextStatus === 'paused' && Number(currentProgress) === 100) {
-      setValue('progress', 99)
-    }
-  }
-
-  const onSubmit = async (values: TaskReportFormValues) => {
-    setSubmitError(null)
-    const formData = new FormData()
-    formData.append('username', user.username)
-    formData.append('fullname', user.fullname || user.username)
-    formData.append('content', values.content.trim())
-    formData.append('progress', String(values.progress))
-    formData.append('km_link', values.km_link.trim())
-    formData.append('status', values.status)
-    if (values.status === 'paused' && values.pause_reason.trim()) {
-      formData.append('pause_reason', values.pause_reason.trim())
-    }
-    if (splitMembers.length > 0 && values.target_id) {
-      formData.append('target_id', String(values.target_id))
-    }
-    for (const file of files) {
-      formData.append('files', file)
-    }
-
-    try {
-      await submitReport.mutateAsync({ taskId: task.id, formData })
-      reset({
-        content: '',
-        progress: values.progress,
-        km_link: '',
-        status: values.status,
-        pause_reason: values.status === 'paused' ? values.pause_reason : '',
-        target_id: values.target_id,
-      })
-      setFiles([])
-    } catch (err) {
-      setSubmitError(resolveApiErrorMessage(err, t, i18n.language))
-    }
-  }
+  const hasWorkItems = Boolean(workItems && workItems.items.length > 0)
+  const isBusy = isSubmitting || isSubmitPending
 
   return (
     <section id="report" className="rounded-xl border border-border bg-card p-4 space-y-3">
-      <h2 className="text-sm font-semibold text-foreground">{t('tasks.report.composerTitle')}</h2>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-sm font-semibold text-foreground">{t('tasks.report.composerTitle')}</h2>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={isAiPending || isBusy}
+          onClick={() => void handleAiGenerate()}
+        >
+          {isAiPending ? (
+            <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
+          ) : (
+            <Sparkles className="size-3.5 text-primary" aria-hidden="true" />
+          )}
+          <span>{isAiPending ? t('tasks.report.aiGenerating') : t('tasks.report.aiGenerate')}</span>
+        </Button>
+      </div>
 
-      {submitError && (
-        <div role="alert" className="flex items-start gap-2 rounded-lg border border-border p-3 text-xs text-destructive">
+      {(submitError || aiError) && (
+        <div
+          role="alert"
+          className="flex items-start gap-2 rounded-lg border border-border p-3 text-xs text-destructive"
+        >
           <CircleAlert className="size-4 shrink-0 mt-0.5" aria-hidden="true" />
-          <span>{submitError}</span>
+          <span>{submitError || aiError}</span>
         </div>
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3" noValidate>
+        {hasWorkItems && workItems && (
+          <ReportWorkTopicsPicker
+            envelope={workItems}
+            reportStats={reportStats}
+            currentUsername={user.username}
+            drafts={topicDrafts}
+            calcHint={calcHint}
+            disabled={isBusy}
+            onToggle={handleTopicToggle}
+            onProgressChange={handleTopicProgressChange}
+            onEarlyChange={handleTopicEarlyChange}
+            onSelectPreset={handleTopicPreset}
+            onCalcTotalProgress={handleCalcWeighted}
+          />
+        )}
+
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="space-y-1">
             <label htmlFor="report-progress" className="block text-xs font-semibold text-foreground">
@@ -190,6 +190,13 @@ export function ReportComposer({ task, user, splitMembers }: ReportComposerProps
             rows={3}
             placeholder={t('tasks.report.contentPlaceholder')}
             {...register('content')}
+            onPaste={(e) =>
+              handleRichTextareaPaste(e, {
+                currentValue: getValues('content'),
+                onValueChange: (next) => setValue('content', next, { shouldDirty: true }),
+                onPasteFiles: appendPastedFiles,
+              })
+            }
           />
         </div>
 
@@ -198,12 +205,7 @@ export function ReportComposer({ task, user, splitMembers }: ReportComposerProps
             <label htmlFor="report-kmlink" className="block text-xs font-semibold text-foreground">
               {t('tasks.report.kmLink')}
             </label>
-            <Input
-              id="report-kmlink"
-              type="text"
-              placeholder="https://..."
-              {...register('km_link')}
-            />
+            <Input id="report-kmlink" type="text" placeholder="https://..." {...register('km_link')} />
           </div>
 
           <div className="space-y-1">
@@ -214,13 +216,13 @@ export function ReportComposer({ task, user, splitMembers }: ReportComposerProps
               id="report-files"
               files={files}
               onFilesChange={setFiles}
-              disabled={isSubmitting || submitReport.isPending}
+              disabled={isBusy}
             />
           </div>
         </div>
 
         <div className="flex justify-end">
-          <Button type="submit" disabled={isSubmitting || submitReport.isPending}>
+          <Button type="submit" disabled={isBusy}>
             <Send className="size-4" aria-hidden="true" />
             <span>{t('tasks.report.submit')}</span>
           </Button>

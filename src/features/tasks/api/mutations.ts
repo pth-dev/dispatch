@@ -2,9 +2,11 @@ import { useMutation, useQueryClient, type QueryClient } from '@tanstack/react-q
 import { SHARED_QUERY_KEYS } from '@/constants/query-keys'
 import { http, type ApiError } from '@/services/http'
 import {
+  AiGenerateReportResponseSchema,
   DeleteAttachmentResponseSchema,
   ReportMutationResponseSchema,
   TaskMutationResponseSchema,
+  type AiGenerateReportResponse,
   type DeleteAttachmentResponse,
   type ReportMutationResponse,
   type TaskMutationResponse,
@@ -165,6 +167,24 @@ export function useDeleteReportAttachment() {
     },
     onSuccess: (_data, variables) => {
       void queryClient.invalidateQueries({ queryKey: taskKeys.reports(variables.taskId) })
+    },
+  })
+}
+
+export function useGenerateAiReport() {
+  return useMutation({
+    mutationFn: async ({
+      taskId,
+      currentProgress,
+    }: {
+      taskId: number
+      currentProgress: number
+    }): Promise<AiGenerateReportResponse> => {
+      const raw = await http<unknown>(`/tasks/${taskId}/ai-generate-report`, {
+        method: 'POST',
+        body: JSON.stringify({ currentProgress: String(currentProgress) }),
+      })
+      return assertMutationSuccess(AiGenerateReportResponseSchema.parse(raw))
     },
   })
 }

@@ -33,6 +33,7 @@ export function TaskCreatePage() {
     enterQuickModeRef,
     handleSelectFull,
     handleSelectQuick,
+    handleSelectProject,
     handleSelectDailyRepair,
     handlePickHistoricalTask,
     handleRetry,
@@ -62,6 +63,7 @@ export function TaskCreatePage() {
                 showDailyRepair={showDailyRepair}
                 onSelectFull={handleSelectFull}
                 onSelectQuick={handleSelectQuick}
+                onSelectProject={handleSelectProject}
                 onOpenHistoryPicker={() => setHistoryOpen(true)}
                 onSelectDailyRepair={handleSelectDailyRepair}
               />

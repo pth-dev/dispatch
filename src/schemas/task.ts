@@ -72,11 +72,18 @@ export const SplitMemberSchema = z.object({
 })
 export type SplitMember = z.infer<typeof SplitMemberSchema>
 
+export const WORK_ITEMS_MAX = 60
+
+export const WORK_ITEMS_RULES = ['none', 'sun', 'satsun'] as const
+export const WorkItemsRuleSchema = z.enum(WORK_ITEMS_RULES)
+export type WorkItemsRule = z.infer<typeof WorkItemsRuleSchema>
+
 export const WorkItemSchema = z.object({
   id: z.string(),
   topic: z.string().default(''),
   content: z.string().default(''),
   risk: z.string().default(''),
+  owner_ou: z.string().default(''),
   owner: z.string().default(''),
   agent: z.string().default(''),
   start: z.string().default(''),
@@ -88,10 +95,27 @@ export type WorkItem = z.infer<typeof WorkItemSchema>
 
 export const WorkItemsEnvelopeSchema = z.object({
   v: z.number().default(1),
-  rule: z.enum(['none', 'sun', 'satsun']).default('sun'),
+  rule: WorkItemsRuleSchema.default('sun'),
   items: z.array(WorkItemSchema).default([]),
 })
 export type WorkItemsEnvelope = z.infer<typeof WorkItemsEnvelopeSchema>
+
+export const WorkTopicReportEntrySchema = z.object({
+  id: z.string(),
+  topic: z.string().optional(),
+  progress: z.number().int().min(0).max(100).nullable().optional(),
+  early: z.boolean().optional(),
+})
+export type WorkTopicReportEntry = z.infer<typeof WorkTopicReportEntrySchema>
+
+export const AiGenerateReportResponseSchema = z.object({
+  success: z.boolean(),
+  text: z.string().nullish(),
+  code: z.string().nullish(),
+  message: z.string().nullish(),
+  err: z.string().nullish(),
+})
+export type AiGenerateReportResponse = z.infer<typeof AiGenerateReportResponseSchema>
 
 export const RawTaskSchema = z.object({
   id: z.coerce.number(),

@@ -27,6 +27,7 @@ export {
   useCreateTask,
   useDeleteReportAttachment,
   useDeleteTask,
+  useGenerateAiReport,
   useSubmitReport,
   useUpdateReport,
   useUpdateTask,

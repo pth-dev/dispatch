@@ -8,6 +8,7 @@ import { ScrollToTopButton } from './ScrollToTopButton'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { useAutoRefresh } from '@/hooks/use-auto-refresh'
 import { useMainScrollRestoration } from '@/hooks/use-main-scroll-restoration'
 import { useSessionLifecycle } from '@/hooks/use-session-lifecycle'
 import { useAppStore } from '@/app/store'
@@ -24,6 +25,7 @@ export function AppShell() {
     pathname === '/tasks/new' || /^\/tasks\/\d+\/edit$/.test(pathname)
 
   const { retryVerify } = useSessionLifecycle()
+  useAutoRefresh(authStatus === 'authenticated')
   useMainScrollRestoration(mainRef, authStatus === 'authenticated')
 
   if (authStatus === 'checking') {
