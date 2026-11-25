@@ -6,19 +6,11 @@ import { Input } from '@/components/ui/input'
 import { Sparkline } from '@/components/ui/sparkline'
 import type { PostStatsResponse, PostStatsSeries } from '@/schemas/dashboard'
 import { cn } from '@/utils/cn'
-import { formatPostBucketLabel } from '../utils/dashboard-domain'
+import { formatPostBucketLabel, heatCellClass } from '../utils/dashboard-domain'
+import { DeptHeatmapMobileCard } from './DeptHeatmapMobileCard'
 
 type DeptPeopleHeatmapTableProps = {
   data: PostStatsResponse | undefined
-}
-
-function heatCellClass(value: number, maxVal: number): string {
-  if (value <= 0) return 'text-muted-foreground/40'
-  const ratio = value / Math.max(1, maxVal)
-  if (ratio > 0.75) return 'bg-primary text-primary-foreground'
-  if (ratio > 0.5) return 'bg-primary/70 text-primary-foreground'
-  if (ratio > 0.25) return 'bg-primary/30 text-foreground'
-  return 'bg-primary-soft text-primary'
 }
 
 function buildHeatmapColumns(
@@ -166,7 +158,7 @@ export function DeptPeopleHeatmapTable({
           </div>
         </div>
 
-        <div className="relative w-full sm:w-64">
+        <div className="relative w-full sm:w-72">
           <Search
             className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
             aria-hidden="true"
@@ -189,6 +181,15 @@ export function DeptPeopleHeatmapTable({
         keyExtractor={(row) => row.username || row.label}
         enablePagination
         initialPageSize={20}
+        mobileBreakpoint="md"
+        renderMobileCard={(row) => (
+          <DeptHeatmapMobileCard
+            row={row}
+            labels={data.labels}
+            gran={data.gran}
+            maxVal={maxVal}
+          />
+        )}
         emptyMessage={t('dashboard.dept.heatmapEmpty')}
         emptyClassName="px-4 py-6 text-xs"
         containerClassName="rounded-lg border border-border"

@@ -20,7 +20,7 @@ export interface KpiBriefPeriodBarProps {
 }
 
 const CHIP_BASE =
-  'inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+  'inline-flex min-h-9 lg:min-h-7 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 
 export function KpiBriefPeriodBar({
   year,

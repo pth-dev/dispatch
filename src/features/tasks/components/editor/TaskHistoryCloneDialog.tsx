@@ -5,9 +5,11 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { InlineError, toErrorStatus } from '@/components/layout'
@@ -115,7 +117,7 @@ export function TaskHistoryCloneDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="p-4 sm:p-6 sm:max-w-2xl overflow-hidden">
+      <DialogContent className="flex max-h-[85dvh] flex-col p-4 sm:p-6 sm:max-w-2xl overflow-hidden">
         <DialogHeader className="min-w-0 pr-8 text-left">
           <DialogTitle className="text-base sm:text-lg leading-snug">
             {t('tasks.clonePicker.title')}
@@ -123,7 +125,7 @@ export function TaskHistoryCloneDialog({
           <DialogDescription>{t('tasks.clonePicker.description')}</DialogDescription>
         </DialogHeader>
 
-        <div className="min-w-0 space-y-3">
+        <div className="flex min-h-0 flex-1 flex-col gap-3">
           <div className="relative">
             <Search
               className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
@@ -142,7 +144,7 @@ export function TaskHistoryCloneDialog({
           {isError ? (
             <InlineError status={toErrorStatus(error)} onRetry={() => void refetch()} />
           ) : (
-            <div className="max-h-80 overflow-y-auto divide-y divide-border rounded-lg border border-border">
+            <div className="min-h-0 flex-1 overflow-y-auto divide-y divide-border rounded-lg border border-border">
               {isLoading ? (
                 <LoadingSpinner size="md" className="p-6" />
               ) : filtered.length === 0 ? (
@@ -167,6 +169,12 @@ export function TaskHistoryCloneDialog({
             </div>
           )}
         </div>
+
+        <DialogFooter>
+          <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
+            {t('common.close')}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

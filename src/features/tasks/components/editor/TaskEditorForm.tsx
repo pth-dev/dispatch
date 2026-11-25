@@ -251,7 +251,7 @@ export function TaskEditorForm({
 
       <form
         onSubmit={handleSubmit(onSubmit, handleInvalidSubmit)}
-        className="space-y-4"
+        className="space-y-4 pb-2"
         noValidate
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
@@ -303,7 +303,7 @@ export function TaskEditorForm({
           </div>
         </div>
 
-        <div className="sticky bottom-0 z-20 flex items-center justify-end gap-3 rounded-xl border border-border bg-card px-4 py-3">
+        <div className="sticky bottom-0 z-20 flex items-center justify-end gap-3 rounded-xl border border-border bg-card/95 px-4 py-3 shadow-md backdrop-blur-xs">
           <Button type="button" variant="outline" onClick={handleCancel}>
             {t('common.cancel')}
           </Button>

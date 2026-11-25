@@ -113,7 +113,7 @@ export function DashboardBottleneckTabs({
             </div>
           </div>
 
-          <TabsList className="h-auto flex-wrap gap-1 p-1">
+          <TabsList className="group-data-[orientation=horizontal]/tabs:h-auto w-full sm:w-fit flex-wrap gap-1 p-1">
             {TAB_KEYS.map((key) => (
               <TabsTrigger key={key} value={key} className="min-h-11 lg:min-h-8 px-2.5 text-xs">
                 {t(`dashboard.bottleneck.tabs.${key}`)} ({breakdowns[key].length})

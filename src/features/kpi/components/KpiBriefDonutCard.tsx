@@ -27,6 +27,7 @@ export function KpiBriefDonutCard({
     label: t(`kpiBrief.status.${status}`),
     value: aggregate[status],
     colorVar: BRIEF_STATUS_COLOR_VAR[status],
+    selectable: isBriefStatusUnfinished(status),
   }))
 
   const handleSelect = (segmentId: string) => {
@@ -46,6 +47,7 @@ export function KpiBriefDonutCard({
         segments={segments}
         centerLabel={`${aggregate.rate}%`}
         ariaLabel={t('kpiBrief.donut.title')}
+        legendColumns={1}
         activeSegmentId={activeStatus || null}
         onSelectSegment={handleSelect}
       />

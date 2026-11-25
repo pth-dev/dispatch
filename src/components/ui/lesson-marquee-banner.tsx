@@ -91,7 +91,7 @@ function LessonMarqueeSegment({
         <Link
           to={`${APP_ROUTES.LESSONS}?id=${hit.id}`}
           onClick={(e) => e.stopPropagation()}
-          className="rounded-sm whitespace-nowrap text-destructive hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="inline-block rounded-sm py-1 whitespace-nowrap text-destructive hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {body}
         </Link>
@@ -149,7 +149,7 @@ export function LessonMarqueeBanner({
         <span>{t('lessons.preview.alertPrefix')}</span>
       </span>
 
-      <div className="min-w-0 flex-1 overflow-hidden whitespace-nowrap">
+      <div className="min-w-0 flex-1 overflow-hidden whitespace-nowrap [mask-image:linear-gradient(to_right,transparent,black_16px,black_calc(100%-16px),transparent)]">
         <div
           style={{ animationDuration: `${durationSeconds}s` }}
           className={cn(

@@ -97,7 +97,7 @@ export function LessonKeywordInput({
               disabled={disabled}
               onClick={() => handleRemove(idx)}
               aria-label={t('lessons.editor.removeKeyword', { keyword: kw })}
-              className="inline-flex size-5 items-center justify-center rounded text-muted-foreground hover:bg-border/70 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+              className="inline-flex size-7 lg:size-5 items-center justify-center rounded text-muted-foreground hover:bg-border/70 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
             >
               <X className="size-3" aria-hidden="true" />
             </button>

@@ -54,7 +54,7 @@ function LessonImageThumbnail({
         disabled={disabled}
         onClick={onRemove}
         aria-label={t('lessons.editor.removeImage', { name })}
-        className="absolute -top-2 -right-2 inline-flex size-5 items-center justify-center rounded-full bg-destructive text-destructive-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer disabled:pointer-events-none disabled:opacity-50"
+        className="absolute -top-2 -right-2 inline-flex size-7 lg:size-5 items-center justify-center rounded-full bg-destructive text-destructive-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer disabled:pointer-events-none disabled:opacity-50"
       >
         <X className="size-3" aria-hidden="true" />
       </button>

@@ -8,6 +8,7 @@ import { DataTable } from '@/components/ui/data-table'
 import type { RawTask } from '@/schemas/task'
 import { useKpiPeopleColumns } from '../hooks/use-kpi-people-columns'
 import type { KpiBasis, PeopleKpiRow } from '../utils/kpi-people-domain'
+import { KpiPeopleMobileCard } from './KpiPeopleMobileCard'
 import { KpiPersonTaskDetails } from './KpiPersonTaskDetails'
 
 export type KpiPeopleTableProps = {
@@ -86,10 +87,24 @@ export function KpiPeopleTable({
         data={rows}
         columns={columns}
         keyExtractor={(r) => r.key}
+        mobileBreakpoint="lg"
+        renderMobileCard={(r, index) => (
+          <KpiPeopleMobileCard
+            row={r}
+            rank={index + 1}
+            selected={selectedKeys.has(r.key)}
+            expanded={expandedKeys.has(r.key)}
+            taskMap={taskMap}
+            basis={basis}
+            resolveDeptLabel={resolveDeptLabel}
+            onToggleSelect={onToggleSelect}
+            onToggleExpand={onToggleExpand}
+          />
+        )}
         enablePagination
         initialPageSize={20}
         paginationClassName="px-4 pb-2.5 mt-0"
-        tableClassName="min-w-[1380px]"
+        tableClassName="min-w-[1160px]"
         emptyMessage={t('kpi.table.empty')}
         emptyClassName="px-4 py-10 text-sm"
         expandedKeys={expandedKeys}

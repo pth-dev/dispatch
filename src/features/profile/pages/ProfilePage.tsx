@@ -111,7 +111,10 @@ export function ProfilePage() {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
-                <AlertDialogAction onClick={() => void handleLogoutAll()}>
+                <AlertDialogAction
+                  onClick={() => void handleLogoutAll()}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
                   {t('common.confirm')}
                 </AlertDialogAction>
               </AlertDialogFooter>

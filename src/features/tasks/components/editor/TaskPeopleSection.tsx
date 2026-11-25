@@ -101,8 +101,8 @@ export function TaskPeopleSection({
                   <button
                     type="button"
                     onClick={() => toggleAssignee(uname)}
-                    className="inline-flex size-6 items-center justify-center rounded-full text-muted-foreground hover:text-destructive cursor-pointer"
-                    aria-label={t('common.delete')}
+                    className="inline-flex size-7 lg:size-6 items-center justify-center rounded-full text-muted-foreground hover:text-destructive cursor-pointer"
+                    aria-label={`${t('common.delete')} ${label}`}
                   >
                     <X className="size-3.5" aria-hidden="true" />
                   </button>
@@ -139,7 +139,7 @@ export function TaskPeopleSection({
           )}
         </div>
 
-        <div className="relative max-h-48 overflow-y-auto rounded-lg border border-border p-2.5 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-1.5 text-xs">
+        <div className="relative max-h-48 overflow-y-auto rounded-lg border border-border p-2.5 grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs">
           {filteredDirectory.length === 0 ? (
             <p className="col-span-full py-2 text-center text-muted-foreground">
               {t('tasks.fields.noMatchingUsers')}

@@ -76,10 +76,10 @@ function FilterChipBadge({
         <button
           type="button"
           onClick={onClear}
-          aria-label={clearLabel}
-          className="ml-0.5 hover:text-destructive"
+          aria-label={`${clearLabel}: ${label}`}
+          className="ml-0.5 inline-flex size-6 lg:size-4 items-center justify-center rounded-full hover:text-destructive"
         >
-          <X className="size-3" />
+          <X className="size-3" aria-hidden="true" />
         </button>
       )}
     </Badge>
@@ -141,7 +141,7 @@ export function KpiBriefUnfinishedSection({
             initialPageSize={10}
             mobileBreakpoint="md"
             mobileItemClassName={() => 'p-0'}
-            tableClassName="min-w-[1040px]"
+            tableClassName="min-w-[920px]"
             rowClassName={() => 'align-top hover:bg-muted/40'}
             renderMobileCard={(c) => (
               <UnfinishedCaseMobileCard

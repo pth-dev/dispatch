@@ -70,9 +70,15 @@ export function DataTableHeaderView<T extends RowData>({
                     'h-auto px-2.5 py-2 font-medium text-muted-foreground whitespace-nowrap',
                   isPrint && 'h-auto border border-border px-1.5 py-1 font-semibold text-foreground',
                   meta?.sticky === 'left' && 'sticky left-0 z-30',
+                  meta?.sticky === 'left' && variant === 'embedded' && 'bg-muted',
                   meta?.sticky === 'left' &&
                     hasMinWidth &&
                     'shadow-[inset_-1px_0_0_var(--color-border)]',
+                  meta?.sticky === 'right' && 'sticky right-0 z-30',
+                  meta?.sticky === 'right' && variant === 'embedded' && 'bg-muted',
+                  meta?.sticky === 'right' &&
+                    hasMinWidth &&
+                    'shadow-[inset_1px_0_0_var(--color-border)]',
                   meta?.align === 'center' && 'text-center',
                   meta?.align === 'right' && 'text-right',
                   meta?.headerClassName,
@@ -147,6 +153,10 @@ export function DataTableBodyView<T extends RowData>({
                     meta?.sticky === 'left' &&
                       hasMinWidth &&
                       'shadow-[inset_-1px_0_0_var(--color-border)]',
+                    meta?.sticky === 'right' && 'sticky right-0 z-10 bg-card',
+                    meta?.sticky === 'right' &&
+                      hasMinWidth &&
+                      'shadow-[inset_1px_0_0_var(--color-border)]',
                   )}
                 >
                   <div className="h-4 bg-muted animate-pulse rounded w-3/4" />
@@ -213,6 +223,11 @@ export function DataTableBodyView<T extends RowData>({
                       meta?.sticky === 'left' &&
                         hasMinWidth &&
                         'shadow-[inset_-1px_0_0_var(--color-border)]',
+                      meta?.sticky === 'right' &&
+                        'sticky right-0 z-10 bg-card transition-colors group-hover:bg-secondary',
+                      meta?.sticky === 'right' &&
+                        hasMinWidth &&
+                        'shadow-[inset_1px_0_0_var(--color-border)]',
                       meta?.align === 'center' && 'text-center',
                       meta?.align === 'right' && 'text-right',
                       meta?.cellClassName,

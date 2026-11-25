@@ -12,6 +12,7 @@ import {
   resolveAssigneeIdentity,
   type DeptMemberStatusRow,
 } from '../utils/dashboard-charts'
+import { DeptMemberMobileCard } from './DeptMemberMobileCard'
 
 type DeptMemberStatusMatrixProps = {
   selectedDept: string
@@ -212,6 +213,14 @@ export function DeptMemberStatusMatrix({
           keyExtractor={(row) => row.name}
           enablePagination
           initialPageSize={10}
+          mobileBreakpoint="md"
+          renderMobileCard={(row) => (
+            <DeptMemberMobileCard
+              row={row}
+              identity={resolveAssigneeIdentity(row.name, lookup)}
+              cellUrl={cellUrl}
+            />
+          )}
           containerClassName="rounded-lg border border-border"
           tableClassName="min-w-[620px]"
           headerClassName="bg-secondary/60 text-xs"

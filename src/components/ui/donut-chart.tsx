@@ -6,6 +6,7 @@ export interface DonutSegment {
   value: number
   /** CSS color variable, e.g. `var(--color-success)` or `var(--color-chart-1)`. */
   colorVar: string
+  selectable?: boolean
 }
 
 export interface DonutChartProps {
@@ -14,6 +15,7 @@ export interface DonutChartProps {
   ariaLabel: string
   activeSegmentId?: string | null
   onSelectSegment?: (segmentId: string) => void
+  legendColumns?: 1 | 2
   className?: string
 }
 
@@ -55,6 +57,7 @@ function DonutArc({
   onSelect?: (segmentId: string) => void
 }) {
   if (arc.length <= 0) return null
+  const canSelect = Boolean(onSelect && arc.selectable !== false)
   return (
     <circle
       cx="55"
@@ -67,10 +70,10 @@ function DonutArc({
       strokeDashoffset={-arc.offset}
       className={cn(
         'transition-opacity',
-        onSelect && 'cursor-pointer',
+        canSelect && 'cursor-pointer',
         dimmed && 'opacity-30',
       )}
-      onClick={onSelect ? () => onSelect(arc.id) : undefined}
+      onClick={canSelect && onSelect ? () => onSelect(arc.id) : undefined}
     />
   )
 }
@@ -84,11 +87,12 @@ function DonutLegendItem({
   active: boolean
   onSelect?: (segmentId: string) => void
 }) {
+  const canSelect = Boolean(onSelect && arc.selectable !== false)
   const itemClass = cn(
     'flex min-h-11 lg:min-h-9 items-center justify-between gap-2 rounded-lg border px-2.5 py-1 text-xs transition-colors',
-    active ? 'border-primary bg-primary-soft/50' : 'border-transparent hover:bg-secondary/70',
-    onSelect &&
-      'cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+    active ? 'border-primary bg-primary-soft/50' : 'border-transparent',
+    canSelect &&
+      'cursor-pointer hover:bg-secondary/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
   )
   const inner = (
     <>
@@ -106,7 +110,7 @@ function DonutLegendItem({
     </>
   )
 
-  return onSelect ? (
+  return canSelect && onSelect ? (
     <button
       type="button"
       aria-pressed={active}
@@ -126,6 +130,7 @@ export function DonutChart({
   ariaLabel,
   activeSegmentId = null,
   onSelectSegment,
+  legendColumns = 2,
   className,
 }: DonutChartProps) {
   const total = segments.reduce((sum, seg) => sum + Math.max(0, seg.value), 0)
@@ -161,7 +166,12 @@ export function DonutChart({
         </div>
       </div>
 
-      <div className="grid w-full grid-cols-1 gap-1.5 sm:grid-cols-2">
+      <div
+        className={cn(
+          'grid w-full grid-cols-1 gap-1.5',
+          legendColumns === 2 && 'sm:grid-cols-2',
+        )}
+      >
         {arcs.map((arc) => (
           <DonutLegendItem
             key={arc.id}

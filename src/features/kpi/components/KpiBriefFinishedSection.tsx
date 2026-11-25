@@ -83,7 +83,7 @@ export function KpiBriefFinishedSection({
                 aria-pressed={finFilter === btn.key}
                 onClick={() => onFinFilterChange(finFilter === btn.key ? '' : btn.key)}
                 className={cn(
-                  'rounded-md px-2.5 py-1 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  'min-h-9 lg:min-h-0 rounded-md px-2.5 py-1.5 lg:py-1 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                   finFilter === btn.key
                     ? 'bg-card text-foreground'
                     : 'text-muted-foreground hover:text-foreground',
@@ -120,7 +120,7 @@ export function KpiBriefFinishedSection({
             mobileBreakpoint="md"
             onRowClick={onOpenFinishedDetail}
             mobileItemClassName={() => 'px-0 py-3 hover:bg-muted/30'}
-            tableClassName="min-w-[1040px]"
+            tableClassName="min-w-[900px]"
             rowClassName={() => 'align-top hover:bg-muted/40'}
             renderMobileCard={(c) => (
               <FinishedCaseMobileCard

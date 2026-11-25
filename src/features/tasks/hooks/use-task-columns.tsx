@@ -23,14 +23,14 @@ import type { TaskColumnId } from './use-task-view-prefs'
 export { formatTaskDueDate }
 
 const DEFAULT_WIDTH_PERCENT: Partial<Record<TaskColumnId, string>> = {
-  stt: '5%',
+  stt: '4%',
   code: '7%',
-  title: '29%',
-  department: '12%',
-  assignee: '14%',
+  title: '28%',
+  department: '11%',
+  assignee: '15%',
   dueDate: '9%',
-  status: '17%',
-  actions: '7%',
+  status: '18%',
+  actions: '8%',
 }
 
 const COLUMN_MIN_WIDTH_PX: Record<TaskColumnId, string> = {

@@ -22,9 +22,9 @@ export function useKpiBriefPeopleColumns({
       id: 'person',
       header: t('kpiBrief.table.person'),
       meta: {
-        minWidth: '180px',
-        headerClassName: 'px-2.5 py-2',
-        cellClassName: 'min-w-[180px] px-2.5 py-2.5',
+        minWidth: '150px',
+        headerClassName: 'px-2 py-2',
+        cellClassName: 'min-w-[150px] px-2 py-2',
       },
       cell: ({ row }) => {
         const p = row.original
@@ -65,8 +65,8 @@ export function useKpiBriefPeopleColumns({
       header: t('kpiBrief.table.total'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5 font-semibold tabular-nums whitespace-nowrap',
+        headerClassName: 'px-1.5 py-2',
+        cellClassName: 'px-1.5 py-2 font-semibold tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => row.original.total,
     },
@@ -75,8 +75,8 @@ export function useKpiBriefPeopleColumns({
       header: t('kpiBrief.status.ontime'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5 font-semibold tabular-nums text-success whitespace-nowrap',
+        headerClassName: 'px-1.5 py-2',
+        cellClassName: 'px-1.5 py-2 font-semibold tabular-nums text-success whitespace-nowrap',
       },
       cell: ({ row }) => row.original.ontime,
     },
@@ -85,8 +85,8 @@ export function useKpiBriefPeopleColumns({
       header: t('kpiBrief.status.late'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5 font-semibold tabular-nums text-warning whitespace-nowrap',
+        headerClassName: 'px-1.5 py-2',
+        cellClassName: 'px-1.5 py-2 font-semibold tabular-nums text-warning whitespace-nowrap',
       },
       cell: ({ row }) => row.original.late,
     },
@@ -95,8 +95,8 @@ export function useKpiBriefPeopleColumns({
       header: t('kpiBrief.status.overdue'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5 font-semibold tabular-nums whitespace-nowrap',
+        headerClassName: 'px-1.5 py-2',
+        cellClassName: 'px-1.5 py-2 font-semibold tabular-nums whitespace-nowrap',
       },
       cell: ({ row }) => (
         <span className={cn(row.original.overdue > 0 ? 'text-destructive' : 'text-muted-foreground')}>
@@ -108,10 +108,10 @@ export function useKpiBriefPeopleColumns({
       id: 'completionBar',
       header: t('kpiBrief.table.completionRate'),
       meta: {
-        width: '28%',
-        minWidth: '120px',
-        headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5',
+        width: '22%',
+        minWidth: '96px',
+        headerClassName: 'px-1.5 py-2',
+        cellClassName: 'px-1.5 py-2',
       },
       cell: ({ row }) => {
         const p = row.original
@@ -133,8 +133,8 @@ export function useKpiBriefPeopleColumns({
       header: () => <span className="sr-only">{t('kpiBrief.table.completionRate')}</span>,
       meta: {
         align: 'right',
-        headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5 font-bold tabular-nums text-foreground whitespace-nowrap',
+        headerClassName: 'px-1.5 py-2',
+        cellClassName: 'px-1.5 py-2 font-bold tabular-nums text-foreground whitespace-nowrap',
       },
       cell: ({ row }) => `${row.original.rate}%`,
     },
@@ -143,8 +143,8 @@ export function useKpiBriefPeopleColumns({
       header: t('kpiBrief.table.ontimeRate'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2 py-2',
-        cellClassName: 'px-2 py-2.5 font-medium tabular-nums text-muted-foreground whitespace-nowrap',
+        headerClassName: 'px-1.5 py-2',
+        cellClassName: 'px-1.5 py-2 font-medium tabular-nums text-muted-foreground whitespace-nowrap',
       },
       cell: ({ row }) => `${row.original.ontimeRate}%`,
     },

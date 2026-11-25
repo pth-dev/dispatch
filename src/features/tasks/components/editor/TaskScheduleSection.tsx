@@ -1,4 +1,4 @@
-import { useWatch, type Control, type FieldErrors, type UseFormRegister, type UseFormSetValue } from 'react-hook-form'
+import { Controller, useWatch, type Control, type FieldErrors, type UseFormRegister, type UseFormSetValue } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Input } from '@/components/ui/input'
 import type { DeptItem } from '@/schemas/meta'
@@ -62,19 +62,34 @@ export function TaskScheduleSection({
           {t('common.department')}{' '}
           <span aria-hidden="true" className="text-destructive">*</span>
         </label>
-        <select
-          id="task-assigned-unit"
-          aria-invalid={Boolean(errors.assigned_unit)}
-          {...register('assigned_unit')}
-          className={SELECT_FIELD_CLASS}
-        >
-          <option value="">{t('tasks.createForm.departmentPlaceholder')}</option>
-          {depts.map((dept) => (
-            <option key={dept.value} value={dept.value}>
-              {getDeptDisplayName(dept, i18n.language)}
-            </option>
-          ))}
-        </select>
+        <Controller
+          control={control}
+          name="assigned_unit"
+          render={({ field }) => {
+            const hasOption = !field.value || depts.some((dept) => dept.value === field.value)
+            return (
+              <select
+                id="task-assigned-unit"
+                aria-invalid={Boolean(errors.assigned_unit)}
+                value={field.value}
+                onChange={(e) => field.onChange(e.target.value)}
+                onBlur={field.onBlur}
+                ref={field.ref}
+                className={SELECT_FIELD_CLASS}
+              >
+                <option value="">{t('tasks.createForm.departmentPlaceholder')}</option>
+                {!hasOption && (
+                  <option value={field.value}>{field.value}</option>
+                )}
+                {depts.map((dept) => (
+                  <option key={dept.value} value={dept.value}>
+                    {getDeptDisplayName(dept, i18n.language)}
+                  </option>
+                ))}
+              </select>
+            )
+          }}
+        />
         {errors.assigned_unit?.message && (
           <p className="text-xs text-destructive">{t(errors.assigned_unit.message)}</p>
         )}

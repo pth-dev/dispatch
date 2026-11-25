@@ -20,9 +20,9 @@ export function useKpiBriefFinishedColumns({
       id: 'id',
       header: t('kpiBrief.cases.id'),
       meta: {
-        width: '84px',
-        headerClassName: 'px-2.5 py-2',
-        cellClassName: 'whitespace-nowrap px-2.5 py-2.5 font-semibold tabular-nums',
+        width: '76px',
+        headerClassName: 'px-2 py-2',
+        cellClassName: 'whitespace-nowrap px-2 py-2 font-semibold tabular-nums',
       },
       cell: ({ row }) => (
         <button
@@ -41,10 +41,10 @@ export function useKpiBriefFinishedColumns({
       id: 'title',
       header: t('kpiBrief.cases.title'),
       meta: {
-        minWidth: '220px',
-        maxWidth: '320px',
-        headerClassName: 'px-2.5 py-2',
-        cellClassName: 'min-w-[220px] max-w-[320px] px-2.5 py-2.5 font-medium text-foreground',
+        minWidth: '165px',
+        maxWidth: '260px',
+        headerClassName: 'px-2 py-2',
+        cellClassName: 'min-w-[165px] max-w-[260px] px-2 py-2 font-medium text-foreground',
       },
       cell: ({ row }) => (
         <>
@@ -71,10 +71,10 @@ export function useKpiBriefFinishedColumns({
       id: 'assignee',
       header: t('kpiBrief.cases.assignee'),
       meta: {
-        minWidth: '150px',
-        maxWidth: '220px',
-        headerClassName: 'px-2.5 py-2',
-        cellClassName: 'min-w-[150px] max-w-[220px] px-2.5 py-2.5 text-foreground',
+        minWidth: '120px',
+        maxWidth: '180px',
+        headerClassName: 'px-2 py-2',
+        cellClassName: 'min-w-[120px] max-w-[180px] px-2 py-2 text-foreground',
       },
       cell: ({ row }) => {
         const fullNames = row.original.names.join(', ')
@@ -89,9 +89,9 @@ export function useKpiBriefFinishedColumns({
       id: 'status',
       header: t('kpiBrief.cases.status'),
       meta: {
-        minWidth: '124px',
-        headerClassName: 'px-2.5 py-2',
-        cellClassName: 'whitespace-nowrap px-2.5 py-2.5',
+        minWidth: '112px',
+        headerClassName: 'px-2 py-2',
+        cellClassName: 'whitespace-nowrap px-2 py-2',
       },
       cell: ({ row }) => <KpiBriefStatusBadge status={row.original.status} />,
     },
@@ -99,8 +99,8 @@ export function useKpiBriefFinishedColumns({
       id: 'planDate',
       header: t('kpiBrief.cases.planDate'),
       meta: {
-        headerClassName: 'px-2.5 py-2',
-        cellClassName: 'whitespace-nowrap px-2.5 py-2.5 tabular-nums text-muted-foreground',
+        headerClassName: 'px-2 py-2',
+        cellClassName: 'whitespace-nowrap px-2 py-2 tabular-nums text-muted-foreground',
       },
       cell: ({ row }) => formatShortDateTime(row.original.plan),
     },
@@ -108,8 +108,8 @@ export function useKpiBriefFinishedColumns({
       id: 'finishDate',
       header: t('kpiBrief.cases.finishDate'),
       meta: {
-        headerClassName: 'px-2.5 py-2',
-        cellClassName: 'whitespace-nowrap px-2.5 py-2.5 font-medium tabular-nums',
+        headerClassName: 'px-2 py-2',
+        cellClassName: 'whitespace-nowrap px-2 py-2 font-medium tabular-nums',
       },
       cell: ({ row }) => (
         <span className={row.original.status === 'late' ? 'text-warning' : 'text-success'}>
@@ -122,8 +122,8 @@ export function useKpiBriefFinishedColumns({
       header: t('kpiBrief.cases.overdueDays'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2.5 py-2',
-        cellClassName: 'whitespace-nowrap px-2.5 py-2.5 font-semibold tabular-nums',
+        headerClassName: 'px-2 py-2',
+        cellClassName: 'whitespace-nowrap px-2 py-2 font-semibold tabular-nums',
       },
       cell: ({ row }) => (
         <span className={cn(row.original.lateDays ? 'text-warning' : 'text-muted-foreground')}>
@@ -135,9 +135,9 @@ export function useKpiBriefFinishedColumns({
       id: 'reqDept',
       header: t('kpiBrief.cases.reqDept'),
       meta: {
-        minWidth: '110px',
-        headerClassName: 'px-2.5 py-2',
-        cellClassName: 'min-w-[110px] px-2.5 py-2.5 text-muted-foreground',
+        minWidth: '88px',
+        headerClassName: 'px-2 py-2',
+        cellClassName: 'min-w-[88px] px-2 py-2 text-muted-foreground',
       },
       cell: ({ row }) => {
         const reqDepts = parseReqDepts(row.original.task.req_depts, row.original.task.req_dept)
@@ -154,10 +154,10 @@ export function useKpiBriefFinishedColumns({
       id: 'lastReport',
       header: t('kpiBrief.cases.lastReport'),
       meta: {
-        minWidth: '200px',
-        maxWidth: '280px',
-        headerClassName: 'px-2.5 py-2',
-        cellClassName: 'min-w-[200px] max-w-[280px] px-2.5 py-2.5 text-muted-foreground',
+        minWidth: '135px',
+        maxWidth: '220px',
+        headerClassName: 'px-2 py-2',
+        cellClassName: 'min-w-[135px] max-w-[220px] px-2 py-2 text-muted-foreground',
       },
       cell: ({ row }) => {
         const raw = row.original.task.last_report

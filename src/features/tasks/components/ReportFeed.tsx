@@ -153,7 +153,10 @@ export function ReportFeed({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
-            <AlertDialogAction onClick={() => void handleConfirmRemoveAttachment()}>
+            <AlertDialogAction
+              onClick={() => void handleConfirmRemoveAttachment()}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
               {t('common.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>

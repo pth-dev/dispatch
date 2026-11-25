@@ -405,6 +405,16 @@ export function formatPostBucketLabel(raw: string, gran: PostGranularity): strin
   return raw.length > 5 ? raw.slice(5) : raw
 }
 
+/** Trả về lớp màu cường độ heatmap dựa trên tỷ lệ giá trị trên giá trị tối đa. */
+export function heatCellClass(value: number, maxVal: number): string {
+  if (value <= 0) return 'text-muted-foreground/40'
+  const ratio = value / Math.max(1, maxVal)
+  if (ratio > 0.75) return 'bg-primary text-primary-foreground'
+  if (ratio > 0.5) return 'bg-primary/70 text-primary-foreground'
+  if (ratio > 0.25) return 'bg-primary/30 text-foreground'
+  return 'bg-primary-soft text-primary'
+}
+
 export function readStoredPostGranularity(storageKey: string): PostGranularity {
   try {
     const parsed = PostGranularitySchema.safeParse(localStorage.getItem(storageKey))

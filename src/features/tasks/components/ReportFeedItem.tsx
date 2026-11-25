@@ -159,7 +159,7 @@ export function ReportFeedItem({
                     type="button"
                     disabled={isDeletingAtt}
                     onClick={() => onRequestDeleteAttachment(report.id, att.path)}
-                    className="inline-flex min-h-[28px] min-w-[28px] items-center justify-center rounded text-destructive hover:opacity-80 disabled:opacity-40 cursor-pointer"
+                    className="inline-flex min-h-9 min-w-9 lg:min-h-7 lg:min-w-7 items-center justify-center rounded text-destructive hover:opacity-80 disabled:opacity-40 cursor-pointer"
                     aria-label={t('common.delete')}
                   >
                     <Trash2 className="size-3.5" aria-hidden="true" />

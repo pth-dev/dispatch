@@ -4,10 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { APP_ROUTES } from '@/constants/app-routes'
-import type { DirectoryUser } from '@/schemas/auth'
 import type { PostDeptOption } from '@/schemas/dashboard'
-import type { DeptMemberStatusRow } from '../utils/dashboard-charts'
-import { DeptMemberStatusMatrix } from './DeptMemberStatusMatrix'
 
 interface DeptScopeHeaderProps {
   deptLabel: string
@@ -17,8 +14,6 @@ interface DeptScopeHeaderProps {
   totalVisibleCount: number
   deptTaskCount: number
   deptSetSize: number
-  memberRows: readonly DeptMemberStatusRow[]
-  directoryUsers?: readonly DirectoryUser[]
   onDeptChange: (dept: string) => void
   onIncludeSubChange: (checked: boolean) => void
 }
@@ -34,15 +29,13 @@ export function DeptScopeHeader({
   totalVisibleCount,
   deptTaskCount,
   deptSetSize,
-  memberRows,
-  directoryUsers,
   onDeptChange,
   onIncludeSubChange,
 }: DeptScopeHeaderProps) {
   const { t } = useTranslation()
 
   return (
-    <section className="rounded-xl border border-border bg-card p-4 space-y-4">
+    <section className="rounded-xl border border-border bg-card p-4">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-0.5">
           <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
@@ -88,11 +81,6 @@ export function DeptScopeHeader({
         </div>
       </div>
 
-      <DeptMemberStatusMatrix
-        selectedDept={selectedDept}
-        memberRows={memberRows}
-        directoryUsers={directoryUsers}
-      />
     </section>
   )
 }

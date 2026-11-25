@@ -93,7 +93,7 @@ export function TaskRequesterSection({
           {t('tasks.fields.site')}{' '}
           <span aria-hidden="true" className="text-destructive">*</span>
         </span>
-        <div className="relative max-h-36 overflow-y-auto rounded-lg border border-border p-2.5 grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs">
+        <div className="relative max-h-36 overflow-y-auto rounded-lg border border-border p-2.5 grid grid-cols-1 gap-1.5 text-xs">
           {sites.map((site) => (
             <label key={site.value} className="relative flex items-center gap-2 cursor-pointer">
               <Checkbox

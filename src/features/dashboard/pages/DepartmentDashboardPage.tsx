@@ -29,6 +29,7 @@ import { DashboardKpiRow } from '../components/DashboardKpiRow'
 import { DashboardLeaderboard } from '../components/DashboardLeaderboard'
 import { DashboardOverdueAgingCard } from '../components/DashboardOverdueAgingCard'
 import { DashboardPostTrendSection } from '../components/DashboardPostTrendSection'
+import { DeptMemberStatusMatrix } from '../components/DeptMemberStatusMatrix'
 import { DeptPeopleHeatmapTable } from '../components/DeptPeopleHeatmapTable'
 import { DeptScopeHeader } from '../components/DeptScopeHeader'
 import { useDashboardComputations } from '../hooks/use-dashboard-data'
@@ -195,8 +196,6 @@ export function DepartmentDashboardPage() {
               totalVisibleCount={allTasks.length}
               deptTaskCount={deptTasks.length}
               deptSetSize={Math.max(1, deptSet.length)}
-              memberRows={computed.memberStatusMatrix}
-              directoryUsers={directoryQuery.data}
               onDeptChange={(dept) => updateDeptParams(dept, includeSub)}
               onIncludeSubChange={(checked) => updateDeptParams(selectedDept, checked)}
             />
@@ -215,6 +214,14 @@ export function DepartmentDashboardPage() {
               onClickPeriodTab={(initialTab) => setModalState({ type: 'period', initialTab })}
               onClickResponse1h={() => setModalState({ type: 'response_1h' })}
             />
+
+            <section className="rounded-xl border border-border bg-card p-4">
+              <DeptMemberStatusMatrix
+                selectedDept={effectiveDept}
+                memberRows={computed.memberStatusMatrix}
+                directoryUsers={directoryQuery.data}
+              />
+            </section>
 
             <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
               <DashboardFlowTrendChart

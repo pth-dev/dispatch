@@ -65,7 +65,7 @@ export function LoginForm({ onSubmit, onSwitchToRegister }: LoginFormProps) {
         )}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex min-h-11 items-center gap-2 lg:min-h-0">
         <Controller
           control={control}
           name="remember"

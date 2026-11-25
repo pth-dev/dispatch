@@ -12,7 +12,7 @@ export type DataTableColumnMeta = {
   width?: string
   minWidth?: string
   maxWidth?: string
-  sticky?: 'left'
+  sticky?: 'left' | 'right'
   align?: 'left' | 'center' | 'right'
   headerClassName?: string
   cellClassName?: string

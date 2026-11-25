@@ -74,7 +74,7 @@ export function KpiPeopleFilters({
 
   return (
     <Card className="p-4 space-y-3 print:hidden">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="grid grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <div className="space-y-1">
           <label htmlFor="kpi-search" className="text-xs font-medium text-muted-foreground">
             {t('kpi.filters.personLabel')}

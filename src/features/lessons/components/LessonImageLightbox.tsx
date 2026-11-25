@@ -36,7 +36,7 @@ export function LessonImageLightbox({ image, onClose }: LessonImageLightboxProps
 
   return (
     <Dialog open={Boolean(image)} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-4xl" aria-describedby={undefined}>
+      <DialogContent className="sm:max-w-4xl" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle className="truncate pr-8 text-sm font-medium">
             {image?.name || t('lessons.lightbox.title')}
@@ -87,7 +87,7 @@ export function LessonImageLightbox({ image, onClose }: LessonImageLightboxProps
               >
                 <RotateCcw className="size-4" aria-hidden="true" />
               </Button>
-              <Button type="button" variant="outline" size="sm" asChild>
+              <Button variant="outline" size="sm" asChild>
                 <a href={image.src} download={image.name || true} target="_blank" rel="noopener noreferrer">
                   <Download className="size-4" aria-hidden="true" />
                   <span>{t('lessons.lightbox.download')}</span>

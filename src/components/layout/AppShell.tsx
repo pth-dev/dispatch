@@ -60,7 +60,7 @@ export function AppShell() {
         {/* Fixed-height scroll area on desktop (inner PageContainer scrolls); short desktop & mobile scroll on <main> when needed. */}
         <main
           ref={mainRef}
-          className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto bg-background px-4 py-4 lg:overflow-hidden lg:short:overflow-y-auto lg:px-6 short:py-3"
+          className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto bg-background px-4 pt-4 pb-20 lg:overflow-hidden lg:short:overflow-y-auto lg:px-6 lg:py-4 short:py-3"
         >
           <React.Suspense
             fallback={<LoadingSpinner size="md" label={t('common.loadingPage')} className="h-32" />}

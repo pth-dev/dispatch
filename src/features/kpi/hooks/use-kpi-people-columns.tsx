@@ -8,7 +8,7 @@ import { cn } from '@/utils/cn'
 import type { KpiGradeTone } from '@/utils/kpi-domain'
 import { formatKpiPct, type PeopleKpiRow } from '../utils/kpi-people-domain'
 
-const GRADE_BADGE_CLASS: Record<KpiGradeTone, string> = {
+export const KPI_GRADE_BADGE_CLASS: Record<KpiGradeTone, string> = {
   success: 'border-success/30 bg-success/10 text-success',
   primary: 'border-primary/30 bg-primary-soft/60 text-primary',
   warning: 'border-warning/30 bg-warning/10 text-warning',
@@ -49,8 +49,8 @@ export function useKpiPeopleColumns({
       ),
       meta: {
         width: '40px',
-        headerClassName: 'w-10 px-3 py-2.5',
-        cellClassName: 'px-3 py-2.5 whitespace-nowrap',
+        headerClassName: 'w-10 px-2 py-2',
+        cellClassName: 'px-2 py-2 whitespace-nowrap',
       },
       cell: ({ row }) => (
         <Checkbox
@@ -64,9 +64,9 @@ export function useKpiPeopleColumns({
       id: 'rank',
       header: t('kpi.table.rank'),
       meta: {
-        width: '48px',
-        headerClassName: 'px-2 py-2.5',
-        cellClassName: 'px-2 py-2.5 font-medium tabular-nums text-muted-foreground whitespace-nowrap',
+        width: '44px',
+        headerClassName: 'px-1.5 py-2',
+        cellClassName: 'px-1.5 py-2 font-medium tabular-nums text-muted-foreground whitespace-nowrap',
       },
       cell: ({ row }) => row.index + 1,
     },
@@ -74,9 +74,9 @@ export function useKpiPeopleColumns({
       id: 'username',
       header: t('kpi.table.username'),
       meta: {
-        minWidth: '88px',
-        headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'px-2.5 py-2.5 font-semibold text-foreground whitespace-nowrap tabular-nums',
+        minWidth: '80px',
+        headerClassName: 'px-2 py-2',
+        cellClassName: 'px-2 py-2 font-semibold text-foreground whitespace-nowrap tabular-nums',
       },
       cell: ({ row }) => row.original.username,
     },
@@ -84,10 +84,10 @@ export function useKpiPeopleColumns({
       id: 'fullname',
       header: t('kpi.table.fullname'),
       meta: {
-        minWidth: '170px',
-        maxWidth: '240px',
-        headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'min-w-[170px] max-w-[240px] px-2.5 py-2.5 font-medium text-foreground',
+        minWidth: '160px',
+        maxWidth: '220px',
+        headerClassName: 'px-2 py-2',
+        cellClassName: 'min-w-[160px] max-w-[220px] px-2 py-2 font-medium text-foreground',
       },
       cell: ({ row }) => {
         const displayName = row.original.isUnregistered
@@ -258,8 +258,8 @@ export function useKpiPeopleColumns({
       header: t('kpi.table.score'),
       meta: {
         align: 'right',
-        headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'px-2.5 py-2.5 text-sm font-bold tabular-nums text-primary whitespace-nowrap',
+        headerClassName: 'px-2 py-2',
+        cellClassName: 'px-2 py-2 text-sm font-bold tabular-nums text-primary whitespace-nowrap',
       },
       cell: ({ row }) => (row.original.score === null ? '-' : row.original.score),
     },
@@ -267,11 +267,11 @@ export function useKpiPeopleColumns({
       id: 'grade',
       header: t('kpi.table.grade'),
       meta: {
-        headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'whitespace-nowrap px-2.5 py-2.5',
+        headerClassName: 'px-2 py-2',
+        cellClassName: 'whitespace-nowrap px-2 py-2',
       },
       cell: ({ row }) => (
-        <Badge variant="outline" className={GRADE_BADGE_CLASS[row.original.grade.tone]}>
+        <Badge variant="outline" className={KPI_GRADE_BADGE_CLASS[row.original.grade.tone]}>
           {row.original.grade.code} {t(`kpi.grade.${row.original.grade.code}`)}
         </Badge>
       ),
@@ -280,9 +280,10 @@ export function useKpiPeopleColumns({
       id: 'detail',
       header: t('kpi.table.detail'),
       meta: {
-        minWidth: '104px',
-        headerClassName: 'px-2.5 py-2.5',
-        cellClassName: 'whitespace-nowrap px-2.5 py-2.5',
+        sticky: 'right',
+        minWidth: '96px',
+        headerClassName: 'bg-muted px-2 py-2',
+        cellClassName: 'bg-card whitespace-nowrap px-2 py-2',
       },
       cell: ({ row }) => {
         const expanded = expandedKeys.has(row.original.key)

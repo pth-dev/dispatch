@@ -106,7 +106,7 @@ export function KpiBriefPeopleTable({
           initialPageSize={10}
           mobileBreakpoint="md"
           mobileItemClassName={() => 'p-0'}
-          tableClassName="min-w-[680px]"
+          tableClassName="min-w-[580px]"
           headerClassName="bg-transparent"
           rowClassName={(p) =>
             selectedPersonKey === p.key ? 'bg-primary-soft/45 hover:bg-primary-soft/45' : 'hover:bg-muted/40'

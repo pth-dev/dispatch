@@ -188,6 +188,50 @@ function buildPersonTaskColumns(
   ]
 }
 
+function KpiPersonTaskMobileCard({
+  task,
+  basis,
+}: {
+  task: RawTask
+  basis: KpiBasis
+}): React.ReactElement {
+  const { t } = useTranslation()
+  const rec = isRecurringTask({ recur_type: task.recur_type ?? 'once' })
+  const pts = getKpiTaskPoints(task)
+  const basisDate = formatShortDateTime(getKpiBasisAt(task, basis)) || '-'
+
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-start justify-between gap-2">
+        <Link
+          to={APP_ROUTES.TASK_DETAIL(task.id)}
+          className="min-w-0 flex-1 text-xs font-semibold text-foreground hover:text-primary"
+        >
+          <span className="mr-1 text-primary tabular-nums">#{task.id}</span>
+          <span className="break-words">{task.title}</span>
+        </Link>
+        <span className="shrink-0 text-xs font-bold tabular-nums text-primary">
+          {pts === null ? '-' : pts}
+        </span>
+      </div>
+      <div className="flex flex-wrap items-center gap-1.5">
+        {renderTaskStatusBadge(task, t)}
+        {rec && (
+          <Badge variant="secondary" className="text-[10px]">
+            {t('kpi.detail.cycleTag', {
+              no: task.cycle_no || 1,
+              date: task.cycle_date || task.recur_cycle_date || '',
+            })}
+          </Badge>
+        )}
+        <span className="ml-auto text-[11px] font-medium tabular-nums text-muted-foreground">
+          {task.progress}% · {basisDate}
+        </span>
+      </div>
+    </div>
+  )
+}
+
 export function KpiPersonTaskDetails({
   row,
   taskMap,
@@ -212,6 +256,8 @@ export function KpiPersonTaskDetails({
       data={tasks}
       columns={columns}
       keyExtractor={(task, idx) => `${task.id}-${task.cycle_date ?? idx}`}
+      mobileBreakpoint="lg"
+      renderMobileCard={forPrint ? undefined : (task) => <KpiPersonTaskMobileCard task={task} basis={basis} />}
       enablePagination={!forPrint}
       initialPageSize={10}
       paginationClassName="px-3 pb-2 mt-0"
