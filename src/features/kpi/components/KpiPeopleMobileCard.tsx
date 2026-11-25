@@ -77,23 +77,23 @@ export function KpiPeopleMobileCard({
       </div>
 
       <div className="grid grid-cols-4 gap-2 rounded-lg bg-muted/40 p-2 text-center text-xs tabular-nums">
-        <div>
+        <div className="flex flex-col justify-between gap-1">
           <p className="text-[10px] text-muted-foreground">{t('kpi.table.total')}</p>
           <p className="font-semibold text-primary">{row.total}</p>
         </div>
-        <div>
+        <div className="flex flex-col justify-between gap-1">
           <p className="text-[10px] text-muted-foreground">{t('kpi.table.completionRate')}</p>
           <p className="font-semibold text-success">
             {formatKpiPct(row.completionRate, row.total)}
           </p>
         </div>
-        <div>
+        <div className="flex flex-col justify-between gap-1">
           <p className="text-[10px] text-muted-foreground">{t('kpi.table.ontimeRate')}</p>
           <p className="font-semibold text-primary">
             {formatKpiPct(row.ontimeRate, row.total)}
           </p>
         </div>
-        <div>
+        <div className="flex flex-col justify-between gap-1">
           <p className="text-[10px] text-muted-foreground">{t('kpi.table.overdue')}</p>
           <p className={cn('font-semibold', row.overdue > 0 ? 'text-destructive' : 'text-foreground')}>
             {row.overdue}

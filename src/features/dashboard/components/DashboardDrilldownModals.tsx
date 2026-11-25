@@ -118,15 +118,15 @@ function Response1hModalBody({ stats }: { stats: Response1hStats }) {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-3 gap-2 text-center">
-        <div className="rounded-lg border border-border bg-secondary/40 p-2.5">
+        <div className="flex flex-col justify-between gap-1 rounded-lg border border-border bg-secondary/40 p-2.5">
           <p className="text-lg font-semibold text-success tabular-nums">{stats.passTasks.length}</p>
           <p className="text-[11px] text-muted-foreground">{t('dashboard.modals.response1h.pass')}</p>
         </div>
-        <div className="rounded-lg border border-border bg-secondary/40 p-2.5">
+        <div className="flex flex-col justify-between gap-1 rounded-lg border border-border bg-secondary/40 p-2.5">
           <p className="text-lg font-semibold text-destructive tabular-nums">{stats.failTasks.length}</p>
           <p className="text-[11px] text-muted-foreground">{t('dashboard.modals.response1h.fail')}</p>
         </div>
-        <div className="rounded-lg border border-border bg-secondary/40 p-2.5">
+        <div className="flex flex-col justify-between gap-1 rounded-lg border border-border bg-secondary/40 p-2.5">
           <p className="text-lg font-semibold text-foreground tabular-nums">{stats.noResponseTasks.length}</p>
           <p className="text-[11px] text-muted-foreground">{t('dashboard.modals.response1h.none')}</p>
         </div>

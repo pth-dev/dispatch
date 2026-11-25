@@ -52,7 +52,7 @@ export function DashboardOverdueAgingCard({
       </div>
 
       <div className="grid grid-cols-3 gap-2 rounded-lg border border-border bg-secondary/35 p-2.5 text-center">
-        <div>
+        <div className="flex flex-col justify-between gap-1">
           <p className="text-[11px] text-muted-foreground">{t('dashboard.aging.overdueTotal')}</p>
           <p
             className={cn(
@@ -63,7 +63,7 @@ export function DashboardOverdueAgingCard({
             {stats.overdueCount}
           </p>
         </div>
-        <div>
+        <div className="flex flex-col justify-between gap-1">
           <p className="text-[11px] text-muted-foreground">{t('dashboard.aging.avgOpenAge')}</p>
           <p className="text-base font-semibold text-foreground tabular-nums">
             {stats.avgOpenAgeDays != null
@@ -71,7 +71,7 @@ export function DashboardOverdueAgingCard({
               : '—'}
           </p>
         </div>
-        <div>
+        <div className="flex flex-col justify-between gap-1">
           <p className="text-[11px] text-muted-foreground">{t('dashboard.aging.maxOverdue')}</p>
           <p
             className={cn(

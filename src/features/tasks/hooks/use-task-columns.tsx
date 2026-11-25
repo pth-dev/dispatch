@@ -23,12 +23,12 @@ import type { TaskColumnId } from './use-task-view-prefs'
 export { formatTaskDueDate }
 
 const DEFAULT_WIDTH_PERCENT: Partial<Record<TaskColumnId, string>> = {
-  stt: '4%',
+  stt: '5%',
   code: '7%',
-  title: '28%',
+  title: '26%',
   department: '11%',
   assignee: '15%',
-  dueDate: '9%',
+  dueDate: '10%',
   status: '18%',
   actions: '8%',
 }
@@ -111,6 +111,8 @@ export function useTaskColumns(
         ...sizingFor('stt'),
         sticky: orderedIds[0] === 'stt' ? 'left' : undefined,
         align: 'center',
+        headerClassName: 'px-2',
+        cellClassName: 'px-2 tabular-nums',
       },
       cell: ({ row }) => {
         const serial = (page - 1) * pageSize + row.index + 1
@@ -129,7 +131,7 @@ export function useTaskColumns(
         <Link
           to={APP_ROUTES.TASK_DETAIL(row.original.id)}
           onClick={(e) => e.stopPropagation()}
-          className="font-medium text-primary hover:underline hover:text-primary-hover"
+          className="font-medium tabular-nums text-primary hover:underline hover:text-primary-hover"
         >
           #{row.original.id}
         </Link>
@@ -179,7 +181,7 @@ export function useTaskColumns(
       header: t('tasks.columns.dueDate'),
       meta: sizingFor('dueDate'),
       cell: ({ row }) => (
-        <span className="whitespace-nowrap text-muted-foreground">
+        <span className="whitespace-nowrap tabular-nums text-muted-foreground">
           {formatTaskDueDate(row.original.due_date)}
         </span>
       ),

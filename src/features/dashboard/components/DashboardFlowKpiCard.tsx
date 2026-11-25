@@ -48,16 +48,19 @@ export function DashboardFlowKpiCard({
   return (
     <div
       className={cn(
-        'flex flex-col justify-between gap-2 rounded-xl border border-border bg-card p-3.5 text-left',
+        'flex flex-col rounded-xl border border-border bg-card p-3.5 text-left',
         className,
       )}
     >
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-xs font-medium text-muted-foreground">
+      <div className="flex min-h-14 items-start justify-between gap-2">
+        <div className="min-w-0 flex flex-col items-start gap-1">
+          <span
+            className="min-h-8 text-xs font-medium text-muted-foreground leading-snug line-clamp-2"
+            title={t('dashboard.kpi.periodFlow')}
+          >
             {t('dashboard.kpi.periodFlow')}
           </span>
-          <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+          <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-medium leading-tight text-muted-foreground">
             {t(`dashboard.period.${period}`)}
           </span>
         </div>
@@ -66,19 +69,19 @@ export function DashboardFlowKpiCard({
         </span>
       </div>
 
-      <div className="grid grid-cols-3 gap-1">
+      <div className="mt-2 grid flex-1 grid-cols-3 items-center gap-1.5">
         <button
           type="button"
           onClick={() => onClickTab('created')}
           className="rounded-md px-1.5 py-1 text-left transition-colors hover:bg-secondary/60 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <span className="block text-[10px] text-muted-foreground">
+          <span className="block text-[10px] leading-tight text-muted-foreground truncate">
             {t('dashboard.kpi.createdLabel')}
           </span>
-          <span className="block text-lg font-semibold leading-tight text-foreground tabular-nums">
+          <span className="mt-0.5 block text-xl xl:text-2xl font-semibold leading-none tracking-tight text-foreground tabular-nums">
             {created}
           </span>
-          <span className="block text-[10px] text-muted-foreground tabular-nums">
+          <span className="mt-0.5 block text-[10px] leading-tight text-muted-foreground tabular-nums truncate">
             {formatSignedDiff(createdDiff)}
           </span>
         </button>
@@ -88,31 +91,31 @@ export function DashboardFlowKpiCard({
           onClick={() => onClickTab('completed')}
           className="rounded-md px-1.5 py-1 text-left transition-colors hover:bg-secondary/60 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <span className="block text-[10px] text-muted-foreground">
+          <span className="block text-[10px] leading-tight text-muted-foreground truncate">
             {t('dashboard.kpi.completedLabel')}
           </span>
-          <span className="block text-lg font-semibold leading-tight text-foreground tabular-nums">
+          <span className="mt-0.5 block text-xl xl:text-2xl font-semibold leading-none tracking-tight text-foreground tabular-nums">
             {completed}
           </span>
-          <span className="block text-[10px] text-muted-foreground tabular-nums">
+          <span className="mt-0.5 block text-[10px] leading-tight text-muted-foreground tabular-nums truncate">
             {formatSignedDiff(completedDiff)}
           </span>
         </button>
 
         <div className="px-1.5 py-1 text-right">
-          <span className="block text-[10px] text-muted-foreground">
+          <span className="block text-[10px] leading-tight text-muted-foreground truncate">
             {t('dashboard.kpi.clearanceLabel')}
           </span>
-          <span className="block text-lg font-semibold leading-tight text-foreground tabular-nums">
+          <span className="mt-0.5 block text-xl xl:text-2xl font-semibold leading-none tracking-tight text-foreground tabular-nums">
             {clearanceRate != null ? `${clearanceRate}%` : '—'}
           </span>
-          <span className="block text-[10px] text-muted-foreground tabular-nums">
+          <span className="mt-0.5 block text-[10px] leading-tight text-muted-foreground tabular-nums truncate">
             {t('dashboard.kpi.prevDeltaShort', { diff: formatSignedDiff(prevDelta) })}
           </span>
         </div>
       </div>
 
-      <div className="space-y-1.5">
+      <div className="mt-2 space-y-1">
         <div className="flex items-center justify-between gap-2">
           <span className={cn('inline-flex items-center gap-1 text-[11px] font-medium tabular-nums', deltaTone)}>
             {delta > 0 ? (
