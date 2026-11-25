@@ -1715,7 +1715,19 @@
       "description": "選擇需要列印的任務並附帶完整動態回報紀錄。",
       "printTitle": "任務進度與動態回報報告",
       "historyTitle": "動態回報紀錄",
-      "noHistory": "暫無回報紀錄。"
+      "noHistory": "暫無回報紀錄。",
+      "fields": {
+        "site": "廠區",
+        "taskType": "任務類型",
+        "reqDept": "需求部門",
+        "riskStatus": "風險狀態",
+        "level": "等級",
+        "costEstimate": "費用預估",
+        "workItems": "工作項目",
+        "precautions": "注意事項",
+        "content": "詳細內容"
+      },
+      "attachmentAlt": "附件"
     },
     "kpi": {
       "description": "按週、月、季、年彙總 KPI 指標並匯出 7 工作表 Excel。",
@@ -1778,7 +1790,10 @@
         "delayed": "逾期未結",
         "open": "處理中",
         "rate": "如期率"
-      }
+      },
+      "unassignedDept": "（未指定部門）",
+      "myDeptBtn": "本部門",
+      "meBtn": "僅自己"
     },
     "web": {
       "description": "產生專業網頁報告（HTML / PDF / Word），歸檔至伺服器並隨時重新開啟。",
@@ -1806,7 +1821,35 @@
       "download": "下載",
       "delete": "刪除",
       "confirmDelete": "確認刪除此歸檔報告？",
-      "officeFilesCount": "可用 Word/Excel 附件：{{count}}"
+      "officeFilesCount": "可用 Word/Excel 附件：{{count}}",
+      "nextReport": "下一份報告",
+      "langLabel": "報告語言",
+      "authorLabel": "報告人",
+      "noteLabel": "備註 / 說明",
+      "notePlaceholder": "輸入補充說明（可選）...",
+      "langs": {
+        "bi": "雙語（越 / 中）",
+        "vi": "越南語",
+        "zhCN": "簡體中文",
+        "zhTW": "繁體中文"
+      },
+      "opts": {
+        "chart": "KPI 圖表",
+        "unit": "部門統計",
+        "person": "人員統計",
+        "cat": "類型統計",
+        "exc": "逾期與異常清單",
+        "kpi": "KPI 彙總指標",
+        "precautions": "注意事項",
+        "content": "任務內容",
+        "office": "Word / Excel 附件清單",
+        "history": "進度回報歷史",
+        "mask": "隱藏機密任務詳情",
+        "sign": "文末簽核欄"
+      },
+      "zoomOut": "縮小",
+      "zoomIn": "放大",
+      "fullscreen": "全螢幕"
     }
   }
 }

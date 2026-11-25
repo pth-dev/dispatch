@@ -1715,7 +1715,19 @@
       "description": "选择需要打印的任务并附带完整动态回报记录。",
       "printTitle": "任务进度与动态回报报告",
       "historyTitle": "动态回报记录",
-      "noHistory": "暂无回报记录。"
+      "noHistory": "暂无回报记录。",
+      "fields": {
+        "site": "厂区",
+        "taskType": "任务类型",
+        "reqDept": "需求部门",
+        "riskStatus": "风险状态",
+        "level": "等级",
+        "costEstimate": "费用预估",
+        "workItems": "工作项目",
+        "precautions": "注意事项",
+        "content": "详细内容"
+      },
+      "attachmentAlt": "附件"
     },
     "kpi": {
       "description": "按周、月、季、年汇总 KPI 指标并导出 7 工作表 Excel。",
@@ -1778,7 +1790,10 @@
         "delayed": "逾期未结",
         "open": "处理中",
         "rate": "如期率"
-      }
+      },
+      "unassignedDept": "（未指定部门）",
+      "myDeptBtn": "本部门",
+      "meBtn": "仅自己"
     },
     "web": {
       "description": "生成专业网页报告（HTML / PDF / Word），归档到服务器并随时重新打开。",
@@ -1806,7 +1821,35 @@
       "download": "下载",
       "delete": "删除",
       "confirmDelete": "确认删除此归档报告？",
-      "officeFilesCount": "可用 Word/Excel 附件：{{count}}"
+      "officeFilesCount": "可用 Word/Excel 附件：{{count}}",
+      "nextReport": "下一份报告",
+      "langLabel": "报告语言",
+      "authorLabel": "报告人",
+      "noteLabel": "备注 / 说明",
+      "notePlaceholder": "输入补充说明（可选）...",
+      "langs": {
+        "bi": "双语（越 / 中）",
+        "vi": "越南语",
+        "zhCN": "简体中文",
+        "zhTW": "繁体中文"
+      },
+      "opts": {
+        "chart": "KPI 图表",
+        "unit": "部门统计",
+        "person": "人员统计",
+        "cat": "类型统计",
+        "exc": "逾期与异常清单",
+        "kpi": "KPI 汇总指标",
+        "precautions": "注意事项",
+        "content": "任务内容",
+        "office": "Word / Excel 附件清单",
+        "history": "进度回报历史",
+        "mask": "隐藏机密任务详情",
+        "sign": "文末签核栏"
+      },
+      "zoomOut": "缩小",
+      "zoomIn": "放大",
+      "fullscreen": "全屏"
     }
   }
 }

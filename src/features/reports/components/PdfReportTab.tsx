@@ -1,25 +1,70 @@
 import * as React from 'react'
 import { Printer } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { useAppStore } from '@/app/store'
 import { InlineError, toErrorStatus } from '@/components/layout'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DataTable, type ColumnDef } from '@/components/ui/data-table'
 import { Input } from '@/components/ui/input'
 import { StatusText } from '@/components/ui/status-text'
-import type { RawReport, RawTask } from '@/schemas/task'
+import type { RawTask } from '@/schemas/task'
 import { resolveApiErrorMessage } from '@/services'
-import { deriveTaskStatus, isTaskPaused } from '@/utils/task-domain'
-import { formatLocalDateInput, getQuickDateRange } from '@/utils/date-range'
+import {
+  formatLocalDateInput,
+  getQuickDateRange,
+  type QuickDateRange,
+} from '@/utils/date-range'
+import {
+  deriveTaskStatus,
+  isTaskCompleted,
+  isTaskPaused,
+  parseReqDepts,
+} from '@/utils/task-domain'
 import { fetchTaskReportsForPdf, useReportTasks } from '../api/queries'
+import { PdfPrintSheet, type PdfPrintEntry } from './PdfPrintSheet'
 
 const SELECT_CLS =
   'h-11 lg:h-10 rounded-md border border-border bg-card px-3 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/30'
 
-type PrintEntry = { task: RawTask; reports: RawReport[] }
+const QUICK_RANGES: readonly Exclude<QuickDateRange, 'today'>[] = [
+  'week',
+  'month',
+  'quarter',
+  'year',
+]
+
+async function mapWithConcurrency<T, R>(
+  items: readonly T[],
+  limit: number,
+  worker: (item: T) => Promise<R>,
+): Promise<R[]> {
+  const results = new Array<R>(items.length)
+  let nextIndex = 0
+  const runners = Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (nextIndex < items.length) {
+      const idx = nextIndex++
+      const item = items[idx]
+      if (item !== undefined) {
+        results[idx] = await worker(item)
+      }
+    }
+  })
+  await Promise.all(runners)
+  return results
+}
+
+function matchesPdfStatus(task: RawTask, statusFilter: string): boolean {
+  if (statusFilter === 'all') return true
+  if (statusFilter === 'incomplete') return !isTaskCompleted(task)
+  if (statusFilter === 'completed') return isTaskCompleted(task)
+  if (statusFilter === 'paused') return isTaskPaused(task)
+  return deriveTaskStatus(task) === statusFilter
+}
 
 export function PdfReportTab({ onNotify }: { onNotify: (msg: string) => void }) {
   const { t, i18n } = useTranslation()
+  const user = useAppStore((s) => s.user)
   const monthRange = getQuickDateRange('month')
   const [unlimited, setUnlimited] = React.useState(false)
   const [startDate, setStartDate] = React.useState(monthRange.start || formatLocalDateInput())
@@ -28,7 +73,7 @@ export function PdfReportTab({ onNotify }: { onNotify: (msg: string) => void }) 
   const [search, setSearch] = React.useState('')
   const [selectedIds, setSelectedIds] = React.useState<Set<number>>(() => new Set())
   const [isPreparing, setIsPreparing] = React.useState(false)
-  const [printEntries, setPrintEntries] = React.useState<PrintEntry[]>([])
+  const [printEntries, setPrintEntries] = React.useState<PdfPrintEntry[]>([])
 
   const tasksQuery = useReportTasks({
     purpose: 'pdf',
@@ -36,19 +81,30 @@ export function PdfReportTab({ onNotify }: { onNotify: (msg: string) => void }) 
     end: unlimited ? '' : endDate,
   })
 
-  const filtered = (tasksQuery.data ?? []).filter((task) => {
-    if (statusFilter === 'paused' && !isTaskPaused(task)) return false
-    if (statusFilter !== 'all' && statusFilter !== 'paused' && deriveTaskStatus(task) !== statusFilter) {
-      return false
-    }
-    const q = search.trim().toLowerCase()
-    if (!q) return true
-    return (
-      String(task.id).includes(q) ||
-      task.title.toLowerCase().includes(q) ||
-      (task.assign_person ?? '').toLowerCase().includes(q)
-    )
-  })
+  const filtered = (tasksQuery.data ?? [])
+    .filter((task) => {
+      if (!matchesPdfStatus(task, statusFilter)) return false
+      const q = search.trim().replace(/^#/, '').toLowerCase()
+      if (!q) return true
+      const reqText = parseReqDepts(task.req_depts, task.req_dept).join(' ').toLowerCase()
+      return (
+        String(task.id).includes(q) ||
+        task.title.toLowerCase().includes(q) ||
+        (task.title_vn ?? '').toLowerCase().includes(q) ||
+        (task.assign_person ?? '').toLowerCase().includes(q) ||
+        (task.assigned_unit ?? '').toLowerCase().includes(q) ||
+        reqText.includes(q) ||
+        (task.task_type ?? '').toLowerCase().includes(q)
+      )
+    })
+    .sort((a, b) => b.id - a.id)
+
+  const handleQuickRange = (range: Exclude<QuickDateRange, 'today'>) => {
+    const next = getQuickDateRange(range)
+    setUnlimited(false)
+    setStartDate(next.start)
+    setEndDate(next.end)
+  }
 
   const toggleId = (id: number) => {
     setSelectedIds((prev) => {
@@ -67,14 +123,12 @@ export function PdfReportTab({ onNotify }: { onNotify: (msg: string) => void }) 
     }
     setIsPreparing(true)
     try {
-      const entries = await Promise.all(
-        picked.map(async (task) => ({
-          task,
-          reports: await fetchTaskReportsForPdf(task.id).catch(() => []),
-        })),
-      )
+      const entries = await mapWithConcurrency(picked, 6, async (task) => {
+        const list = await fetchTaskReportsForPdf(task.id).catch(() => [])
+        return { task, reports: [...list].reverse() }
+      })
       setPrintEntries(entries)
-      window.setTimeout(() => window.print(), 100)
+      window.setTimeout(() => window.print(), 120)
     } catch (error) {
       onNotify(resolveApiErrorMessage(error, t, i18n.language))
     }
@@ -97,7 +151,7 @@ export function PdfReportTab({ onNotify }: { onNotify: (msg: string) => void }) 
     {
       id: 'id',
       header: 'ID',
-      meta: { width: '80px', minWidth: '72px' },
+      meta: { width: '76px', minWidth: '72px' },
       cell: ({ row }) => <span className="font-medium text-primary">#{row.original.id}</span>,
     },
     {
@@ -107,17 +161,35 @@ export function PdfReportTab({ onNotify }: { onNotify: (msg: string) => void }) 
       cell: ({ row }) => <span className="text-foreground">{row.original.title}</span>,
     },
     {
+      id: 'dept',
+      header: t('common.department'),
+      meta: { minWidth: '120px' },
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">{row.original.assigned_unit || '—'}</span>
+      ),
+    },
+    {
       id: 'assignee',
       header: t('common.assignee'),
-      meta: { minWidth: '140px' },
+      meta: { minWidth: '130px' },
       cell: ({ row }) => (
         <span className="text-muted-foreground">{row.original.assign_person || '—'}</span>
       ),
     },
     {
+      id: 'progress',
+      header: t('worklog.progress'),
+      meta: { align: 'right', minWidth: '72px' },
+      cell: ({ row }) => (
+        <span className={row.original.progress === 100 ? 'font-semibold text-success' : 'text-primary'}>
+          {row.original.progress}%
+        </span>
+      ),
+    },
+    {
       id: 'due',
       header: t('common.dueDate'),
-      meta: { minWidth: '130px' },
+      meta: { minWidth: '124px' },
       cell: ({ row }) => (
         <span className="text-muted-foreground">{row.original.due_date || '—'}</span>
       ),
@@ -125,10 +197,17 @@ export function PdfReportTab({ onNotify }: { onNotify: (msg: string) => void }) 
     {
       id: 'status',
       header: t('common.status'),
-      meta: { minWidth: '130px' },
+      meta: { minWidth: '124px' },
       cell: ({ row }) => <StatusText status={deriveTaskStatus(row.original)} />,
     },
   ]
+
+  const authorLabel = user
+    ? `${user.username} / ${user.fullname || user.username} (${[user.dept, user.site].filter(Boolean).join(' / ')})`
+    : ''
+  const rangeLabel = unlimited
+    ? t('reports.common.unlimitedDate')
+    : `${startDate} ~ ${endDate}`
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
@@ -155,8 +234,9 @@ export function PdfReportTab({ onNotify }: { onNotify: (msg: string) => void }) 
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <option value="all">{t('status.all')}</option>
-            <option value="in_progress">{t('status.in_progress')}</option>
+            <option value="incomplete">{t('status.incomplete')}</option>
             <option value="delayed_pending">{t('status.delayed_pending')}</option>
+            <option value="completed">{t('status.completed')}</option>
             <option value="completed_ontime">{t('status.completed_ontime')}</option>
             <option value="late_completed">{t('status.late_completed')}</option>
             <option value="paused">{t('status.paused')}</option>
@@ -171,17 +251,36 @@ export function PdfReportTab({ onNotify }: { onNotify: (msg: string) => void }) 
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <label className="inline-flex items-center gap-2 text-xs text-foreground">
-            <Checkbox
-              checked={unlimited}
-              onCheckedChange={(v) => setUnlimited(Boolean(v))}
-            />
-            <span>{t('reports.common.unlimitedDate')}</span>
-          </label>
+          <div className="flex flex-wrap items-center gap-2">
+            <label className="inline-flex items-center gap-1.5 text-xs text-foreground">
+              <Checkbox
+                checked={unlimited}
+                onCheckedChange={(v) => setUnlimited(Boolean(v))}
+              />
+              <span>{t('reports.common.unlimitedDate')}</span>
+            </label>
+            <div className="flex flex-wrap items-center gap-1">
+              {QUICK_RANGES.map((r) => (
+                <Button
+                  key={r}
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="h-7 px-2 text-xs"
+                  onClick={() => handleQuickRange(r)}
+                >
+                  {t(`worklog.quick.${r}`)}
+                </Button>
+              ))}
+            </div>
+          </div>
 
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs text-muted-foreground">
-              {t('reports.common.selectedCount', { count: selectedIds.size, total: filtered.length })}
+              {t('reports.common.selectedCount', {
+                count: filtered.filter((item) => selectedIds.has(item.id)).length,
+                total: filtered.length,
+              })}
             </span>
             <Button
               type="button"
@@ -202,7 +301,7 @@ export function PdfReportTab({ onNotify }: { onNotify: (msg: string) => void }) 
             <Button
               type="button"
               size="sm"
-              disabled={selectedIds.size === 0 || isPreparing}
+              disabled={filtered.every((item) => !selectedIds.has(item.id)) || isPreparing}
               onClick={() => void handlePrint()}
             >
               <Printer className="size-4" aria-hidden="true" />
@@ -230,34 +329,7 @@ export function PdfReportTab({ onNotify }: { onNotify: (msg: string) => void }) 
         />
       )}
 
-      {printEntries.length > 0 && (
-        <div className="hidden print:block space-y-6">
-          <h2 className="text-lg font-semibold text-foreground">{t('reports.pdf.printTitle')}</h2>
-          {printEntries.map(({ task, reports }) => (
-            <article key={task.id} className="break-inside-avoid border-b border-border pb-4 space-y-2">
-              <h3 className="text-sm font-semibold text-foreground">
-                #{task.id} — {task.title} ({task.progress}%)
-              </h3>
-              <p className="text-xs text-muted-foreground">
-                {task.assigned_unit} · {task.assign_person} · {task.due_date}
-              </p>
-              <div className="space-y-1.5 pl-3">
-                <div className="text-xs font-semibold text-foreground">{t('reports.pdf.historyTitle')}</div>
-                {reports.length === 0 ? (
-                  <p className="text-xs text-muted-foreground">{t('reports.pdf.noHistory')}</p>
-                ) : (
-                  reports.map((rep) => (
-                    <div key={rep.id} className="text-xs text-foreground">
-                      <strong>{rep.createdAt}</strong> ({rep.fullname || rep.username} · {rep.progress}%):{' '}
-                      {rep.content}
-                    </div>
-                  ))
-                )}
-              </div>
-            </article>
-          ))}
-        </div>
-      )}
+      <PdfPrintSheet entries={printEntries} author={authorLabel} rangeLabel={rangeLabel} />
     </div>
   )
 }

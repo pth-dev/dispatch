@@ -38,13 +38,22 @@ export const OfficeFileItemSchema = z.object({
   path: z.string().nullish().transform((v) => v ?? ''),
   ext: z.string().nullish().transform((v) => v ?? ''),
   source: z.string().nullish().transform((v) => v ?? ''),
+  size: z.coerce.number().optional().default(0),
+  exists: z.boolean().optional().default(true),
   hidden: z.boolean().optional().default(false),
 })
 
 export type OfficeFileItem = z.infer<typeof OfficeFileItemSchema>
 
-export const OfficeFilesResponseSchema = z.object({
-  success: z.boolean().optional(),
-  message: z.string().optional(),
-  files: z.array(OfficeFileItemSchema).optional().default([]),
-})
+export const OfficeFilesResponseSchema = z
+  .object({
+    success: z.boolean().optional(),
+    message: z.string().optional(),
+    items: z.array(OfficeFileItemSchema).optional(),
+    files: z.array(OfficeFileItemSchema).optional(),
+  })
+  .transform((raw) => ({
+    success: raw.success,
+    message: raw.message,
+    files: raw.items ?? raw.files ?? [],
+  }))

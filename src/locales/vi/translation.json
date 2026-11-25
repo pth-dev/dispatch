@@ -1715,7 +1715,19 @@
       "description": "Chọn các nhiệm vụ cần in kèm toàn bộ lịch sử báo cáo tiến độ.",
       "printTitle": "Báo cáo chi tiết nhiệm vụ & tiến độ",
       "historyTitle": "Lịch sử báo cáo tiến độ",
-      "noHistory": "Chưa có báo cáo tiến độ."
+      "noHistory": "Chưa có báo cáo tiến độ.",
+      "fields": {
+        "site": "Khu vực",
+        "taskType": "Loại nhiệm vụ",
+        "reqDept": "Đơn vị yêu cầu",
+        "riskStatus": "Trạng thái rủi ro",
+        "level": "Mức độ",
+        "costEstimate": "Dự toán chi phí",
+        "workItems": "Hạng mục công việc",
+        "precautions": "Lưu ý quan trọng",
+        "content": "Nội dung chi tiết"
+      },
+      "attachmentAlt": "Tệp đính kèm"
     },
     "kpi": {
       "description": "Tổng hợp KPI theo tuần, tháng, quý, năm và xuất sổ Excel 7 trang tính.",
@@ -1778,7 +1790,10 @@
         "delayed": "Quá hạn",
         "open": "Đang XL",
         "rate": "Tỷ lệ đúng hạn"
-      }
+      },
+      "unassignedDept": "(Chưa gán bộ phận)",
+      "myDeptBtn": "Bộ phận tôi",
+      "meBtn": "Chỉ mình tôi"
     },
     "web": {
       "description": "Tạo báo cáo web tổng hợp (HTML / PDF / Word), lưu trữ lên máy chủ và mở lại bất cứ lúc nào.",
@@ -1806,7 +1821,35 @@
       "download": "Tải HTML",
       "delete": "Xóa",
       "confirmDelete": "Xác nhận xóa báo cáo lưu trữ này?",
-      "officeFilesCount": "Tệp Word/Excel hợp lệ: {{count}}"
+      "officeFilesCount": "Tệp Word/Excel hợp lệ: {{count}}",
+      "nextReport": "Báo cáo tiếp",
+      "langLabel": "Ngôn ngữ báo cáo",
+      "authorLabel": "Người lập báo cáo",
+      "noteLabel": "Ghi chú / Nhận xét",
+      "notePlaceholder": "Nhập nhận xét bổ sung cho báo cáo (tùy chọn)...",
+      "langs": {
+        "bi": "Song ngữ (Việt / Trung)",
+        "vi": "Tiếng Việt",
+        "zhCN": "Tiếng Trung (Giản thể)",
+        "zhTW": "Tiếng Trung (Phồn thể)"
+      },
+      "opts": {
+        "chart": "Biểu đồ KPI",
+        "unit": "Phân tích đơn vị",
+        "person": "Phân tích nhân sự",
+        "cat": "Phân tích loại hình",
+        "exc": "Danh sách ngoại lệ / quá hạn",
+        "kpi": "Bảng chỉ số KPI",
+        "precautions": "Lưu ý nhiệm vụ",
+        "content": "Nội dung nhiệm vụ",
+        "office": "Phụ lục Word / Excel",
+        "history": "Lịch sử báo cáo tiến độ",
+        "mask": "Ẩn chi tiết nhiệm vụ mật",
+        "sign": "Khung ký duyệt cuối trang"
+      },
+      "zoomOut": "Thu nhỏ",
+      "zoomIn": "Phóng to",
+      "fullscreen": "Toàn màn hình"
     }
   }
 }

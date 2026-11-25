@@ -1715,7 +1715,19 @@
       "description": "Select tasks to print with their complete progress report history.",
       "printTitle": "Task Progress Report",
       "historyTitle": "Progress Report History",
-      "noHistory": "No progress reports yet."
+      "noHistory": "No progress reports yet.",
+      "fields": {
+        "site": "Site",
+        "taskType": "Task Type",
+        "reqDept": "Requesting Dept",
+        "riskStatus": "Risk Status",
+        "level": "Priority Level",
+        "costEstimate": "Cost Estimate",
+        "workItems": "Work Items",
+        "precautions": "Precautions",
+        "content": "Task Details"
+      },
+      "attachmentAlt": "Attachment"
     },
     "kpi": {
       "description": "Summarize periodic KPI metrics and export a 7-sheet Excel workbook.",
@@ -1778,7 +1790,10 @@
         "delayed": "Overdue",
         "open": "Open",
         "rate": "On-time Rate"
-      }
+      },
+      "unassignedDept": "(Unassigned Dept)",
+      "myDeptBtn": "My Dept",
+      "meBtn": "Only Me"
     },
     "web": {
       "description": "Build structured web reports (HTML / PDF / Word), archive to server, and reopen anytime.",
@@ -1806,7 +1821,35 @@
       "download": "HTML",
       "delete": "Delete",
       "confirmDelete": "Delete this archived report?",
-      "officeFilesCount": "Eligible Word/Excel files: {{count}}"
+      "officeFilesCount": "Eligible Word/Excel files: {{count}}",
+      "nextReport": "Next Report",
+      "langLabel": "Report Language",
+      "authorLabel": "Report Author",
+      "noteLabel": "Notes / Remarks",
+      "notePlaceholder": "Optional notes to include in the report...",
+      "langs": {
+        "bi": "Bilingual (VI / ZH)",
+        "vi": "Vietnamese",
+        "zhCN": "Simplified Chinese",
+        "zhTW": "Traditional Chinese"
+      },
+      "opts": {
+        "chart": "KPI Charts",
+        "unit": "Unit Breakdown",
+        "person": "Assignee Breakdown",
+        "cat": "Category Breakdown",
+        "exc": "Overdue / Exceptions",
+        "kpi": "KPI Summary Table",
+        "precautions": "Task Precautions",
+        "content": "Task Content",
+        "office": "Word / Excel Appendix",
+        "history": "Progress History",
+        "mask": "Mask Confidential Tasks",
+        "sign": "Approval Signature Block"
+      },
+      "zoomOut": "Zoom out",
+      "zoomIn": "Zoom in",
+      "fullscreen": "Fullscreen"
     }
   }
 }

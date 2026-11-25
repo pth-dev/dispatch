@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Archive, Download, ExternalLink, Trash2 } from 'lucide-react'
+import { Archive, Download, ExternalLink, FileSpreadsheet, FileText, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { InlineError, toErrorStatus } from '@/components/layout'
 import {
@@ -21,11 +21,14 @@ import {
   useWebReports,
 } from '../api/queries'
 import { hardenArchivedReportHtml, triggerTextFileDownload } from '../utils/report-domain'
+import { downloadWebReportAsWord, exportArchivedHtmlAsExcel } from '../utils/web-report-domain'
 
 function formatKb(bytes: number): string {
   if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
   return `${Math.max(1, Math.round(bytes / 1024))} KB`
 }
+
+type ArchiveActionMode = 'open' | 'html' | 'word' | 'excel'
 
 export function WebReportArchiveList({ onNotify }: { onNotify: (msg: string) => void }) {
   const { t, i18n } = useTranslation()
@@ -34,18 +37,19 @@ export function WebReportArchiveList({ onNotify }: { onNotify: (msg: string) => 
   const [pendingDelete, setPendingDelete] = React.useState<WebReportItem | null>(null)
   const [busyId, setBusyId] = React.useState<number | null>(null)
 
-  const handleOpenOrDownload = async (item: WebReportItem, download: boolean) => {
+  const handleAction = async (item: WebReportItem, action: ArchiveActionMode) => {
     setBusyId(item.id)
     try {
       const html = await fetchArchivedWebReportHtml(item.id)
-      if (download) {
-        triggerTextFileDownload(
-          html,
-          `${item.file_base || `Dispatch_Report_${item.id}`}.html`,
-          'text/html;charset=utf-8',
-        )
+      const safeHtml = hardenArchivedReportHtml(html)
+      const fileBase = item.file_base || `Dispatch_Report_${item.id}`
+      if (action === 'html') {
+        triggerTextFileDownload(safeHtml, `${fileBase}.html`, 'text/html;charset=utf-8')
+      } else if (action === 'word') {
+        downloadWebReportAsWord(safeHtml, fileBase, item.title || fileBase)
+      } else if (action === 'excel') {
+        await exportArchivedHtmlAsExcel(safeHtml, fileBase)
       } else {
-        const safeHtml = hardenArchivedReportHtml(html)
         const blob = new Blob([safeHtml], { type: 'text/html;charset=utf-8' })
         const url = URL.createObjectURL(blob)
         window.open(url, '_blank', 'noopener,noreferrer')
@@ -69,7 +73,7 @@ export function WebReportArchiveList({ onNotify }: { onNotify: (msg: string) => 
   }
 
   return (
-    <section className="rounded-xl border border-border bg-card p-4 space-y-3">
+    <section className="rounded-xl border border-border bg-card p-3.5 space-y-2.5">
       <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
         <Archive className="size-4 text-primary" aria-hidden="true" />
         <span>
@@ -91,11 +95,17 @@ export function WebReportArchiveList({ onNotify }: { onNotify: (msg: string) => 
       ) : (
         <div className="divide-y divide-border rounded-lg border border-border">
           {(archiveQuery.data ?? []).map((item) => (
-            <div key={item.id} className="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5">
+            <div key={item.id} className="flex flex-wrap items-center justify-between gap-2 px-3 py-2">
               <div className="min-w-0">
                 <div className="truncate text-sm font-medium text-foreground">{item.title}</div>
                 <div className="text-xs text-muted-foreground">
-                  {[item.report_no, `${item.range_start} ~ ${item.range_end}`, item.subject_label, item.createdAt, formatKb(item.size_bytes)]
+                  {[
+                    item.report_no,
+                    `${item.range_start} ~ ${item.range_end}`,
+                    item.subject_label,
+                    item.createdAt,
+                    formatKb(item.size_bytes),
+                  ]
                     .filter(Boolean)
                     .join(' · ')}
                 </div>
@@ -106,7 +116,7 @@ export function WebReportArchiveList({ onNotify }: { onNotify: (msg: string) => 
                   size="sm"
                   variant="outline"
                   disabled={busyId === item.id}
-                  onClick={() => void handleOpenOrDownload(item, false)}
+                  onClick={() => void handleAction(item, 'open')}
                 >
                   <ExternalLink className="size-3.5" aria-hidden="true" />
                   <span>{t('reports.web.open')}</span>
@@ -116,10 +126,30 @@ export function WebReportArchiveList({ onNotify }: { onNotify: (msg: string) => 
                   size="sm"
                   variant="outline"
                   disabled={busyId === item.id}
-                  onClick={() => void handleOpenOrDownload(item, true)}
+                  onClick={() => void handleAction(item, 'html')}
                 >
                   <Download className="size-3.5" aria-hidden="true" />
                   <span>{t('reports.web.download')}</span>
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  disabled={busyId === item.id}
+                  onClick={() => void handleAction(item, 'word')}
+                >
+                  <FileText className="size-3.5" aria-hidden="true" />
+                  <span>Word</span>
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  disabled={busyId === item.id}
+                  onClick={() => void handleAction(item, 'excel')}
+                >
+                  <FileSpreadsheet className="size-3.5" aria-hidden="true" />
+                  <span>Excel</span>
                 </Button>
                 <Button
                   type="button"
